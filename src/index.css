@@ -1,0 +1,174 @@
+/* Animation on mount */
+.slide-in-top {
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: all 0.5s ease;
+}
+
+.slide-in-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover effect */
+.hover-shadow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+}
+
+
+/* Optional: Highlight active nav link */
+.nav-item.active .nav-link {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.card.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+
+/* styles.css */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.collapsed-sidebar {
+  width: 70px !important;
+}
+
+.expanded-sidebar {
+  width: 220px !important;
+}
+
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+@media (max-width: 576px) {
+  .form-control {
+    font-size: 14px;
+  }
+  .btn i {
+    font-size: 18px;
+  }
+}
+
+
+
+/* dashboard css */
+.hero-section {
+  height: 100vh;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  padding: 0 2rem;
+}
+
+.carousel-item {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.03);
+}
+
+
+/* To hide Scrollbar */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+.chat-item .delete-btn {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.chat-item:hover .delete-btn {
+  visibility: visible;
+  opacity: 1;
+}
+
+.message-container {
+    max-height: 260px;
+    overflow: auto;
+}
+
+.chat-item-wrapper {
+    max-height: calc(100vh - 110px);
+}
+
+.upload-container {
+    max-height: 45px;
+    overflow: auto;
+    margin: 0 auto; 
+}
+
+.upload-container_specific {
+    max-height: 80px;
+    overflow: auto;
+    margin: 0 auto; 
+}
+
+
+
+.main-wrapper .sidebar-wrapper{
+  width:70px;
+  position: fixed;
+  top: 0px;
+  height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.main-wrapper .content-wrapper{
+  width:calc(100% - 70px);
+  margin-left: auto;
+  transition: all 0.3s ease;
+}
+.main-wrapper.open .sidebar-wrapper{
+  width:220px;
+}
+.main-wrapper.open .content-wrapper{
+  width:calc(100% - 220px);
+}
+@media only screen and (max-width:767px){
+
+  
+  .main-wrapper .sidebar-wrapper{
+    width:70px;
+    position: fixed;
+    top: 0px;
+    height: 100vh;
+    transition: all 0.3s ease;
+  }
+  
+  .main-wrapper .content-wrapper{
+    width:calc(100% - 70px);
+    margin-left: auto;
+    transition: all 0.3s ease;
+  }
+  .main-wrapper.open .sidebar-wrapper{
+    width:220px;
+  }
+  .main-wrapper.open .content-wrapper{
+    width:calc(100% - 70px);
+  }
+  
+}
