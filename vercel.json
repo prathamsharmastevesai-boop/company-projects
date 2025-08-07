@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "public": "dist",
   "rewrites": [
     { "source": "/Admin/:path*", "destination": "/" },
     { "source": "/:path*", "destination": "/" }

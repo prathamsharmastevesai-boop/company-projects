@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { AskQuestion_Specific, baseURL, Chat_history, Del_Chat_Session, List_specific_Docs, Old_history, Upload_specific_file } from '../../../NWconfig';
+import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, List_specific_Docs, Old_history, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
 
 //chat with document
 export const getlist_his_oldApi = createAsyncThunk(
@@ -138,7 +138,7 @@ export const get_specific_Doclist_Api = createAsyncThunk(
 );
 
 export const AskQuestion_Specific_API = createAsyncThunk(
-  'auth/AskQuestion_Specific_API',
+  'AskQuestion_Specific_API',
   async (Data) => {
 
     const token = sessionStorage.getItem('token');
@@ -161,4 +161,55 @@ export const AskQuestion_Specific_API = createAsyncThunk(
 );
 
 
+export const get_Session_List_Specific = createAsyncThunk(
+  'get_Session_List_Specific',
+  async () => {
 
+    const token = sessionStorage.getItem('token');
+
+    try {
+      console.log("console in api ");
+      
+      const url = `${baseURL}${Session_List_Specific}`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+      });
+console.log(response.data,"response.data23242323423");
+
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      throw error;
+    }
+  }
+);
+
+
+export const get_chathistory_Specific_Api = createAsyncThunk(
+  'auth/get_chathistory_Specific_Api',
+  async (id, { rejectWithValue }) => {
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const url = `${baseURL}${Chat_history_Specific}?session_id=${id}`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch chat history");
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
