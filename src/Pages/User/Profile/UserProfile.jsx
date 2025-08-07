@@ -35,7 +35,7 @@ export const UserProfile = () => {
     if (userdata) {
       setName(userdata.name || "");
       setNumber(userdata.number || "");
-      setPhotoUrl(userdata.photo_base64 || "https://placehold.co/100x100");
+      setPhotoUrl(userdata.photo_url || "https://placehold.co/100x100");
     }
   }, [userdata]);
 
