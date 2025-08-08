@@ -25,7 +25,7 @@ export const ChatWithAnyDoc = () => {
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState([]);
-     const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   console.log(chatList, "chatList");
 
   const [selectedChatId, setSelectedChatId] = useState(null);
@@ -34,15 +34,15 @@ export const ChatWithAnyDoc = () => {
   const chatRef = useRef(null);
 
   const fetchDocuments = async () => {
-        const response = await dispatch(get_specific_Doclist_Api());
+    const response = await dispatch(get_specific_Doclist_Api());
 
-        if (response?.payload && Array.isArray(response.payload)) {
-            setUploadedFiles(response.payload);
-        }
-    };
+    if (response?.payload && Array.isArray(response.payload)) {
+      setUploadedFiles(response.payload);
+    }
+  };
 
   const fetchMessages = async () => {
-console.log("fjsfgjdsgfudgsfdgfdug");
+    console.log("fjsfgjdsgfudgsfdgfdug");
 
     const res = await dispatch(
       get_Session_List_Specific()
@@ -77,7 +77,7 @@ console.log("fjsfgjdsgfudgsfdgfdug");
   useEffect(() => {
     fetchDocuments();
     fetchMessages();
-    
+
   }, [])
 
   // const handleReplace = (e) => {
@@ -90,77 +90,77 @@ console.log("fjsfgjdsgfudgsfdgfdug");
   //   toast.info("New file selected. Click 'Confirm Update' to apply changes.");
   // };
 
-const handleSendMessage = async () => {
-  if (!message.trim()) {
-    toast.warning("Please enter a message.");
-    return;
-  }
+  const handleSendMessage = async () => {
+    if (!message.trim()) {
+      toast.warning("Please enter a message.");
+      return;
+    }
 
-  if (selectedFileIndex === null) {
-    toast.warning("Please select a document.");
-    return;
-  }
+    if (selectedFileIndex === null) {
+      toast.warning("Please select a document.");
+      return;
+    }
 
-  const selectedFile = uploadedFiles[selectedFileIndex];
+    const selectedFile = uploadedFiles[selectedFileIndex];
 
-  if (!selectedFile?.file_id) {
-    toast.error("Missing file information.");
-    return;
-  }
+    if (!selectedFile?.file_id) {
+      toast.error("Missing file information.");
+      return;
+    }
 
-  // ✅ Automatically create session if none exists
-  let activeSessionId = sessionId;
-  if (!activeSessionId) {
-    const newId = uuidv4();
-    const newChat = {
-      session_id: newId,
-      name: newId,
-      created_at: new Date().toISOString(),
+    // ✅ Automatically create session if none exists
+    let activeSessionId = sessionId;
+    if (!activeSessionId) {
+      const newId = uuidv4();
+      const newChat = {
+        session_id: newId,
+        name: newId,
+        created_at: new Date().toISOString(),
+      };
+
+      const updatedChatList = [newChat, ...chatList];
+      setChatList(updatedChatList);
+      setSessionId(newId);
+      setSelectedChatId(newId);
+      activeSessionId = newId;
+    }
+
+    const payload = {
+      question: message,
+      file_id: selectedFile.file_id,
+      session_id: activeSessionId,
     };
 
-    const updatedChatList = [newChat, ...chatList];
-    setChatList(updatedChatList);
-    setSessionId(newId);
-    setSelectedChatId(newId);
-    activeSessionId = newId;
-  }
+    console.log(payload, "payload");
 
-  const payload = {
-    question: message,
-    file_id: selectedFile.file_id,
-    session_id: activeSessionId,
-  };
-
-  console.log(payload, "payload");
-
-  const userMessage = {
-    message,
-    sender: "User",
-    timestamp: new Date(),
-  };
-
-  try {
-    setIsSending(true);
-    setMessages((prev) => [...prev, userMessage]);
-    setMessage("");
-    scrollToBottom();
-
-    const response = await dispatch(AskQuestion_Specific_API(payload)).unwrap();
-
-    const adminMessage = {
-      message: response.answer,
-      sender: "Admin",
+    const userMessage = {
+      message,
+      sender: "User",
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, adminMessage]);
-    scrollToBottom();
-  } catch (error) {
-    toast.error("Send message failed.");
-  } finally {
-    setIsSending(false);
-  }
-};
+    try {
+      setIsSending(true);
+      setMessages((prev) => [...prev, userMessage]);
+      setMessage("");
+      scrollToBottom();
+
+      const response = await dispatch(AskQuestion_Specific_API(payload)).unwrap();
+
+      const adminMessage = {
+        message: response.answer,
+        sender: "Admin",
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, adminMessage]);
+      scrollToBottom();
+    } catch (error) {
+      toast.error("Send message failed.");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
 
   const handleSessionhistory = async (id) => {
@@ -194,92 +194,92 @@ const handleSendMessage = async () => {
 
 
 
-    const handleFileChange = async (e) => {
-  const selectedFiles = Array.from(e.target.files);
-  if (!selectedFiles.length) {
-    toast.warning("⚠️ No files selected.");
-    return;
-  }
+  const handleFileChange = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (!selectedFiles.length) {
+      toast.warning("⚠️ No files selected.");
+      return;
+    }
 
-  // Limit: 3MB per file
-  const MAX_FILE_SIZE_MB = 3;
-  const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
+    // Limit: 3MB per file
+    const MAX_FILE_SIZE_MB = 3;
+    const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
 
-  if (oversizedFiles.length > 0) {
-    toast.error(`❌ Some files exceed the 3MB size limit. Please upload smaller files.`);
-    return;
-  }
+    if (oversizedFiles.length > 0) {
+      toast.error(`❌ Some files exceed the 3MB size limit. Please upload smaller files.`);
+      return;
+    }
 
-  try {
-    setIsUploading(true);
-    const res = await dispatch(
-      Upload_specific_file_Api({
-        files: selectedFiles,
-      })
-    ).unwrap();
+    try {
+      setIsUploading(true);
+      const res = await dispatch(
+        Upload_specific_file_Api({
+          files: selectedFiles,
+        })
+      ).unwrap();
 
-    toast.success(res?.msg || "Documents uploaded successfully!");
-    await fetchDocuments();
-  } catch (error) {
-    const errorMsg = error?.response?.data?.msg || error?.message || "❌ Upload failed";
-    toast.error(errorMsg);
-  } finally {
-    setIsUploading(false);
-  }
-};
+      toast.success(res?.msg || "Documents uploaded successfully!");
+      await fetchDocuments();
+    } catch (error) {
+      const errorMsg = error?.response?.data?.msg || error?.message || "❌ Upload failed";
+      toast.error(errorMsg);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
 
-    const handleEdit = (index) => {
-        setEditIndex(index);
-        if (fileInputRef.current) fileInputRef.current.click();
-    };
+  const handleEdit = (index) => {
+    setEditIndex(index);
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
 
-    const handleReplace = (e) => {
-        const newFile = e.target.files[0];
-        if (!newFile || editIndex === null) {
-            toast.error("No file selected for replacement.");
-            return;
-        }
-        setFileToReplace(newFile);
-        toast.info("New file selected. Click 'Confirm Update' to apply changes.");
-    };
+  const handleReplace = (e) => {
+    const newFile = e.target.files[0];
+    if (!newFile || editIndex === null) {
+      toast.error("No file selected for replacement.");
+      return;
+    }
+    setFileToReplace(newFile);
+    toast.info("New file selected. Click 'Confirm Update' to apply changes.");
+  };
 
-    const confirmUpdate = async () => {
-        if (editIndex === null || !fileToReplace) {
-            toast.error("No file selected for update.");
-            return;
-        }
+  const confirmUpdate = async () => {
+    if (editIndex === null || !fileToReplace) {
+      toast.error("No file selected for update.");
+      return;
+    }
 
-        const oldFile = uploadedFiles[editIndex];
-        const file_id = oldFile?.file_id;
-        if (!file_id) {
-            toast.error("File ID not found for replacement.");
-            return;
-        }
+    const oldFile = uploadedFiles[editIndex];
+    const file_id = oldFile?.file_id;
+    if (!file_id) {
+      toast.error("File ID not found for replacement.");
+      return;
+    }
 
-        try {
-            setIsReplacing(true);
-            await dispatch(
-                UpdateDocSubmit({
-                    new_file: fileToReplace,
-                    file_id,
-                })
-            ).unwrap();
-            await fetchDocuments();
-            setEditIndex(null);
-            setFileToReplace(null);
-        } catch (error) {
-            toast.error("Failed to update file.");
-        } finally {
-            setIsReplacing(false);
-        }
-    };
+    try {
+      setIsReplacing(true);
+      await dispatch(
+        UpdateDocSubmit({
+          new_file: fileToReplace,
+          file_id,
+        })
+      ).unwrap();
+      await fetchDocuments();
+      setEditIndex(null);
+      setFileToReplace(null);
+    } catch (error) {
+      toast.error("Failed to update file.");
+    } finally {
+      setIsReplacing(false);
+    }
+  };
 
-  
+
 
   const handleDelete = async (id) => {
-    console.log(id,"vvvvv");
-    
+    console.log(id, "vvvvv");
+
     try {
       await dispatch(Delete_Chat_Specific_Session(id));
       const updatedChatList = await dispatch(get_Session_List_Specific());
@@ -390,11 +390,19 @@ const handleSendMessage = async () => {
             <div className="overflow-auto mb-2 p-2 bg-white border rounded">
               <h5 className="mb-3">📄  Select Document to Chat</h5>
               <div className="upload-container hide-scrollbar">
-                {uploadedFiles.length > 0 ? (
+                {isUploading ? (
+                  <div className="text-center py-3">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <div className="mt-2">Uploading...</div>
+                  </div>
+                ) : uploadedFiles.length > 0 ? (
                   uploadedFiles.map((file, index) => (
                     <div
                       key={index}
-                      className={`border p-2 rounded mb-2 ${selectedFileIndex === index ? "border-primary bg-light" : ""}`}
+                      className={`border p-2 rounded mb-2 ${selectedFileIndex === index ? "border-primary bg-light" : ""
+                        }`}
                       onClick={() => setSelectedFileIndex(index)}
                       style={{ cursor: "pointer" }}
                     >
@@ -407,6 +415,7 @@ const handleSendMessage = async () => {
                   <div className="text-muted">No documents uploaded yet.</div>
                 )}
               </div>
+
             </div>
 
 
@@ -439,38 +448,38 @@ const handleSendMessage = async () => {
             {/* <input type="file" ref={fileInputRef} className="d-none" onChange={handleReplace} /> */}
 
             <div className="d-flex align-items-center border rounded p-2 bg-white">
-                         {/* Upload Button */}
-                         <label htmlFor="file-upload" style={{ cursor: "pointer" }} className="me-2 mb-0">
-                             <i className="bi bi-paperclip fs-5 text-primary"></i>
-                         </label>
-                         <input
-                             id="file-upload"
-                             type="file"
-                             multiple
-                             className="d-none"
-                            onChange={handleFileChange}
-                            disabled={isUploading}
-                        />
+              {/* Upload Button */}
+              <label htmlFor="file-upload" style={{ cursor: "pointer" }} className="me-2 mb-0">
+                <i className="bi bi-paperclip fs-5 text-primary"></i>
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                multiple
+                className="d-none"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
 
-                        {/* Input box */}
-                        <input
-                            type="text"
-                            className="form-control me-2"
-                            placeholder="Type a message..."
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                        />
+              {/* Input box */}
+              <input
+                type="text"
+                className="form-control me-2"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
 
-                        {/* Send Button */}
-                        <button
-  className="btn btn-primary"
-  onClick={handleSendMessage}
-  disabled={isSending}
->
-  <i className="bi bi-send"></i>
-</button>
+              {/* Send Button */}
+              <button
+                className="btn btn-primary"
+                onClick={handleSendMessage}
+                disabled={isSending}
+              >
+                <i className="bi bi-send"></i>
+              </button>
 
-                    </div>
+            </div>
           </div>
         </div>
       </div>
