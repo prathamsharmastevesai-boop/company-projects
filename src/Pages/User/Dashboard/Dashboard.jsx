@@ -42,7 +42,6 @@ export const Dashboard = () => {
       toast.success("Permission request sent!");
     } catch (err) {
       console.error("Permission request failed:", err);
-      toast.error("Permission request failed.");
     } finally {
       setRequestingPermissionId(null);
     }
