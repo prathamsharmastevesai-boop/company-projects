@@ -9,6 +9,7 @@ export const LoginSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
        const url = `${baseURL}${login}`;
+       console.log(url,"baseURL");
       const response = await axios.post(url, credentials, {
         headers: {
           "Content-Type": "application/json",
