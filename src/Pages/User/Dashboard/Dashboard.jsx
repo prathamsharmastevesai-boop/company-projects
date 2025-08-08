@@ -14,6 +14,9 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const cardsRef = useRef([]);
 
+  const [requestingPermissionId, setRequestingPermissionId] = useState(null);
+
+
   const { BuildingList, loading } = useSelector(state => state.BuildingSlice);
 
   useEffect(() => {
@@ -31,13 +34,20 @@ export const Dashboard = () => {
   }, [BuildingList]);
 
   const handleRequestPermission = async (building_id) => {
+    if (requestingPermissionId === building_id) return;
+
+    setRequestingPermissionId(building_id);
     try {
       const res = await dispatch(RequestPermissionSubmit({ building_id })).unwrap();
-      console.log("Permission request response:", res);
+      toast.success("Permission request sent!");
     } catch (err) {
       console.error("Permission request failed:", err);
+      toast.error("Permission request failed.");
+    } finally {
+      setRequestingPermissionId(null);
     }
   };
+
 
   const handleSubmit = async (building) => {
     if (building.access_status === "NULL") {
@@ -115,10 +125,14 @@ export const Dashboard = () => {
                         handleRequestPermission(building.id);
                       }}
                     >
-                      <i
-                        className="bi bi-shield-lock-fill text-warning"
-                        style={{ cursor: "pointer", fontSize: "1.3rem" }}
-                      ></i>
+                      {requestingPermissionId === building.id ? (
+                        <div className="spinner-border spinner-border-sm text-warning" role="status"></div>
+                      ) : (
+                        <i
+                          className="bi bi-shield-lock-fill text-warning"
+                          style={{ cursor: "pointer", fontSize: "1.3rem" }}
+                        ></i>
+                      )}
                     </div>
 
                     <h5 className="card-title text-white mb-3">

@@ -39,13 +39,21 @@ export const UserProfile = () => {
     }
   }, [userdata]);
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPhotoFile(file);
-      setTempPhoto(URL.createObjectURL(file));
+ const handlePhotoChange = (e) => {
+  const file = e.target.files[0];
+  const MAX_FILE_SIZE_MB = 1;
+
+  if (file) {
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      alert("⚠️ Profile photo must be less than 1MB.");
+      return;
     }
-  };
+
+    setPhotoFile(file);
+    setTempPhoto(URL.createObjectURL(file));
+  }
+};
+
 
   const cancelEditing = () => {
     setName(userdata.name || "");

@@ -195,29 +195,39 @@ const handleSendMessage = async () => {
 
 
     const handleFileChange = async (e) => {
-        const selectedFiles = Array.from(e.target.files);
-        if (!selectedFiles.length) {
-            alert("⚠️ No files selected.");
-            return;
-        }
+  const selectedFiles = Array.from(e.target.files);
+  if (!selectedFiles.length) {
+    toast.warning("⚠️ No files selected.");
+    return;
+  }
 
-        try {
-            setIsUploading(true);
-            const res = await dispatch(
-                Upload_specific_file_Api({
-                    files: selectedFiles,
-                })
-            ).unwrap();
+  // Limit: 3MB per file
+  const MAX_FILE_SIZE_MB = 3;
+  const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
 
-            toast.success(res?.msg || "Documents uploaded successfully!");
-            await fetchDocuments();
-        } catch (error) {
-            const errorMsg = error?.response?.data?.msg || error?.message || "❌ Upload failed";
-            toast.error(errorMsg);
-        } finally {
-            setIsUploading(false);
-        }
-    };
+  if (oversizedFiles.length > 0) {
+    toast.error(`❌ Some files exceed the 3MB size limit. Please upload smaller files.`);
+    return;
+  }
+
+  try {
+    setIsUploading(true);
+    const res = await dispatch(
+      Upload_specific_file_Api({
+        files: selectedFiles,
+      })
+    ).unwrap();
+
+    toast.success(res?.msg || "Documents uploaded successfully!");
+    await fetchDocuments();
+  } catch (error) {
+    const errorMsg = error?.response?.data?.msg || error?.message || "❌ Upload failed";
+    toast.error(errorMsg);
+  } finally {
+    setIsUploading(false);
+  }
+};
+
 
     const handleEdit = (index) => {
         setEditIndex(index);
