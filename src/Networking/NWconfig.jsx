@@ -42,8 +42,9 @@ export const Del_Chat_Session =import.meta.env.VITE_DELETE_CHAT_SESSION_ENDPOINT
 export const Upload_specific_file = import.meta.env.VITE_SPECIFIC_CHAT_ENDPOINT;
 export const List_specific_Docs = import.meta.env.VITE_SPECIFIC_CHAT_Doc_List_ENDPOINT;
 export const AskQuestion_Specific = import.meta.env.VITE_SPECIFIC_ASkQUESTION_ENDPOINT;
-export const Session_List_Specific = import.meta.env.VITE_SPECIFIC_SESSION_LIST_ENDPOINT
-export const Chat_history_Specific = import.meta.env.VITE_SPECIFIC_CHAT_HISTORY_ENDPOINT
+export const Session_List_Specific = import.meta.env.VITE_SPECIFIC_SESSION_LIST_ENDPOINT;
+export const Chat_history_Specific = import.meta.env.VITE_SPECIFIC_CHAT_HISTORY_ENDPOINT;
+export const Session_Delete_Specific =  import.meta.env.VITE_SPECIFIC_DELETE_SESSION_ENDPOINT
 
 //PERMISSON FOR BUILDING
 export const Request_list = import.meta.env.VITE_PERMISSION_LEASE_REQUEST_LIST_ENDPOINT;

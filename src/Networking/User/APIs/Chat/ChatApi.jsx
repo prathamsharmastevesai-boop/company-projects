@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, List_specific_Docs, Old_history, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
+import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, List_specific_Docs, Old_history, Session_Delete_Specific, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
 
 //chat with document
 export const getlist_his_oldApi = createAsyncThunk(
@@ -210,6 +210,32 @@ export const get_chathistory_Specific_Api = createAsyncThunk(
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch chat history");
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
+export const Delete_Chat_Specific_Session = createAsyncThunk(
+  'auth/Delete_Chat_Specific_Session',
+  async (id) => {
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const url = `${baseURL}${Session_Delete_Specific}?session_id=${id}`;
+      console.log(url, "DELETE Building URL");
+
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      toast.success(response.data.message || "Building Session successfully");
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      throw error;
     }
   }
 );

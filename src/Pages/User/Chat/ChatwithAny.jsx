@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from 'uuid';
-import { AskQuestion_Specific_API, Delete_Chat_Session, get_chathistory_Specific_Api, get_Session_List_Specific, get_specific_Doclist_Api, Upload_specific_file_Api } from "../../../Networking/User/APIs/Chat/ChatApi";
+import { AskQuestion_Specific_API, Delete_Chat_Session, Delete_Chat_Specific_Session, get_chathistory_Specific_Api, get_Session_List_Specific, get_specific_Doclist_Api, Upload_specific_file_Api } from "../../../Networking/User/APIs/Chat/ChatApi";
 
 
 export const ChatWithAnyDoc = () => {
@@ -271,7 +271,7 @@ const handleSendMessage = async () => {
     console.log(id,"vvvvv");
     
     try {
-      await dispatch(Delete_Chat_Session(id));
+      await dispatch(Delete_Chat_Specific_Session(id));
       const updatedChatList = await dispatch(get_Session_List_Specific());
       setChatList(updatedChatList.payload || []);
     } catch (error) {
