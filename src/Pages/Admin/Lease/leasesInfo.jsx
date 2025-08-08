@@ -434,56 +434,62 @@ export const LeaseInfomation = () => {
   }, [initialBuildings]);
 
   //Handle Funtion
-  const handleFileChange = async (e) => {
-    const selectedFiles = Array.from(e.target.files);
+const handleFileChange = async (e) => {
+  const selectedFiles = Array.from(e.target.files);
+  const MAX_FILE_SIZE_MB = 3;
 
-    if (!selectedFiles.length) {
-      alert("⚠️ No files selected.");
-      return;
-    }
+  if (!selectedFiles.length) {
+    alert("⚠️ No files selected.");
+    return;
+  }
 
-    if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) {
-      alert("❌ Building ID or lease ID is missing.");
-      return;
-    }
+  const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
+  if (oversizedFiles.length > 0) {
+    alert(`❌ One or more files exceed the 3MB limit. Please upload smaller files.`);
+    return;
+  }
 
-    try {
-      setIsUploading(true);
-      const res = await dispatch(
-        UploadDocSubmit({
-          files: selectedFiles,
-          buildingId: initialBuildings.Building_id,
-          lease_id: initialBuildings.lease?.lease_id,
-        })
-      ).unwrap();
+  if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) {
+    alert("❌ Building ID or lease ID is missing.");
+    return;
+  }
 
-      if (res?.msg) {
-        alert(`✅ ${res.msg}`);
-      } else {
-        alert("✅ Documents uploaded successfully!");
-      }
-
-      const listdata = {
-        building_id: initialBuildings.Building_id,
+  try {
+    setIsUploading(true);
+    const res = await dispatch(
+      UploadDocSubmit({
+        files: selectedFiles,
+        buildingId: initialBuildings.Building_id,
         lease_id: initialBuildings.lease?.lease_id,
-      };
-      console.log(listdata, "listdatalistdatalistdatalistdata");
+      })
+    ).unwrap();
 
-      const response = await dispatch(ListDocSubmit(listdata));
-
-
-      if (response?.payload?.files && Array.isArray(response.payload.files)) {
-        setUploadedFiles(response.payload.files);
-      }
-    } catch (error) {
-      const errorMsg =
-        error?.response?.data?.msg || error?.message || "❌ Upload failed";
-      alert(errorMsg);
-      console.error("Upload failed:", error);
-    } finally {
-      setIsUploading(false);
+    if (res?.msg) {
+      alert(`✅ ${res.msg}`);
+    } else {
+      alert("✅ Documents uploaded successfully!");
     }
-  };
+
+    const listdata = {
+      building_id: initialBuildings.Building_id,
+      lease_id: initialBuildings.lease?.lease_id,
+    };
+
+    const response = await dispatch(ListDocSubmit(listdata));
+
+    if (response?.payload?.files && Array.isArray(response.payload.files)) {
+      setUploadedFiles(response.payload.files);
+    }
+  } catch (error) {
+    const errorMsg =
+      error?.response?.data?.msg || error?.message || "❌ Upload failed";
+    alert(errorMsg);
+    console.error("Upload failed:", error);
+  } finally {
+    setIsUploading(false);
+  }
+};
+
 
   const handleEdit = (index) => {
     setEditIndex(index);
