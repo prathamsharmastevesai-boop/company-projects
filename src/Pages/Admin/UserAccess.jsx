@@ -7,8 +7,6 @@ import RAGLoader from "../../Component/Loader";
 export const UserAccess = () => {
   const dispatch = useDispatch();
   const [groupedRequests, setGroupedRequests] = useState({});
-  console.log(groupedRequests,"groupedRequests");
-  
   const [loading, setLoading] = useState(true);
   const [selectedRequests, setSelectedRequests] = useState({});
 
@@ -19,7 +17,6 @@ export const UserAccess = () => {
   const fetchPendingUsers = async () => {
     try {
       const res = await dispatch(ListRequestSubmit()).unwrap();
-
       const grouped = {};
 
       res.forEach(user => {
@@ -68,40 +65,51 @@ export const UserAccess = () => {
       };
       await dispatch(Request_Approved_Deny_Submit(data)).unwrap();
       fetchPendingUsers();
-      setSelectedRequests("")
+      setSelectedRequests("");
     } catch (error) {
       toast.error(`Failed to ${action} request.`);
     }
   };
 
-  if (loading) return <div className="text-center py-5"><RAGLoader /></div>;
+  if (loading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <RAGLoader />
+      </div>
+    );
 
   return (
     <div className="container py-4">
       {Object.keys(groupedRequests).length === 0 ? (
         <div className="text-center">
-        <h5 className="text-muted">No pending requests</h5>
-      </div>
+          <h5 className="text-muted">No pending requests</h5>
+        </div>
       ) : (
-        <div className="row">
+        <div className="row g-3">
           {Object.values(groupedRequests).map((building) => (
-            <div key={building.building_id} className="col-md-6 mb-4">
-              <div className="card shadow-sm h-100">
+            <div
+              key={building.building_id}
+              className="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4"
+            >
+              <div className="card shadow-sm h-100 d-flex flex-column">
                 <div className="card-header text-dark">
-                  <strong>{building.building_name}</strong> — <small>ID: {building.building_id}</small>
+                  <strong>{building.building_name}</strong> —{" "}
+                  <small>ID: {building.building_id}</small>
                 </div>
                 <div
-                  className="card-body hide-scrollbar"
-                  style={{ height: "300px", overflowY: "auto" }}
+                  className="card-body overflow-auto"
+                  style={{ maxHeight: "300px" }}
                 >
-
-                  {building.leases.map((lease, index) => (
+                  {building.leases.map((lease) => (
                     <div
                       key={lease.request_id}
                       className="border rounded p-3 mb-2 bg-light"
                     >
-                      <div className="form-check d-flex justify-content-between align-items-center">
-                        <div>
+                      <div className="form-check d-flex justify-content-between align-items-center flex-wrap">
+                        <div className="me-2">
                           <input
                             className="form-check-input me-2"
                             type="checkbox"
@@ -112,19 +120,24 @@ export const UserAccess = () => {
                           <label
                             className="form-check-label"
                             htmlFor={`chk-${lease.request_id}`}
+                            style={{ wordBreak: "break-word" }} // wrap long emails/usernames
                           >
-                            <strong>{lease.user_name}</strong><br /> ({lease.email})
-                            {/* Building Id: {lease.building_id} */}
+                            <strong>{lease.user_name}</strong>
+                            <br />({lease.email})
                           </label>
                         </div>
                         {lease.status && (
-                          <span className={`badge bg-${lease.status === "approved" ? "success" : "secondary"}`}>
+                          <span
+                            className={`badge bg-${
+                              lease.status === "approved" ? "success" : "secondary"
+                            } mt-2 mt-sm-0`}
+                          >
                             {lease.status}
                           </span>
                         )}
                       </div>
 
-                      <div className="mt-2 d-flex justify-content-end gap-2">
+                      <div className="mt-2 d-flex justify-content-end gap-2 flex-wrap">
                         <button
                           className="btn btn-sm btn-success"
                           onClick={() => handleAction("approve", lease.request_id)}

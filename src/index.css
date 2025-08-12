@@ -107,7 +107,7 @@
 }
 
 .message-container {
-    max-height: 260px;
+    max-height: 236px;
     overflow: auto;
 }
 
@@ -171,4 +171,28 @@
     width:calc(100% - 70px);
   }
   
+}
+
+.upload-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.upload-overlay .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.upload-overlay .upload-text {
+  margin-top: 0.75rem;
+  font-weight: 600;
 }

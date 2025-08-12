@@ -12,10 +12,11 @@ import RAGLoader from '../../../Component/Loader';
 export const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const cardsRef = useRef([]);
+
+  const cardsRef = useRef({});
 
   const [requestingPermissionId, setRequestingPermissionId] = useState(null);
-
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { BuildingList, loading } = useSelector(state => state.BuildingSlice);
 
@@ -24,22 +25,29 @@ export const Dashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    cardsRef.current.forEach((card, i) => {
+    filteredBuildings.forEach((building, i) => {
+      const card = cardsRef.current[building.id];
       if (card) {
         setTimeout(() => {
           card.classList.add("visible");
         }, i * 150);
       }
     });
-  }, [BuildingList]);
+  }, [BuildingList, searchTerm]);
+
+  const filteredBuildings =
+    searchTerm.trim() === ""
+      ? BuildingList
+      : BuildingList.filter(building =>
+        building.address?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
   const handleRequestPermission = async (building_id) => {
     if (requestingPermissionId === building_id) return;
 
     setRequestingPermissionId(building_id);
     try {
-      const res = await dispatch(RequestPermissionSubmit({ building_id })).unwrap();
-      toast.success("Permission request sent!");
+      await dispatch(RequestPermissionSubmit({ building_id })).unwrap();
     } catch (err) {
       console.error("Permission request failed:", err);
     } finally {
@@ -47,13 +55,12 @@ export const Dashboard = () => {
     }
   };
 
-
   const handleSubmit = async (building) => {
     if (building.access_status === "NULL") {
       toast.warning("Press Icon for lease Request");
     } else if (building.access_status === "approved") {
-      await dispatch(ListLeaseSubmit(building.id));
       navigate(`/UserLeaseList/${building.id}`);
+      await dispatch(ListLeaseSubmit(building.id));
     } else if (building.access_status === "pending") {
       toast.warning("Request in Pending State");
     } else {
@@ -62,7 +69,30 @@ export const Dashboard = () => {
   };
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      {/* Blur + Loader Overlay */}
+      {requestingPermissionId && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backdropFilter: 'blur(5px)',
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 2000
+          }}
+        >
+          <div className="spinner-border text-warning" style={{ width: '3rem', height: '3rem' }} role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section
         style={{ height: '40vh', backgroundColor: '#1f1f1f' }}
@@ -80,9 +110,26 @@ export const Dashboard = () => {
         </div>
       </section>
 
+
       {/* Main Content */}
       <div className="container py-4">
-        <h2 className="text-start mb-2 fw-bold">🏢 Featured Buildings</h2>
+        <div className="row align-items-center my-4">
+          <div className="col-md-8">
+            <h2 className="text-start mb-0 fw-bold">🏢 Featured Buildings</h2>
+          </div>
+          <div className="col-md-4">
+            <input
+              type="search"
+              className="form-control"
+              placeholder="Search buildings by address..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search Buildings by Address"
+              autoComplete="off"
+            />
+          </div>
+        </div>
+
         <hr />
 
         {loading ? (
@@ -90,14 +137,14 @@ export const Dashboard = () => {
             <RAGLoader />
             <p className="mt-3 text-muted">Loading buildings...</p>
           </div>
-        ) : BuildingList.length === 0 ? (
-          <div className="alert alert-info">No buildings found.</div>
+        ) : filteredBuildings.length === 0 ? (
+          <div className="alert alert-info">No buildings found matching your search.</div>
         ) : (
           <div className="row">
-            {[...BuildingList].reverse().map((building, index) => (
-              <div className="col-md-6 col-lg-4 mb-4" key={index}>
+            {[...filteredBuildings].reverse().map((building, index) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={building.id}>
                 <div
-                  ref={(el) => (cardsRef.current[index] = el)}
+                  ref={(el) => (cardsRef.current[building.id] = el)}
                   className="card border-0 shadow-sm h-100 slide-in-top position-relative overflow-hidden"
                   style={{ backgroundColor: '#1f1f1f', color: 'white', borderRadius: '16px' }}
                 >
@@ -113,26 +160,23 @@ export const Dashboard = () => {
                     }}
                   ></div>
 
-                  <div className="card-body pt-3 position-relative" onClick={() => handleSubmit(building)}>
-                    {/* Lock Icon */}
-                    <div
-                      className="position-absolute"
-                      style={{ top: "10px", right: "10px", zIndex: 2 }}
-                      title="Request Access"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRequestPermission(building.id);
-                      }}
-                    >
-                      {requestingPermissionId === building.id ? (
-                        <div className="spinner-border spinner-border-sm text-warning" role="status"></div>
-                      ) : (
+                  <div className="card-body pt-3 position-relative" onClick={() => handleSubmit(building)} style={{ cursor: "pointer" }}>
+                    {building.access_status !== "approved" && (
+                      <div
+                        className="position-absolute"
+                        style={{ top: "10px", right: "10px", zIndex: 2 }}
+                        title="Request Access"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRequestPermission(building.id);
+                        }}
+                      >
                         <i
                           className="bi bi-shield-lock-fill text-warning"
                           style={{ cursor: "pointer", fontSize: "1.3rem" }}
                         ></i>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     <h5 className="card-title text-white mb-3">
                       🏢 {building.building_name || `Building #${index + 1}`}

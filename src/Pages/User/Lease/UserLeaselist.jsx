@@ -1,10 +1,9 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ListLeaseSubmit,
-  DeleteOffice,
 } from "../../../Networking/Admin/APIs/LeaseApi";
 import { ListDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
 import Office_image from "../../../assets/Office_image.jpg";
@@ -21,6 +20,8 @@ export const UserLeaseList = () => {
   const dispatch = useDispatch();
   const cardsRef = useRef([]);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const officeList = Array.isArray(leases) ? leases : [];
 
   useEffect(() => {
@@ -29,15 +30,30 @@ export const UserLeaseList = () => {
     }
   }, [id, dispatch]);
 
+  // Animate cards when filtered list changes
   useEffect(() => {
-    cardsRef.current.forEach((card, i) => {
+    filteredLeases.forEach((lease, i) => {
+      const card = cardsRef.current[i];
       if (card) {
         setTimeout(() => {
           card.classList.add("visible");
         }, i * 150);
       }
     });
-  }, [officeList]);
+  }, [officeList, searchTerm]); // animate on data or search change
+
+  // Filter leases by tenant_name, lease_number, or address (case-insensitive)
+  const filteredLeases =
+    searchTerm.trim() === ""
+      ? officeList
+      : officeList.filter((lease) => {
+          const term = searchTerm.toLowerCase();
+          return (
+            (lease.tenant_name?.toLowerCase().includes(term)) ||
+            (lease.lease_number?.toLowerCase().includes(term)) ||
+            (lease.address?.toLowerCase().includes(term))
+          );
+        });
 
   const handleSubmit = (lease) => {
     const listdata = {
@@ -64,19 +80,32 @@ export const UserLeaseList = () => {
         <p className="mb-0">Browse through the list of available Leases.</p>
       </div>
 
+      {/* Search Bar */}
+      <div className="container my-3">
+        <input
+          type="search"
+          className="form-control"
+          placeholder="Search leases by tenant name, lease number or address..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          aria-label="Search Leases"
+          autoComplete="off"
+        />
+      </div>
+
       <div className="container py-2">
         {loading ? (
           <div className="text-center py-5">
             <RAGLoader />
             <p className="mt-3 text-muted">Loading leases...</p>
           </div>
-        ) : officeList.length === 0 ? (
+        ) : filteredLeases.length === 0 ? (
           <div className="alert alert-info text-center">
-            {message || "No leases found."}
+            {message || "No leases found matching your search."}
           </div>
         ) : (
           <div className="row">
-            {officeList.map((lease, index) => (
+            {filteredLeases.map((lease, index) => (
               <div className="col-md-6 col-lg-4 mb-4" key={lease.id}>
                 <div
                   ref={(el) => (cardsRef.current[index] = el)}

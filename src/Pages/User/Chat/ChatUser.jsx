@@ -14,23 +14,18 @@ export const UserChat = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const initialBuildings = location.state?.office;
-  console.log(initialBuildings, "initialBuildings");
-
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-  console.log(sessionId, "sessionId");
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [messages, setMessages] = useState([]);
-  // const [editIndex, setEditIndex] = useState(null);
-  // const [fileToReplace, setFileToReplace] = useState(null);
-  // const [isReplacing, setIsReplacing] = useState(false);
+  const [loadingSessions, setLoadingSessions] = useState(false);
+  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState([]);
-  console.log(chatList, "chatList");
-
   const [selectedChatId, setSelectedChatId] = useState(null);
 
   const fileInputRef = useRef();
@@ -39,30 +34,31 @@ export const UserChat = () => {
   const fetchDocuments = async () => {
     if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) return;
 
-    const listdata = {
-      building_id: initialBuildings.Building_id,
-      lease_id: initialBuildings.lease.lease_id,
-    };
-    console.log(listdata, "listdatalistdata in user");
-
-    const response = await dispatch(ListDocSubmit(listdata));
-
-    if (response?.payload?.files && Array.isArray(response.payload.files)) {
-      console.log(response.payload.files, "response.payload.files");
-
-      setUploadedFiles(response.payload.files);
+    setLoadingDocs(true);
+    try {
+      const listdata = {
+        building_id: initialBuildings.Building_id,
+        lease_id: initialBuildings.lease.lease_id,
+      };
+      const response = await dispatch(ListDocSubmit(listdata));
+      if (response?.payload?.files && Array.isArray(response.payload.files)) {
+        setUploadedFiles(response.payload.files);
+      }
+    } finally {
+      setLoadingDocs(false);
     }
   };
 
   const fetchMessages = async () => {
     if (!initialBuildings?.Building_id || !initialBuildings.lease.lease_id) return;
 
-    const res = await dispatch(
-      getlist_his_oldApi()
-    ).unwrap();
-    console.log(res, "res11111111");
-    await setChatList(res)
-
+    setLoadingSessions(true);
+    try {
+      const res = await dispatch(getlist_his_oldApi()).unwrap();
+      setChatList(res);
+    } finally {
+      setLoadingSessions(false);
+    }
   };
 
   useEffect(() => {
@@ -74,8 +70,6 @@ export const UserChat = () => {
       handleSessionhistory(latestChat.session_id);
     }
   }, [chatList]);
-
-
 
   useEffect(() => {
     scrollToBottom();
@@ -91,16 +85,6 @@ export const UserChat = () => {
     fetchDocuments();
     fetchMessages();
   }, [initialBuildings])
-
-  // const handleReplace = (e) => {
-  //   const newFile = e.target.files[0];
-  //   if (!newFile || editIndex === null) {
-  //     toast.error("No file selected for replacement.");
-  //     return;
-  //   }
-  //   setFileToReplace(newFile);
-  //   toast.info("New file selected. Click 'Confirm Update' to apply changes.");
-  // };
 
   const handleSendMessage = async () => {
     if (!message.trim()) {
@@ -122,7 +106,6 @@ export const UserChat = () => {
       return;
     }
 
-    // ✅ Automatically create session if none exists
     let activeSessionId = sessionId;
     if (!activeSessionId) {
       const newId = uuidv4();
@@ -177,38 +160,27 @@ export const UserChat = () => {
   };
 
   const handleSessionhistory = async (id) => {
+    setLoadingMessages(true);
     try {
       const res_chat_his = await dispatch(get_chathistory_Api(id)).unwrap();
-      console.log(res_chat_his, "res_chat_hisres_chat_hisres_chat_hisres_chat_hisres_chat_hisres_chat_his");
-
       if (Array.isArray(res_chat_his)) {
         const formattedMessages = res_chat_his.flatMap(chat => [
-          {
-            message: chat.question,
-            sender: "User",
-            timestamp: new Date(chat.timestamp),
-          },
-          {
-            message: chat.answer,
-            sender: "Admin",
-            timestamp: new Date(chat.timestamp),
-          }
+          { message: chat.question, sender: "User", timestamp: new Date(chat.timestamp) },
+          { message: chat.answer, sender: "Admin", timestamp: new Date(chat.timestamp) }
         ]);
-        setSessionId(id)
+        setSessionId(id);
         setMessages(formattedMessages);
         scrollToBottom();
       }
-
-      console.log(res_chat_his, 'Chat history response in component');
     } catch (error) {
       console.error('Failed to get chat history:', error);
+    } finally {
+      setLoadingMessages(false);
     }
   };
 
-
   const handleDelete = async (id) => {
-    console.log(id,"vvvvv");
-    
+
     try {
       await dispatch(Delete_Chat_Session(id));
       const updatedChatList = await dispatch(getlist_his_oldApi());
@@ -217,7 +189,6 @@ export const UserChat = () => {
       console.error("Error deleting chat session:", error);
     }
   };
-
 
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
@@ -245,37 +216,42 @@ export const UserChat = () => {
             <span className="fw-semibold"> ➕ New Chat</span>
           </button>
           <div className="flex-grow-1 chat-item-wrapper hide-scrollbar overflow-auto">
-            {chatList.map((chat, index) => (
-              <div
-                key={index}
-                className={`chat-item d-flex justify-between align-items-start p-2 rounded mb-2 position-relative ${selectedChatId === chat.session_id ? "bg-dark text-white" : "bg-light text-dark"
-                  } border`}
-                style={{ cursor: "pointer" }}
-                onClick={() => {
-                  handleSessionhistory(chat.session_id);
-                  setSelectedChatId(chat.session_id);
-                  setSessionId(chat.session_id);
-                  setMessages([]);
-                }}
-              >
-                <div className="flex-grow-1">
-                  <div className="fw-semibold">{chat.name || chat.session_id}</div>
-                  <div className="small">
-                    {chat.created_at ? chat.created_at.split("T")[0] : "Just now"}
-                  </div>
-                </div>
-                <button
-                  className="btn btn-sm btn-outline-danger delete-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(chat.session_id);
+            {loadingSessions ? (
+              <div className="text-center py-3">
+                <div className="spinner-border text-primary"></div>
+              </div>
+            ) : (
+              chatList.map((chat, index) => (
+                <div
+                  key={index}
+                  className={`chat-item d-flex justify-between align-items-start p-2 rounded mb-2 position-relative ${selectedChatId === chat.session_id ? "bg-dark text-white" : "bg-light text-dark"
+                    } border`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    handleSessionhistory(chat.session_id);
+                    setSelectedChatId(chat.session_id);
+                    setSessionId(chat.session_id);
+                    setMessages([]);
                   }}
                 >
-                  <i className="bi bi-trash"></i>
-                </button>
-              </div>
-            ))}
-
+                  <div className="flex-grow-1">
+                    <div className="fw-semibold">{chat.name || chat.session_id}</div>
+                    <div className="small">
+                      {chat.created_at ? chat.created_at.split("T")[0] : "Just now"}
+                    </div>
+                  </div>
+                  <button
+                    className="btn btn-sm btn-outline-danger delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(chat.session_id);
+                    }}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </div>
+              ))
+            )}
           </div>
 
         </div>
@@ -287,7 +263,11 @@ export const UserChat = () => {
           >
             <h5 className="text-muted mb-3">💬 Chat Messages</h5>
             <div className="message-container hide-scrollbar" ref={chatRef} >
-              {messages.length > 0 ? (
+              {loadingMessages ? (
+                <div className="text-center py-3">
+                  <div className="spinner-border text-secondary"></div>
+                </div>
+              ) : messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div key={i} className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}>
                     <div
@@ -317,42 +297,50 @@ export const UserChat = () => {
 
           <div className="pt-2">
             <div className="overflow-auto mb-2 p-2 bg-white border rounded">
-              <h5 className="mb-3">📄  Select Document to Chat</h5>
+              <h5 className="mb-3">📄 Select Document to Chat</h5>
+
+              {/* Search input */}
+              <input
+                type="text"
+                className="form-control mb-3"
+                placeholder="Search documents..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+
               <div className="upload-container hide-scrollbar">
-                {uploadedFiles.length > 0 ? (
-                  uploadedFiles.map((file, index) => (
-                    <div
-                      key={index}
-                      className={`border p-2 rounded mb-2 ${selectedFileIndex === index ? "border-primary bg-light" : ""}`}
-                      onClick={() => setSelectedFileIndex(index)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span>{file.original_file_name || file.name}</span>
-                      </div>
-                    </div>
-                  ))
+                {loadingDocs ? (
+                  <div className="text-center py-3">
+                    <div className="spinner-border text-primary"></div>
+                  </div>
                 ) : (
-                  <div className="text-muted">No documents uploaded yet.</div>
+                  uploadedFiles
+                    .filter((file) => {
+                      const name = (file.original_file_name || file.name || "").toLowerCase();
+                      return name.includes(searchTerm.toLowerCase());
+                    })
+                    .map((file, index) => (
+                      <div
+                        key={index}
+                        className={`border p-2 rounded mb-2 ${selectedFileIndex === index ? "border-primary bg-light" : ""
+                          }`}
+                        onClick={() => setSelectedFileIndex(index)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span>{file.original_file_name || file.name}</span>
+                        </div>
+                      </div>
+                    ))
                 )}
+                {!loadingDocs && uploadedFiles.filter((file) => {
+                  const name = (file.original_file_name || file.name || "").toLowerCase();
+                  return name.includes(searchTerm.toLowerCase());
+                }).length === 0 && (
+                    <div className="text-muted">No documents found.</div>
+                  )}
               </div>
             </div>
-
-
-            {/* {fileToReplace && editIndex !== null && (
-              <div className="mb-3">
-                <button className="btn btn-success" onClick={confirmUpdate} disabled={isReplacing}>
-                  {isReplacing ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                      Updating...
-                    </>
-                  ) : (
-                    "Confirm Update File"
-                  )}
-                </button>
-              </div>
-            )} */}
 
             {selectedFileIndex !== null && uploadedFiles[selectedFileIndex] && (
               <div className="alert alert-secondary d-flex justify-content-between align-items-center p-2 mb-2">
@@ -364,8 +352,6 @@ export const UserChat = () => {
                 ></i>
               </div>
             )}
-
-            {/* <input type="file" ref={fileInputRef} className="d-none" onChange={handleReplace} /> */}
 
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <input

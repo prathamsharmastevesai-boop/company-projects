@@ -381,8 +381,6 @@
 
 
 
-
-
 import { useEffect, useRef, useState } from "react";
 import {
   DeleteDocSubmit,
@@ -390,106 +388,108 @@ import {
   UpdateDocSubmit,
   UploadDocSubmit,
 } from "../../../Networking/Admin/APIs/UploadDocApi";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export const LeaseInfomation = () => {
-
-  //Hooks
+  // Hooks
   const dispatch = useDispatch();
   const location = useLocation();
   const fileInputRef = useRef();
 
-  //Params
+  // Params
   const initialBuildings = location.state?.office;
   console.log(initialBuildings, "initialBuildings");
 
-
-  //States
+  // States
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [fileToReplace, setFileToReplace] = useState(null);
   const [isReplacing, setIsReplacing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [deletingIndex, setDeletingIndex] = useState(null);
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false); // <-- loader state
+  const [searchTerm, setSearchTerm] = useState(""); // <-- search term state
 
+  // Fetch documents with loader
   const fetchDocuments = async () => {
     if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) return;
+    setIsLoadingDocuments(true); // show loader
     const listdata = {
       building_id: initialBuildings.Building_id,
       lease_id: initialBuildings.lease?.lease_id,
     };
-    const response = await dispatch(ListDocSubmit(listdata));
-    console.log(response, "response");
+    try {
+      const response = await dispatch(ListDocSubmit(listdata));
+      console.log(response, "response");
 
-    if (response?.payload?.files && Array.isArray(response.payload.files)) {
-      setUploadedFiles(response.payload.files);
+      if (response?.payload?.files && Array.isArray(response.payload.files)) {
+        setUploadedFiles(response.payload.files);
+      } else {
+        setUploadedFiles([]);
+      }
+    } catch (error) {
+      toast.error("Failed to load documents.");
+    } finally {
+      setIsLoadingDocuments(false); // hide loader
     }
   };
 
-  //UseEffect
+  // UseEffect
   useEffect(() => {
     fetchDocuments();
   }, [initialBuildings]);
 
-  //Handle Funtion
-const handleFileChange = async (e) => {
-  const selectedFiles = Array.from(e.target.files);
-  const MAX_FILE_SIZE_MB = 3;
+  // Handle File Upload (unchanged)
+  const handleFileChange = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const MAX_FILE_SIZE_MB = 3;
 
-  if (!selectedFiles.length) {
-    alert("⚠️ No files selected.");
-    return;
-  }
-
-  const oversizedFiles = selectedFiles.filter(file => file.size > MAX_FILE_SIZE_MB * 1024 * 1024);
-  if (oversizedFiles.length > 0) {
-    alert(`❌ One or more files exceed the 3MB limit. Please upload smaller files.`);
-    return;
-  }
-
-  if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) {
-    alert("❌ Building ID or lease ID is missing.");
-    return;
-  }
-
-  try {
-    setIsUploading(true);
-    const res = await dispatch(
-      UploadDocSubmit({
-        files: selectedFiles,
-        buildingId: initialBuildings.Building_id,
-        lease_id: initialBuildings.lease?.lease_id,
-      })
-    ).unwrap();
-
-    if (res?.msg) {
-      alert(`✅ ${res.msg}`);
-    } else {
-      alert("✅ Documents uploaded successfully!");
+    if (!selectedFiles.length) {
+      alert("⚠️ No files selected.");
+      return;
     }
 
-    const listdata = {
-      building_id: initialBuildings.Building_id,
-      lease_id: initialBuildings.lease?.lease_id,
-    };
-
-    const response = await dispatch(ListDocSubmit(listdata));
-
-    if (response?.payload?.files && Array.isArray(response.payload.files)) {
-      setUploadedFiles(response.payload.files);
+    const oversizedFiles = selectedFiles.filter(
+      (file) => file.size > MAX_FILE_SIZE_MB * 1024 * 1024
+    );
+    if (oversizedFiles.length > 0) {
+      alert(`❌ One or more files exceed the 3MB limit. Please upload smaller files.`);
+      return;
     }
-  } catch (error) {
-    const errorMsg =
-      error?.response?.data?.msg || error?.message || "❌ Upload failed";
-    alert(errorMsg);
-    console.error("Upload failed:", error);
-  } finally {
-    setIsUploading(false);
-  }
-};
 
+    if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) {
+      alert("❌ Building ID or lease ID is missing.");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const res = await dispatch(
+        UploadDocSubmit({
+          files: selectedFiles,
+          buildingId: initialBuildings.Building_id,
+          lease_id: initialBuildings.lease?.lease_id,
+        })
+      ).unwrap();
+
+      if (res?.msg) {
+        alert(`✅ ${res.msg}`);
+      } else {
+        alert("✅ Documents uploaded successfully!");
+      }
+
+      await fetchDocuments();
+    } catch (error) {
+      const errorMsg =
+        error?.response?.data?.msg || error?.message || "❌ Upload failed";
+      alert(errorMsg);
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleEdit = (index) => {
     setEditIndex(index);
@@ -551,12 +551,11 @@ const handleFileChange = async (e) => {
       const listdata = {
         building_id: initialBuildings.Building_id,
         lease_id: initialBuildings.lease?.lease_id,
-        file_id
-      }
+        file_id,
+      };
       await dispatch(DeleteDocSubmit(listdata)).unwrap();
 
       await fetchDocuments();
-
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete file.");
@@ -565,11 +564,27 @@ const handleFileChange = async (e) => {
     }
   };
 
+  // Filter files by searchTerm
+  const filteredFiles = uploadedFiles.filter((file) =>
+    (file.original_file_name || file.name || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="container py-5">
       <h2 className="mb-4">📄 Upload Lease Documents</h2>
 
+      {/* Search Filter */}
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search documents..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      {/* Upload input */}
       <input
         type="file"
         multiple
@@ -577,6 +592,8 @@ const handleFileChange = async (e) => {
         className="form-control mb-3"
         disabled={isUploading}
       />
+
+      {/* Uploading loader */}
       {isUploading && (
         <div className="text-primary mb-3">
           <span
@@ -588,9 +605,24 @@ const handleFileChange = async (e) => {
         </div>
       )}
 
-      {uploadedFiles.length > 0 && (
+      {/* Loading documents spinner */}
+      {isLoadingDocuments && (
+        <div className="text-center my-4">
+          <div
+            className="spinner-border text-primary"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          >
+            <span className="visually-hidden">Loading documents...</span>
+          </div>
+          <div className="mt-2 text-muted">Loading documents...</div>
+        </div>
+      )}
+
+      {/* Documents list */}
+      {!isLoadingDocuments && filteredFiles.length > 0 && (
         <div className="mt-4">
-          {uploadedFiles.map((file, index) => (
+          {filteredFiles.map((file, index) => (
             <div key={index} className="card shadow-sm p-3 mb-3">
               <div className="d-flex justify-content-between align-items-start mb-2">
                 <h5 className="mb-0">📎 Lease File {index + 1}</h5>
@@ -602,7 +634,9 @@ const handleFileChange = async (e) => {
                     title="Replace File"
                   ></i>
                   <i
-                    className={`text-danger ${deletingIndex === index ? "disabled" : ""}`}
+                    className={`text-danger ${
+                      deletingIndex === index ? "disabled" : ""
+                    }`}
                     style={{
                       cursor: deletingIndex === index ? "not-allowed" : "pointer",
                       fontSize: "1.2rem",
@@ -622,7 +656,6 @@ const handleFileChange = async (e) => {
                       <i className="bi bi-trash"></i>
                     )}
                   </i>
-
                 </div>
               </div>
               <p className="mb-2">
@@ -634,6 +667,11 @@ const handleFileChange = async (e) => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* No results message */}
+      {!isLoadingDocuments && filteredFiles.length === 0 && (
+        <p className="text-muted">No documents found.</p>
       )}
 
       {fileToReplace && editIndex !== null && (
