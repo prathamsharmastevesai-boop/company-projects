@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { DeleteBuilding, ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
+import {
+  DeleteBuilding,
+  ListBuildingSubmit,
+} from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
-import RAGLoader from "../../../Component/Loader";  
+import RAGLoader from "../../../Component/Loader";
 
 export const ListBuilding = () => {
   // Redux
@@ -15,6 +18,7 @@ export const ListBuilding = () => {
   const cardsRef = useRef([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(false); // loader for delete
 
   // Fetch buildings with loading state
   useEffect(() => {
@@ -45,18 +49,21 @@ export const ListBuilding = () => {
     navigate("/UpdateBuilding", { state: { buildings: [building] } });
   };
 
-  const handleDelete = async (building) => {
+  const handleDelete = async (buildingId) => {
     try {
-      await dispatch(DeleteBuilding(building));
+      setDeleteLoading(true); // show loader
+      await dispatch(DeleteBuilding(buildingId));
       await dispatch(ListBuildingSubmit());
     } catch (error) {
       console.error("Delete failed:", error);
+    } finally {
+      setDeleteLoading(false); // hide loader
     }
   };
 
-  const handleSubmit = async (building) => {
-    navigate(`/LeaseList/${building}`);
-    await dispatch(ListLeaseSubmit(building));
+  const handleSubmit = async (buildingId) => {
+    navigate(`/LeaseList/${buildingId}`);
+    await dispatch(ListLeaseSubmit(buildingId));
   };
 
   // Filter buildings by search term
@@ -68,7 +75,16 @@ export const ListBuilding = () => {
   });
 
   return (
-    <div className="container py-5">
+    <div className="container py-5" style={{ position: "relative" }}>
+      {deleteLoading && (
+        <div className="upload-overlay">
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status"></div>
+            <div className="upload-text">Deleting building...</div>
+          </div>
+        </div>
+      )}
+
       <div
         className="text-center bg-white py-3 mb-4"
         style={{
@@ -79,7 +95,9 @@ export const ListBuilding = () => {
         }}
       >
         <h2 className="fw-bold text-dark">🏢 Building List</h2>
-        <p className="text-muted mb-0">Here’s a summary of all the submitted buildings.</p>
+        <p className="text-muted mb-0">
+          Here’s a summary of all the submitted buildings.
+        </p>
 
         {/* Search input */}
         <input
@@ -89,7 +107,7 @@ export const ListBuilding = () => {
           style={{ maxWidth: "400px" }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          disabled={loading}
+          disabled={loading || deleteLoading}
         />
       </div>
 
@@ -102,31 +120,29 @@ export const ListBuilding = () => {
         </div>
       ) : (
         <>
-          
-
           {/* Buildings list */}
           {filteredBuildings.length === 0 ? (
             <div className="alert alert-info">No buildings found.</div>
           ) : (
             <div className="row">
               {/* Create New Building card at top */}
-          <div
-            className="col-md-6 col-lg-4 mb-4"
-            onClick={() => navigate("/CreateBuilding")}
-            style={{ cursor: "pointer", maxWidth: "300px", margin: "0 auto 30px" }}
-          >
-            <div
-              className="card border-0 shadow-sm h-auto d-flex justify-content-center align-items-center text-center hover-shadow"
-              style={{ minHeight: "150px" }}
-            >
-              <button className="btn text-primary">
-                <i className="bi bi-plus-circle me-2"></i> Create New Building
-              </button>
-            </div>
-          </div>
+              <div
+                className="col-md-6 col-lg-4 mb-4"
+                onClick={() => navigate("/CreateBuilding")}
+                style={{ cursor: "pointer", maxWidth: "300px", margin: "0 auto 30px" }}
+              >
+                <div
+                  className="card border-0 shadow-sm h-auto d-flex justify-content-center align-items-center text-center hover-shadow"
+                  style={{ minHeight: "150px" }}
+                >
+                  <button className="btn text-primary">
+                    <i className="bi bi-plus-circle me-2"></i> Create New Building
+                  </button>
+                </div>
+              </div>
+
               {[...filteredBuildings].reverse().map((building, index) => (
-                <div className="col-md-6 col-lg-4 mb-4" key={index}>
-                  
+                <div className="col-md-6 col-lg-4 mb-4" key={building.id || index}>
                   <div
                     ref={(el) => (cardsRef.current[index] = el)}
                     className="card border-0 shadow-sm h-auto hover-shadow position-relative"

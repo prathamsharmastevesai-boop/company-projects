@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ListRequestSubmit, Request_Approved_Deny_Submit } from "../../Networking/Admin/APIs/PermissionApi";
+import {
+  ListRequestSubmit,
+  Request_Approved_Deny_Submit,
+} from "../../Networking/Admin/APIs/PermissionApi";
 import { useDispatch } from "react-redux";
 import RAGLoader from "../../Component/Loader";
 
@@ -9,6 +12,7 @@ export const UserAccess = () => {
   const [groupedRequests, setGroupedRequests] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedRequests, setSelectedRequests] = useState({});
+  const [actionLoading, setActionLoading] = useState(false); 
 
   useEffect(() => {
     fetchPendingUsers();
@@ -19,8 +23,8 @@ export const UserAccess = () => {
       const res = await dispatch(ListRequestSubmit()).unwrap();
       const grouped = {};
 
-      res.forEach(user => {
-        user.requested_buildings.forEach(building => {
+      res.forEach((user) => {
+        user.requested_buildings.forEach((building) => {
           const bId = building.building_id;
           if (!grouped[bId]) {
             grouped[bId] = {
@@ -59,15 +63,18 @@ export const UserAccess = () => {
   const handleAction = async (action, requestId) => {
     if (!requestId) return;
     try {
+      setActionLoading(true); // start loader
       const data = {
         request_id: requestId,
         action,
       };
       await dispatch(Request_Approved_Deny_Submit(data)).unwrap();
-      fetchPendingUsers();
-      setSelectedRequests("");
+      await fetchPendingUsers();
+      setSelectedRequests({});
     } catch (error) {
       toast.error(`Failed to ${action} request.`);
+    } finally {
+      setActionLoading(false); // stop loader
     }
   };
 
@@ -82,7 +89,17 @@ export const UserAccess = () => {
     );
 
   return (
-    <div className="container py-4">
+    <div className="container py-4" style={{ position: "relative" }}>
+      {/* Action Loader Overlay */}
+      {actionLoading && (
+        <div className="upload-overlay">
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status"></div>
+            <div className="upload-text">Processing request...</div>
+          </div>
+        </div>
+      )}
+
       {Object.keys(groupedRequests).length === 0 ? (
         <div className="text-center">
           <h5 className="text-muted">No pending requests</h5>
@@ -116,6 +133,7 @@ export const UserAccess = () => {
                             id={`chk-${lease.request_id}`}
                             checked={selectedRequests[lease.request_id] || false}
                             onChange={() => handleCheckboxChange(lease.request_id)}
+                            disabled={actionLoading}
                           />
                           <label
                             className="form-check-label"
@@ -141,14 +159,14 @@ export const UserAccess = () => {
                         <button
                           className="btn btn-sm btn-success"
                           onClick={() => handleAction("approve", lease.request_id)}
-                          disabled={!selectedRequests[lease.request_id]}
+                          disabled={!selectedRequests[lease.request_id] || actionLoading}
                         >
                           Approve
                         </button>
                         <button
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => handleAction("deny", lease.request_id)}
-                          disabled={!selectedRequests[lease.request_id]}
+                          disabled={!selectedRequests[lease.request_id] || actionLoading}
                         >
                           Reject
                         </button>

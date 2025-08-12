@@ -179,16 +179,25 @@ export const UserChat = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+const handleDelete = async (id) => {
+  try {
+    await dispatch(Delete_Chat_Session(id)).unwrap();
 
-    try {
-      await dispatch(Delete_Chat_Session(id));
-      const updatedChatList = await dispatch(getlist_his_oldApi());
-      setChatList(updatedChatList.payload || []);
-    } catch (error) {
-      console.error("Error deleting chat session:", error);
+    // Refresh documents and chat sessions after deletion:
+    await fetchDocuments();
+    await fetchMessages();
+    
+    // Optionally, reset selected chat if the deleted one was selected
+    if (selectedChatId === id) {
+      setSelectedChatId(null);
+      setSessionId(null);
+      setMessages([]);
     }
-  };
+  } catch (error) {
+    console.error("Error deleting chat session:", error);
+  }
+};
+
 
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
