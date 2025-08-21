@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, List_specific_Docs, Old_history, Session_Delete_Specific, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
+import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, Doc_Delete_Specific, List_specific_Docs, Old_history, Session_Delete_Specific, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
 
 //chat with document
 export const getlist_his_oldApi = createAsyncThunk(
@@ -154,7 +154,7 @@ export const AskQuestion_Specific_API = createAsyncThunk(
       toast.success(response.data.message)
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Question Not sended");
+      toast.error(error.response?.data?.message );
       throw error;
     }
   }
@@ -232,6 +232,31 @@ export const Delete_Chat_Specific_Session = createAsyncThunk(
         },
       });
       toast.success(response.data.message || "Building Session successfully");
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+      throw error;
+    }
+  }
+);
+
+export const Delete_Doc_Specific = createAsyncThunk(
+  'auth/Delete_Doc_Specific',
+  async (id) => {
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const url = `${baseURL}${Doc_Delete_Specific}?file_id=${id}`;
+      console.log(url, "DELETE Building URL");
+
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       toast.error(error.response?.data?.message);

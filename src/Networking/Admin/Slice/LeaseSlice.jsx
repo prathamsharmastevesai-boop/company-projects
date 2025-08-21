@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ListLeaseSubmit } from '../APIs/LeaseApi';
 
-const OfficeSlice = createSlice({
-    name: 'OfficeSlice',
+const LeaseSlice = createSlice({
+    name: 'LeaseSlice',
     initialState: {
         loading: false,
         Office: "",
@@ -34,4 +34,4 @@ const OfficeSlice = createSlice({
     }
 });
 
-export default OfficeSlice.reducer;
+export default LeaseSlice.reducer;

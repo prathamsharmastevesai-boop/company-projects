@@ -117,7 +117,6 @@ export const SignUp = () => {
         {error && <div className="alert alert-danger py-2">{error}</div>}
 
         <form onSubmit={handleSignup}>
-          {/* Name */}
           <div className="mb-3">
             <label className="form-label">Full Name</label>
             <input
@@ -132,7 +131,6 @@ export const SignUp = () => {
             {errors.name && <div className="invalid-feedback">{errors.name}</div>}
           </div>
 
-          {/* Phone */}
           <div className="mb-3">
             <label className="form-label">Phone Number</label>
             <input
@@ -148,7 +146,6 @@ export const SignUp = () => {
             {errors.number && <div className="invalid-feedback">{errors.number}</div>}
           </div>
 
-          {/* Email */}
           <div className="mb-3">
             <label className="form-label">Email</label>
             <div className="input-group">
@@ -168,7 +165,6 @@ export const SignUp = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div className="mb-3">
             <label className="form-label">Password</label>
             <div className="input-group">
@@ -189,7 +185,6 @@ export const SignUp = () => {
             </div>
           </div>
 
-          {/* Confirm Password */}
           <div className="mb-3">
             <label className="form-label">Confirm Password</label>
             <div className="input-group">
@@ -209,7 +204,6 @@ export const SignUp = () => {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className="btn btn-dark w-100 mb-3 fw-bold"
@@ -218,7 +212,6 @@ export const SignUp = () => {
             {loading ? <RAGLoader /> : "Sign Up"}
           </button>
 
-          {/* Already have an account */}
           <div className="text-center mt-3">
             <p className="text-light-emphasis">
               Already have an account?{" "}

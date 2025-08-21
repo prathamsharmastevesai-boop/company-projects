@@ -52,8 +52,8 @@ export const ListLeaseSubmit = createAsyncThunk(
     }
 );
 
-export const UpdateOfficeSubmit = createAsyncThunk(
-  "admin/UpdateOfficeSubmit",
+export const UpdateLeaseSubmit = createAsyncThunk(
+  "admin/UpdateLeaseSubmit",
   async (formData, thunkAPI) => {
     const token = sessionStorage.getItem("token");
 
@@ -77,8 +77,8 @@ export const UpdateOfficeSubmit = createAsyncThunk(
   }
 );
 
-export const DeleteOffice = createAsyncThunk(
-  'auth/DeleteOffice',
+export const DeleteLease = createAsyncThunk(
+  'auth/DeleteLease',
   async (id) => {
     console.log(id,"id");
     

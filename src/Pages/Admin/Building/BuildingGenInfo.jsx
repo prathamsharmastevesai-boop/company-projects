@@ -99,7 +99,6 @@ const BuildingPdfUploader = ({ onSubmit }) => {
                 </div>
                 {buildingPdf && (
                   <div className="mt-2 text-success">
-                    {/* Selected: {buildingPdf.name} */}
                   </div>
                 )}
               </div>

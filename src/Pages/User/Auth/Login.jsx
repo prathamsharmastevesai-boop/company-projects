@@ -80,7 +80,6 @@ const handleLogin = async (e) => {
     }
   } catch (err) {
     const message = err?.message || "Login failed. Please check your credentials.";
-    toast.error(message);
   } finally {
     setLoading(false);
   }
@@ -97,14 +96,14 @@ const handleLogin = async (e) => {
           position: "relative",
         }}
       >
-        <h1 className="display-5 fw-bold position-relative z-1">RAG</h1>
+        <h1 className="display-5 fw-bold position-relative z-1">CRE Portfolio Pulse</h1>
       </div>
 
       <div className="login-right col-12 col-md-6 d-flex justify-content-center align-items-center bg-white">
         <div className="login-card shadow rounded p-4 w-100" style={{ maxWidth: "400px" }}>
           <div className="mb-4 text-center">
             <img src={headerimage} alt="Logo" style={{ height: 80, width: 100 }} />
-            <h4 className="fw-bold mt-3">Login</h4>
+            <h4 className="fw-bold mt-3">USER LOGIN</h4>
             <p className="text-muted small">Please enter your details</p>
           </div>
 

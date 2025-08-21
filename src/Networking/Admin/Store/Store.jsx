@@ -9,7 +9,7 @@ const store = configureStore({
     reducer: {
         loginSlice: loginReducer,
         BuildingSlice:BuildingReducer,
-        OfficeSlice:OfficeReducer,
+        LeaseSlice:OfficeReducer,
         DocSlice:DocReducer,
         //user slice
         ProfileSlice:ProfileReducer

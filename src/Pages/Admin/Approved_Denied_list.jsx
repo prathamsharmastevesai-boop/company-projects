@@ -92,13 +92,12 @@ export const Approved_Denied_list = () => {
   }
 
   return (
-    <div className="container py-4">
+    <div className="container p-4">
       <div className="row">
-        {/* Approved List */}
         <div className="col-md-6 mb-4">
           <div className="card border-success shadow-sm h-100">
             <div className="card-header text-dark fw-bold">
-              ✅ Approved Requests
+              Approved Requests
             </div>
             <div className="card-body overflow-auto" style={{ maxHeight: '400px' }}>
               {approvedList.length === 0 ? (
@@ -117,11 +116,10 @@ export const Approved_Denied_list = () => {
           </div>
         </div>
 
-        {/* Denied List */}
         <div className="col-md-6 mb-4">
           <div className="card border-danger shadow-sm h-100">
             <div className="card-header text-dark fw-bold">
-              ❌ Denied Requests
+              Denied Requests
             </div>
             <div className="card-body overflow-auto" style={{ maxHeight: '400px' }}>
               {deniedList.length === 0 ? (

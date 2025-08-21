@@ -16,29 +16,29 @@ export const CreateLease = () => {
 
   // State
   const [loading, setLoading] = useState(false);
-  const [offices, setOffices] = useState([
+  const [Leases, setLeases] = useState([
     { tenant_name: "", suite_number: "", building_id: BuildingId }
   ]);
 
   // Input change handler
   const handleChange = (index, field, value) => {
-    const updated = [...offices];
+    const updated = [...Leases];
     updated[index][field] = value;
-    setOffices(updated);
+    setLeases(updated);
   };
 
   // Add new lease row
-  const addOffice = () => {
-    setOffices([
-      ...offices,
+  const addLease = () => {
+    setLeases([
+      ...Leases,
       { tenant_name: "", suite_number: "", building_id: BuildingId }
     ]);
   };
 
   // Remove lease row
-  const removeOffice = (index) => {
-    const updated = offices.filter((_, i) => i !== index);
-    setOffices(updated);
+  const removeLease = (index) => {
+    const updated = Leases.filter((_, i) => i !== index);
+    setLeases(updated);
   };
 
   // Submit form
@@ -46,7 +46,7 @@ export const CreateLease = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await dispatch(CreateLeaseSubmit(offices));
+      await dispatch(CreateLeaseSubmit(Leases));
       navigate(`/LeaseList/${BuildingId}`);
     } catch (error) {
       console.error("Error submitting lease:", error);
@@ -63,17 +63,17 @@ export const CreateLease = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        {offices.map((office, index) => (
+        {Leases.map((Lease, index) => (
           <div key={index} className="card shadow-sm mb-4 border-0">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="card-title mb-0">📄 Lease No. {index + 1}</h5>
 
-                {offices.length > 1 && (
+                {Leases.length > 1 && (
                   <button
                     type="button"
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => removeOffice(index)}
+                    onClick={() => removeLease(index)}
                     disabled={loading}
                   >
                     <i className="bi bi-trash3"></i> Remove
@@ -81,7 +81,6 @@ export const CreateLease = () => {
                 )}
               </div>
 
-              {/* Tenant Name */}
               <div className="mb-3">
                 <label className="form-label">Tenant Name</label>
                 <div className="input-group">
@@ -92,7 +91,7 @@ export const CreateLease = () => {
                     type="text"
                     className="form-control"
                     placeholder="e.g. John Smith"
-                    value={office.tenant_name}
+                    value={Lease.tenant_name}
                     onChange={(e) => handleChange(index, "tenant_name", e.target.value)}
                     required
                     disabled={loading}
@@ -100,7 +99,6 @@ export const CreateLease = () => {
                 </div>
               </div>
 
-              {/* Suite Number */}
               <div className="mb-3">
                 <label className="form-label">Suite Number</label>
                 <div className="input-group">
@@ -111,7 +109,7 @@ export const CreateLease = () => {
                     type="text"
                     className="form-control"
                     placeholder="e.g. Suite 305"
-                    value={office.suite_number}
+                    value={Lease.suite_number}
                     onChange={(e) => handleChange(index, "suite_number", e.target.value)}
                     required
                     disabled={loading}
@@ -122,12 +120,11 @@ export const CreateLease = () => {
           </div>
         ))}
 
-        {/* Add/Submit Buttons */}
         <div className="d-flex gap-2 mb-4">
           <button
             type="button"
             className="btn btn-outline-primary"
-            onClick={addOffice}
+            onClick={addLease}
             disabled={loading}
           >
             <i className="bi bi-plus-circle"></i> Add Another Lease
@@ -143,7 +140,6 @@ export const CreateLease = () => {
         </div>
       </form>
 
-      {/* Loader Overlay */}
       {loading && (
         <div
           className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"

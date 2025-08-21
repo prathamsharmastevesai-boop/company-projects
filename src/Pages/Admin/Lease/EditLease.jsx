@@ -1,7 +1,7 @@
   import { useEffect, useState } from "react";
   import { useDispatch } from "react-redux";
   import { useLocation, useNavigate } from "react-router-dom";
-  import { UpdateOfficeSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
+  import { UpdateLeaseSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
   import RAGLoader from "../../../Component/Loader";
 
   export const UpdateLease = () => {
@@ -51,7 +51,7 @@
           };
 
           console.log("Submitting payload:", payload);
-          await dispatch(UpdateOfficeSubmit(payload));
+          await dispatch(UpdateLeaseSubmit(payload));
         }
 
         navigate(`/LeaseList/${buildingId}`);
@@ -64,13 +64,11 @@
 
     return (
       <div className="container py-5 position-relative">
-        {/* Header */}
         <div className="text-center mb-5">
           <h2 className="fw-bold text-dark">✏️ Edit Lease</h2>
           <p className="text-muted">Modify existing lease records below.</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
           {offices.map((office, index) => (
             <div key={index} className="card shadow-sm mb-4 border-0">
@@ -79,7 +77,6 @@
                   <h5 className="card-title mb-0">🏢 Lease No. {index + 1}</h5>
                 </div>
 
-                {/* Tenant Name */}
                 <div className="mb-3">
                   <label className="form-label">Tenant Name</label>
                   <div className="input-group">
@@ -98,7 +95,6 @@
                   </div>
                 </div>
 
-                {/* Suite Number */}
                 <div className="mb-3">
                   <label className="form-label">Suite Number</label>
                   <div className="input-group">
@@ -120,7 +116,6 @@
             </div>
           ))}
 
-          {/* Actions */}
           <div className="d-flex gap-2 mb-4">
             <button type="submit" className="btn btn-warning" disabled={loading}>
               <i className="bi bi-save"></i> Save Changes
@@ -137,7 +132,6 @@
           </div>
         </form>
 
-        {/* Loader */}
         {loading && (
           <div
             className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"

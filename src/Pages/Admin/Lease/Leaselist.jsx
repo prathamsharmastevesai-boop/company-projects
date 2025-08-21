@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useDispatch, useSelector } from "react-redux";
-import { DeleteOffice, ListLeaseSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
+import { DeleteLease, ListLeaseSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
 import { ListDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
 import RAGLoader from "../../../Component/Loader";
 
@@ -11,7 +11,7 @@ export const LeaseList = () => {
   const { id } = useParams();
 
   // Redux
-  const { leases, message, Building_id, loading } = useSelector(state => state.OfficeSlice);
+  const { leases, message, Building_id, loading } = useSelector(state => state.LeaseSlice);
 
   // Local states
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,7 +71,7 @@ export const LeaseList = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this Lease?");
     if (confirmDelete) {
       try {
-        await dispatch(DeleteOffice({ lease_id, building_id: Building_id })).unwrap();
+        await dispatch(DeleteLease({ lease_id, building_id: Building_id })).unwrap();
         await dispatch(ListLeaseSubmit(Building_id));
       } catch (error) {
         console.error("Failed to delete Lease:", error);
@@ -82,7 +82,7 @@ export const LeaseList = () => {
   const leasesToDisplay = filteredLeases.length > 0 || searchTerm ? filteredLeases : leases;
 
   return (
-    <div className="container py-5">
+    <div className="container p-4">
       <div
         className="text-center bg-white py-3 mb-4"
         style={{

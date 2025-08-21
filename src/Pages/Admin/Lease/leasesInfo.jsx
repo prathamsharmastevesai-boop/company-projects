@@ -409,13 +409,13 @@ export const LeaseInfomation = () => {
   const [isReplacing, setIsReplacing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [deletingIndex, setDeletingIndex] = useState(null);
-  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false); // <-- loader state
-  const [searchTerm, setSearchTerm] = useState(""); // <-- search term state
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); 
 
-  // Fetch documents with loader
+
   const fetchDocuments = async () => {
     if (!initialBuildings?.Building_id || !initialBuildings?.lease?.lease_id) return;
-    setIsLoadingDocuments(true); // show loader
+    setIsLoadingDocuments(true); 
     const listdata = {
       building_id: initialBuildings.Building_id,
       lease_id: initialBuildings.lease?.lease_id,
@@ -432,7 +432,7 @@ export const LeaseInfomation = () => {
     } catch (error) {
       toast.error("Failed to load documents.");
     } finally {
-      setIsLoadingDocuments(false); // hide loader
+      setIsLoadingDocuments(false); 
     }
   };
 
@@ -475,9 +475,9 @@ export const LeaseInfomation = () => {
       ).unwrap();
 
       if (res?.msg) {
-        alert(`✅ ${res.msg}`);
+        alert(`${res.msg}`);
       } else {
-        alert("✅ Documents uploaded successfully!");
+        alert("Documents uploaded successfully!");
       }
 
       await fetchDocuments();
@@ -564,7 +564,6 @@ export const LeaseInfomation = () => {
     }
   };
 
-  // Filter files by searchTerm
   const filteredFiles = uploadedFiles.filter((file) =>
     (file.original_file_name || file.name || "")
       .toLowerCase()
@@ -572,10 +571,9 @@ export const LeaseInfomation = () => {
   );
 
   return (
-    <div className="container py-5">
+    <div className="container p-4">
       <h2 className="mb-4">📄 Upload Lease Documents</h2>
 
-      {/* Search Filter */}
       <input
         type="text"
         className="form-control mb-3"
@@ -584,7 +582,6 @@ export const LeaseInfomation = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* Upload input */}
       <input
         type="file"
         multiple
@@ -593,7 +590,6 @@ export const LeaseInfomation = () => {
         disabled={isUploading}
       />
 
-      {/* Uploading loader */}
       {isUploading && (
         <div className="text-primary mb-3">
           <span
@@ -605,7 +601,6 @@ export const LeaseInfomation = () => {
         </div>
       )}
 
-      {/* Loading documents spinner */}
       {isLoadingDocuments && (
         <div className="text-center my-4">
           <div
@@ -619,7 +614,6 @@ export const LeaseInfomation = () => {
         </div>
       )}
 
-      {/* Documents list */}
       {!isLoadingDocuments && filteredFiles.length > 0 && (
         <div className="mt-4">
           {filteredFiles.map((file, index) => (
@@ -669,7 +663,6 @@ export const LeaseInfomation = () => {
         </div>
       )}
 
-      {/* No results message */}
       {!isLoadingDocuments && filteredFiles.length === 0 && (
         <p className="text-muted">No documents found.</p>
       )}

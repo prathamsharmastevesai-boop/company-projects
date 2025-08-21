@@ -89,8 +89,7 @@ export const UserAccess = () => {
     );
 
   return (
-    <div className="container py-4" style={{ position: "relative" }}>
-      {/* Action Loader Overlay */}
+    <div className="container p-4" style={{ position: "relative" }}>
       {actionLoading && (
         <div className="upload-overlay">
           <div className="text-center">

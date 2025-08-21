@@ -158,7 +158,7 @@ export const AskQuestionAPI = createAsyncThunk(
       console.log(response.data, "response");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Question Not sended");
+      toast.error(error.response?.data?.message );
       throw error;
     }
   }

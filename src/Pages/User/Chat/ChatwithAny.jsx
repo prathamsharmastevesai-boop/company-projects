@@ -2,28 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from 'uuid';
-import { AskQuestion_Specific_API, Delete_Chat_Specific_Session, get_chathistory_Specific_Api, get_Session_List_Specific, get_specific_Doclist_Api, Upload_specific_file_Api } from "../../../Networking/User/APIs/Chat/ChatApi";
+import { AskQuestion_Specific_API, Delete_Chat_Specific_Session, Delete_Doc_Specific, get_chathistory_Specific_Api, get_Session_List_Specific, get_specific_Doclist_Api, Upload_specific_file_Api } from "../../../Networking/User/APIs/Chat/ChatApi";
+import { FaTrash } from "react-icons/fa";
+
 
 export const ChatWithAnyDoc = () => {
   const dispatch = useDispatch();
+  const chatRef = useRef(null);
 
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [sessionId, setSessionId] = useState(null);
-
   const [messages, setMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFileIndex, setSelectedFileIndex] = useState(null);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
-  const [chatList, setChatList] = useState([]);
+  const [sessionList, setsessionList] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletingSessionId, setDeletingSessionId] = useState(null);
 
-  const fileInputRef = useRef();
-  const chatRef = useRef(null);
+
 
   const fetchDocuments = async () => {
     setIsLoadingDocuments(true);
@@ -43,7 +46,7 @@ export const ChatWithAnyDoc = () => {
     setIsLoadingSessions(true);
     try {
       const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setChatList(res);
+      setsessionList(res);
     } catch (error) {
       console.error(error);
     } finally {
@@ -52,14 +55,14 @@ export const ChatWithAnyDoc = () => {
   };
 
   useEffect(() => {
-    if (chatList.length > 0 && !selectedChatId) {
-      const latestChat = chatList[0];
+    if (sessionList.length > 0 && !selectedChatId) {
+      const latestChat = sessionList[0];
       setSelectedChatId(latestChat.session_id);
       setSessionId(latestChat.session_id);
       setMessages([]);
       handleSessionhistory(latestChat.session_id);
     }
-  }, [chatList]);
+  }, [sessionList]);
 
   useEffect(() => {
     scrollToBottom();
@@ -104,8 +107,8 @@ export const ChatWithAnyDoc = () => {
         created_at: new Date().toISOString(),
       };
 
-      const updatedChatList = [newChat, ...chatList];
-      setChatList(updatedChatList);
+      const updatedsessionList = [newChat, ...sessionList];
+      setsessionList(updatedsessionList);
       setSessionId(newId);
       setSelectedChatId(newId);
       activeSessionId = newId;
@@ -116,8 +119,6 @@ export const ChatWithAnyDoc = () => {
       file_id: selectedFile.file_id,
       session_id: activeSessionId,
     };
-
-    console.log(payload, "payload");
 
     const userMessage = {
       message,
@@ -199,62 +200,39 @@ export const ChatWithAnyDoc = () => {
     }
   };
 
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    if (fileInputRef.current) fileInputRef.current.click();
-  };
-
-  const handleReplace = (e) => {
-    const newFile = e.target.files[0];
-    if (!newFile || editIndex === null) {
-      toast.error("No file selected for replacement.");
-      return;
-    }
-    setFileToReplace(newFile);
-    toast.info("New file selected. Click 'Confirm Update' to apply changes.");
-  };
-
-  const confirmUpdate = async () => {
-    if (editIndex === null || !fileToReplace) {
-      toast.error("No file selected for update.");
-      return;
-    }
-
-    const oldFile = uploadedFiles[editIndex];
-    const file_id = oldFile?.file_id;
-    if (!file_id) {
-      toast.error("File ID not found for replacement.");
-      return;
-    }
-
+  const handleDeleteDoc = async (id) => {
     try {
-      setIsReplacing(true);
-      await dispatch(
-        UpdateDocSubmit({
-          new_file: fileToReplace,
-          file_id,
-        })
-      ).unwrap();
+      setIsDeleting(true); // show overlay
+      await dispatch(Delete_Doc_Specific(id)).unwrap();
       await fetchDocuments();
-      setEditIndex(null);
-      setFileToReplace(null);
+      toast.success("Document deleted successfully!");
     } catch (error) {
-      toast.error("Failed to update file.");
+      toast.error("Failed to delete document.");
+      console.error("Failed to delete document:", error);
     } finally {
-      setIsReplacing(false);
+      setIsDeleting(false);
     }
   };
 
   const handleDelete = async (id) => {
-    console.log(id, "vvvvv");
     try {
-      await dispatch(Delete_Chat_Specific_Session(id));
-      const updatedChatList = await dispatch(get_Session_List_Specific());
-      setChatList(updatedChatList.payload || []);
+      setDeletingSessionId(id); 
+      await dispatch(Delete_Chat_Specific_Session(id)).unwrap();
+
+      await fetchMessages();
+
+      if (selectedChatId === id) {
+        setSelectedChatId(null);
+        setSessionId(null);
+        setMessages([]);
+      }
     } catch (error) {
       console.error("Error deleting chat session:", error);
+    } finally {
+      setDeletingSessionId(null);
     }
   };
+
 
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
@@ -270,8 +248,8 @@ export const ChatWithAnyDoc = () => {
                 created_at: new Date().toISOString(),
               };
 
-              const updatedChatList = [newChat, ...chatList];
-              setChatList(updatedChatList);
+              const updatedsessionList = [newChat, ...sessionList];
+              setsessionList(updatedsessionList);
               setSessionId(newId);
               setSelectedChatId(newId);
               setMessages([]);
@@ -293,8 +271,8 @@ export const ChatWithAnyDoc = () => {
                 </div>
                 <div className="mt-2 text-muted small">Loading chat sessions...</div>
               </div>
-            ) : chatList.length > 0 ? (
-              chatList.map((chat, index) => (
+            ) : sessionList.length > 0 ? (
+              sessionList.map((chat, index) => (
                 <div
                   key={index}
                   className={`chat-item d-flex justify-between align-items-start p-2 rounded mb-2 position-relative ${selectedChatId === chat.session_id
@@ -325,9 +303,20 @@ export const ChatWithAnyDoc = () => {
                       e.stopPropagation();
                       handleDelete(chat.session_id);
                     }}
+                    disabled={deletingSessionId === chat.session_id} 
                   >
-                    <i className="bi bi-trash"></i>
+                    {deletingSessionId === chat.session_id ? (
+                      <div
+                        className="spinner-border spinner-border-sm text-danger"
+                        role="status"
+                      >
+                        <span className="visually-hidden">Deleting...</span>
+                      </div>
+                    ) : (
+                      <i className="bi bi-trash"></i>
+                    )}
                   </button>
+
                 </div>
               ))
             ) : (
@@ -341,7 +330,7 @@ export const ChatWithAnyDoc = () => {
           <div
             className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar"
           >
-            <h5 className="text-muted mb-3">💬 Chat Messages</h5>
+            <h5 className="text-muted mb-3">💬 Portfolio Voice</h5>
             <div className="message-container hide-scrollbar" ref={chatRef}>
               {isLoadingMessages ? (
                 <div className="text-center py-4">
@@ -384,6 +373,15 @@ export const ChatWithAnyDoc = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {isDeleting && (
+                <div className="upload-overlay">
+                  <div className="text-center">
+                    <div className="spinner-border text-primary" role="status"></div>
+                    <div className="upload-text">Deleting document...</div>
+                  </div>
+                </div>
+              )}
+
               <div className="upload-container hide-scrollbar">
                 {isLoadingDocuments ? (
                   <div className="text-center py-3">
@@ -415,14 +413,22 @@ export const ChatWithAnyDoc = () => {
                     .map((file, index) => (
                       <div
                         key={index}
-                        className={`border p-2 rounded mb-2 ${selectedFileIndex === index ? "border-primary bg-light" : ""
+                        className={`border p-2 rounded mb-2 d-flex justify-content-between align-items-center ${selectedFileIndex === index ? "border-primary bg-light" : ""
                           }`}
                         onClick={() => setSelectedFileIndex(index)}
                         style={{ cursor: "pointer" }}
                       >
-                        <div className="d-flex justify-content-between align-items-center">
-                          <span>{file.original_file_name || file.name}</span>
-                        </div>
+                        <span>{file.original_file_name || file.name}</span>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteDoc(file.file_id);
+                          }}
+                        >
+                          <FaTrash />
+                        </button>
                       </div>
                     ))
                 )}
@@ -434,6 +440,7 @@ export const ChatWithAnyDoc = () => {
                     <div className="text-muted">No documents found.</div>
                   )}
               </div>
+
 
             </div>
 

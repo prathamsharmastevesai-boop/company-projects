@@ -110,7 +110,6 @@ export const UserProfile = () => {
           </div>
         ) : (
           <div className="card shadow-sm overflow-hidden">
-            {/* Profile Banner & Photo */}
             <div
               style={{
                 backgroundImage: `url(${userdata.bannerImage || "https://images.unsplash.com/photo-1580587771525-78b9dba3b914"})`,
@@ -163,7 +162,6 @@ export const UserProfile = () => {
               </div>
             </div>
 
-            {/* Profile Info */}
             <div className="card-body pt-5">
               <div className="d-flex justify-content-between align-items-center">
                 <h4>Profile Info</h4>

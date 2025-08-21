@@ -18,7 +18,7 @@ export const ListBuilding = () => {
   const cardsRef = useRef([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [deleteLoading, setDeleteLoading] = useState(false); // loader for delete
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Fetch buildings with loading state
   useEffect(() => {
@@ -51,19 +51,18 @@ export const ListBuilding = () => {
 
   const handleDelete = async (buildingId) => {
     try {
-      setDeleteLoading(true); // show loader
+      setDeleteLoading(true);
       await dispatch(DeleteBuilding(buildingId));
       await dispatch(ListBuildingSubmit());
     } catch (error) {
       console.error("Delete failed:", error);
     } finally {
-      setDeleteLoading(false); // hide loader
+      setDeleteLoading(false);
     }
   };
 
   const handleSubmit = async (buildingId) => {
     navigate(`/LeaseList/${buildingId}`);
-    await dispatch(ListLeaseSubmit(buildingId));
   };
 
   // Filter buildings by search term
@@ -74,8 +73,67 @@ export const ListBuilding = () => {
     return name.includes(term) || address.includes(term);
   });
 
+  // Card component for reuse
+  const BuildingCard = ({ building, index }) => (
+    <div className="col-md-6 col-lg-4 mb-4">
+      <div
+        ref={(el) => (cardsRef.current[index] = el)}
+        className="card border-0 shadow-sm h-auto hover-shadow position-relative"
+      >
+        <div className="position-absolute top-0 end-0 p-2" style={{ zIndex: 1 }}>
+          <i
+            className="bi bi-pencil-square text-primary me-3"
+            style={{ cursor: "pointer", fontSize: "1.2rem" }}
+            onClick={() => handleEdit(building)}
+            title="Edit"
+          ></i>
+          <i
+            className="bi bi-trash text-danger"
+            style={{ cursor: "pointer", fontSize: "1.2rem" }}
+            onClick={() => handleDelete(building.id)}
+            title="Delete"
+          ></i>
+        </div>
+
+        <div
+          className="card-body"
+          onClick={() => handleSubmit(building.id)}
+          style={{ cursor: "pointer" }}
+        >
+          <h5 className="card-title text-dark mb-3">
+            🏢 {building.building_name || `Building #${index + 1}`}
+          </h5>
+          <p className="mb-2">
+            <i className="bi bi-calendar3 me-2 text-secondary"></i>
+            <strong>Year Built:</strong>{" "}
+            <span className="badge text-dark">{building.year || "N/A"}</span>
+          </p>
+          <p>
+            <i className="bi bi-geo-alt-fill me-2 text-secondary"></i>
+            <strong>Address:</strong> {building.address || "N/A"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // "Create New Building" card
+  const CreateBuildingCard = () => (
+    <div
+      className="col-md-6 col-lg-4 mb-4 "
+      onClick={() => navigate("/CreateBuilding")}
+      style={{ cursor: "pointer", maxWidth: "300px" }}
+    >
+      <div className="card border-0 shadow-sm h-auto d-flex justify-content-center align-items-center text-center hover-shadow" style={{ minHeight: "150px" }}>
+        <button className="btn text-primary">
+          <i className="bi bi-plus-circle me-2"></i> Create New Building
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="container py-5" style={{ position: "relative" }}>
+    <div className="container p-4" style={{ position: "relative" }}>
       {deleteLoading && (
         <div className="upload-overlay">
           <div className="text-center">
@@ -99,7 +157,6 @@ export const ListBuilding = () => {
           Here’s a summary of all the submitted buildings.
         </p>
 
-        {/* Search input */}
         <input
           type="search"
           placeholder="Search by building name or address"
@@ -112,85 +169,22 @@ export const ListBuilding = () => {
       </div>
 
       {loading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "60vh" }}
-        >
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "60vh" }}>
           <RAGLoader />
         </div>
       ) : (
-        <>
-          {/* Buildings list */}
+        <div className="row">
           {filteredBuildings.length === 0 ? (
-            <div className="alert alert-info">No buildings found.</div>
+            <CreateBuildingCard />
           ) : (
-            <div className="row">
-              {/* Create New Building card at top */}
-              <div
-                className="col-md-6 col-lg-4 mb-4"
-                onClick={() => navigate("/CreateBuilding")}
-                style={{ cursor: "pointer", maxWidth: "300px", margin: "0 auto 30px" }}
-              >
-                <div
-                  className="card border-0 shadow-sm h-auto d-flex justify-content-center align-items-center text-center hover-shadow"
-                  style={{ minHeight: "150px" }}
-                >
-                  <button className="btn text-primary">
-                    <i className="bi bi-plus-circle me-2"></i> Create New Building
-                  </button>
-                </div>
-              </div>
-
+            <>
+              <CreateBuildingCard />
               {[...filteredBuildings].reverse().map((building, index) => (
-                <div className="col-md-6 col-lg-4 mb-4" key={building.id || index}>
-                  <div
-                    ref={(el) => (cardsRef.current[index] = el)}
-                    className="card border-0 shadow-sm h-auto hover-shadow position-relative"
-                  >
-                    <div
-                      className="position-absolute top-0 end-0 p-2"
-                      style={{ zIndex: 1 }}
-                    >
-                      <i
-                        className="bi bi-pencil-square text-primary me-3"
-                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                        onClick={() => handleEdit(building)}
-                        title="Edit"
-                      ></i>
-                      <i
-                        className="bi bi-trash text-danger"
-                        style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                        onClick={() => handleDelete(building.id)}
-                        title="Delete"
-                      ></i>
-                    </div>
-
-                    <div
-                      className="card-body"
-                      onClick={() => handleSubmit(building.id)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <h5 className="card-title text-dark mb-3">
-                        🏢 {building.building_name || `Building #${index + 1}`}
-                      </h5>
-                      <p className="mb-2">
-                        <i className="bi bi-calendar3 me-2 text-secondary"></i>
-                        <strong>Year Built:</strong>{" "}
-                        <span className="badge text-dark">
-                          {building.year || "N/A"}
-                        </span>
-                      </p>
-                      <p>
-                        <i className="bi bi-geo-alt-fill me-2 text-secondary"></i>
-                        <strong>Address:</strong> {building.address || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <BuildingCard key={building.id || index} building={building} index={index} />
               ))}
-            </div>
+            </>
           )}
-        </>
+        </div>
       )}
     </div>
   );

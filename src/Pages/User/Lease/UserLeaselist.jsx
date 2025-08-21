@@ -13,7 +13,7 @@ import RAGLoader from "../../../Component/Loader";
 export const UserLeaseList = () => {
   const { id } = useParams();
   const { leases, message, Building_id, loading } = useSelector(
-    (state) => state.OfficeSlice
+    (state) => state.LeaseSlice
   );
 
   const navigate = useNavigate();
@@ -80,7 +80,6 @@ export const UserLeaseList = () => {
         <p className="mb-0">Browse through the list of available Leases.</p>
       </div>
 
-      {/* Search Bar */}
       <div className="container my-3">
         <input
           type="search"
@@ -116,7 +115,6 @@ export const UserLeaseList = () => {
                     transition: "transform 0.3s ease",
                   }}
                 >
-                  {/* Office Image */}
                   <div style={{ height: "120px", background: "#f5f5f5" }}>
                     <div
                       className="w-100 h-100"
@@ -128,7 +126,6 @@ export const UserLeaseList = () => {
                     ></div>
                   </div>
 
-                  {/* Office Info */}
                   <div className="card-body px-4 pt-3 pb-3">
                     <h5 className="text-dark fw-semibold mb-2">
                       <i className="bi bi-door-open-fill me-2 text-primary"></i>

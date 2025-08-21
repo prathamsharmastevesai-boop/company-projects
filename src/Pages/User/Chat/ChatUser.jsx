@@ -182,12 +182,9 @@ export const UserChat = () => {
 const handleDelete = async (id) => {
   try {
     await dispatch(Delete_Chat_Session(id)).unwrap();
-
-    // Refresh documents and chat sessions after deletion:
-    await fetchDocuments();
+    
     await fetchMessages();
     
-    // Optionally, reset selected chat if the deleted one was selected
     if (selectedChatId === id) {
       setSelectedChatId(null);
       setSessionId(null);
@@ -270,8 +267,8 @@ const handleDelete = async (id) => {
 
             className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar"
           >
-            <h5 className="text-muted mb-3">💬 Chat Messages</h5>
-            <div className="message-container hide-scrollbar" ref={chatRef} >
+            <h5 className="text-muted mb-3">💬 Chat With Tenant</h5>
+            <div className="message-container2 hide-scrollbar" ref={chatRef} >
               {loadingMessages ? (
                 <div className="text-center py-3">
                   <div className="spinner-border text-secondary"></div>
@@ -308,7 +305,6 @@ const handleDelete = async (id) => {
             <div className="overflow-auto mb-2 p-2 bg-white border rounded">
               <h5 className="mb-3">📄 Select Document to Chat</h5>
 
-              {/* Search input */}
               <input
                 type="text"
                 className="form-control mb-3"

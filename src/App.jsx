@@ -30,6 +30,20 @@ import { ForgotPassword } from "./Pages/User/Auth/ForgetPassword";
 import { ResetPassword } from "./Pages/User/Auth/ResetPassword";
 import { Approved_Denied_list } from "./Pages/Admin/Approved_Denied_list";
 import { Home } from "./Pages/Home";
+import GeneralInfoupload from "./Pages/Admin/GeneralInfo/GeneralInfoUpload";
+import { BrokerChat } from "./Pages/User/Broker/Broker";
+import { ColleagueChat } from "./Pages/User/Colleague/Colleague";
+import { BuildingChat } from "./Pages/User/BuildingChat/BuildingChat";
+import { MarketChat } from "./Pages/User/Market/Market";
+import { AdminDashboard } from "./Pages/Admin/DashBoard/AdminDashboard";
+import { UserManagement } from "./Pages/Admin/UserManagement/UserManagement";
+import { RagSystem } from "./Pages/Admin/RagSystem/RagSystem";
+import { PortfolioVoice } from "./Pages/Admin/PortfolioVoice/PortfolioVoice";
+import { Thirdparty } from "./Pages/Admin/GeneralInfo/Thirdparty";
+import { EmployContact } from "./Pages/Admin/GeneralInfo/EmployContact";
+import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
+import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
+import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 
 function App() {
 
@@ -50,21 +64,30 @@ function App() {
     <Provider store={store}>
       <Router>
         <Routes>
-          {/* Public Routes  */}
           <Route path="/" element={<Home />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/VerifyOtp" element={<VerifyOtp />} />
           <Route path="/Admin" element={<AdminLogin />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
-          <Route path="/ResetPassword" element={<ResetPassword />} />          
+          <Route path="/ResetPassword" element={<ResetPassword />} />
 
-          {/* Protected Admin Routes */}
           <Route element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <DashboardLayout />
             </ProtectedRoute>
           }>
+            <Route path="/AdminDashboard" element={<AdminDashboard />} />
+            <Route path="/UserManagement" element={<UserManagement />} />
+            <Route path="/Aianalytics" element={<Aianalytics />} />
+            <Route path="/RagSystem" element={<RagSystem />} />
+            <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
+
+            <Route path="/Thirdparty" element={<Thirdparty />} />
+               <Route path="/EmployContact" element={<EmployContact />} />
+                <Route path="/MarketIntelligence" element={<MarketIntelligence />} />
+                  <Route path="/BuildingInfo" element={<BuildingInfo />} />
+
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
             <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
@@ -75,9 +98,9 @@ function App() {
             <Route path="/UpdateLease" element={<UpdateLease />} />
             <Route path="/LeaseInfo" element={<LeaseInfomation />} />
             <Route path="/Approved_Denied_list" element={<Approved_Denied_list />} />
+            <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
           </Route>
 
-          {/* Protected User Route */}
           <Route
             element={
               <ProtectedRoute allowedRoles={["user"]}>
@@ -91,6 +114,10 @@ function App() {
             <Route path="/UserChat" element={<UserChat />} />
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
             <Route path="/UserProfile" element={<UserProfile />} />
+            <Route path="/BrokerChat" element={<BrokerChat />} />
+            <Route path="/ColleagueChat" element={<ColleagueChat />} />
+            <Route path="/BuildingChat" element={<BuildingChat />} />
+            <Route path="/MarketChat" element={<MarketChat />} />
           </Route>
         </Routes>
         <ToastContainer />

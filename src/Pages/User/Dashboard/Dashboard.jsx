@@ -70,7 +70,6 @@ export const Dashboard = () => {
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* Blur + Loader Overlay */}
       {requestingPermissionId && (
         <div
           style={{
@@ -93,7 +92,6 @@ export const Dashboard = () => {
         </div>
       )}
 
-      {/* Hero Section */}
       <section
         style={{ height: '40vh', backgroundColor: '#1f1f1f' }}
         className="hero-section text-white d-flex align-items-center justify-content-center text-center"
@@ -105,14 +103,12 @@ export const Dashboard = () => {
             style={{ width: '100px' }}
             className="mb-3 animate__animated animate__fadeInDown"
           />
-          <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">Welcome to RAG</h1>
+          <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">Welcome to Portfolio Pulse</h1>
           <p className="lead animate__animated animate__fadeInUp">Your real estate management dashboard is under construction 🛠️</p>
         </div>
       </section>
 
-
-      {/* Main Content */}
-      <div className="container py-4">
+      <div className="container p-4">
         <div className="row align-items-center my-4">
           <div className="col-md-8">
             <h2 className="text-start mb-0 fw-bold">🏢 Featured Buildings</h2>

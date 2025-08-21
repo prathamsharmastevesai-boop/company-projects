@@ -27,7 +27,7 @@ export const AdminLogin = () => {
       if (auth.role === "user") {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
-        navigate("/CreateBuilding");
+        navigate("/AdminDashboard");
       }
     }
   }, []);
@@ -79,17 +79,14 @@ const handleLogin = async (e) => {
         }));
       }
 
-      // ✅ Navigate
       if (userRole === "admin") {
-        navigate("/CreateBuilding");
+        navigate("/AdminDashboard");
       } else if (userRole === "user") {
         navigate("/");
       } else {
         setErrors({ general: "Unauthorized role." });
       }
-    } else {
-      setErrors({ general: "Login failed. Please check your credentials." });
-    }
+    } 
   } catch (err) {
     setLoading(false);
     setErrors({ general: "An error occurred during login." });
@@ -107,7 +104,7 @@ const handleLogin = async (e) => {
           backgroundPosition: "center",
         }}
       >
-        <h1 className="display-5 fw-bold">RAG</h1>
+        <h1 className="display-5  fw-bold">CRE Portfolio Pulse</h1>
       </div>
 
       <div className="col-12 col-md-6 d-flex justify-content-center align-items-center bg-white">

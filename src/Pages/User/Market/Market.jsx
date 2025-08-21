@@ -1,0 +1,261 @@
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from 'uuid';
+import { Delete_Chat_Specific_Session, get_chathistory_Specific_Api, get_Session_List_Specific } from "../../../Networking/User/APIs/Chat/ChatApi";
+import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+
+export const MarketChat = () => {
+  const dispatch = useDispatch();
+  const chatRef = useRef(null);
+
+  const [sessionId, setSessionId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [isSending, setIsSending] = useState(false);
+  const [message, setMessage] = useState("");
+  const [sessionList, setSessionList] = useState([]);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
+  const [deletingSessionId, setDeletingSessionId] = useState(null);
+
+  const fetchSessions = async () => {
+    setIsLoadingSessions(true);
+    try {
+      const res = await dispatch(get_Session_List_Specific()).unwrap();
+      setSessionList(res);
+      if (!selectedChatId && res.length > 0) {
+        const latestChat = res[0];
+        setSelectedChatId(latestChat.session_id);
+        setSessionId(latestChat.session_id);
+        await fetchChatHistory(latestChat.session_id);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  };
+
+const fetchChatHistory = async (id) => {
+  setIsLoadingMessages(true);
+  try {
+    const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
+    console.log(res,"res");
+    
+    if (Array.isArray(res)) {
+     const formattedMessages = res.flatMap(chat => {
+  const msgs = [
+    { message: chat.question, sender: "User", timestamp: new Date(chat.timestamp) }
+  ];
+
+  if (Array.isArray(chat.answers)) {
+    chat.answers.forEach(ans => {
+      msgs.push({
+        message: ans.answer,
+        sender: "Admin",
+        timestamp: new Date(chat.timestamp)
+      });
+    });
+  } else if (chat.answer) {
+    msgs.push({
+      message: chat.answer,
+      sender: "Admin",
+      timestamp: new Date(chat.timestamp)
+    });
+  }
+
+  return msgs;
+});
+
+      setMessages(formattedMessages);
+      setSessionId(id);
+    }
+  } catch (error) {
+    console.error("Failed to fetch chat history:", error);
+    setMessages([]);
+  } finally {
+    setIsLoadingMessages(false);
+  }
+};
+
+
+  const scrollToBottom = () => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) {
+      toast.warning("Please enter a message.");
+      return;
+    }
+
+    let activeSessionId = sessionId;
+    if (!activeSessionId) {
+      const newId = uuidv4();
+      const newChat = { session_id: newId, name: newId, created_at: new Date().toISOString() };
+      setSessionList(prev => [newChat, ...prev]);
+      setSessionId(newId);
+      setSelectedChatId(newId);
+      activeSessionId = newId;
+    }
+
+    const userMessage = { message, sender: "User", timestamp: new Date() };
+    setMessages(prev => [...prev, userMessage]);
+    setMessage("");
+    scrollToBottom();
+
+    try {
+      setIsSending(true);
+      const payload = { session_id: activeSessionId, question: message, category: "Market" };
+      const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+
+      const adminMessages = response.answers.map(ans => ({
+        message: ans.answer,
+        file: ans.file,
+        sender: "Admin",
+        timestamp: new Date()
+      }));
+
+      setMessages(prev => [...prev, ...adminMessages]);
+      scrollToBottom();
+    } catch (error) {
+      toast.error("Send message failed.");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      setDeletingSessionId(id);
+      await dispatch(Delete_Chat_Specific_Session(id)).unwrap();
+      await fetchSessions();
+
+      if (selectedChatId === id) {
+        setSelectedChatId(null);
+        setSessionId(null);
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Error deleting chat session:", error);
+    } finally {
+      setDeletingSessionId(null);
+    }
+  };
+
+  return (
+    <div className="container-fluid py-3" style={{ height: "100vh" }}>
+      <div className="row h-100">
+        <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
+          <button
+            className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
+            onClick={() => {
+              const newId = uuidv4();
+              const newChat = { session_id: newId, name: newId, created_at: new Date().toISOString() };
+              setSessionList(prev => [newChat, ...prev]);
+              setSessionId(newId);
+              setSelectedChatId(newId);
+              setMessages([]);
+            }}
+          >
+            <span className="fw-semibold"> ➕ New Chat</span>
+          </button>
+
+          <div className="flex-grow-1 chat-item-wrapper hide-scrollbar overflow-auto">
+            {isLoadingSessions ? (
+              <div className="text-center py-4">
+                <div className="spinner-border text-primary" style={{ width: "1.5rem", height: "1.5rem" }} role="status"></div>
+                <div className="mt-2 text-muted small">Loading chat sessions...</div>
+              </div>
+            ) : sessionList.length > 0 ? (
+              sessionList.map(chat => (
+                <div
+                  key={chat.session_id}
+                  className={`chat-item d-flex justify-between align-items-start p-2 rounded mb-2 position-relative ${selectedChatId === chat.session_id ? "bg-dark text-white" : "bg-light text-dark"} border`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => fetchChatHistory(chat.session_id)}
+                >
+                  <div className="flex-grow-1">
+                    <div className="fw-semibold">{chat.name || chat.session_id}</div>
+                    <div className="small text-muted">{chat.created_at ? new Date(chat.created_at).toLocaleDateString() : "Just now"}</div>
+                  </div>
+                  <button
+                    className="btn btn-sm btn-outline-danger delete-btn"
+                    onClick={(e) => { e.stopPropagation(); handleDelete(chat.session_id); }}
+                    disabled={deletingSessionId === chat.session_id}
+                  >
+                    {deletingSessionId === chat.session_id ? (
+                      <div className="spinner-border spinner-border-sm text-danger" role="status" />
+                    ) : <i className="bi bi-trash"></i>}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="text-muted small text-center mt-3">No chat sessions yet.</div>
+            )}
+          </div>
+        </div>
+
+        <div className="col-md-9 d-flex flex-column">
+          <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
+            <h5 className="text-muted mb-3">💬 Market Intelligence Data</h5>
+            <div className="message-container1 hide-scrollbar" ref={chatRef}>
+              {isLoadingMessages ? (
+                <div className="text-center py-4">
+                  <div className="spinner-border text-secondary" role="status"></div>
+                </div>
+              ) : messages.length > 0 ? (
+                messages.map((msg, i) => (
+                  <div key={i} className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}>
+                    <div className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"}`}>
+                      {msg.message}
+                    </div>
+                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
+                      {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-muted">No messages yet.</div>
+              )}
+              {isSending && (
+                <div className="text-start small mt-2">
+                  <div className="d-inline-block px-3 py-2 rounded bg-secondary text-white">
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    Admin is typing...
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <div className="d-flex align-items-center border rounded p-2 bg-white">
+              <input
+                type="text"
+                className="form-control me-2"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <button className="btn btn-primary" onClick={handleSendMessage} disabled={isSending}>
+                <i className="bi bi-send"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

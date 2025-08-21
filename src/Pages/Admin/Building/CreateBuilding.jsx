@@ -53,7 +53,6 @@ export const CreateBuilding = () => {
   return (
     <div className="container py-5 position-relative">
 
-      {/* Loader Overlay */}
       {loading && (
         <div
           className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75"

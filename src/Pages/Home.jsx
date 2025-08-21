@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaUserShield } from 'react-icons/fa';
-import bgImage from '../../src/assets/side_photo.png'; 
+import bgImage from '../../src/assets/side_photo.png';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -30,22 +30,22 @@ export const Home = () => {
       }}
     >
       <div
-  className="card shadow p-4 text-center"
-  style={{
-    maxWidth: '400px',
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    backdropFilter: 'blur(10px)',               
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.3)'  
-  }}
->
+        className="card shadow p-4 text-center"
+        style={{
+          maxWidth: '400px',
+          width: '100%',
+          backgroundColor: 'rgba(255, 255, 255, 0.4)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          border: '1px solid rgba(255, 255, 255, 0.3)'
+        }}
+      >
 
-        <h2 className="mb-4 text-dark fw-bold">Welcome to RAG Portal</h2>
+        <h2 className="mb-4 text-dark fw-bold">Welcome to CRE Portfolio Pulse</h2>
         <p className="text-muted mb-4">Select your login type to continue</p>
 
         <div className="d-grid gap-3">
-              <button
+          <button
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
             onClick={() => navigate('/Admin')}
           >
@@ -55,9 +55,9 @@ export const Home = () => {
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
             onClick={() => navigate('/Login')}
           >
-            <FaUser /> User Login 
+            <FaUser /> User Login
           </button>
-         
+
         </div>
       </div>
     </div>

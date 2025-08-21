@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { baseURL, login, Sigup } from '../../NWconfig';
+import { baseURL, login, Sigup, UserDelete } from '../../NWconfig';
 import axios from 'axios';
 
 
@@ -93,3 +93,31 @@ export const SignUpSubmit = createAsyncThunk(
     }
   }
 );
+
+
+export const DeleteUser = createAsyncThunk(
+  "auth/DeleteUser",
+  async (email, { rejectWithValue }) => {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const url = `${baseURL}${UserDelete}?email=${email}`;
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "User deletion failed";
+      toast.error(message);
+      return rejectWithValue(message);
+    }
+  }
+);
+
