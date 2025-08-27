@@ -34,7 +34,7 @@ export const DeleteDoc = "/chatbot/delete_files/";
 
 //ASK QUESTION
 export const AskQuestion = "/chatbot/ask_question/";
-export const Old_history = "/chatbot/chat/sessions";
+export const Old_history = "/chatbot/chat/sessions/";
 export const Chat_history = "/chatbot/chat/history/";
 export const Del_Chat_Session = "/chatbot/chat/";
 
@@ -44,7 +44,7 @@ export const Upload_specific_file = "/user/standalone/upload";
 export const List_specific_Docs = "/user/list_simple_files/";
 export const AskQuestion_Specific = "/user/ask_simple/";
 // export const Session_List_Specific = "/user/chat/sessions/";
-export const Session_List_Specific = "/chatbot/chat/sessions";
+export const Session_List_Specific = "/chatbot/chat/sessions/";
 // export const Chat_history_Specific = "/admin_user_chat/chat/history/";
 export const Chat_history_Specific = "/user/chat/history/"
 export const Session_Delete_Specific = "/user/chat/delete/";
