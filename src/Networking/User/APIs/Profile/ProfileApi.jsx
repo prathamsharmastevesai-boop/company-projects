@@ -9,7 +9,6 @@ export const getProfileDetail = createAsyncThunk(
     async () => {
 
         const token = sessionStorage.getItem('token');
-console.log(ProfileDetail,"ProfileDetail in api ");
 
         try {
             const url = `${baseURL}${ProfileDetail}`;

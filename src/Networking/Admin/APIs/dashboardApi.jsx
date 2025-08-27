@@ -21,7 +21,7 @@ export const getdashboardApi = createAsyncThunk(
                 },
             });
 
-        return response.data;
+            return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Lease creation failed");
             throw error;
@@ -47,7 +47,7 @@ export const getsystemtracingApi = createAsyncThunk(
                 },
             });
 
-        return response.data;
+            return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Lease creation failed");
             throw error;

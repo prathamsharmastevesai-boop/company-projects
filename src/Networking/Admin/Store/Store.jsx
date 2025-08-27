@@ -8,11 +8,11 @@ import ProfileReducer from "../../User/Slice/ProfileSlice"
 const store = configureStore({
     reducer: {
         loginSlice: loginReducer,
-        BuildingSlice:BuildingReducer,
-        LeaseSlice:OfficeReducer,
-        DocSlice:DocReducer,
+        BuildingSlice: BuildingReducer,
+        LeaseSlice: OfficeReducer,
+        DocSlice: DocReducer,
         //user slice
-        ProfileSlice:ProfileReducer
+        ProfileSlice: ProfileReducer
     },
 });
 

@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 
 import buildingCardImg from '../../../assets/building-card-bg2.jpeg';
 import { ListBuildingSubmit } from '../../../Networking/Admin/APIs/BuildingApi';
-import { ListLeaseSubmit } from '../../../Networking/Admin/APIs/LeaseApi';
 import { RequestPermissionSubmit } from '../../../Networking/User/APIs/Permission/PermissionApi';
 import RAGLoader from '../../../Component/Loader';
 
@@ -56,11 +55,12 @@ export const Dashboard = () => {
   };
 
   const handleSubmit = async (building) => {
+    const buildingId = building.id
     if (building.access_status === "NULL") {
-      toast.warning("Press Icon for lease Request");
+      toast.warning("you have not access to this building contact to admin");
     } else if (building.access_status === "approved") {
-      navigate(`/UserLeaseList/${building.id}`);
-      await dispatch(ListLeaseSubmit(building.id));
+      navigate("/UserLease", { state: { office: { buildingId } } });
+
     } else if (building.access_status === "pending") {
       toast.warning("Request in Pending State");
     } else {
@@ -138,25 +138,28 @@ export const Dashboard = () => {
         ) : (
           <div className="row">
             {[...filteredBuildings].reverse().map((building, index) => (
-              <div className="col-md-6 col-lg-4 mb-4" key={building.id}>
+              <div className="col-12 mb-3" key={building.id}>
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
-                  className="card border-0 shadow-sm h-100 slide-in-top position-relative overflow-hidden"
-                  style={{ backgroundColor: '#1f1f1f', color: 'white', borderRadius: '16px' }}
+                  className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
+                  style={{ backgroundColor: "#e6f7ff", borderRadius: "16px", minHeight: "80px" }}
                 >
                   <div
-                    className="d-flex align-items-center"
+                    className="rounded-circle me-3 flex-shrink-0"
                     style={{
-                      height: 160,
+                      width: "40px",
+                      height: "40px",
                       backgroundImage: `url(${buildingCardImg})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      borderTopLeftRadius: '16px',
-                      borderTopRightRadius: '16px'
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
                     }}
                   ></div>
 
-                  <div className="card-body pt-3 position-relative" onClick={() => handleSubmit(building)} style={{ cursor: "pointer" }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center position-relative p-0"
+                    onClick={() => handleSubmit(building)}
+                    style={{ cursor: "pointer" }}
+                  >
                     {building.access_status !== "approved" && (
                       <div
                         className="position-absolute"
@@ -167,22 +170,10 @@ export const Dashboard = () => {
                           handleRequestPermission(building.id);
                         }}
                       >
-                        <i
-                          className="bi bi-shield-lock-fill text-warning"
-                          style={{ cursor: "pointer", fontSize: "1.3rem" }}
-                        ></i>
+                        <i className="bi bi-shield-lock-fill text-warning fs-5" style={{ cursor: "pointer" }}></i>
                       </div>
                     )}
-
-                    <h5 className="card-title text-white mb-3">
-                      🏢 {building.building_name || `Building #${index + 1}`}
-                    </h5>
-                    <p className="mb-2">
-                      <i className="bi bi-calendar3 me-2 text-light"></i>
-                      <strong>Year Built:</strong> <span>{building.year || "N/A"}</span>
-                    </p>
-                    <p>
-                      <i className="bi bi-geo-alt-fill me-2 text-light"></i>
+                    <p className="mb-1">
                       <strong>Address:</strong> {building.address || "N/A"}
                     </p>
                   </div>

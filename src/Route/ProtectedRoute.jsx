@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const authData = JSON.parse(sessionStorage.getItem("auth"));
   const role = authData?.role;
-  console.log(role, "role");
 
   const isAuthenticated = authData?.isAuthenticated;
 

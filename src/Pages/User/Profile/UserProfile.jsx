@@ -3,18 +3,21 @@ import { getProfileDetail, ProfileUpdateApi } from "../../../Networking/User/API
 import { useDispatch, useSelector } from "react-redux";
 import { FaEdit, FaCamera, FaSave, FaTimes } from "react-icons/fa";
 import RAGLoader from "../../../Component/Loader";
+import { toast } from "react-toastify";
 
 export const UserProfile = () => {
-  const dispatch = useDispatch();
+
   const { userdata } = useSelector((state) => state.ProfileSlice);
+
+  const dispatch = useDispatch();
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [photoUrl, setPhotoUrl] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [tempPhoto, setTempPhoto] = useState(null);
-  const [loading, setLoading] = useState(false); 
-  const [loadingProfile, setLoadingProfile] = useState(true); 
+  const [loading, setLoading] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -39,21 +42,20 @@ export const UserProfile = () => {
     }
   }, [userdata]);
 
- const handlePhotoChange = (e) => {
-  const file = e.target.files[0];
-  const MAX_FILE_SIZE_MB = 1;
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    const MAX_FILE_SIZE_MB = 1;
 
-  if (file) {
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      alert("⚠️ Profile photo must be less than 1MB.");
-      return;
+    if (file) {
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        alert("⚠️ Profile photo must be less than 1MB.");
+        return;
+      }
+
+      setPhotoFile(file);
+      setTempPhoto(URL.createObjectURL(file));
     }
-
-    setPhotoFile(file);
-    setTempPhoto(URL.createObjectURL(file));
-  }
-};
-
+  };
 
   const cancelEditing = () => {
     setName(userdata.name || "");
@@ -73,7 +75,7 @@ export const UserProfile = () => {
 
     try {
       await dispatch(ProfileUpdateApi(formData));
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
       dispatch(getProfileDetail());
       setIsEditing(false);
       setPhotoFile(null);

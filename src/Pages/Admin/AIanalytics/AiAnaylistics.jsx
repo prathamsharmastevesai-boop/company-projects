@@ -60,22 +60,32 @@ export const Aianalytics = () => {
       setDashboardData(null);
     }
   };
-
+  
   const AIInslights = async () => {
     try {
       const res = await dispatch(getInslightApi()).unwrap();
       console.log("AI Insights response:", res);
 
-      let insights = [];
-      if (res?.ai_insights?.length > 0) {
+      let insights = {};
+      if (res?.insight) {
+        const rawInsight = res.insight
+          .replace(/json|```/g, "")
+          .trim();
+
         try {
-          const raw = res.ai_insights[0].insight
-            .replace(/```json|```/g, "")
-            .trim();
-          insights = JSON.parse(raw);
+          if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
+            // JSON format
+            insights = JSON.parse(rawInsight);
+          } else {
+            // Plain text → split into bullet points
+            insights = rawInsight
+              .split("\n")
+              .map((line) => line.replace(/^\*+\s*/, "").trim()) // remove leading * or ** markers
+              .filter((line) => line.length > 0);
+          }
         } catch (err) {
           console.error("Failed to parse AI insights:", err);
-          insights = [res.ai_insights[0].insight];
+          insights = [rawInsight];
         }
       }
 
@@ -95,14 +105,24 @@ export const Aianalytics = () => {
 
       let parsedSummary = "";
       if (res?.recent_questions?.summary) {
+        const rawSummary = res.recent_questions.summary
+          .replace(/```json|```/g, "")
+          .trim();
+
         try {
-          const rawSummary = res.recent_questions.summary
-            .replace(/```json|```/g, "")
-            .trim();
-          parsedSummary = JSON.parse(rawSummary)?.summary || "";
+          if (rawSummary.startsWith("{") || rawSummary.startsWith("[")) {
+            const parsed = JSON.parse(rawSummary);
+            parsedSummary = parsed.summary || JSON.stringify(parsed);
+          } else {
+            parsedSummary = rawSummary
+              .split("\n")
+              .map((line) => line.replace(/^\*+\s*/, "").trim())
+              .filter((line) => line.length > 0)
+              .join(" ");
+          }
         } catch (err) {
-          console.error("Failed to parse summary:", err);
-          parsedSummary = res.recent_questions.summary;
+          console.error("Failed to parse summary, fallback to raw text:", err);
+          parsedSummary = rawSummary;
         }
       }
 
@@ -114,6 +134,7 @@ export const Aianalytics = () => {
       console.error("Failed to fetch recent questions:", error);
     }
   };
+
 
   const fetchUsageTreads = async () => {
     try {
@@ -187,7 +208,7 @@ export const Aianalytics = () => {
   };
 
   return (
-     <div className="container-fluid p-4 p-md-4">
+    <div className="container-fluid p-4 p-md-4">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
         <div className="mb-3 mb-md-0">
           <h4 className="fw-bold">AI Analytics</h4>
@@ -262,20 +283,38 @@ export const Aianalytics = () => {
         ))}
       </ul>
 
-        <div className="card shadow-sm p-4">
+      <div className="card shadow-sm p-4">
         {activeTab === "AI Insights" && (
           <>
             <h6 className="fw-bold mb-3">AI-Generated Insights</h6>
             {dashboardData?.aiInsights?.length > 0 ? (
-              <ul className="list-group">
-                {dashboardData.aiInsights.map((insight, idx) => (
-                  <li key={idx} className="list-group-item">
-                    {typeof insight === "string"
-                      ? insight
-                      : JSON.stringify(insight)}
-                  </li>
-                ))}
-              </ul>
+              <div className="list-group">
+                {dashboardData.aiInsights.map((insight, idx) => {
+                  if (typeof insight === "string") {
+                    // Try to split into heading and description
+                    const match = insight.match(/^\*\*(.*?)\*\*[:\-]?\s*(.*)/);
+                    if (match) {
+                      return (
+                        <div key={idx} className="list-group-item">
+                          <h6 className="fw-bold mb-1">{match[1]}</h6>
+                          <p className="text-muted mb-0">{match[2]}</p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={idx} className="list-group-item">
+                        {insight}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={idx} className="list-group-item">
+                      {JSON.stringify(insight)}
+                    </div>
+                  );
+                })}
+              </div>
+
             ) : (
               <div className="text-center text-muted">
                 <div

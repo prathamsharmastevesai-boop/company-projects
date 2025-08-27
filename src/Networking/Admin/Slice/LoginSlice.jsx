@@ -9,7 +9,7 @@ const loginSlice = createSlice({
   name: 'loginSlice',
   initialState: {
     loading: false,
-    Athorization: savedToken || "",  
+    Athorization: savedToken || "",
     Role: savedAuth ? JSON.parse(savedAuth).role : "",
     error: null,
   },

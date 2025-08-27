@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { LoginSubmit } from '../APIs/LoginAPIs';
 import { CreateBuildingSubmit, ListBuildingSubmit } from '../APIs/BuildingApi';
 
 const BuildingSlice = createSlice({
@@ -7,7 +6,7 @@ const BuildingSlice = createSlice({
     initialState: {
         loading: false,
         Buliding: "",
-        BuildingList:[],
+        BuildingList: [],
         error: null,
     },
     extraReducers: (builder) => {
@@ -32,8 +31,8 @@ const BuildingSlice = createSlice({
         builder.addCase(ListBuildingSubmit.fulfilled, (state, action) => {
             state.loading = false;
             state.BuildingList = action.payload;
-            console.log( state.BuildingList," state.BuildingList");
-            
+            // console.log(state.BuildingList, " state.BuildingList");
+
         })
         builder.addCase(ListBuildingSubmit.rejected, (state, action) => {
             state.loading = false;

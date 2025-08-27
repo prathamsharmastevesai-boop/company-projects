@@ -44,6 +44,7 @@ import { EmployContact } from "./Pages/Admin/GeneralInfo/EmployContact";
 import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
 import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
 import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
+import { SessionList } from "./Pages/User/Session/sessionList";
 
 function App() {
 
@@ -78,26 +79,31 @@ function App() {
             </ProtectedRoute>
           }>
             <Route path="/AdminDashboard" element={<AdminDashboard />} />
+            
             <Route path="/UserManagement" element={<UserManagement />} />
             <Route path="/Aianalytics" element={<Aianalytics />} />
             <Route path="/RagSystem" element={<RagSystem />} />
             <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
 
             <Route path="/Thirdparty" element={<Thirdparty />} />
-               <Route path="/EmployContact" element={<EmployContact />} />
-                <Route path="/MarketIntelligence" element={<MarketIntelligence />} />
-                  <Route path="/BuildingInfo" element={<BuildingInfo />} />
+            <Route path="/EmployContact" element={<EmployContact />} />
+            <Route path="/MarketIntelligence" element={<MarketIntelligence />} />
+            <Route path="/BuildingInfo" element={<BuildingInfo />} />
 
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
             <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
             <Route path="/BuildingPdfUploader" element={<BuildingPdfUploader />} />
+
             <Route path="/UserAccess" element={<UserAccess />} />
+
             <Route path="/CreateLease" element={<CreateLease />} />
-            <Route path="/LeaseList/:id" element={<LeaseList />} />
+            <Route path="/LeaseList" element={<LeaseList />} />
             <Route path="/UpdateLease" element={<UpdateLease />} />
             <Route path="/LeaseInfo" element={<LeaseInfomation />} />
+
             <Route path="/Approved_Denied_list" element={<Approved_Denied_list />} />
+
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
           </Route>
 
@@ -109,15 +115,23 @@ function App() {
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
+
             <Route path="/UserBuildinglist" element={<UserBuildinglist />} />
-            <Route path="/UserLeaseList/:id" element={<UserLeaseList />} />
+
+            <Route path="/UserLease" element={<UserLeaseList />} />
+
             <Route path="/UserChat" element={<UserChat />} />
+
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
+
             <Route path="/UserProfile" element={<UserProfile />} />
+
             <Route path="/BrokerChat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />
             <Route path="/MarketChat" element={<MarketChat />} />
+
+            <Route path="/SessionList" element={<SessionList />} />
           </Route>
         </Routes>
         <ToastContainer />

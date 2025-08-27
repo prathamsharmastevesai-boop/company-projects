@@ -9,29 +9,27 @@ import headerimage from "../../../assets/images.jpeg";
 import side_photo from "../../../assets/side_photo.png";
 
 export const Login = () => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   useEffect(() => {
-  const token = sessionStorage.getItem("token");
-  const auth = JSON.parse(sessionStorage.getItem("auth"));
+    const token = sessionStorage.getItem("token");
+    const auth = JSON.parse(sessionStorage.getItem("auth"));
 
-  console.log(auth,token,"auth token");
-  
-
-  if (token && auth?.isAuthenticated) {
-    if (auth.role === "user") {
-      navigate("/dashboard");
-    } else if (auth.role === "admin") {
-      navigate("/CreateBuilding");
+    if (token && auth?.isAuthenticated) {
+      if (auth.role === "user") {
+        navigate("/dashboard");
+      } else if (auth.role === "admin") {
+        navigate("/CreateBuilding");
+      }
     }
-  }
-}, []);
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
@@ -49,41 +47,39 @@ export const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setLoading(true);
-  const payload = { email, password, role: "user" };
+    setLoading(true);
+    const payload = { email, password, role: "user" };
 
-  try {
+    try {
+      const res = await dispatch(LoginSubmit(payload)).unwrap();
+      const userRole = res.role;
+      const token = res.token;
 
-    
-    const res = await dispatch(LoginSubmit(payload)).unwrap();
-    const userRole = res.role;
-    const token = res.token; 
+      if (window.ReactNativeWebView && token) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: "LOGIN_SUCCESS",
+          token: token,
+          role: userRole,
+        }));
+      }
 
-    if (window.ReactNativeWebView && token) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({
-        type: "LOGIN_SUCCESS",
-        token: token,
-        role: userRole,
-      }));
+      if (userRole === "admin") {
+        navigate("/CreateBuilding");
+      } else if (userRole === "user") {
+        navigate("/dashboard", { state: { email } });
+      } else {
+        toast.error("Unauthorized role.");
+      }
+    } catch (err) {
+      const message = err?.message || "Login failed. Please check your credentials.";
+    } finally {
+      setLoading(false);
     }
-
-    if (userRole === "admin") {
-      navigate("/CreateBuilding");
-    } else if (userRole === "user") {
-      navigate("/dashboard", { state: { email } });
-    } else {
-      toast.error("Unauthorized role.");
-    }
-  } catch (err) {
-    const message = err?.message || "Login failed. Please check your credentials.";
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-container d-flex vh-100 position-relative">

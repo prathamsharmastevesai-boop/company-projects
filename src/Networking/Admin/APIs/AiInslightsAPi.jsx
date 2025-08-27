@@ -15,7 +15,7 @@ export const getAnalyticApi = createAsyncThunk(
           "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
         },
-        params: Data, 
+        params: Data,
       });
 
       toast.success(response.data.message);
@@ -29,7 +29,7 @@ export const getAnalyticApi = createAsyncThunk(
 
 export const getInslightApi = createAsyncThunk(
   "getInslightApi",
-  async () => {
+  async (_, thunkAPI) => {
     const token = sessionStorage.getItem("token");
 
     try {
@@ -38,14 +38,22 @@ export const getInslightApi = createAsyncThunk(
         headers: {
           "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
-        }
+        },
       });
 
-      toast.success(response.data.message);
+      // Optional: Only show toast if API explicitly sends a message
+      if (response.data?.message) {
+        toast.success(response.data.message);
+      }
+
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
-      throw error;
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch AI Insights";
+      toast.error(msg);
+      return thunkAPI.rejectWithValue(msg);
     }
   }
 );
@@ -85,7 +93,7 @@ export const getUsageTreadApi = createAsyncThunk(
           "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
         },
-        params:days
+        params: days
       });
 
       toast.success(response.data.message);
@@ -109,7 +117,7 @@ export const getActivitySummaryApi = createAsyncThunk(
           "ngrok-skip-browser-warning": "true",
           Authorization: `Bearer ${token}`,
         },
-    params: { days }, 
+        params: { days },
       });
 
       toast.success(response.data.message);

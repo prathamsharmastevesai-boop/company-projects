@@ -5,11 +5,13 @@ import { useDispatch } from "react-redux";
 import { Reset_password_Submit } from "../../../Networking/User/APIs/Auth/VerifyOtp";
 
 export const ResetPassword = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
   const email = location.state;
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);

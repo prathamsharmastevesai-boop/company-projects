@@ -7,7 +7,7 @@ export const Sigup = "/auth/register";
 export const VerifyOtp = "/auth/verify_otp";
 export const ForgetPassword = "/auth/forgot_password";
 export const ResetPasswod = "/auth/reset_password";
-export const UserDelete = "/auth/user/delete";
+export const UserDelete = "/auth/user/";
 
 //PROFILE
 export const ProfileDetail = "/auth/user/profile";
@@ -26,7 +26,7 @@ export const UpdateLeaseeEndpoint = "/lease/update_lease";
 export const DeleteLeaseEndpoint = "/lease/delete_lease";
 
 //LEASE Document
-export const UploadDoc = "/chatbot/upload_lease_doc/";
+export const UploadDoc = "/chatbot/upload_building_doc/";
 export const UpdateDoc = "/chatbot/update_files/";
 export const ListDoc = "/chatbot/files/";
 export const DeleteDoc = "/chatbot/delete_files/";
@@ -34,7 +34,7 @@ export const DeleteDoc = "/chatbot/delete_files/";
 
 //ASK QUESTION
 export const AskQuestion = "/chatbot/ask_question/";
-export const Old_history = "/chatbot/chat/sessions/";
+export const Old_history = "/chatbot/chat/sessions";
 export const Chat_history = "/chatbot/chat/history/";
 export const Del_Chat_Session = "/chatbot/chat/";
 
@@ -43,10 +43,12 @@ export const Del_Chat_Session = "/chatbot/chat/";
 export const Upload_specific_file = "/user/standalone/upload";
 export const List_specific_Docs = "/user/list_simple_files/";
 export const AskQuestion_Specific = "/user/ask_simple/";
-export const Session_List_Specific = "/user/chat/sessions/";
-export const Chat_history_Specific = "/admin_user_chat/chat/history/";
-export const Session_Delete_Specific =  "/user/chat/delete/";
-export const Doc_Delete_Specific =  "/user/delete_simple_file/";
+// export const Session_List_Specific = "/user/chat/sessions/";
+export const Session_List_Specific = "/chatbot/chat/sessions";
+// export const Chat_history_Specific = "/admin_user_chat/chat/history/";
+export const Chat_history_Specific = "/user/chat/history/"
+export const Session_Delete_Specific = "/user/chat/delete/";
+export const Doc_Delete_Specific = "/user/delete_simple_file/";
 
 //GENERAL INFO
 export const listGeneralInfoDoc = "/admin_user_chat/list";
@@ -69,7 +71,7 @@ export const Upload_General_info = "/genral-builidng/buildings/documents/upload"
 export const dashboardData = "/admin/stats";
 
 //AI INSLILGHTS
-export const AIAnalyticsData ="/admin/analytics";
+export const AIAnalyticsData = "/admin/analytics";
 
 export const AIInsights = "/admin/ai_insights";
 
@@ -80,7 +82,7 @@ export const UsageTreads = "/admin/usage_trends";
 export const ActivitySummary = "/admin/activity_summary";
 
 //System Tracing
-export const SystemTracing =   "/admin/system_tracing";
+export const SystemTracing = "/admin/system_tracing";
 
 //USER MANAGEMENT
 export const InviteUser = "/invite_user/admin";

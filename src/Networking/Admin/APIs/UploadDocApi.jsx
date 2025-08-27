@@ -6,8 +6,8 @@ import { AskQuestion, baseURL, DeleteDoc, ListDoc, UpdateDoc, UploadDoc } from '
 
 export const UploadDocSubmit = createAsyncThunk(
   '/UploadDocSubmit',
-  async ({ files, buildingId, lease_id }, { rejectWithValue }) => {
-    console.log({ files, buildingId, lease_id }, "Uploading documents...");
+  async ({ files, buildingId, category }, { rejectWithValue }) => {
+    console.log({ files, buildingId, category }, "Uploading documents...");
 
     const token = sessionStorage.getItem('token');
     const url = `${baseURL}${UploadDoc}`;
@@ -20,7 +20,7 @@ export const UploadDocSubmit = createAsyncThunk(
       });
 
       formData.append("building_id", buildingId);
-      formData.append("lease_id", lease_id);
+      formData.append("category", category);
 
       const response = await axios.post(url, formData, {
         headers: {
@@ -35,7 +35,7 @@ export const UploadDocSubmit = createAsyncThunk(
 
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error(error.response?.data?.message || error.message||"File upload failed");
+      toast.error(error.response?.data?.message || error.message || "File upload failed");
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -43,19 +43,17 @@ export const UploadDocSubmit = createAsyncThunk(
 
 export const UpdateDocSubmit = createAsyncThunk(
   "auth/UpdateDocSubmit",
-  async ({ file_id, new_file, building_id, lease_id }, thunkAPI) => {
-    console.log({ file_id, new_file, building_id, lease_id }, "file_id, new_file, buildingId, lease_id ");
-
+  async ({ file_id, new_file, building_id, category }, thunkAPI) => {
+    console.log({ file_id, new_file, building_id, category }, "file_id, new_file, buildingId ")
     const token = sessionStorage.getItem("token");
     const url = `${baseURL}${UpdateDoc}`;
     try {
       const formData = new FormData();
 
-      // Append required fields
       formData.append("file_id", file_id);
       formData.append("new_file", new_file);
       formData.append("building_id", building_id);
-      formData.append("lease_id", lease_id);
+      formData.append("category", category);
 
       const response = await axios.patch(url, formData, {
         headers: {
@@ -77,13 +75,13 @@ export const UpdateDocSubmit = createAsyncThunk(
 
 export const ListDocSubmit = createAsyncThunk(
   'auth/ListDocSubmit',
-  async ({ building_id, lease_id }) => {
-    console.log("building_id:", building_id, "lease_id:", lease_id);
+  async ({ building_id, category }) => {
+    console.log("building_id:", building_id);
 
     const token = sessionStorage.getItem('token');
 
     try {
-      const url = `${baseURL}${ListDoc}`; 
+      const url = `${baseURL}${ListDoc}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -93,7 +91,7 @@ export const ListDocSubmit = createAsyncThunk(
         },
         params: {
           building_id,
-          lease_id,
+          category,
         },
       });
 
@@ -109,11 +107,11 @@ export const ListDocSubmit = createAsyncThunk(
 
 export const DeleteDocSubmit = createAsyncThunk(
   'documents/DeleteDoc',
-  async ({ building_id, lease_id, file_id }, thunkAPI) => {
-    console.log({ building_id, lease_id, file_id }, "Deleting file...");
+  async ({ building_id, category, file_id }, thunkAPI) => {
+    console.log({ building_id, category, file_id }, "Deleting file...");
 
     const token = sessionStorage.getItem('token');
-    const url = `${baseURL}${DeleteDoc}`; 
+    const url = `${baseURL}${DeleteDoc}`;
 
     try {
       const response = await axios.delete(url, {
@@ -124,7 +122,7 @@ export const DeleteDocSubmit = createAsyncThunk(
         },
         params: {
           building_id,
-          lease_id,
+          category,
           file_id,
         },
       });
@@ -158,7 +156,7 @@ export const AskQuestionAPI = createAsyncThunk(
       console.log(response.data, "response");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message );
+      toast.error(error.response?.data?.message);
       throw error;
     }
   }

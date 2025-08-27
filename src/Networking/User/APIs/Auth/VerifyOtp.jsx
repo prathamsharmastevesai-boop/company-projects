@@ -7,7 +7,6 @@ import axios from 'axios';
 export const Forget_passwordSubmit = createAsyncThunk(
     'auth/Forget_passwordSubmit',
     async (credentials) => {
-        console.log(credentials, "credentials");
 
         const token = sessionStorage.getItem('token');
 
@@ -16,12 +15,11 @@ export const Forget_passwordSubmit = createAsyncThunk(
             const response = await axios.post(url, credentials, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                         "ngrok-skip-browser-warning": "true",
+                    "ngrok-skip-browser-warning": "true",
                     "Content-Type": "application/json",
                 },
             });
             toast.success(response.data.message)
-            console.log(response.data.message, "response");
             return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "OTP failed");
@@ -33,7 +31,6 @@ export const Forget_passwordSubmit = createAsyncThunk(
 export const VerifyOtpSubmit = createAsyncThunk(
     'auth/VerifyOtpSubmit',
     async (credentials) => {
-        console.log(credentials, "credentials");
 
         const token = sessionStorage.getItem('token');
 
@@ -42,12 +39,11 @@ export const VerifyOtpSubmit = createAsyncThunk(
             const response = await axios.post(url, credentials, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                         "ngrok-skip-browser-warning": "true",
+                    "ngrok-skip-browser-warning": "true",
                     "Content-Type": "application/json",
                 },
             });
             toast.success(response.data.message)
-            console.log(response.data.message, "response");
             return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "OTP failed");
@@ -59,7 +55,6 @@ export const VerifyOtpSubmit = createAsyncThunk(
 export const Reset_password_Submit = createAsyncThunk(
     'auth/Reset_password_Submit',
     async (credentials) => {
-        console.log(credentials, "credentials");
 
         const token = sessionStorage.getItem('token');
 
@@ -68,11 +63,10 @@ export const Reset_password_Submit = createAsyncThunk(
             const response = await axios.post(url, credentials, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                         "ngrok-skip-browser-warning": "true",
+                    "ngrok-skip-browser-warning": "true",
                 },
             });
             toast.success(response.data.message)
-            console.log(response.data.message, "response");
             return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "OTP failed");

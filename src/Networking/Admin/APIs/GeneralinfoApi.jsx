@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { AskGeneralDoc, baseURL, listGeneralInfoDoc, updateGenralDoc, UploadGeneralDoc,} from '../../NWconfig'; 
+import { AskGeneralDoc, baseURL, listGeneralInfoDoc, updateGenralDoc, UploadGeneralDoc, } from '../../NWconfig';
 
 
 export const UploadGeneralDocSubmit = createAsyncThunk(
@@ -14,7 +14,7 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
 
     try {
       const formData = new FormData();
-      formData.append("files", file); 
+      formData.append("files", file);
 
       const response = await axios.post(url, formData, {
         headers: {
@@ -39,11 +39,11 @@ export const UpdateGeneralDocSubmit = createAsyncThunk(
   "general/UpdateGeneralDocSubmit",
   async ({ file_id, new_file, category }, { rejectWithValue }) => {
     try {
-      const token = sessionStorage.getItem("token"); 
+      const token = sessionStorage.getItem("token");
       const url = `${baseURL}${updateGenralDoc}?file_id=${file_id}&category=${encodeURIComponent(category)}`;
 
       const formData = new FormData();
-      formData.append("file", new_file); 
+      formData.append("file", new_file);
 
       const response = await axios.patch(url, formData, {
         headers: {
@@ -94,28 +94,28 @@ export const DeleteGeneralDocSubmit = createAsyncThunk(
 );
 
 export const GeneralInfoSubmit = createAsyncThunk(
-    'auth/GeneralInfoSubmit',
-    async () => {
+  'auth/GeneralInfoSubmit',
+  async () => {
 
-        const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
-        try {
-            const url = `${baseURL}${listGeneralInfoDoc}`;
+    try {
+      const url = `${baseURL}${listGeneralInfoDoc}`;
 
-            const response = await axios.get(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "ngrok-skip-browser-warning": "true",
-                    "Content-Type": "application/json",
-                },
-            });
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+      });
 
-        return response.data;
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Lease creation failed");
-            throw error;
-        }
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Lease creation failed");
+      throw error;
     }
+  }
 );
 
 export const AskQuestionGeneralAPI = createAsyncThunk(
@@ -131,8 +131,8 @@ export const AskQuestionGeneralAPI = createAsyncThunk(
         },
       });
 
-      toast.success(response.data.message || "Question sent successfully");
-      console.log(response.data, "response");
+      // toast.success(response.data.message || "Question sent successfully");
+      // console.log(response.data, "response");
 
       return response.data;
     } catch (error) {

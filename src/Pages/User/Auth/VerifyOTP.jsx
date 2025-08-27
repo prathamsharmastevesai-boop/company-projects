@@ -6,18 +6,15 @@ import { toast } from "react-toastify";
 
 export const VerifyOtp = () => {
 
-  //States
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Hooks
   const dispatch = useDispatch();
   const inputRefs = useRef([]);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Parmas
   const data = location.state;
   console.log(data, "email");
 
@@ -48,18 +45,15 @@ export const VerifyOtp = () => {
     }
 
     const payload = { email: data.email, otp: fullOtp };
-    // console.log("Prepared Payload:", payload);
-
     try {
       setLoading(true);
       const result = await dispatch(VerifyOtpSubmit(payload)).unwrap();
       {
         data.screen == "SignUp" ?
 
-        navigate("/") : navigate("/ResetPassword", { state: { email: data.email } });
+          navigate("/") : navigate("/ResetPassword", { state: { email: data.email } });
       }
     } catch (error) {
-      // console.error("Error verifying OTP:", error);
     } finally {
       setLoading(false);
     }

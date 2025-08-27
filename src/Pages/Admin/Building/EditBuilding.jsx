@@ -5,21 +5,18 @@ import { UpdateBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi
 import RAGLoader from "../../../Component/Loader";
 
 export const UpdateBuilding = () => {
-  // Hooks
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Ensure we always get an array
   const initialBuildings = Array.isArray(location.state?.buildings)
     ? location.state.buildings
     : [location.state?.buildings || { id: "", building_name: "", address: "", year: "" }];
 
-  // States
   const [loading, setLoading] = useState(false);
   const [buildings, setBuildings] = useState(initialBuildings);
 
-  // Handle input change
   const handleChange = (index, field, value) => {
     const updated = [...buildings];
     if (updated[index]) {
@@ -28,7 +25,6 @@ export const UpdateBuilding = () => {
     }
   };
 
-  // Add another building input set
   const addBuilding = () => {
     setBuildings([
       ...buildings,
@@ -36,13 +32,11 @@ export const UpdateBuilding = () => {
     ]);
   };
 
-  // Remove building input set
   const removeBuilding = (index) => {
     const updated = buildings.filter((_, i) => i !== index);
     setBuildings(updated);
   };
 
-  // Submit updated buildings
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -56,7 +50,6 @@ export const UpdateBuilding = () => {
 
       console.log("Formatted for API:", formattedBuildings);
 
-      // Submit the first building (API supports single update)
       await dispatch(UpdateBuildingSubmit(formattedBuildings[0])).unwrap();
       navigate("/building_list");
     } catch (error) {
@@ -90,41 +83,7 @@ export const UpdateBuilding = () => {
                   </button>
                 )}
               </div>
-
-              <div className="mb-3">
-                <label className="form-label">Building Name</label>
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-building"></i>
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="e.g. Sunrise Heights"
-                    value={building.building_name}
-                    onChange={(e) => handleChange(index, "building_name", e.target.value)}
-                    required
-                    disabled={loading}
-                  />
-                </div>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Year Built</label>
-                <div className="input-group">
-                  <span className="input-group-text">
-                    <i className="bi bi-calendar3"></i>
-                  </span>
-                  <input
-                    type="number"
-                    className="form-control"
-                    placeholder="e.g. 2022"
-                    value={building.year}
-                    onChange={(e) => handleChange(index, "year", e.target.value)}
-                    disabled={loading}
-                  />
-                </div>
-              </div>
+               
 
               <div className="mb-2">
                 <label className="form-label">Address</label>

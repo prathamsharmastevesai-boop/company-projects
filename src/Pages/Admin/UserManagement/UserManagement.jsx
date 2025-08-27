@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Form } from "react-bootstrap";
+import { Card, Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getUserlistApi, inviteUserApi } from "../../../Networking/Admin/APIs/UserManagement";
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
 
 export const UserManagement = () => {
+
     const dispatch = useDispatch();
+
     const [email, setEmail] = useState("");
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [inviteLoading, setInviteLoading] = useState(false);
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
-
-const handleDelete = (email) => {
-//   if (!email) return toast.error("Email is required");
-//   dispatch(DeleteUser(email));
-};
-
+    const handleDelete = (email) => {
+        if (!email) return toast.error("Email is required");
+        dispatch(DeleteUser(email));
+    };
 
     const fetchUsers = async () => {
         setLoading(true);
         try {
             const res = await dispatch(getUserlistApi()).unwrap();
-            setUsers(res || []); 
+            setUsers(res || []);
         } catch (err) {
             console.error("Failed to fetch users:", err);
         } finally {
@@ -39,12 +40,15 @@ const handleDelete = (email) => {
             alert("Please enter an email address");
             return;
         }
+        setInviteLoading(true);
         try {
             await dispatch(inviteUserApi({ email })).unwrap();
             setEmail("");
-            fetchUsers(); 
+            fetchUsers();
         } catch (err) {
             console.error("Invite failed:", err);
+        } finally {
+            setInviteLoading(false);
         }
     };
 
@@ -76,9 +80,27 @@ const handleDelete = (email) => {
                             placeholder="Enter user email address..."
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            disabled={inviteLoading}
                         />
-                        <Button variant="primary w-25" onClick={handleInviteUser}>
-                            Invite User
+                        <Button
+                            variant="primary w-25"
+                            onClick={handleInviteUser}
+                            disabled={inviteLoading}
+                        >
+                            {inviteLoading ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />{" "}
+                                    Sending...
+                                </>
+                            ) : (
+                                "Invite User"
+                            )}
                         </Button>
                     </div>
                     <small className="text-muted">
@@ -124,13 +146,12 @@ const handleDelete = (email) => {
                                         <td>{user.display || user.name}</td>
                                         <td>{new Date(user.created).toLocaleDateString()}</td>
                                         <td>
-                                            {/* {user.actions?.includes("edit") && (
-                                                <Button size="sm" variant="outline-primary" className="me-2">
-                                                    Edit
-                                                </Button>
-                                            )} */}
                                             {user.actions?.includes("delete") && (
-                                                <Button size="sm" variant="outline-danger" onClick={() => handleDelete(user.email)}>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline-danger"
+                                                    onClick={() => handleDelete(user.email)}
+                                                >
                                                     Delete
                                                 </Button>
                                             )}

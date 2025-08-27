@@ -7,12 +7,12 @@ export const DashboardLayout = () => {
 
   return (
     <div className={`main-wrapper ${collapsed ? "" : "open"}`}
->
+    >
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} className="" />
 
       <div
-  className="flex-grow-1 content-wrapper"
->
+        className="flex-grow-1 content-wrapper"
+      >
 
         <Outlet />
       </div>

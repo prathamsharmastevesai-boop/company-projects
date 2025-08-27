@@ -8,8 +8,8 @@ export const LoginSubmit = createAsyncThunk(
   'auth/LoginSubmit',
   async (credentials, { rejectWithValue }) => {
     try {
-       const url = `${baseURL}${login}`;
-       console.log(url,"baseURL");
+      const url = `${baseURL}${login}`;
+      console.log(url, "baseURL");
       const response = await axios.post(url, credentials, {
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,6 @@ export const LoginSubmit = createAsyncThunk(
     }
   }
 );
-
 
 export const SignUpSubmit = createAsyncThunk(
   "auth/SignUpSubmit",
@@ -93,7 +92,6 @@ export const SignUpSubmit = createAsyncThunk(
     }
   }
 );
-
 
 export const DeleteUser = createAsyncThunk(
   "auth/DeleteUser",

@@ -12,18 +12,20 @@ import RAGLoader from "../../../Component/Loader";
 export const BuildingInfo = () => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // for upload/edit/delete
+  const [listLoading, setListLoading] = useState(false); // for fetching doc list
   const [isDragging, setIsDragging] = useState(false);
   const editFileRef = useRef(null);
   const [editingFile, setEditingFile] = useState(null);
 
   const fetchData = async () => {
+    setListLoading(true);
     try {
       const res = await dispatch(GeneralInfoSubmit()).unwrap();
       if (Array.isArray(res)) {
-        const BuildingDocs = res.filter((f) => f.category === "Building");
+        const buildingDocs = res.filter((f) => f.category === "Building");
         setDocs(
-          BuildingDocs.map((f) => ({
+          buildingDocs.map((f) => ({
             file_id: f.file_id,
             name: f.original_file_name,
           }))
@@ -31,12 +33,14 @@ export const BuildingInfo = () => {
       }
     } catch (err) {
       console.error("Error fetching Building docs:", err);
+    } finally {
+      setListLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   const uploadFile = async (file) => {
     if (
@@ -135,6 +139,7 @@ export const BuildingInfo = () => {
       ).unwrap();
 
       await fetchData();
+      toast.success("File deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err);
       toast.error("Delete failed!");
@@ -145,7 +150,7 @@ export const BuildingInfo = () => {
 
   return (
     <div className="container p-4">
-      <h5 className="fw-bold">📂 Building Information Data</h5>
+      <h5 className="fw-bold">Building Information Data</h5>
       <p className="text-muted">
         Upload and manage documents for Building Information
       </p>
@@ -180,36 +185,42 @@ export const BuildingInfo = () => {
 
       <div className="card shadow-sm">
         <div className="card-header fw-semibold">Uploaded Documents</div>
-        <ul className="list-group list-group-flush">
-          {docs?.length === 0 && (
-            <li className="list-group-item text-muted">
-              No documents uploaded yet.
-            </li>
-          )}
-          {docs?.map((file) => (
-            <li
-              key={file?.file_id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span>
-                <i className="bi bi-file-earmark-text text-primary me-2"></i>
-                {file?.name}
-              </span>
-              <span>
-                <i
-                  className="bi bi-pencil-square text-primary me-3"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleEditClick(file)}
-                />
-                <i
-                  className="bi bi-trash text-danger"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleDelete(file)}
-                />
-              </span>
-            </li>
-          ))}
-        </ul>
+        {listLoading ? (
+          <div className="p-3 text-center">
+            <RAGLoader />
+          </div>
+        ) : (
+          <ul className="list-group list-group-flush">
+            {docs?.length === 0 && (
+              <li className="list-group-item text-muted">
+                No documents uploaded yet.
+              </li>
+            )}
+            {docs?.map((file) => (
+              <li
+                key={file?.file_id}
+                className="list-group-item d-flex justify-content-between align-items-center"
+              >
+                <span>
+                  <i className="bi bi-file-earmark-text text-primary me-2"></i>
+                  {file?.name}
+                </span>
+                <span>
+                  <i
+                    className="bi bi-pencil-square text-primary me-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleEditClick(file)}
+                  />
+                  <i
+                    className="bi bi-trash text-danger"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleDelete(file)}
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <input

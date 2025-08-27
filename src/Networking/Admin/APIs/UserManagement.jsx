@@ -17,9 +17,9 @@ export const inviteUserApi = createAsyncThunk(
                     "Content-Type": "application/json",
                 },
             });
-            console.log(response.data,"response.data");
-            
-             toast.success(response.data.message)
+            console.log(response.data, "response.data");
+
+            toast.success(response.data.message)
             return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Lease creation failed");
@@ -45,7 +45,7 @@ export const getUserlistApi = createAsyncThunk(
                 },
             });
 
-        return response.data;
+            return response.data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Lease creation failed");
             throw error;

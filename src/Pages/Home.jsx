@@ -4,6 +4,7 @@ import { FaUser, FaUserShield } from 'react-icons/fa';
 import bgImage from '../../src/assets/side_photo.png';
 
 export const Home = () => {
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,10 +41,8 @@ export const Home = () => {
           border: '1px solid rgba(255, 255, 255, 0.3)'
         }}
       >
-
         <h2 className="mb-4 text-dark fw-bold">Welcome to CRE Portfolio Pulse</h2>
         <p className="text-muted mb-4">Select your login type to continue</p>
-
         <div className="d-grid gap-3">
           <button
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
@@ -57,7 +56,6 @@ export const Home = () => {
           >
             <FaUser /> User Login
           </button>
-
         </div>
       </div>
     </div>

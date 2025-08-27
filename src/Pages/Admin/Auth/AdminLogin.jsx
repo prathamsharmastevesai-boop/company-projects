@@ -9,20 +9,18 @@ export const AdminLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { Role } = useSelector((state) => state.loginSlice);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const token = sessionStorage.getItem("token");
     const auth = JSON.parse(sessionStorage.getItem("auth"));
-  
-    console.log(auth,token,"auth token");
-    
-  
+
+    console.log(auth, token, "auth token");
+
+
     if (token && auth?.isAuthenticated) {
       if (auth.role === "user") {
         navigate("/dashboard");
@@ -48,51 +46,49 @@ export const AdminLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setLoading(true);
-  setErrors({});
-  const payload = { email, password, role: "admin" };
+    setLoading(true);
+    setErrors({});
+    const payload = { email, password, role: "admin" };
 
-  try {
-    const res = await dispatch(LoginSubmit(payload));
-    setLoading(false);
+    try {
+      const res = await dispatch(LoginSubmit(payload));
+      setLoading(false);
 
-    if (res.meta.requestStatus === "fulfilled") {
-      const userRole = res.payload.role;
-      const token = res.payload.token; // ✅ ensure token is returned from backend
+      if (res.meta.requestStatus === "fulfilled") {
+        const userRole = res.payload.role;
+        const token = res.payload.token;
 
-      // ✅ Save in sessionStorage
-      sessionStorage.setItem("auth", JSON.stringify({
-        isAuthenticated: true,
-        role: userRole
-      }));
-
-      // ✅ Send to React Native WebView if available
-      if (window.ReactNativeWebView && token && userRole) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-          type: 'LOGIN_SUCCESS',
-          token,
+        sessionStorage.setItem("auth", JSON.stringify({
+          isAuthenticated: true,
           role: userRole
         }));
-      }
 
-      if (userRole === "admin") {
-        navigate("/AdminDashboard");
-      } else if (userRole === "user") {
-        navigate("/");
-      } else {
-        setErrors({ general: "Unauthorized role." });
+        if (window.ReactNativeWebView && token && userRole) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'LOGIN_SUCCESS',
+            token,
+            role: userRole
+          }));
+        }
+
+        if (userRole === "admin") {
+          navigate("/AdminDashboard");
+        } else if (userRole === "user") {
+          navigate("/");
+        } else {
+          setErrors({ general: "Unauthorized role." });
+        }
       }
-    } 
-  } catch (err) {
-    setLoading(false);
-    setErrors({ general: "An error occurred during login." });
-    console.error(err);
-  }
-};
+    } catch (err) {
+      setLoading(false);
+      setErrors({ general: "An error occurred during login." });
+      console.error(err);
+    }
+  };
 
   return (
     <div className="container-fluid min-vh-100 d-flex p-0 position-relative">

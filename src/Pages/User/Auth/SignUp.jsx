@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { SignUpSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import RAGLoader from "../../../Component/Loader";
 import side_photo from "../../../assets/side_photo.png";
 
 export const SignUp = () => {
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,7 +30,6 @@ export const SignUp = () => {
   const validateForm = () => {
     const newErrors = {};
     const { name, number, email, password, confirmPassword } = form;
-
     if (!name.trim()) newErrors.name = "Name is required.";
     if (!/^\d{10}$/.test(number)) newErrors.number = "Phone number must be 10 digits.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Invalid email format.";
@@ -44,11 +43,8 @@ export const SignUp = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
-
     if (!validateForm()) return;
-
     setLoading(true);
-
     const payload = {
       name: form.name,
       number: Number(form.number),
@@ -60,8 +56,6 @@ export const SignUp = () => {
 
     try {
       const res = await dispatch(SignUpSubmit(payload)).unwrap();
-
-      // If message is returned (OTP signup success)
       if (res?.message) {
         navigate("/VerifyOtp", { state: { email: form.email, screen: "SignUp" } });
       }
@@ -72,8 +66,6 @@ export const SignUp = () => {
     } finally {
       setLoading(false);
     }
-
-
   };
 
   return (

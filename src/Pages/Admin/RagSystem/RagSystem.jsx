@@ -16,12 +16,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export const RagSystem = () => {
   const dispatch = useDispatch();
-  const [data, setData] = useState(null); 
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     dispatch(getsystemtracingApi())
       .unwrap()
-      .then((res) => setData(res)) 
+      .then((res) => setData(res))
       .catch((err) => console.error("Error fetching data:", err));
   }, [dispatch]);
 

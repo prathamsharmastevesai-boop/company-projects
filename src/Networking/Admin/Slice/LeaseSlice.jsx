@@ -6,11 +6,11 @@ const LeaseSlice = createSlice({
     initialState: {
         loading: false,
         Office: "",
-        data:[],
-        leases:[],
-        buildingAddress:"",
-        Building_id:"",
-        message:"",
+        data: [],
+        leases: [],
+        buildingAddress: "",
+        Building_id: "",
+        message: "",
         error: null,
     },
     extraReducers: (builder) => {
@@ -22,7 +22,7 @@ const LeaseSlice = createSlice({
             state.loading = false;
             state.data = action.payload;
             state.buildingAddress = state.data;
-            
+
             state.leases = state.data.leases;
             state.message = state.data.message;
             state.Building_id = state.data.building_id;

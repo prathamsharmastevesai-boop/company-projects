@@ -12,77 +12,67 @@ import RAGLoader from "../../../Component/Loader";
 export const Thirdparty = () => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
+  const [listLoading, setListLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const editFileRef = useRef(null);
   const [editingFile, setEditingFile] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await dispatch(GeneralInfoSubmit());
-        if (Array.isArray(res?.payload)) {
-          const brokerDocs = res.payload.filter((f) => f.category === "Broker");
-          setDocs(
-            brokerDocs.map((f) => ({
-              file_id: f.file_id,
-              name: f.original_file_name,
-            }))
-          );
-        }
-      } catch (err) {
-        console.error("Error fetching broker docs:", err);
+  const fetchDocs = async () => {
+    setListLoading(true);
+    try {
+      const res = await dispatch(GeneralInfoSubmit()).unwrap();
+      if (Array.isArray(res)) {
+        const brokerDocs = res.filter((f) => f.category === "Broker");
+        setDocs(
+          brokerDocs.map((f) => ({
+            file_id: f.file_id,
+            name: f.original_file_name,
+          }))
+        );
       }
-    };
-    fetchData();
+    } catch (err) {
+      console.error("Error fetching broker docs:", err);
+    } finally {
+      setListLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDocs();
   }, [dispatch]);
 
-const uploadFile = async (file) => {
-  if (
-    ![
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    ].includes(file.type)
-  ) {
-    toast.error("Only PDF, DOC, DOCX, XLS, XLSX files are allowed");
-    return;
-  }
-
-  if (file.size > 3 * 1024 * 1024) {
-    toast.error("File size must be under 3MB");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    await dispatch(
-      UploadGeneralDocSubmit({ file, category: "Broker" })
-    ).unwrap();
-
-    // ✅ Upload के बाद fresh list fetch करो
-    const res = await dispatch(GeneralInfoSubmit()).unwrap();
-    if (Array.isArray(res)) {
-      const brokerDocs = res.filter((f) => f.category === "Broker");
-      setDocs(
-        brokerDocs.map((f) => ({
-          file_id: f.file_id,
-          name: f.original_file_name,
-        }))
-      );
+  const uploadFile = async (file) => {
+    if (
+      ![
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ].includes(file.type)
+    ) {
+      toast.error("Only PDF, DOC, DOCX, XLS, XLSX files are allowed");
+      return;
     }
-    
-    toast.success("File uploaded successfully!");
-  } catch (err) {
-    console.error("Upload failed:", err);
-    toast.error("Upload failed!");
-  } finally {
-    setLoading(false);
-  }
-};
 
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error("File size must be under 3MB");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await dispatch(
+        UploadGeneralDocSubmit({ file, category: "Broker" })
+      ).unwrap();
+      await fetchDocs();
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -124,13 +114,7 @@ const uploadFile = async (file) => {
           category: "Broker",
         })
       );
-      setDocs((prev) =>
-        prev.map((f) =>
-          f.file_id === editingFile.file_id
-            ? { ...f, name: newFile.name }
-            : f
-        )
-      );
+      await fetchDocs();
     } catch (err) {
       console.error("Edit failed:", err);
     } finally {
@@ -147,7 +131,7 @@ const uploadFile = async (file) => {
       await dispatch(
         DeleteGeneralDocSubmit({ file_id: file.file_id, category: "Broker" })
       );
-      setDocs((prev) => prev.filter((f) => f.file_id !== file.file_id));
+      await fetchDocs();
     } catch (err) {
       console.error("Delete failed:", err);
     } finally {
@@ -192,36 +176,42 @@ const uploadFile = async (file) => {
 
       <div className="card shadow-sm">
         <div className="card-header fw-semibold">Uploaded Documents</div>
-        <ul className="list-group list-group-flush">
-          {docs.length === 0 && (
-            <li className="list-group-item text-muted">
-              No documents uploaded yet.
-            </li>
-          )}
-          {docs.map((file) => (
-            <li
-              key={file.file_id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span>
-                <i className="bi bi-file-earmark-text text-primary me-2"></i>
-                {file.name}
-              </span>
-              <span>
-                <i
-                  className="bi bi-pencil-square text-primary me-3"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleEditClick(file)}
-                />
-                <i
-                  className="bi bi-trash text-danger"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleDelete(file)}
-                />
-              </span>
-            </li>
-          ))}
-        </ul>
+        {listLoading ? (
+          <div className="p-3 text-center">
+            <RAGLoader />
+          </div>
+        ) : (
+          <ul className="list-group list-group-flush">
+            {docs.length === 0 && (
+              <li className="list-group-item text-muted">
+                No documents uploaded yet.
+              </li>
+            )}
+            {docs.map((file) => (
+              <li
+                key={file.file_id}
+                className="list-group-item d-flex justify-content-between align-items-center"
+              >
+                <span>
+                  <i className="bi bi-file-earmark-text text-primary me-2"></i>
+                  {file.name}
+                </span>
+                <span>
+                  <i
+                    className="bi bi-pencil-square text-primary me-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleEditClick(file)}
+                  />
+                  <i
+                    className="bi bi-trash text-danger"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleDelete(file)}
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <input

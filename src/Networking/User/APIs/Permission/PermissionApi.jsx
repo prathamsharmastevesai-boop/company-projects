@@ -9,7 +9,6 @@ export const RequestPermissionSubmit = createAsyncThunk(
 
     const token = sessionStorage.getItem('token');
     const url = `${baseURL}${Request_permission}`;
-    console.log(url,"url");
     try {
       const response = await axios.post(url, data, {
         headers: {
@@ -23,7 +22,7 @@ export const RequestPermissionSubmit = createAsyncThunk(
 
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error(error.response?.data?.message || error.message||"Request Permission failed");
+      toast.error(error.response?.data?.message || error.message || "Request Permission failed");
       return rejectWithValue(error.response?.data || error.message);
     }
   }

@@ -58,6 +58,7 @@
   .form-control {
     font-size: 14px;
   }
+
   .btn i {
     font-size: 18px;
   }
@@ -79,6 +80,7 @@
 .card {
   transition: transform 0.3s ease;
 }
+
 /* .card:hover {
   transform: scale(1.03);
 } */
@@ -86,12 +88,15 @@
 
 /* To hide Scrollbar */
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 
@@ -107,80 +112,85 @@
 }
 
 .message-container {
-    max-height: 250px;
-    overflow: auto;
+  max-height: 250px;
+  overflow: auto;
 }
 
 .message-container2 {
-    max-height: 250px;
-    overflow: auto;
+  max-height: 250px;
+  overflow: auto;
 }
 
 .message-container1 {
-    max-height: calc(100vh - 190px);
-    overflow: auto;
+  max-height: calc(100vh - 190px);
+  overflow: auto;
 }
 
 .chat-item-wrapper {
-    max-height: calc(100vh - 110px);
+  max-height: calc(100vh - 110px);
 }
 
 .upload-container {
-    max-height: 45px;
-    overflow: auto;
-    margin: 0 auto; 
+  max-height: 45px;
+  overflow: auto;
+  margin: 0 auto;
 }
 
 .upload-container_specific {
-    max-height: 80px;
-    overflow: auto;
-    margin: 0 auto; 
+  max-height: 80px;
+  overflow: auto;
+  margin: 0 auto;
 }
 
 
 
-.main-wrapper .sidebar-wrapper{
-  width:70px;
+.main-wrapper .sidebar-wrapper {
+  width: 70px;
   position: fixed;
   top: 0px;
   height: 100vh;
   transition: all 0.3s ease;
 }
 
-.main-wrapper .content-wrapper{
-  width:calc(100% - 70px);
+.main-wrapper .content-wrapper {
+  width: calc(100% - 70px);
   margin-left: auto;
   transition: all 0.3s ease;
 }
-.main-wrapper.open .sidebar-wrapper{
-  width:240px;
-}
-.main-wrapper.open .content-wrapper{
-  width:calc(100% - 240px);
-}
-@media only screen and (max-width:767px){
 
-  
-  .main-wrapper .sidebar-wrapper{
-    width:70px;
+.main-wrapper.open .sidebar-wrapper {
+  width: 240px;
+}
+
+.main-wrapper.open .content-wrapper {
+  width: calc(100% - 240px);
+}
+
+@media only screen and (max-width:767px) {
+
+
+  .main-wrapper .sidebar-wrapper {
+    width: 70px;
     position: fixed;
     top: 0px;
     height: 100vh;
     transition: all 0.3s ease;
   }
-  
-  .main-wrapper .content-wrapper{
-    width:calc(100% - 70px);
+
+  .main-wrapper .content-wrapper {
+    width: calc(100% - 70px);
     margin-left: auto;
     transition: all 0.3s ease;
   }
-  .main-wrapper.open .sidebar-wrapper{
-    width:240px;
+
+  .main-wrapper.open .sidebar-wrapper {
+    width: 240px;
   }
-  .main-wrapper.open .content-wrapper{
-    width:calc(100% - 70px);
+
+  .main-wrapper.open .content-wrapper {
+    width: calc(100% - 70px);
   }
-  
+
 }
 
 .upload-overlay {
@@ -211,23 +221,25 @@
 .sidebar-wrapper::-webkit-scrollbar {
   width: 6px;
 }
+
 .sidebar-wrapper::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
+
 .sidebar-wrapper::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
 
 .custom-tabs {
-  background: #f5f6f8;  
+  background: #f5f6f8;
   border-radius: 10px;
   padding: 6px;
 }
 
 .custom-tabs .nav-link {
   color: #334155;
-    width: 100%;
+  width: 100%;
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
@@ -247,4 +259,50 @@
 }
 
 
+.lease_select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
 
+.lease_select .card {
+  position: relative;
+  overflow: hidden;
+}
+
+.lease_select .card-body {
+  position: relative;
+  z-index: 9;
+}
+
+
+.lease_select .card:before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  background-color: #212529;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  transition: all 0.5s ease;
+}
+
+.lease_select .card:hover::before {
+  width: 100%;
+  height: 100%;
+  border-radius: 0px;
+  left: 0px;
+  top: 0px;
+}
+
+.lease_select .card:hover .card-body {
+  color: #fff;
+}
+
+.lease_select .card:hover button {
+  background-color: #fff;
+  color: #000;
+}

@@ -3,7 +3,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AskQuestion_Specific, baseURL, Chat_history, Chat_history_Specific, Del_Chat_Session, Doc_Delete_Specific, List_specific_Docs, Old_history, Session_Delete_Specific, Session_List_Specific, Upload_specific_file } from '../../../NWconfig';
 
-//chat with document
 export const getlist_his_oldApi = createAsyncThunk(
   'auth/getlist_his_oldApi',
   async () => {
@@ -23,7 +22,8 @@ export const getlist_his_oldApi = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
@@ -31,7 +31,7 @@ export const getlist_his_oldApi = createAsyncThunk(
 
 export const get_chathistory_Api = createAsyncThunk(
   'auth/get_chathistory_Api',
-  async (id, { rejectWithValue }) => {
+  async (id) => {
     const token = sessionStorage.getItem('token');
 
     try {
@@ -47,8 +47,9 @@ export const get_chathistory_Api = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch chat history");
-      return rejectWithValue(error.response?.data || error.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
+      throw error;
     }
   }
 );
@@ -60,7 +61,6 @@ export const Delete_Chat_Session = createAsyncThunk(
 
     try {
       const url = `${baseURL}${Del_Chat_Session}delete/?session_id=${id}`;
-      console.log(url, "DELETE Building URL");
 
       const response = await axios.delete(url, {
         headers: {
@@ -72,7 +72,8 @@ export const Delete_Chat_Session = createAsyncThunk(
       toast.success(response.data.message || "Building Session successfully");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
@@ -80,33 +81,34 @@ export const Delete_Chat_Session = createAsyncThunk(
 
 
 //Chat with Specific Document
-
 export const Upload_specific_file_Api = createAsyncThunk(
   'auth/Upload_specific_file_Api',
-  async ({ files }, thunkAPI) => {
+  async ({ files, category }, thunkAPI) => {
     const token = sessionStorage.getItem('token');
     const url = `${baseURL}${Upload_specific_file}`;
 
     try {
       const formData = new FormData();
 
-      // Append multiple files
       files.forEach((file) => {
         formData.append("files", file);
       });
 
-      const response = await axios.post(url, formData, {
+      formData.append("category", category);
+
+      const response = await fetch(url, {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-          "Content-Type": "multipart/form-data",
         },
+        body: formData,
       });
 
-      return response.data;
+      const data = await response.json();
+      return data;
     } catch (error) {
-      console.error("Upload error:", error);
-      toast.error(error.response?.data?.message || "File upload failed");
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
@@ -131,8 +133,9 @@ export const get_specific_Doclist_Api = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch Document list");
-      return rejectWithValue(error.response?.data || error.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
+      throw error;
     }
   }
 );
@@ -140,26 +143,25 @@ export const get_specific_Doclist_Api = createAsyncThunk(
 export const AskQuestion_Specific_API = createAsyncThunk(
   'AskQuestion_Specific_API',
   async (Data) => {
-
     const token = sessionStorage.getItem('token');
 
     try {
       const url = `${baseURL}${AskQuestion_Specific}`;
       const response = await axios.post(url, Data, {
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
       });
-      toast.success(response.data.message)
+
       return response.data;
+
     } catch (error) {
-      toast.error(error.response?.data?.message );
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
 );
-
 
 export const get_Session_List_Specific = createAsyncThunk(
   'get_Session_List_Specific',
@@ -169,7 +171,7 @@ export const get_Session_List_Specific = createAsyncThunk(
 
     try {
       console.log("console in api ");
-      
+
       const url = `${baseURL}${Session_List_Specific}`;
 
       const response = await axios.get(url, {
@@ -179,16 +181,16 @@ export const get_Session_List_Specific = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-console.log(response.data,"response.data23242323423");
+      console.log(response.data, "response.data23242323423");
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
 );
-
 
 export const get_chathistory_Specific_Api = createAsyncThunk(
   'auth/get_chathistory_Specific_Api',
@@ -208,12 +210,12 @@ export const get_chathistory_Specific_Api = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch chat history");
-      return rejectWithValue(error.response?.data || error.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
+      throw error;
     }
   }
 );
-
 
 export const Delete_Chat_Specific_Session = createAsyncThunk(
   'auth/Delete_Chat_Specific_Session',
@@ -222,7 +224,6 @@ export const Delete_Chat_Specific_Session = createAsyncThunk(
 
     try {
       const url = `${baseURL}${Session_Delete_Specific}?session_id=${id}`;
-      console.log(url, "DELETE Building URL");
 
       const response = await axios.delete(url, {
         headers: {
@@ -234,7 +235,8 @@ export const Delete_Chat_Specific_Session = createAsyncThunk(
       toast.success(response.data.message || "Building Session successfully");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }
@@ -259,7 +261,8 @@ export const Delete_Doc_Specific = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      const errMsg = error?.response?.data?.message || error.message || "Data not found";
+      toast.error(errMsg);
       throw error;
     }
   }

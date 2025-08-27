@@ -4,23 +4,26 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import {
   DeleteBuilding,
   ListBuildingSubmit,
+  CreateBuildingSubmit,
+  UpdateBuildingSubmit, 
 } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 
 export const ListBuilding = () => {
-  // Redux
   const { BuildingList } = useSelector((state) => state.BuildingSlice);
-
-  // Hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cardsRef = useRef([]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [address, setAddress] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  // Fetch buildings with loading state
+  const [editBuildingId, setEditBuildingId] = useState(null);
+  const [editFieldValue, setEditFieldValue] = useState("");
+
   useEffect(() => {
     const fetchBuildings = async () => {
       setLoading(true);
@@ -30,12 +33,11 @@ export const ListBuilding = () => {
     fetchBuildings();
   }, [dispatch]);
 
-  // Animate cards when buildings or searchTerm changes
   useEffect(() => {
     if (!loading) {
       cardsRef.current.forEach((card, i) => {
         if (card) {
-          card.classList.remove("visible"); // reset class before adding
+          card.classList.remove("visible");
           setTimeout(() => {
             card.classList.add("visible");
           }, i * 150);
@@ -44,9 +46,27 @@ export const ListBuilding = () => {
     }
   }, [BuildingList, searchTerm, loading]);
 
-  // Handle functions
-  const handleEdit = (building) => {
-    navigate("/UpdateBuilding", { state: { buildings: [building] } });
+  const startEdit = (building) => {
+    setEditBuildingId(building.id);
+    setEditFieldValue(building.address || ""); 
+  };
+
+  const saveEdit = async (buildingId) => {
+    if (!editFieldValue.trim()) return;
+    setLoading(true);
+    try {
+      const payload = {
+        building_id: buildingId,
+        address: editFieldValue, 
+      };
+      await dispatch(UpdateBuildingSubmit(payload)).unwrap();
+      await dispatch(ListBuildingSubmit());
+      setEditBuildingId(null);
+    } catch (error) {
+      console.error("Error updating building:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (buildingId) => {
@@ -61,90 +81,110 @@ export const ListBuilding = () => {
     }
   };
 
-  const handleSubmit = async (buildingId) => {
-    navigate(`/LeaseList/${buildingId}`);
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    if (!address.trim()) return;
+    setLoading(true);
+    try {
+      const buildingData = [{ building_name: "", address, year: "" }];
+      await dispatch(CreateBuildingSubmit(buildingData)).unwrap();
+      await dispatch(ListBuildingSubmit());
+      setAddress("");
+    } catch (error) {
+      console.error("Error submitting building:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Filter buildings by search term
+  const handleSubmit = (buildingId) => {
+    console.log(buildingId,"buildingId");
+       navigate("/LeaseList", { state: { office: { buildingId } } });
+  };
+
   const filteredBuildings = BuildingList.filter((building) => {
     const name = building.building_name?.toLowerCase() || "";
-    const address = building.address?.toLowerCase() || "";
+    const addr = building.address?.toLowerCase() || "";
     const term = searchTerm.toLowerCase();
-    return name.includes(term) || address.includes(term);
+    return name.includes(term) || addr.includes(term);
   });
 
-  // Card component for reuse
   const BuildingCard = ({ building, index }) => (
-    <div className="col-md-6 col-lg-4 mb-4">
-      <div
-        ref={(el) => (cardsRef.current[index] = el)}
-        className="card border-0 shadow-sm h-auto hover-shadow position-relative"
-      >
-        <div className="position-absolute top-0 end-0 p-2" style={{ zIndex: 1 }}>
-          <i
-            className="bi bi-pencil-square text-primary me-3"
-            style={{ cursor: "pointer", fontSize: "1.2rem" }}
-            onClick={() => handleEdit(building)}
-            title="Edit"
-          ></i>
-          <i
-            className="bi bi-trash text-danger"
-            style={{ cursor: "pointer", fontSize: "1.2rem" }}
-            onClick={() => handleDelete(building.id)}
-            title="Delete"
-          ></i>
-        </div>
+    <div
+      ref={(el) => (cardsRef.current[index] = el)}
+      className="card border-0 shadow-sm hover-shadow w-100"
+      style={{ borderRadius: "16px", backgroundColor: "#f8fbff" }}
+    >
+      <div className="position-absolute top-0 end-0 p-2">
+        {editBuildingId === building.id ? (
+          <>
+            <i
+              className="bi bi-check-circle-fill text-success me-3"
+              style={{ cursor: "pointer", fontSize: "1.2rem" }}
+              onClick={() => saveEdit(building.id)}
+              title="Save"
+            ></i>
+            <i
+              className="bi bi-x-circle-fill text-secondary"
+              style={{ cursor: "pointer", fontSize: "1.2rem" }}
+              onClick={() => setEditBuildingId(null)}
+              title="Cancel"
+            ></i>
+          </>
+        ) : (
+          <>
+            <i
+              className="bi bi-pencil-square text-primary me-3"
+              style={{ cursor: "pointer", fontSize: "1.2rem" }}
+              onClick={() => startEdit(building)}
+              title="Edit"
+            ></i>
+            <i
+              className="bi bi-trash text-danger"
+              style={{ cursor: "pointer", fontSize: "1.2rem" }}
+              onClick={() => handleDelete(building.id)}
+              title="Delete"
+            ></i>
+          </>
+        )}
+      </div>
 
-        <div
-          className="card-body"
-          onClick={() => handleSubmit(building.id)}
-          style={{ cursor: "pointer" }}
-        >
-          <h5 className="card-title text-dark mb-3">
-            🏢 {building.building_name || `Building #${index + 1}`}
-          </h5>
-          <p className="mb-2">
-            <i className="bi bi-calendar3 me-2 text-secondary"></i>
-            <strong>Year Built:</strong>{" "}
-            <span className="badge text-dark">{building.year || "N/A"}</span>
-          </p>
-          <p>
-            <i className="bi bi-geo-alt-fill me-2 text-secondary"></i>
+      <div className="card-body d-flex flex-column justify-content-center">
+        {editBuildingId === building.id ? (
+          <input
+            type="text"
+            className="form-control"
+            value={editFieldValue}
+            onChange={(e) => setEditFieldValue(e.target.value)}
+            autoFocus
+          />
+        ) : (
+          <p
+            className="mb-2 text-secondary"
+            onClick={() => handleSubmit(building.id)}
+            style={{ cursor: "pointer" }}
+          >
+            <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
             <strong>Address:</strong> {building.address || "N/A"}
           </p>
-        </div>
-      </div>
-    </div>
-  );
-
-  // "Create New Building" card
-  const CreateBuildingCard = () => (
-    <div
-      className="col-md-6 col-lg-4 mb-4 "
-      onClick={() => navigate("/CreateBuilding")}
-      style={{ cursor: "pointer", maxWidth: "300px" }}
-    >
-      <div className="card border-0 shadow-sm h-auto d-flex justify-content-center align-items-center text-center hover-shadow" style={{ minHeight: "150px" }}>
-        <button className="btn text-primary">
-          <i className="bi bi-plus-circle me-2"></i> Create New Building
-        </button>
+        )}
       </div>
     </div>
   );
 
   return (
-    <div className="container p-4" style={{ position: "relative" }}>
+    <div className="container py-4" style={{ position: "relative" }}>
       {deleteLoading && (
         <div className="upload-overlay">
           <div className="text-center">
             <div className="spinner-border text-primary" role="status"></div>
-            <div className="upload-text">Deleting building...</div>
+            <div className="upload-text mt-2">Deleting building...</div>
           </div>
         </div>
       )}
 
       <div
-        className="text-center bg-white py-3 mb-4"
+        className="text-center bg-white rounded shadow-sm py-3 mb-4"
         style={{
           position: "sticky",
           top: 0,
@@ -153,15 +193,14 @@ export const ListBuilding = () => {
         }}
       >
         <h2 className="fw-bold text-dark">🏢 Building List</h2>
-        <p className="text-muted mb-0">
+        <p className="text-muted mb-3">
           Here’s a summary of all the submitted buildings.
         </p>
-
         <input
           type="search"
           placeholder="Search by building name or address"
-          className="form-control mt-3 mx-auto d-block text-center"
-          style={{ maxWidth: "400px" }}
+          className="form-control mx-auto text-center"
+          style={{ maxWidth: "420px" }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           disabled={loading || deleteLoading}
@@ -169,20 +208,58 @@ export const ListBuilding = () => {
       </div>
 
       {loading ? (
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "60vh" }}>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "60vh" }}
+        >
           <RAGLoader />
         </div>
       ) : (
-        <div className="row">
+        <div className="d-flex flex-column gap-3">
+          <form onSubmit={handleAddSubmit}>
+            <div className="row g-2 align-items-center justify-content-between">
+              <div className="col-md-9">
+                <div className="input-group">
+                  <span className="input-group-text">
+                    <i className="bi bi-geo-alt-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter building address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    disabled={loading}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-3 col-12">
+                <button
+                  type="submit"
+                  className="btn btn-success w-100"
+                  disabled={loading}
+                >
+                  <i className="bi bi-plus-circle me-2"></i> Add Building
+                </button>
+              </div>
+            </div>
+          </form>
+
           {filteredBuildings.length === 0 ? (
-            <CreateBuildingCard />
+            <p className="text-center text-muted mt-3">
+              No buildings found. Add a new one above 👆
+            </p>
           ) : (
-            <>
-              <CreateBuildingCard />
-              {[...filteredBuildings].reverse().map((building, index) => (
-                <BuildingCard key={building.id || index} building={building} index={index} />
-              ))}
-            </>
+            [...filteredBuildings]
+              .reverse()
+              .map((building, index) => (
+                <BuildingCard
+                  key={building.id || index}
+                  building={building}
+                  index={index}
+                />
+              ))
           )}
         </div>
       )}

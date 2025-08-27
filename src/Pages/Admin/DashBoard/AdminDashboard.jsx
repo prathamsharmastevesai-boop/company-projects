@@ -8,14 +8,14 @@ export const AdminDashboard = () => {
   const dispatch = useDispatch();
   const navigation = useNavigate()
 
-  const [dashboardData, setDashboardData] = useState(null); 
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         const res = await dispatch(getdashboardApi()).unwrap();
         console.log(res, "res");
-        setDashboardData(res); 
+        setDashboardData(res);
       } catch (error) {
         console.error("Error fetching dashboard:", error);
       }
@@ -24,15 +24,15 @@ export const AdminDashboard = () => {
     fetchDashboard();
   }, [dispatch]);
 
-  const hanldeAIAnalystic = () =>{
+  const hanldeAIAnalystic = () => {
     navigation("/Aianalytics")
   }
 
-  const handleBuilding =()=>{
-navigation("/CreateBuilding")
+  const handleBuilding = () => {
+    navigation("/CreateBuilding")
   }
 
-  const handleUpload = () =>{
+  const handleUpload = () => {
     navigation("/Building_list")
   }
 
@@ -45,71 +45,71 @@ navigation("/CreateBuilding")
         </p>
       </div>
 
-     <div className="row g-3 mb-4">
-      <div className="col-6 col-md-3">
-        <div className="card border-0 shadow-sm rounded-4 h-100" 
-             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
-          <div className="card-body d-flex align-items-center">
-            <div className="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3" 
-                 style={{ width: "42px", height: "42px" }}>
-              <FileText size={20} />
-            </div>
-            <div>
-              <h6 className="text-muted mb-1">Total Documents</h6>
-              <h5 className="fw-bold mb-0">{dashboardData?.total_documents ?? 0}</h5>
+      <div className="row g-3 mb-4">
+        <div className="col-6 col-md-3">
+          <div className="card border-0 shadow-sm rounded-4 h-100"
+            style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}>
+                <FileText size={20} />
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Total Documents</h6>
+                <h5 className="fw-bold mb-0">{dashboardData?.total_documents ?? 0}</h5>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="col-6 col-md-3">
-        <div className="card border-0 shadow-sm rounded-4 h-100" 
-             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
-          <div className="card-body d-flex align-items-center">
-            <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3" 
-                 style={{ width: "42px", height: "42px" }}>
-              <Building2 size={20} />
-            </div>
-            <div>
-              <h6 className="text-muted mb-1">Buildings</h6>
-              <h5 className="fw-bold mb-0">{dashboardData?.buildings ?? 0}</h5>
+        <div className="col-6 col-md-3">
+          <div className="card border-0 shadow-sm rounded-4 h-100"
+            style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}>
+                <Building2 size={20} />
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Buildings</h6>
+                <h5 className="fw-bold mb-0">{dashboardData?.buildings ?? 0}</h5>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="col-6 col-md-3">
-        <div className="card border-0 shadow-sm rounded-4 h-100" 
-             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
-          <div className="card-body d-flex align-items-center">
-            <div className="rounded-3 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center me-3" 
-                 style={{ width: "42px", height: "42px" }}>
-              <Upload size={20} />
-            </div>
-            <div>
-              <h6 className="text-muted mb-1">Recent Uploads</h6>
-              <h5 className="fw-bold mb-0">{dashboardData?.recent_uploads ?? 0}</h5>
+        <div className="col-6 col-md-3">
+          <div className="card border-0 shadow-sm rounded-4 h-100"
+            style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-3 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}>
+                <Upload size={20} />
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Recent Uploads</h6>
+                <h5 className="fw-bold mb-0">{dashboardData?.recent_uploads ?? 0}</h5>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="col-6 col-md-3">
-        <div className="card border-0 shadow-sm rounded-4 h-100" 
-             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
-          <div className="card-body d-flex align-items-center">
-            <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3" 
-                 style={{ width: "42px", height: "42px" }}>
-              <TrendingUp size={20} />
-            </div>
-            <div>
-              <h6 className="text-muted mb-1">AI Queries</h6>
-              <h5 className="fw-bold mb-0">{dashboardData?.AI_queries ?? 0}</h5>
+        <div className="col-6 col-md-3">
+          <div className="card border-0 shadow-sm rounded-4 h-100"
+            style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}>
+                <TrendingUp size={20} />
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">AI Queries</h6>
+                <h5 className="fw-bold mb-0">{dashboardData?.AI_queries ?? 0}</h5>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
       <div className="row g-3">
         <div className="col-md-6">

@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { LoginSubmit } from '../APIs/LoginAPIs';
-import { CreateBuildingSubmit, ListBuildingSubmit } from '../APIs/BuildingApi';
 import { AskQuestionAPI, ListDocSubmit } from '../APIs/UploadDocApi';
 
 const DocSlice = createSlice({
@@ -8,8 +6,8 @@ const DocSlice = createSlice({
     initialState: {
         loading: false,
         Buliding: "",
-        DocList:[],
-        Data:"",
+        DocList: [],
+        Data: "",
         error: null,
     },
     extraReducers: (builder) => {
@@ -21,7 +19,7 @@ const DocSlice = createSlice({
         builder.addCase(ListDocSubmit.fulfilled, (state, action) => {
             state.loading = false;
             state.DocList = action.payload;
-            
+
         });
         builder.addCase(ListDocSubmit.rejected, (state, action) => {
             state.loading = false;
@@ -34,9 +32,9 @@ const DocSlice = createSlice({
         });
         builder.addCase(AskQuestionAPI.fulfilled, (state, action) => {
             state.loading = false;
-            let config =  action.payload;
+            let config = action.payload;
             state.Data = config;
-            
+
         });
         builder.addCase(AskQuestionAPI.rejected, (state, action) => {
             state.loading = false;

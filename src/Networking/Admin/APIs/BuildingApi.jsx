@@ -4,34 +4,34 @@ import { toast } from 'react-toastify';
 import { baseURL, CreateBuilding, DeleteBuildingEndpoint, ListBuilding, UpdateBuildingEndpoint } from '../../NWconfig';
 
 export const CreateBuildingSubmit = createAsyncThunk(
-    'auth/CreateBuildingSubmit',
-    async (credentials) => {
+  'auth/CreateBuildingSubmit',
+  async (credentials) => {
 
-        const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
-        try {
-            const url = `${baseURL}${CreateBuilding}`;
-            const response = await axios.post(url, credentials, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            toast.success(response.data.message)
-            return response.data;
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Building creation failed");
-            throw error;
-        }
+    try {
+      const url = `${baseURL}${CreateBuilding}`;
+      const response = await axios.post(url, credentials, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      toast.success(response.data.message)
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Building creation failed");
+      throw error;
     }
+  }
 );
 
 export const ListBuildingSubmit = createAsyncThunk(
   'auth/ListBuildingSubmit',
-  async ( thunkAPI) => {
+  async (thunkAPI) => {
     const token = sessionStorage.getItem('token');
     try {
-      
+
       const url = `${baseURL}${ListBuilding}`;
       const response = await axios.get(url, {
         headers: {
@@ -54,31 +54,31 @@ export const ListBuildingSubmit = createAsyncThunk(
 );
 
 export const UpdateBuildingSubmit = createAsyncThunk(
-    'auth/UpdateBuildingSubmit',
-    async (data) => {
+  'auth/UpdateBuildingSubmit',
+  async (data) => {
 
-        const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
-        try {
-            const url = `${baseURL}${UpdateBuildingEndpoint}`;
-            console.log(url, "url");
+    try {
+      const url = `${baseURL}${UpdateBuildingEndpoint}`;
+      console.log(url, "url");
 
-            const response = await axios.patch(url,data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    "ngrok-skip-browser-warning": "true",
-                },
-            });
-            console.log(url, "url");
-            console.log(response, "response");
-  toast.success(response.data.message)
-            return response.data;
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Building Updation failed");
-            throw error;
-        }
+      const response = await axios.patch(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+      console.log(url, "url");
+      console.log(response, "response");
+      toast.success(response.data.message)
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Building Updation failed");
+      throw error;
     }
+  }
 );
 
 export const DeleteBuilding = createAsyncThunk(
@@ -87,7 +87,6 @@ export const DeleteBuilding = createAsyncThunk(
     const token = sessionStorage.getItem('token');
 
     try {
-      // ⬇️ Send id as a query parameter
       const url = `${baseURL}${DeleteBuildingEndpoint}?building_id=${id}`;
       console.log(url, "DELETE Building URL");
 
