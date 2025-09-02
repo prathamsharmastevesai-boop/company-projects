@@ -145,7 +145,7 @@ export const Login = () => {
             </button>
           </form>
 
-          <p className="text-center">
+          {/* <p className="text-center">
             Are you new?{" "}
             <span
               className="text-primary"
@@ -154,7 +154,7 @@ export const Login = () => {
             >
               Create an Account
             </span>
-          </p>
+          </p> */}
         </div>
       </div>
 
