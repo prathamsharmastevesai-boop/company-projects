@@ -87,3 +87,11 @@ export const SystemTracing = "/admin/system_tracing";
 //USER MANAGEMENT
 export const InviteUser = "/invite_user/admin";
 export const userList = "/invite_user/list";
+
+//AI LEASE DRAFTING
+// export const upload_Drafting_Lease = "/user/upload/simple";
+export const upload_Drafting_Lease = "/generate_lease/upload/simple";
+// export const listDraftingDoc = "/user/list_category_files/";
+export const listDraftingDoc = "/generate_lease/list_category_files/"
+// export const deleteDraftingDoc = "/user/delete_file/"
+export const deleteDraftingDoc = "/generate_lease/delete_file/";

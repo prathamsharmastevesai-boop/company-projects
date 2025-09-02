@@ -5,20 +5,17 @@
   import RAGLoader from "../../../Component/Loader";
 
   export const UpdateLease = () => {
-    // Hooks
+
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
 
-    // State
     const [offices, setOffices] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Extract data from router state
     const buildingId = location.state?.Building_id;
     const passedOffices = location.state?.offices || [];
 
-    // Load data on mount
     useEffect(() => {
       if (passedOffices.length > 0) {
         setOffices(passedOffices);
@@ -27,14 +24,13 @@
       }
     }, [passedOffices]);
 
-    // Handle input changes
+
     const handleChange = (index, field, value) => {
       const updated = [...offices];
       updated[index][field] = value;
       setOffices(updated);
     };
 
-    // Handle form submit
     const handleSubmit = async (e) => {
       e.preventDefault();
       setLoading(true);

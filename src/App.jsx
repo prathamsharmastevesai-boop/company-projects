@@ -45,6 +45,8 @@ import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence
 import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
 import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 import { SessionList } from "./Pages/User/Session/sessionList";
+import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/LeaseDreaftingUpload";
+
 
 function App() {
 
@@ -84,6 +86,7 @@ function App() {
             <Route path="/Aianalytics" element={<Aianalytics />} />
             <Route path="/RagSystem" element={<RagSystem />} />
             <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
+            <Route path="/LeaseDraftingUpload" element={<LeaseDraftingUpload />} />
 
             <Route path="/Thirdparty" element={<Thirdparty />} />
             <Route path="/EmployContact" element={<EmployContact />} />

@@ -18,9 +18,6 @@ export const AdminLogin = () => {
     const token = sessionStorage.getItem("token");
     const auth = JSON.parse(sessionStorage.getItem("auth"));
 
-    console.log(auth, token, "auth token");
-
-
     if (token && auth?.isAuthenticated) {
       if (auth.role === "user") {
         navigate("/dashboard");

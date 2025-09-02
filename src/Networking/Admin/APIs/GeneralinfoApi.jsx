@@ -131,9 +131,6 @@ export const AskQuestionGeneralAPI = createAsyncThunk(
         },
       });
 
-      // toast.success(response.data.message || "Question sent successfully");
-      // console.log(response.data, "response");
-
       return response.data;
     } catch (error) {
       const errMsg = error.response?.data?.message || "Question not sent";

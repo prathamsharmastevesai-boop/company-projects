@@ -41,7 +41,6 @@ export const getInslightApi = createAsyncThunk(
         },
       });
 
-      // Optional: Only show toast if API explicitly sends a message
       if (response.data?.message) {
         toast.success(response.data.message);
       }

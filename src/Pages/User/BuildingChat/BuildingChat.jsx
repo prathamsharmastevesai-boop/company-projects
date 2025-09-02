@@ -125,67 +125,67 @@ export const BuildingChat = () => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-  if (!message.trim()) {
-    toast.warning("Please enter a message.");
-    return;
-  }
-
-  let activeSessionId = sessionId;
-  if (!activeSessionId) {
-    const newId = uuidv4();
-    const newChat = {
-      session_id: newId,
-      name: newId,
-      category: "Building",
-      created_at: new Date().toISOString(),
-      title: message,
-    };
-    setSessionList((prev) => [newChat, ...prev]);
-    setSessionId(newId);
-    setSelectedChatId(newId);
-    activeSessionId = newId;
-  } else {
-    setSessionList((prev) =>
-      prev.map((chat) =>
-        chat.session_id === activeSessionId && !chat.title
-          ? { ...chat, title: message }
-          : chat
-      )
-    );
-  }
-
-  const userMessage = { message, sender: "User", timestamp: new Date() };
-  setMessages((prev) => [...prev, userMessage]);
-  setMessage("");
-  scrollToBottom();
-
-  try {
-    setIsSending(true);
-    const payload = {
-      session_id: activeSessionId,
-      question: message,
-      category: "Building",
-    };
-
-    const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
-
-    if (response?.answer) {
-      const adminMessage = {
-        message: response.answer.answer,
-        file: response.answer.file,
-        sender: "Admin",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, adminMessage]);
+    if (!message.trim()) {
+      toast.warning("Please enter a message.");
+      return;
     }
 
+    let activeSessionId = sessionId;
+    if (!activeSessionId) {
+      const newId = uuidv4();
+      const newChat = {
+        session_id: newId,
+        name: newId,
+        category: "Building",
+        created_at: new Date().toISOString(),
+        title: message,
+      };
+      setSessionList((prev) => [newChat, ...prev]);
+      setSessionId(newId);
+      setSelectedChatId(newId);
+      activeSessionId = newId;
+    } else {
+      setSessionList((prev) =>
+        prev.map((chat) =>
+          chat.session_id === activeSessionId && !chat.title
+            ? { ...chat, title: message }
+            : chat
+        )
+      );
+    }
+
+    const userMessage = { message, sender: "User", timestamp: new Date() };
+    setMessages((prev) => [...prev, userMessage]);
+    setMessage("");
     scrollToBottom();
-  } catch (error) {
-    console.error("Error sending message:", error);
-  } finally {
-    setIsSending(false);
-  }
-};
+
+    try {
+      setIsSending(true);
+      const payload = {
+        session_id: activeSessionId,
+        question: message,
+        category: "Building",
+      };
+
+      const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+
+      if (response?.answer) {
+        const adminMessage = {
+          message: response.answer.answer,
+          file: response.answer.file,
+          sender: "Admin",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, adminMessage]);
+      }
+
+      scrollToBottom();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsSending(false);
+    }
+  };
 
 
 
@@ -210,11 +210,22 @@ export const BuildingChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        {/* Left: session list */}
         <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
+              const currentChat = sessionList.find(
+                (chat) => chat.session_id === selectedChatId
+              );
+
+              if (messages.length === 0 && !currentChat?.title) {
+                const toastId = "empty-session-warning";
+                if (!toast.isActive(toastId)) {
+                  toast.info("Please send a message in this chat before starting a new one.", { toastId });
+                }
+                return;
+              }
+
               const newId = uuidv4();
               const newChat = {
                 session_id: newId,
@@ -222,6 +233,7 @@ export const BuildingChat = () => {
                 category: "Building",
                 created_at: new Date().toISOString(),
               };
+
               setSessionList((prev) => [newChat, ...prev]);
               setSessionId(newId);
               setSelectedChatId(newId);
@@ -230,6 +242,7 @@ export const BuildingChat = () => {
           >
             <span className="fw-semibold"> ➕ New Chat</span>
           </button>
+
 
           <div className="flex-grow-1 chat-item-wrapper hide-scrollbar overflow-auto">
             {isLoadingSessions ? (
@@ -250,8 +263,8 @@ export const BuildingChat = () => {
                   <div
                     key={chat.session_id}
                     className={`chat-item d-flex justify-between align-items-start p-2 ${selectedChatId === chat.session_id
-                        ? "bg-dark text-white"
-                        : "bg-light text-dark"
+                      ? "bg-dark text-white"
+                      : "bg-light text-dark"
                       } border`}
                     style={{ cursor: "pointer" }}
                     onClick={() => {
@@ -274,23 +287,25 @@ export const BuildingChat = () => {
                       </div>
 
                     </div>
-                    <button
-                      className="btn btn-sm btn-outline-danger delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(chat.session_id);
-                      }}
-                      disabled={deletingSessionId === chat.session_id}
-                    >
-                      {deletingSessionId === chat.session_id ? (
-                        <div
-                          className="spinner-border spinner-border-sm text-danger"
-                          role="status"
-                        />
-                      ) : (
-                        <i className="bi bi-trash"></i>
-                      )}
-                    </button>
+                    {!isSending &&
+                      <button
+                        className="btn btn-sm btn-outline-danger delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(chat.session_id);
+                        }}
+                        disabled={deletingSessionId === chat.session_id}
+                      >
+                        {deletingSessionId === chat.session_id ? (
+                          <div
+                            className="spinner-border spinner-border-sm text-danger"
+                            role="status"
+                          />
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    }
                   </div>
                 ))
             ) : (
@@ -319,8 +334,8 @@ export const BuildingChat = () => {
                   >
                     <div
                       className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
-                          ? "bg-secondary text-white"
-                          : "bg-primary text-white"
+                        ? "bg-secondary text-white"
+                        : "bg-primary text-white"
                         }`}
                     >
                       {msg.message}
@@ -350,7 +365,6 @@ export const BuildingChat = () => {
             </div>
           </div>
 
-          {/* Input box */}
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <input

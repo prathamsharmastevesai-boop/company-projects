@@ -51,7 +51,7 @@ export const UserChat = () => {
           session_id: newId,
           name: newId,
           created_at: new Date().toISOString(),
-          category: type ,
+          category: type,
         };
         setChatList([newChat]);
         setSessionId(newId);
@@ -86,7 +86,7 @@ export const UserChat = () => {
         session_id: newId,
         name: newId,
         created_at: new Date().toISOString(),
-        title: message, 
+        title: message,
         category: type,
       };
       setChatList((prev) => [newChat, ...prev]);
@@ -139,7 +139,6 @@ export const UserChat = () => {
       }
     } catch (e) {
       console.error("Send message failed:", e);
-      toast.error("Failed to send message.");
     } finally {
       setIsSending(false);
     }
@@ -207,6 +206,15 @@ export const UserChat = () => {
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
+              // Prevent creating new session if current one is empty
+              const hasMessages = messages.length > 0;
+              const currentChat = chatList.find((chat) => chat.session_id === selectedChatId);
+
+              if (!hasMessages && !currentChat?.title) {
+                toast.info("Please send a message in this chat before starting a new one.");
+                return;
+              }
+
               const newId = uuidv4();
               const newChat = {
                 session_id: newId,
@@ -214,6 +222,7 @@ export const UserChat = () => {
                 created_at: new Date().toISOString(),
                 category: type || "general",
               };
+
               setChatList((prev) => [newChat, ...prev]);
               setSessionId(newId);
               setSelectedChatId(newId);
@@ -222,6 +231,7 @@ export const UserChat = () => {
           >
             <span className="fw-semibold">➕ New Chat</span>
           </button>
+
 
           <div className="flex-grow-1 chat-item-wrapper overflow-auto hide-scrollbar">
             {loadingSessions ? (
@@ -235,8 +245,8 @@ export const UserChat = () => {
                   <div
                     key={chat.session_id}
                     className={`chat-item d-flex justify-content-between align-items-start p-2 ${selectedChatId === chat.session_id
-                        ? "bg-dark text-white"
-                        : "bg-light text-dark"
+                      ? "bg-dark text-white"
+                      : "bg-light text-dark"
                       } border`}
                     style={{ cursor: "pointer" }}
                     onClick={() => {
@@ -259,15 +269,17 @@ export const UserChat = () => {
                       </div>
 
                     </div>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(chat.session_id);
-                      }}
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
+                    {!isSending &&
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(chat.session_id);
+                        }}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    }
                   </div>
                 ))
             ) : (
@@ -278,7 +290,7 @@ export const UserChat = () => {
 
         <div className="col-md-9 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">💬 Chat With  {type == "Lease" ?"Lease Agreement":"Letter of Intent" }
+            <h5 className="text-muted mb-3">💬 Chat With  {type == "Lease" ? "Lease Agreement" : "Letter of Intent"}
             </h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {loadingMessages ? (

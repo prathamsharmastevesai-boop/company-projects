@@ -59,13 +59,11 @@ export const SignUpSubmit = createAsyncThunk(
 
       const { access_token, role, expires_in, message } = response.data;
 
-      // If OTP-only response (no token)
       if (!access_token && message) {
         toast.success(message);
-        return { message }; // Just return message
+        return { message }; 
       }
 
-      // If login success with token
       if (access_token && role) {
         const expiryTime = Date.now() + (expires_in || 172800) * 1000;
 

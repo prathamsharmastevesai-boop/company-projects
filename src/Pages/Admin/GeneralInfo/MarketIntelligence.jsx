@@ -12,8 +12,8 @@ import RAGLoader from "../../../Component/Loader";
 export const MarketIntelligence = () => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
-  const [loading, setLoading] = useState(false); // for upload/edit/delete
-  const [listLoading, setListLoading] = useState(false); // for fetching doc list
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(false); 
   const [isDragging, setIsDragging] = useState(false);
   const editFileRef = useRef(null);
   const [editingFile, setEditingFile] = useState(null);
@@ -119,10 +119,8 @@ export const MarketIntelligence = () => {
       ).unwrap();
 
       await fetchData();
-      toast.success("File updated successfully!");
     } catch (err) {
       console.error("Edit failed:", err);
-      toast.error("Update failed!");
     } finally {
       setLoading(false);
       e.target.value = null;
@@ -139,7 +137,6 @@ export const MarketIntelligence = () => {
       ).unwrap();
 
       await fetchData();
-      toast.success("File deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err);
       toast.error("Delete failed!");

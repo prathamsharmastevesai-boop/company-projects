@@ -248,7 +248,7 @@ export const ListBuilding = () => {
 
           {filteredBuildings.length === 0 ? (
             <p className="text-center text-muted mt-3">
-              No buildings found. Add a new one above 👆
+              No buildings found. Add a new one above 
             </p>
           ) : (
             [...filteredBuildings]

@@ -112,69 +112,69 @@ export const MarketChat = () => {
   }, [messages]);
 
   const handleSendMessage = async () => {
-  if (!message.trim()) {
-    toast.warning("Please enter a message.");
-    return;
-  }
-
-  let activeSessionId = sessionId;
-  let isNewSession = false;
-
-  if (!activeSessionId) {
-    const newId = uuidv4();
-    const newChat = {
-      session_id: newId,
-      name: newId,
-    title: message,
-      created_at: new Date().toISOString(),
-    };
-    setSessionList((prev) => [newChat, ...prev]);
-    setSessionId(newId);
-    setSelectedChatId(newId);
-    activeSessionId = newId;
-    isNewSession = true;
-  } else {
-    setSessionList((prev) =>
-      prev.map((chat) =>
-        chat.session_id === activeSessionId && !chat.title
-          ? { ...chat, title: message.substring(0, 10) }
-          : chat
-      )
-    );
-  }
-
-  const userMessage = { message, sender: "User", timestamp: new Date() };
-  setMessages((prev) => [...prev, userMessage]);
-  setMessage("");
-  scrollToBottom();
-
-  try {
-    setIsSending(true);
-    const payload = {
-      session_id: activeSessionId,
-      question: message,
-      category: "Market",
-    };
-
-    const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
-
-    if (response?.answer) {
-      const adminMessage = {
-        message: response.answer.answer,
-        file: response.answer.file,
-        sender: "Admin",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, adminMessage]);
+    if (!message.trim()) {
+      toast.warning("Please enter a message.");
+      return;
     }
 
+    let activeSessionId = sessionId;
+    let isNewSession = false;
+
+    if (!activeSessionId) {
+      const newId = uuidv4();
+      const newChat = {
+        session_id: newId,
+        name: newId,
+        title: message,
+        created_at: new Date().toISOString(),
+      };
+      setSessionList((prev) => [newChat, ...prev]);
+      setSessionId(newId);
+      setSelectedChatId(newId);
+      activeSessionId = newId;
+      isNewSession = true;
+    } else {
+      setSessionList((prev) =>
+        prev.map((chat) =>
+          chat.session_id === activeSessionId && !chat.title
+            ? { ...chat, title: message.substring(0, 10) }
+            : chat
+        )
+      );
+    }
+
+    const userMessage = { message, sender: "User", timestamp: new Date() };
+    setMessages((prev) => [...prev, userMessage]);
+    setMessage("");
     scrollToBottom();
-  } catch (error) {
-    console.error("Error sending message:", error);
-  } finally {
-    setIsSending(false);
-  }
-};
+
+    try {
+      setIsSending(true);
+      const payload = {
+        session_id: activeSessionId,
+        question: message,
+        category: "Market",
+      };
+
+      const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+
+      if (response?.answer) {
+        const adminMessage = {
+          message: response.answer.answer,
+          file: response.answer.file,
+          sender: "Admin",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, adminMessage]);
+      }
+
+      scrollToBottom();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsSending(false);
+    }
+  };
 
 
   const handleDelete = async (id) => {
@@ -202,6 +202,19 @@ export const MarketChat = () => {
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
+              const currentChat = sessionList.find(
+                (chat) => chat.session_id === selectedChatId
+              );
+
+              if (messages.length === 0 && !currentChat?.title) {
+                const toastId = "empty-session-warning";
+                if (!toast.isActive(toastId)) {
+                  toast.info("Please send a message in this chat before starting a new one.", { toastId });
+                }
+                return;
+              }
+
+
               const newId = uuidv4();
               const newChat = {
                 session_id: newId,
@@ -209,6 +222,7 @@ export const MarketChat = () => {
                 category: "Market",
                 created_at: new Date().toISOString(),
               };
+
               setSessionList((prev) => [newChat, ...prev]);
               setSessionId(newId);
               setSelectedChatId(newId);
@@ -217,6 +231,7 @@ export const MarketChat = () => {
           >
             <span className="fw-semibold"> ➕ New Chat</span>
           </button>
+
 
           <div className="flex-grow-1 chat-item-wrapper hide-scrollbar overflow-auto">
             {isLoadingSessions ? (
@@ -236,15 +251,14 @@ export const MarketChat = () => {
                 .map((chat) => (
                   <div
                     key={chat.session_id}
-                    className={`chat-item d-flex justify-between align-items-start p-2 ${
-                      selectedChatId === chat.session_id
-                        ? "bg-dark text-white"
-                        : "bg-light text-dark"
-                    } border`}
+                    className={`chat-item d-flex justify-between align-items-start p-2 ${selectedChatId === chat.session_id
+                      ? "bg-dark text-white"
+                      : "bg-light text-dark"
+                      } border`}
                     style={{ cursor: "pointer" }}
                     onClick={() => fetchChatHistory(chat.session_id)}
                   >
-                      <div className="flex-grow-1">
+                    <div className="flex-grow-1">
                       <div className="fw-semibold">
                         {chat?.title ? `${chat.title.substring(0, 10)}...` : `${chat.session_id.substring(0, 10)}...`}
                       </div>
@@ -258,23 +272,25 @@ export const MarketChat = () => {
                       </div>
 
                     </div>
-                    <button
-                      className="btn btn-sm btn-outline-danger delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(chat.session_id);
-                      }}
-                      disabled={deletingSessionId === chat.session_id}
-                    >
-                      {deletingSessionId === chat.session_id ? (
-                        <div
-                          className="spinner-border spinner-border-sm text-danger"
-                          role="status"
-                        />
-                      ) : (
-                        <i className="bi bi-trash"></i>
-                      )}
-                    </button>
+                    {!isSending &&
+                      <button
+                        className="btn btn-sm btn-outline-danger delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(chat.session_id);
+                        }}
+                        disabled={deletingSessionId === chat.session_id}
+                      >
+                        {deletingSessionId === chat.session_id ? (
+                          <div
+                            className="spinner-border spinner-border-sm text-danger"
+                            role="status"
+                          />
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    }
                   </div>
                 ))
             ) : (
@@ -297,16 +313,14 @@ export const MarketChat = () => {
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${
-                      msg.sender === "Admin" ? "text-start" : "text-end"
-                    }`}
+                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"
+                      }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
-                        msg.sender === "Admin"
-                          ? "bg-secondary text-white"
-                          : "bg-primary text-white"
-                      }`}
+                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
+                        ? "bg-secondary text-white"
+                        : "bg-primary text-white"
+                        }`}
                     >
                       {msg.message}
                     </div>

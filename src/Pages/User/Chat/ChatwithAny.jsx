@@ -190,11 +190,17 @@ export const ChatWithAnyDoc = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        {/* Left: session list */}
         <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
+              const hasMessages = messages.length > 0;
+
+              if (!hasMessages) {
+                toast.info("Please send a message in this chat before creating a new one.");
+                return;
+              }
+
               const newId = uuidv4();
               const newChat = {
                 session_id: newId,
@@ -229,11 +235,10 @@ export const ChatWithAnyDoc = () => {
                 .map((chat) => (
                   <div
                     key={chat.session_id}
-                    className={`chat-item d-flex justify-between align-items-start p-2 ${
-                      selectedChatId === chat.session_id
-                        ? "bg-dark text-white"
-                        : "bg-light text-dark"
-                    } border`}
+                    className={`chat-item d-flex justify-between align-items-start p-2 ${selectedChatId === chat.session_id
+                      ? "bg-dark text-white"
+                      : "bg-light text-dark"
+                      } border`}
                     style={{ cursor: "pointer" }}
                     onClick={() => {
                       setSelectedChatId(chat.session_id);
@@ -248,34 +253,35 @@ export const ChatWithAnyDoc = () => {
                           : `${chat.session_id.substring(0, 10)}...`}
                       </div>
                       <div
-                        className={`small ${
-                          selectedChatId === chat.session_id
-                            ? "text-white"
-                            : "text-muted"
-                        }`}
+                        className={`small ${selectedChatId === chat.session_id
+                          ? "text-white"
+                          : "text-muted"
+                          }`}
                       >
                         {chat.created_at
                           ? new Date(chat.created_at).toLocaleDateString()
                           : "Just now"}
                       </div>
                     </div>
-                    <button
-                      className="btn btn-sm btn-outline-danger delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(chat.session_id);
-                      }}
-                      disabled={deletingSessionId === chat.session_id}
-                    >
-                      {deletingSessionId === chat.session_id ? (
-                        <div
-                          className="spinner-border spinner-border-sm text-danger"
-                          role="status"
-                        />
-                      ) : (
-                        <i className="bi bi-trash"></i>
-                      )}
-                    </button>
+                    {!isSending &&
+                      <button
+                        className="btn btn-sm btn-outline-danger delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(chat.session_id);
+                        }}
+                        disabled={deletingSessionId === chat.session_id}
+                      >
+                        {deletingSessionId === chat.session_id ? (
+                          <div
+                            className="spinner-border spinner-border-sm text-danger"
+                            role="status"
+                          />
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    }
                   </div>
                 ))
             ) : (
@@ -299,16 +305,14 @@ export const ChatWithAnyDoc = () => {
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${
-                      msg.sender === "Admin" ? "text-start" : "text-end"
-                    }`}
+                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"
+                      }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
-                        msg.sender === "Admin"
-                          ? "bg-secondary text-white"
-                          : "bg-primary text-white"
-                      }`}
+                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
+                        ? "bg-secondary text-white"
+                        : "bg-primary text-white"
+                        }`}
                     >
                       {msg.message}
                     </div>
@@ -337,7 +341,6 @@ export const ChatWithAnyDoc = () => {
             </div>
           </div>
 
-          {/* Input box */}
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <input

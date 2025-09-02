@@ -20,18 +20,15 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   }, []);
 
   const toggleSidebar = () => {
-    if (openMenu) {
-      setOpenMenu(null);
-    } else {
-      setCollapsed((prev) => !prev);
-    }
+    if (openMenu) setOpenMenu(null);
+    else setCollapsed((prev) => !prev);
   };
 
   const isActive = (path) => location.pathname === path;
 
   const handleLinkClick = (path) => {
     navigate(path);
-    if (window.innerWidth < 768) setCollapsed(true);
+    if (isMobile) setCollapsed(true);
   };
 
   const toggleAccordion = (menu) => {
@@ -40,11 +37,14 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
   return (
     <>
+      {/* Sidebar */}
       <aside
-        className="sidebar-wrapper d-flex flex-column bg-dark text-white border-end"
-        style={{ height: "100dvh" }}
+        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
+          isMobile && !collapsed ? "sidebar-mobile-open" : ""
+        }`}
+        style={{ height: "100dvh", zIndex: 1100 }}
       >
-        {/* Header with logo + toggle */}
+        {/* Header */}
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
           <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
@@ -56,13 +56,13 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           </button>
         </div>
 
-        {/* Sidebar body */}
+        {/* Sidebar Body */}
         <div
           className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 hide-scrollbar"
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
-            {/* Admin Panel */}
+            {/* ADMIN PANEL */}
             {Role === "admin" && (
               <>
                 {!collapsed && (
@@ -128,6 +128,17 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
+                <li className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""}`}>
+                  <span
+                    onClick={() => handleLinkClick("/LeaseDraftingUpload")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-cpu me-2" />
+                    {!collapsed && "AI Lease Drafting"}
+                  </span>
+                </li>
+
                 {/* Data Categories Accordion */}
                 {!collapsed && (
                   <li
@@ -138,9 +149,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <span>Data Categories</span>
                     <i
                       className={`bi ms-2 ${
-                        openMenu === "dataCategories"
-                          ? "bi-chevron-down"
-                          : "bi-chevron-right"
+                        openMenu === "dataCategories" ? "bi-chevron-down" : "bi-chevron-right"
                       }`}
                     />
                   </li>
@@ -155,7 +164,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-people me-2" />
-                        Third Party Info
+                        Third Party Contact Info
                       </span>
                     </li>
                     <li className={`nav-item ${isActive("/EmployContact") ? "active" : ""}`}>
@@ -165,19 +174,17 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-person-badge me-2" />
-                        Employee Info
+                        Employee Contact Info
                       </span>
                     </li>
-                    <li
-                      className={`nav-item ${isActive("/MarketIntelligence") ? "active" : ""}`}
-                    >
+                    <li className={`nav-item ${isActive("/MarketIntelligence") ? "active" : ""}`}>
                       <span
                         onClick={() => handleLinkClick("/MarketIntelligence")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-graph-up-arrow me-2" />
-                        Market Intelligence
+                        Market Intelligence Data
                       </span>
                     </li>
                     <li className={`nav-item ${isActive("/BuildingInfo") ? "active" : ""}`}>
@@ -187,14 +194,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-building me-2" />
-                        Building Info
+                        Building Info Data
                       </span>
                     </li>
                   </>
                 )}
-
-                {/* Admin Tools Accordion */}
-                {!collapsed && (
+                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
                     style={{ cursor: "pointer" }}
@@ -202,9 +207,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Admin Tools</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "adminTools" ? "bi-chevron-down" : "bi-chevron-right"
-                      }`}
+                      className={`bi ms-2 ${openMenu === "adminTools" ? "bi-chevron-down" : "bi-chevron-right"
+                        }`}
                     />
                   </li>
                 )}
@@ -217,23 +221,24 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
-                        <i className="bi bi-buildings me-2" />
+                        <i className="bi bi-plus-circle me-2" style={{ fontSize: 14 }} />
                         Add Building (LOI & Lease)
                       </span>
+
                     </li>
                   </>
                 )}
               </>
             )}
 
-            {/* User Panel */}
             {Role === "user" && (
-              <>
+              <div className="mb-2">
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
                     User Panel
                   </h6>
                 )}
+
                 <li className="nav-header text-light small">Main</li>
 
                 <li className={`nav-item ${isActive("/UserProfile") ? "active" : ""}`}>
@@ -258,54 +263,42 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/UserBuildinglist") ? "active" : ""}`}>
-                  <span
-                    onClick={() => handleLinkClick("/UserBuildinglist")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-buildings me-2" />
-                    {!collapsed && "Buildings (leases & loi)"}
-                  </span>
-                </li>
-
                 <li className={`nav-item ${isActive("/ChatWithAnyDoc") ? "active" : ""}`}>
                   <span
                     onClick={() => handleLinkClick("/ChatWithAnyDoc")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi bi-chat-dots me-2" />
+                    <i className="bi bi-mic me-2" />
                     {!collapsed && "Portfolio Voice"}
                   </span>
                 </li>
 
-                {/* General Info Accordion */}
+                {/* User Data Categories */}
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
                     style={{ cursor: "pointer" }}
                     onClick={() => toggleAccordion("generalInfo")}
                   >
-                    <span>General Info</span>
+                    <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "generalInfo" ? "bi-chevron-down" : "bi-chevron-right"
-                      }`}
+                      className={`bi ms-2 ${openMenu === "generalInfo" ? "bi-chevron-down" : "bi-chevron-right"
+                        }`}
                     />
                   </li>
                 )}
 
                 {openMenu === "generalInfo" && !collapsed && (
-                  <ul className="nav flex-column ms-3 mt-1">
+                  <ul className="nav flex-column mt-1">
                     <li className={`nav-item ${isActive("/BrokerChat") ? "active" : ""}`}>
                       <span
                         onClick={() => handleLinkClick("/BrokerChat")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
-                        <i className="bi bi-person-badge me-1" />
-                        Third Party Info
+                        <i className="bi bi-people-fill me-1" />
+                        Third Party Contact Info
                       </span>
                     </li>
                     <li className={`nav-item ${isActive("/ColleagueChat") ? "active" : ""}`}>
@@ -315,7 +308,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-people-fill me-1" />
-                        Employee Info
+                        Employee Contact Info
                       </span>
                     </li>
                     <li className={`nav-item ${isActive("/BuildingChat") ? "active" : ""}`}>
@@ -325,7 +318,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-building me-1" />
-                        Building Info
+                        Building Info Data
                       </span>
                     </li>
                     <li className={`nav-item ${isActive("/MarketChat") ? "active" : ""}`}>
@@ -335,17 +328,27 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-graph-up me-1" />
-                        Market Intelligence
+                        Market Intelligence Data
+                      </span>
+                    </li>
+                    <li className={`nav-item ${isActive("/UserBuildinglist") ? "active" : ""}`}>
+                      <span
+                        onClick={() => handleLinkClick("/UserBuildinglist")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi-journal-text me-1" />
+                        Leases Agreement Data & LOI Data
                       </span>
                     </li>
                   </ul>
                 )}
 
+                {/* Session History */}
                 {!collapsed && (
                   <li
-                    className={`nav-header text-light small mt-3 d-flex justify-content-between align-items-center ${
-                      showSessionModal ? "active" : ""
-                    }`}
+                    className={`nav-header text-light small mt-3 d-flex justify-content-between align-items-center ${showSessionModal ? "active" : ""
+                      }`}
                     style={{ cursor: "pointer" }}
                     onClick={() => setShowSessionModal(!showSessionModal)}
                   >
@@ -357,7 +360,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </li>
                 )}
 
-                {/* Inline modal for mobile */}
+                {/* Mobile Session Modal */}
                 {isMobile && showSessionModal && (
                   <div className="mt-2">
                     <div className="bg-dark border w-75 rounded p-2">
@@ -365,11 +368,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </ul>
         </div>
 
+        {/* Logout */}
         <div className="mt-auto p-3 border-top">
           <button
             onClick={() => {
@@ -385,7 +389,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         </div>
       </aside>
 
-      {/* Floating modal for desktop */}
+      {/* Desktop Session Modal */}
       {!isMobile && showSessionModal && (
         <div
           className="modal d-flex align-items-center justify-content-start"

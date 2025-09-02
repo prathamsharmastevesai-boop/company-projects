@@ -291,7 +291,6 @@ export const Aianalytics = () => {
               <div className="list-group">
                 {dashboardData.aiInsights.map((insight, idx) => {
                   if (typeof insight === "string") {
-                    // Try to split into heading and description
                     const match = insight.match(/^\*\*(.*?)\*\*[:\-]?\s*(.*)/);
                     if (match) {
                       return (
@@ -335,7 +334,16 @@ export const Aianalytics = () => {
             <h6 className="fw-bold mb-3">Usage Trends</h6>
 
             {!usageData ? (
-              <p className="text-muted">Loading usage trends...</p>
+             <div className="text-center text-muted">
+                <div
+                  className="spinner-border text-secondary mb-2"
+                  role="status"
+                  style={{ width: "2rem", height: "2rem" }}
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading usage trends...</p>
+              </div>
             ) : (
               <>
                 <div className="card mb-4 p-3 shadow-sm">

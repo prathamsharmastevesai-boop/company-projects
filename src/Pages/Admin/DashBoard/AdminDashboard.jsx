@@ -29,7 +29,7 @@ export const AdminDashboard = () => {
   }
 
   const handleBuilding = () => {
-    navigation("/CreateBuilding")
+    navigation("/Building_list")
   }
 
   const handleUpload = () => {
@@ -130,10 +130,14 @@ export const AdminDashboard = () => {
               <h5 className="fw-semibold mb-3">Quick Actions</h5>
               <div className="row g-3">
                 <div className="col-6">
-                  <button className="btn btn-outline-primary w-100 py-3" onClick={handleUpload}>
+                   <button className="btn btn-outline-dark w-100 py-3" onClick={hanldeAIAnalystic}>
+                    <TrendingUp size={20} className="me-2" />
+                    AI Analytics
+                  </button>
+                  {/* <button className="btn btn-outline-primary w-100 py-3" onClick={handleUpload}>
                     <Upload size={20} className="me-2" />
                     Upload Documents
-                  </button>
+                  </button> */}
                 </div>
                 <div className="col-6">
                   <button className="btn btn-outline-success w-100 py-3" onClick={handleBuilding}>
@@ -142,10 +146,7 @@ export const AdminDashboard = () => {
                   </button>
                 </div>
                 <div className="col-12">
-                  <button className="btn btn-outline-dark w-100 py-3" onClick={hanldeAIAnalystic}>
-                    <TrendingUp size={20} className="me-2" />
-                    AI Analytics
-                  </button>
+                 
                 </div>
               </div>
             </div>

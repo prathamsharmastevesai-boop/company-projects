@@ -18,10 +18,19 @@ export const UserManagement = () => {
         fetchUsers();
     }, []);
 
-    const handleDelete = (email) => {
-        if (!email) return toast.error("Email is required");
-        dispatch(DeleteUser(email));
-    };
+const handleDelete = async (email) => {
+  if (!email) {
+    return toast.error("Email is required");
+  }
+
+  try {
+    await dispatch(DeleteUser(email));
+    fetchUsers();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
     const fetchUsers = async () => {
         setLoading(true);

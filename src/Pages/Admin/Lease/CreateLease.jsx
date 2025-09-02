@@ -5,29 +5,25 @@ import { CreateLeaseSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
 import RAGLoader from "../../../Component/Loader";
 
 export const CreateLease = () => {
-  // Hooks
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Params
   const BuildingId = location.state?.BuildingId;
   console.log("Building ID:", BuildingId);
 
-  // State
   const [loading, setLoading] = useState(false);
   const [Leases, setLeases] = useState([
     { tenant_name: "", suite_number: "", building_id: BuildingId }
   ]);
 
-  // Input change handler
   const handleChange = (index, field, value) => {
     const updated = [...Leases];
     updated[index][field] = value;
     setLeases(updated);
   };
 
-  // Add new lease row
   const addLease = () => {
     setLeases([
       ...Leases,
@@ -35,13 +31,11 @@ export const CreateLease = () => {
     ]);
   };
 
-  // Remove lease row
   const removeLease = (index) => {
     const updated = Leases.filter((_, i) => i !== index);
     setLeases(updated);
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

@@ -63,7 +63,7 @@ export const UserAccess = () => {
   const handleAction = async (action, requestId) => {
     if (!requestId) return;
     try {
-      setActionLoading(true); // start loader
+      setActionLoading(true);
       const data = {
         request_id: requestId,
         action,
@@ -74,7 +74,7 @@ export const UserAccess = () => {
     } catch (error) {
       toast.error(`Failed to ${action} request.`);
     } finally {
-      setActionLoading(false); // stop loader
+      setActionLoading(false); 
     }
   };
 
@@ -137,7 +137,7 @@ export const UserAccess = () => {
                           <label
                             className="form-check-label"
                             htmlFor={`chk-${lease.request_id}`}
-                            style={{ wordBreak: "break-word" }} // wrap long emails/usernames
+                            style={{ wordBreak: "break-word" }} 
                           >
                             <strong>{lease.user_name}</strong>
                             <br />({lease.email})

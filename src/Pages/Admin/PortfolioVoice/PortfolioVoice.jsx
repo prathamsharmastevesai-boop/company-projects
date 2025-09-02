@@ -7,6 +7,7 @@ import {
   get_specific_Doclist_Api,
   Delete_Doc_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
+import RAGLoader from "../../../Component/Loader";
 
 export const PortfolioVoice = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,9 @@ export const PortfolioVoice = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDeleting, setIsDeleting] = useState({});
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState(null); // "date" or "size"
+  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
 
   useEffect(() => {
     fetchDocuments();
@@ -22,7 +25,7 @@ export const PortfolioVoice = () => {
 
   const fetchDocuments = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const res = await dispatch(get_specific_Doclist_Api()).unwrap();
       const docs = (res.files || []).map((doc) => ({
         ...doc,
@@ -33,7 +36,7 @@ export const PortfolioVoice = () => {
       console.error("Failed to fetch documents:", error);
       toast.error("Failed to fetch documents");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -62,7 +65,7 @@ export const PortfolioVoice = () => {
         Upload_specific_file_Api({ files: selectedFiles, category: "portfolio" })
       ).unwrap();
       await fetchDocuments();
-      toast.success(res?.msg || "Documents uploaded successfully!");
+      toast.success(res?.msg || "Files uploaded successfully");
     } catch (error) {
       const errorMsg =
         error?.response?.data?.msg || error?.message || "Upload failed";
@@ -87,10 +90,35 @@ export const PortfolioVoice = () => {
     }
   };
 
+  // Filter documents by search
   const filteredDocs = documents.filter((doc) =>
     doc.original_file_name.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Sort filtered documents
+  const sortedDocs = [...filteredDocs].sort((a, b) => {
+    if (!sortBy) return 0;
+
+    if (sortBy === "date") {
+      const dateA = new Date(a.uploaded_at).getTime();
+      const dateB = new Date(b.uploaded_at).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }
+
+    if (sortBy === "size") {
+      const sizeA = a.size?.toLowerCase().includes("kb")
+        ? parseFloat(a.size) / 1024
+        : parseFloat(a.size) || 0;
+      const sizeB = b.size?.toLowerCase().includes("kb")
+        ? parseFloat(b.size) / 1024
+        : parseFloat(b.size) || 0;
+      return sortOrder === "asc" ? sizeA - sizeB : sizeB - sizeA;
+    }
+
+    return 0;
+  });
+
+  // Calculate total size in MB
   const totalSizeMB = documents.reduce((sum, doc) => {
     const sizeNum = parseFloat(doc.size) || 0;
     return sum + (doc.size?.toLowerCase().includes("kb") ? sizeNum / 1024 : sizeNum);
@@ -123,85 +151,95 @@ export const PortfolioVoice = () => {
 
       <div className="card shadow-sm">
         <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5 className="fw-bold mb-0">
+              <i className="bi bi-file-earmark-text me-2"></i> Document Library
+            </h5>
+            <div className="d-flex align-items-center">
+              <span className="badge bg-dark me-2">{documents.length} Documents</span>
+              <span className="badge bg-light text-dark">
+                {totalSizeMB.toFixed(2)} MB Total
+              </span>
+            </div>
+          </div>
+
+          <div className="d-flex mb-3">
+            <div className="flex-grow-1 me-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search documents..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <button
+              className="btn btn-outline-secondary me-2"
+              onClick={() => {
+                setSortBy("date");
+                setSortOrder(sortBy === "date" && sortOrder === "asc" ? "desc" : "asc");
+              }}
+            >
+              Sort by Date {sortBy === "date" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </button>
+            <button
+              className="btn btn-outline-secondary"
+              onClick={() => {
+                setSortBy("size");
+                setSortOrder(sortBy === "size" && sortOrder === "asc" ? "desc" : "asc");
+              }}
+            >
+              Sort by Size {sortBy === "size" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </button>
+          </div>
+
           {loading ? (
             <div className="d-flex justify-content-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
+              <RAGLoader />
             </div>
+          ) : sortedDocs.length > 0 ? (
+            <table className="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Size</th>
+                  <th>Uploaded</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedDocs.map((doc) => (
+                  <tr key={doc.file_id}>
+                    <td>
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                        {doc.original_file_name}
+                      </a>
+                    </td>
+                    <td>
+                      {parseFloat(doc.size)
+                        ? (doc.size.toLowerCase().includes("kb")
+                          ? parseFloat(doc.size) / 1024
+                          : parseFloat(doc.size)
+                        ).toFixed(2)
+                        : doc.size}{" "}
+                      MB
+                    </td>
+                    <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDeleteDoc(doc.file_id)}
+                        disabled={isDeleting[doc.file_id]}
+                      >
+                        {isDeleting[doc.file_id] ? "Deleting..." : "Delete"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
-            <>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="fw-bold mb-0">
-                  <i className="bi bi-file-earmark-text me-2"></i> Document Library
-                </h5>
-                <div className="d-flex align-items-center">
-                  <span className="badge bg-dark me-2">{documents.length} Documents</span>
-                  <span className="badge bg-light text-dark">
-                    {totalSizeMB.toFixed(2)} MB Total
-                  </span>
-                </div>
-              </div>
-
-              <div className="d-flex mb-3">
-                <div className="flex-grow-1 me-2">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search documents..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
-                <button className="btn btn-outline-secondary me-2">Filter by Date</button>
-                <button className="btn btn-outline-secondary">Sort by Size</button>
-              </div>
-
-              {filteredDocs.length > 0 ? (
-                <table className="table table-hover align-middle">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Size</th>
-                      <th>Uploaded</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredDocs.map((doc) => (
-                      <tr key={doc.file_id}>
-                        <td>
-                          <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                            {doc.original_file_name}
-                          </a>
-                        </td>
-                        <td>
-                          {parseFloat(doc.size)
-                            ? (doc.size.toLowerCase().includes("kb")
-                                ? parseFloat(doc.size) / 1024
-                                : parseFloat(doc.size)
-                              ).toFixed(2)
-                            : doc.size}{" "}
-                          MB
-                        </td>
-                        <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
-                        <td>
-                          <button
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDeleteDoc(doc.file_id)}
-                            disabled={isDeleting[doc.file_id]}
-                          >
-                            {isDeleting[doc.file_id] ? "Deleting..." : "Delete"}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div className="text-center text-muted py-4">No documents uploaded yet.</div>
-              )}
-            </>
+            <div className="text-center text-muted py-4">No documents uploaded yet.</div>
           )}
         </div>
       </div>
