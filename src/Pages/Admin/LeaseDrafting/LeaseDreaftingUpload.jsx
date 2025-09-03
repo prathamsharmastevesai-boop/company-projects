@@ -69,10 +69,11 @@ export const LeaseDraftingUpload = () => {
       return;
     }
 
-    if (file.size > 3 * 1024 * 1024) {
-      toast.error("File must be under 3MB");
-      return;
-    }
+  if (file.size > 30 * 1024 * 1024) {
+  toast.error("File must be under 30MB");
+  return;
+}
+
 
     const payload = { file, category: "lease" };
     setLoader(true);

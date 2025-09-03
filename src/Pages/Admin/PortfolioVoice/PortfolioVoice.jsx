@@ -47,14 +47,14 @@ export const PortfolioVoice = () => {
       return;
     }
 
-    const MAX_FILE_SIZE_MB = 3;
+    const MAX_FILE_SIZE_MB = 30;
     const oversizedFiles = selectedFiles.filter(
       (file) => file.size > MAX_FILE_SIZE_MB * 1024 * 1024
     );
 
     if (oversizedFiles.length > 0) {
       toast.error(
-        "Some files exceed the 3MB size limit. Please upload smaller files."
+        "Some files exceed the 30MB size limit. Please upload smaller files."
       );
       return;
     }

@@ -56,8 +56,8 @@ export const MarketIntelligence = () => {
       return;
     }
 
-    if (file.size > 3 * 1024 * 1024) {
-      toast.error("File size must be under 3MB");
+    if (file.size > 30 * 1024 * 1024) {
+      toast.error("File size must be under 30MB");
       return;
     }
 
@@ -175,7 +175,7 @@ export const MarketIntelligence = () => {
           />
         </label>
         <p className="small text-muted mt-2">
-          Supports PDF, DOC, DOCX, XLS, XLSX files up to 3MB
+          Supports PDF, DOC, DOCX, XLS, XLSX files up to 30MB
         </p>
         {loading && <RAGLoader />}
       </div>
