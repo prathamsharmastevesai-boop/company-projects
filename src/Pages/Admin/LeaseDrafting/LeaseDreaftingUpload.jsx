@@ -49,7 +49,6 @@ export const LeaseDraftingUpload = () => {
       })
       .catch((err) => {
         console.error("Failed to fetch lease docs:", err);
-        toast.error("Failed to fetch lease documents");
       })
       .finally(() => setLoader(false));
   };
