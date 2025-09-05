@@ -21,7 +21,7 @@ export const CreateLeaseSubmit = createAsyncThunk(
       toast.success(response.data.message)
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lease creation failed");
+      toast.error(error.response?.data?.message );
       throw error;
     }
   }
@@ -46,7 +46,7 @@ export const ListLeaseSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lease creation failed");
+      toast.error(error.response?.data?.message );
       throw error;
     }
   }

@@ -19,7 +19,10 @@ export const AdminLogin = () => {
     const auth = JSON.parse(sessionStorage.getItem("auth"));
 
     if (token && auth?.isAuthenticated) {
-      if (auth.role === "user") {
+      if (auth.role === "superuser") {
+        navigate("/AdminManagement");
+      }
+      else if (auth.role === "user") {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
         navigate("/AdminDashboard");
@@ -72,10 +75,13 @@ export const AdminLogin = () => {
           }));
         }
 
-        if (userRole === "admin") {
+        if (userRole === "superuser") {
+          navigate("/AdminManagement");
+        }
+        else if (userRole === "admin") {
           navigate("/AdminDashboard");
         } else if (userRole === "user") {
-          navigate("/");
+          navigate("/dashboard");
         } else {
           setErrors({ general: "Unauthorized role." });
         }
@@ -102,7 +108,7 @@ export const AdminLogin = () => {
 
       <div className="col-12 col-md-6 d-flex justify-content-center align-items-center bg-white">
         <div className="w-100 px-4" style={{ maxWidth: "400px" }}>
-          <h2 className="fw-bold mb-1">ADMIN LOGIN</h2>
+          <h2 className="fw-bold mb-1">LOGIN</h2>
           <p className="text-muted mb-4">Enter your credentials and get ready to explore!</p>
 
           {errors.general && <div className="alert alert-danger py-2">{errors.general}</div>}

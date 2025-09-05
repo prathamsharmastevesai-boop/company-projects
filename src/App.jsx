@@ -46,6 +46,7 @@ import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
 import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 import { SessionList } from "./Pages/User/Session/sessionList";
 import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/LeaseDreaftingUpload";
+import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
 
 
 function App() {
@@ -76,12 +77,20 @@ function App() {
           <Route path="/ResetPassword" element={<ResetPassword />} />
 
           <Route element={
+            <ProtectedRoute allowedRoles={["superuser"]}>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="/AdminManagement" element={<AdminManagement />} />
+          </Route>
+
+          <Route element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <DashboardLayout />
             </ProtectedRoute>
           }>
             <Route path="/AdminDashboard" element={<AdminDashboard />} />
-            
+
             <Route path="/UserManagement" element={<UserManagement />} />
             <Route path="/Aianalytics" element={<Aianalytics />} />
             <Route path="/RagSystem" element={<RagSystem />} />

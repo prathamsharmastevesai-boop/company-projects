@@ -39,9 +39,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     <>
       {/* Sidebar */}
       <aside
-        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
-          isMobile && !collapsed ? "sidebar-mobile-open" : ""
-        }`}
+        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${isMobile && !collapsed ? "sidebar-mobile-open" : ""
+          }`}
         style={{ height: "100dvh", zIndex: 1100 }}
       >
         {/* Header */}
@@ -49,9 +48,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
           <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
             <i
-              className={`bi ${
-                collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
-              }`}
+              className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
+                }`}
             />
           </button>
         </div>
@@ -62,6 +60,30 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
+
+            {Role === "superuser" && (
+              <>
+                {!collapsed && (
+                  <h6 className="text-uppercase fw-bold small text-secondary px-2">
+                    Super Admin Panel
+                  </h6>
+                )}
+
+                <li className="nav-header text-light small">Main</li>
+
+                <li className={`nav-item ${isActive("/AdminManagement") ? "active" : ""}`}>
+                  <span
+                    onClick={() => handleLinkClick("/AdminManagement")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-speedometer2 me-2" />
+                    {!collapsed && "Admin Management"}
+                  </span>
+                </li>
+              </>
+            )}
+
             {/* ADMIN PANEL */}
             {Role === "admin" && (
               <>
@@ -148,9 +170,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "dataCategories" ? "bi-chevron-down" : "bi-chevron-right"
-                      }`}
+                      className={`bi ms-2 ${openMenu === "dataCategories" ? "bi-chevron-down" : "bi-chevron-right"
+                        }`}
                     />
                   </li>
                 )}
@@ -199,7 +220,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
                   </>
                 )}
-                 {!collapsed && (
+                {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
                     style={{ cursor: "pointer" }}

@@ -27,6 +27,8 @@ export const Login = () => {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
         navigate("/CreateBuilding");
+      } else if (auth.role === "superuser"){
+         navigate("/AdminManagement");
       }
     }
   }, []);
@@ -66,12 +68,12 @@ export const Login = () => {
           role: userRole,
         }));
       }
-
-      if (userRole === "admin") {
+if (userRole === "admin") {
         navigate("/CreateBuilding");
       } else if (userRole === "user") {
         navigate("/dashboard", { state: { email } });
-      } else {
+      }
+       else {
         toast.error("Unauthorized role.");
       }
     } catch (err) {

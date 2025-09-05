@@ -112,7 +112,7 @@ export const GeneralInfoSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lease creation failed");
+      toast.error(error.response?.data?.message );
       throw error;
     }
   }
