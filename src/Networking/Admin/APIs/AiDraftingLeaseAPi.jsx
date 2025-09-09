@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { baseURL,deleteDraftingDoc,listDraftingDoc,upload_Drafting_Lease,UploadDoc } from '../../NWconfig';
+import { baseURL,deleteDraftingDoc,extractMetadata,extractTextdata,listDraftingDoc,updatetextdata,upload_Drafting_Lease,UploadDoc } from '../../NWconfig';
 
 export const UploadDraftingLeaseDoc = createAsyncThunk(
   '/UploadDraftingLeaseDoc',
@@ -65,6 +65,93 @@ export const ListDraftingLeaseDoc = createAsyncThunk(
   }
 );
 
+export const getMetaData = createAsyncThunk(
+  'getMetaData',
+  async (file_id) => {
+
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const url = `${baseURL}${extractMetadata}`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+        params: {
+          file_id,
+        },
+      });
+
+      console.log(response.data, "data in api");
+      return response.data;
+    } catch (error) {
+      console.error("ListDocSubmit error:", error);
+      toast.error(error.response?.data?.message );
+      throw error;
+    }
+  }
+);
+
+export const getTextData = createAsyncThunk(
+  'getTextData',
+async (file_id) => {
+
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const url = `${baseURL}${extractTextdata}`;
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+        },
+        params: {
+          file_id,
+        },
+      });
+
+      console.log(response.data, "data in api");
+      return response.data;
+    } catch (error) {
+      console.error("ListDocSubmit error:", error);
+      toast.error(error.response?.data?.message );
+      throw error;
+    }
+  }
+);
+
+export const UpdateDraftingtext = createAsyncThunk(
+  '/UpdateDraftingtext',
+ async (data) => {
+console.log(data,"data");
+
+    const token = sessionStorage.getItem('token');
+    const url = `${baseURL}${updatetextdata}`;
+
+    try {
+
+      const response = await axios.patch(url, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      toast.success(response.data.message);
+      return response.data;
+
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error(error.response?.data?.message || error.message || "File upload failed");
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 export const DeleteDrafingDoc = createAsyncThunk(
   'DeleteDrafingDoc',

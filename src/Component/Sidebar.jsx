@@ -37,13 +37,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
   return (
     <>
-      {/* Sidebar */}
       <aside
         className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${isMobile && !collapsed ? "sidebar-mobile-open" : ""
           }`}
         style={{ height: "100dvh", zIndex: 1100 }}
       >
-        {/* Header */}
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
           <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
@@ -54,7 +52,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           </button>
         </div>
 
-        {/* Sidebar Body */}
         <div
           className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 hide-scrollbar"
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
@@ -84,7 +81,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               </>
             )}
 
-            {/* ADMIN PANEL */}
             {Role === "admin" && (
               <>
                 {!collapsed && (
@@ -150,7 +146,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""}`}>
+                {/* <li className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""}`}>
                   <span
                     onClick={() => handleLinkClick("/LeaseDraftingUpload")}
                     className="nav-link text-white"
@@ -159,9 +155,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <i className="bi bi-cpu me-2" />
                     {!collapsed && "AI Lease Drafting"}
                   </span>
-                </li>
+                </li> */}
 
-                {/* Data Categories Accordion */}
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"

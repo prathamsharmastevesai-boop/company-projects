@@ -5,7 +5,10 @@ import RAGLoader from "../../../Component/Loader";
 import { useDispatch } from "react-redux";
 import {
   DeleteDrafingDoc,
+  getMetaData,
+  getTextData,
   ListDraftingLeaseDoc,
+  UpdateDraftingtext,
   UploadDraftingLeaseDoc,
 } from "../../../Networking/Admin/APIs/AiDraftingLeaseAPi";
 
@@ -16,6 +19,7 @@ export const LeaseDraftingUpload = () => {
 
   const [docs, setDocs] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
+  
   const [loading, setLoading] = useState(false);
   const [aiDraft, setAiDraft] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,15 +29,15 @@ export const LeaseDraftingUpload = () => {
   const [feedbackComment, setFeedbackComment] = useState("");
   const [submittedFeedback, setSubmittedFeedback] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [updateloading, setUpadteLoading] = useState(false);
+
 
   const [metadata, setMetadata] = useState({
     tenant: "",
     rent: "",
     term: "",
   });
-
  
-
   useEffect(() => {
   if (bottomRef.current) {
     bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -112,40 +116,94 @@ export const LeaseDraftingUpload = () => {
         .finally(() => setLoader(false));
   };
 
-  const handleGenerateDraft = async () => {
-    if (!selectedDoc) {
+    const handleGenerateDraft = async (id) => {
+    
+    if (!selectedDoc) { 
       toast.error("Please select a document first");
       return;
     }
 
     setLoading(true);
-    try {
-      // Replace with real API call
-      setTimeout(() => {
+   try {
+  const [Metadata, Textdata] = await Promise.all([
+    dispatch(getMetaData(id)).unwrap(),
+    dispatch(getTextData(id)).unwrap(),
+  ]);
+setTimeout(() => {
         setMetadata({
-          tenant: "Alphabets Childcare",
-          rent: "4400",
-          term: "10 years",
+          tenant: Metadata.structured_metadata.tenant_name,
+          rent: Metadata.structured_metadata.rent_amount,
+          term: Metadata.structured_metadata.lease_term,
         });
 
-        const draft = `AI Draft Lease Agreement for "${selectedDoc.original_file_name}":\n\nThis Lease Agreement is made between Landlord and Tenant...`;
-        setAiDraft(draft);
-        setEditedDraft(draft);
+        setAiDraft(Textdata);
+        setEditedDraft(Textdata);
         setLoading(false);
       }, 2000);
-    } catch (err) {
-      console.error("Draft generation failed:", err);
-      toast.error("Lease draft generation failed.");
-      setLoading(false);
-    }
+  console.log(Metadata, Textdata, "Metadata");
+} catch (error) {
+  console.error("Error fetching data:", error);
+}
   };
 
-  const handleSaveDraft = () => {
-    setAiDraft(editedDraft);
+  
+  // const handleGenerateDraft = async (id) => {
+  //   console.log(id,"ididi");1  
+    
+  //   if (!selectedDoc) { 
+  //     toast.error("Please select a document first");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //    const Metadata = dispatch(getMetaData()).unwrap();
+  //    const Textdata = dispatch(getTextData()).unwrap();
+  //    console.log(Metadata,Textdata,"Metadata");
+     
+  //     setTimeout(() => {
+  //       setMetadata({
+  //         tenant: "Alphabets Childcare",
+  //         rent: "4400",
+  //         term: "10 years",
+  //       });
+
+  //       const draft = `AI Draft Lease Agreement for "${selectedDoc.original_file_name}":\n\nThis Lease Agreement is made between Landlord and Tenant...`;
+  //       setAiDraft(draft);
+  //       setEditedDraft(draft);
+  //       setLoading(false);
+  //     }, 2000);
+  //   } catch (err) {
+  //     console.error("Draft generation failed:", err);
+  //     toast.error("Lease draft generation failed.");
+  //     setLoading(false);
+  //   }
+  // };
+
+const handleSaveDraft = async (id) => {
+  setAiDraft(editedDraft);
+  setUpadteLoading(true); 
+
+  try {
+    await dispatch(UpdateDraftingtext({
+      file_id: id,
+      raw_text: editedDraft
+    })).unwrap();
+  setUpadteLoading(false);
+    await Promise.all([
+      dispatch(getMetaData(id)).unwrap(),
+      dispatch(getTextData(id)).unwrap()
+    ]);
+
     setIsEditing(false);
     setShowDiff(false);
-    toast.success("Draft saved successfully!");
-  };
+  } catch (error) {
+    console.error("Error saving draft:", error);
+  } finally {
+  
+  }
+};
+
 
   const handleSubmitFeedback = () => {
     if (!feedback) {
@@ -275,7 +333,7 @@ export const LeaseDraftingUpload = () => {
       </div>
  <button
         className="btn btn-primary mb-4 d-flex align-items-center justify-content-center gap-2"
-        onClick={handleGenerateDraft}
+        onClick={()=>handleGenerateDraft(selectedDoc?.file_id)}
         disabled={!selectedDoc || loading}
         style={{ minWidth: "180px", height: "45px" }}
       >
@@ -355,11 +413,16 @@ export const LeaseDraftingUpload = () => {
                   title="Toggle Redline View"
                   onClick={() => setShowDiff(!showDiff)}
                 />
-                <i
-                  className="bi bi-check-circle-fill text-success"
-                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
-                  onClick={handleSaveDraft}
-                />
+                {updateloading ? (
+  <div className="spinner-border spinner-border-sm text-success" role="status" />
+) : (
+  <i
+    className="bi bi-check-circle-fill text-success"
+    style={{ cursor: "pointer", fontSize: "1.2rem" }}
+    onClick={() => handleSaveDraft(selectedDoc?.file_id)}
+  />
+)}
+
                 <i
                   className="bi bi-x-circle-fill text-danger"
                   style={{ cursor: "pointer", fontSize: "1.2rem" }}

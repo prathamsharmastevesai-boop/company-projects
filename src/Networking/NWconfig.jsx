@@ -92,6 +92,9 @@ export const userList = "/invite_user/admin/invited-users";
 export const upload_Drafting_Lease = "/generate_lease/upload/simple";
 export const listDraftingDoc = "/generate_lease/list_category_files/"
 export const deleteDraftingDoc = "/generate_lease/delete_file/";
+export const extractMetadata = "/generate_lease/files/extract-metadata";
+export const extractTextdata = "/generate_lease/files/lease-agreement-text";
+export const updatetextdata = "/generate_lease/files/update-extracted-text";
 
 
 //SUPER ADMIN
