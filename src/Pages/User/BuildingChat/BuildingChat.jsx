@@ -366,54 +366,57 @@ export const BuildingChat = () => {
           </div>
 
           <div className="pt-2">
-           <div className="d-flex align-items-center border rounded p-2 bg-white">
-   <textarea
-  ref={textareaRef}
-  rows={1}
-  className="form-control me-2"
-  placeholder="Type a message..."
-  value={message}
-  onChange={(e) => setMessage(e.target.value)}
-  onKeyDown={(e) => {
-    const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+            <div className="d-flex align-items-center border rounded p-2 bg-white">
+              <textarea
+                ref={textareaRef}
+                rows={1} 
+                className="form-control me-2"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => {
+                  setMessage(e.target.value);
 
-    if (e.key === "Enter" && !isComposing) {
-      if (e.shiftKey) {
-        // insert a single newline manually
-        e.preventDefault();
-        const { selectionStart, selectionEnd } = e.target;
-        const newValue =
-          message.substring(0, selectionStart) +
-          "\n" +
-          message.substring(selectionEnd);
+                  const ta = textareaRef.current;
+                  if (ta) {
+                    ta.style.height = "auto"; 
+                    const lineHeight = 20;
+                    const maxHeight = lineHeight * 3; 
+                    ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
+                  }
+                }}
+                onKeyDown={(e) => {
+                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
 
-        setMessage(newValue);
+                  if (e.key === "Enter" && !isComposing) {
+                    if (e.shiftKey) {
+            
+                      return;
+                    } else {
+  
+                      e.preventDefault();
+                      if (!isSending) {
+                        handleSendMessage();
+                        
+                        if (textareaRef.current) {
+                          textareaRef.current.style.height = "auto";
+                        }
+                      }
+                    }
+                  }
+                }}
+                style={{ resize: "none", overflow: "auto" }}
+                disabled={isSending}
+              />
 
-        // move cursor after newline
-        setTimeout(() => {
-          e.target.selectionStart = e.target.selectionEnd = selectionStart + 1;
-        }, 0);
-      } else {
-        // normal Enter → send
-        e.preventDefault();
-        if (!isSending) handleSendMessage();
-      }
-    }
-  }}
-  style={{  overflow: "hidden",}}
-  disabled={isSending}
-/>
-
-
-  <button
-    className="btn btn-primary"
-    onClick={handleSendMessage}
-    disabled={isSending}
-    aria-label="Send message"
-  >
-    <i className="bi bi-send"></i>
-  </button>
-</div>
+              <button
+                className="btn btn-primary"
+                onClick={handleSendMessage}
+                disabled={isSending}
+                aria-label="Send message"
+              >
+                <i className="bi bi-send"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>

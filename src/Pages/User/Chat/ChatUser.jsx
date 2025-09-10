@@ -303,24 +303,21 @@ export const UserChat = () => {
                     key={i}
                     className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
-                    <div
-                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
+                     <div
+                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
+                        ? "bg-secondary text-white"
+                        : "bg-primary text-white"
                         }`}
+                      style={{
+                        maxWidth: "75%",
+                        wordWrap: "break-word",
+                        whiteSpace: "pre-wrap",
+                        textAlign: "left"
+                      }}
                     >
                       {msg.message}
-                      {msg.file && (
-                        <div>
-                          <a
-                            href={msg.file}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-warning small"
-                          >
-                            📎 View File
-                          </a>
-                        </div>
-                      )}
                     </div>
+                     
                     <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
@@ -343,43 +340,46 @@ export const UserChat = () => {
 
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
-               <textarea
-  ref={textareaRef}
-  rows={1}
-  className="form-control me-2"
-  placeholder="Type a message..."
-  value={message}
-  onChange={(e) => setMessage(e.target.value)}
-  onKeyDown={(e) => {
-    const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+              <textarea
+                ref={textareaRef}
+                rows={1}
+                className="form-control me-2"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => {
+                  setMessage(e.target.value);
 
-    if (e.key === "Enter" && !isComposing) {
-      if (e.shiftKey) {
-        // insert a single newline manually
-        e.preventDefault();
-        const { selectionStart, selectionEnd } = e.target;
-        const newValue =
-          message.substring(0, selectionStart) +
-          "\n" +
-          message.substring(selectionEnd);
+                  const ta = textareaRef.current;
+                  if (ta) {
+                    ta.style.height = "auto"; 
+                    const lineHeight = 20; 
+                    const maxHeight = lineHeight * 3;
+                    ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
+                  }
+                }}
+                onKeyDown={(e) => {
+                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
 
-        setMessage(newValue);
+                  if (e.key === "Enter" && !isComposing) {
+                    if (e.shiftKey) {
+          
+                      return;
+                    } else {
 
-        // move cursor after newline
-        setTimeout(() => {
-          e.target.selectionStart = e.target.selectionEnd = selectionStart + 1;
-        }, 0);
-      } else {
-        // normal Enter → send
-        e.preventDefault();
-        if (!isSending) handleSendMessage();
-      }
-    }
-  }}
-  style={{  overflow: "hidden",}}
-  disabled={isSending}
-/>
-
+                      e.preventDefault();
+                      if (!isSending) {
+                        handleSendMessage();
+        
+                        if (textareaRef.current) {
+                          textareaRef.current.style.height = "auto";
+                        }
+                      }
+                    }
+                  }
+                }}
+                style={{ resize: "none", overflow: "auto" }}
+                disabled={isSending}
+              />
 
               <button
                 className="btn btn-primary"
