@@ -14,7 +14,7 @@ export const ChatWithAnyDoc = () => {
   const dispatch = useDispatch();
   const chatRef = useRef(null);
   const location = useLocation();
-
+  const textareaRef = useRef(null);
   const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
@@ -342,18 +342,40 @@ export const ChatWithAnyDoc = () => {
           </div>
 
           <div className="pt-2">
-            <div className="d-flex align-items-center border rounded p-2 bg-white">
-              <input
-                type="text"
+           <div className="d-flex align-items-center border rounded p-2 bg-white">
+              <textarea
+                ref={textareaRef}
+                rows={1}
                 className="form-control me-2"
                 placeholder="Type a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  // prevent sending while IME composition (e.g. typing in CJK)
+                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+                  if (e.key === "Enter" && !e.shiftKey && !isComposing) {
+                    e.preventDefault(); // don't insert newline, we want to send
+                    if (!isSending) handleSendMessage();
+                  }
+                  // Shift+Enter: let the browser insert newline in textarea
+                }}
+                onInput={() => {
+                  // auto-grow textarea height
+                  const ta = textareaRef.current;
+                  if (ta) {
+                    ta.style.height = "auto";
+                    ta.style.height = `${ta.scrollHeight}px`;
+                  }
+                }}
+                disabled={isSending}
+                style={{ resize: "none", overflow: "hidden" }}
               />
+
               <button
                 className="btn btn-primary"
                 onClick={handleSendMessage}
                 disabled={isSending}
+                aria-label="Send message"
               >
                 <i className="bi bi-send"></i>
               </button>

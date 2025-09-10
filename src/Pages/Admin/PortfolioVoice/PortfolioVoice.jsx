@@ -65,11 +65,10 @@ export const PortfolioVoice = () => {
         Upload_specific_file_Api({ files: selectedFiles, category: "portfolio" })
       ).unwrap();
       await fetchDocuments();
-      toast.success(res?.msg || "Files uploaded successfully");
+     
     } catch (error) {
       const errorMsg =
         error?.response?.data?.msg || error?.message || "Upload failed";
-      toast.error(errorMsg);
     } finally {
       setIsUploading(false);
       e.target.value = null;
