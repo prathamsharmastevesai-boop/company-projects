@@ -343,33 +343,43 @@ export const ChatWithAnyDoc = () => {
 
           <div className="pt-2">
            <div className="d-flex align-items-center border rounded p-2 bg-white">
-              <textarea
-                ref={textareaRef}
-                rows={1}
-                className="form-control me-2"
-                placeholder="Type a message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  // prevent sending while IME composition (e.g. typing in CJK)
-                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
-                  if (e.key === "Enter" && !e.shiftKey && !isComposing) {
-                    e.preventDefault(); // don't insert newline, we want to send
-                    if (!isSending) handleSendMessage();
-                  }
-                  // Shift+Enter: let the browser insert newline in textarea
-                }}
-                onInput={() => {
-                  // auto-grow textarea height
-                  const ta = textareaRef.current;
-                  if (ta) {
-                    ta.style.height = "auto";
-                    ta.style.height = `${ta.scrollHeight}px`;
-                  }
-                }}
-                disabled={isSending}
-                style={{ resize: "none", overflow: "hidden" }}
-              />
+             <textarea
+  ref={textareaRef}
+  rows={1}
+  className="form-control me-2"
+  placeholder="Type a message..."
+  value={message}
+  onChange={(e) => setMessage(e.target.value)}
+  onKeyDown={(e) => {
+    const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+
+    if (e.key === "Enter" && !isComposing) {
+      if (e.shiftKey) {
+        // insert a single newline manually
+        e.preventDefault();
+        const { selectionStart, selectionEnd } = e.target;
+        const newValue =
+          message.substring(0, selectionStart) +
+          "\n" +
+          message.substring(selectionEnd);
+
+        setMessage(newValue);
+
+        // move cursor after newline
+        setTimeout(() => {
+          e.target.selectionStart = e.target.selectionEnd = selectionStart + 1;
+        }, 0);
+      } else {
+        // normal Enter → send
+        e.preventDefault();
+        if (!isSending) handleSendMessage();
+      }
+    }
+  }}
+  style={{  overflow: "hidden",}}
+  disabled={isSending}
+/>
+
 
               <button
                 className="btn btn-primary"
