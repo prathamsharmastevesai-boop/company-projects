@@ -139,10 +139,10 @@ console.log(role, access_token, expiryTime,"role, access_token, expiryTime");
               </div>
             </div>
 
-            <div className="form-check mb-3">
+            {/* <div className="form-check mb-3">
               <input type="checkbox" className="form-check-input" id="rememberMe" disabled={loading} />
               <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
-            </div>
+            </div> */}
 
             <button
               type="submit"

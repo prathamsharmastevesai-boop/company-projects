@@ -125,7 +125,7 @@ const handleLogin = async (e) => {
               {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>
 
-            <div className="mb-3 text-end">
+            {/* <div className="mb-3 text-end">
               <span
                 className="text-primary"
                 style={{ cursor: "pointer" }}
@@ -133,7 +133,7 @@ const handleLogin = async (e) => {
               >
                 Forgot password?
               </span>
-            </div>
+            </div> */}
 
             <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
               {loading ? <RAGLoader /> : "Sign in"}
