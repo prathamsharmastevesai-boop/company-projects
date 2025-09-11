@@ -4,6 +4,7 @@ import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 import side_photo from "../../../assets/side_photo.png";
+import { toast } from "react-toastify";
 
 export const AdminLogin = () => {
   const navigate = useNavigate();
@@ -46,52 +47,38 @@ export const AdminLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setLoading(true);
-    setErrors({});
-    const payload = { email, password, role: "admin" };
+  setLoading(true);
+  try {
+    const res = await dispatch(LoginSubmit({ email, password, role: "admin" })).unwrap();
+    const { role, access_token, expiryTime } = res;
+console.log(role, access_token, expiryTime,"role, access_token, expiryTime");
 
-    try {
-      const res = await dispatch(LoginSubmit(payload));
-      setLoading(false);
+    if ((role === "admin" || role === "superuser") && access_token) {
+      sessionStorage.setItem("token", access_token);
+      sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
+      sessionStorage.setItem("tokenExpiry", expiryTime);
 
-      if (res.meta.requestStatus === "fulfilled") {
-        const userRole = res.payload.role;
-        const token = res.payload.token;
-
-        sessionStorage.setItem("auth", JSON.stringify({
-          isAuthenticated: true,
-          role: userRole
-        }));
-
-        if (window.ReactNativeWebView && token && userRole) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: 'LOGIN_SUCCESS',
-            token,
-            role: userRole
-          }));
-        }
-
-        if (userRole === "superuser") {
-          navigate("/AdminManagement");
-        }
-        else if (userRole === "admin") {
-          navigate("/AdminDashboard");
-        } else if (userRole === "user") {
-          navigate("/dashboard");
-        } else {
-          setErrors({ general: "Unauthorized role." });
-        }
+      if (role === "admin") {
+        toast.success("Admin login successful");
+        navigate("/AdminDashboard");
+      } else if (role === "superuser") {
+        toast.success("Superuser login successful");
+        navigate("/AdminManagement");
       }
-    } catch (err) {
-      setLoading(false);
-      setErrors({ general: "An error occurred during login." });
-      console.error(err);
+    } else {
+      toast.error("Unauthorized role.");
     }
-  };
+  } catch (err) {
+    toast.error(err?.message || "Admin login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="container-fluid min-vh-100 d-flex p-0 position-relative">

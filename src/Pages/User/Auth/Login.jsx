@@ -49,39 +49,32 @@ export const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const handleLogin = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setLoading(true);
-    const payload = { email, password, role: "user" };
+  setLoading(true);
+  try {
+    const res = await dispatch(LoginSubmit({ email, password, role: "user" })).unwrap();
+    const { role, access_token, expiryTime } = res;
 
-    try {
-      const res = await dispatch(LoginSubmit(payload)).unwrap();
-      const userRole = res.role;
-      const token = res.token;
+    if (role === "user" && access_token) {
+      sessionStorage.setItem("token", access_token);
+      sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
+      sessionStorage.setItem("tokenExpiry", expiryTime);
 
-      if (window.ReactNativeWebView && token) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-          type: "LOGIN_SUCCESS",
-          token: token,
-          role: userRole,
-        }));
-      }
-if (userRole === "admin") {
-        navigate("/CreateBuilding");
-      } else if (userRole === "user") {
-        navigate("/dashboard", { state: { email } });
-      }
-       else {
-        toast.error("Unauthorized role.");
-      }
-    } catch (err) {
-      const message = err?.message || "Login failed. Please check your credentials.";
-    } finally {
-      setLoading(false);
+      toast.success("User login successful");
+      navigate("/dashboard", { state: { email } });
+    } else {
+      toast.error("Unauthorized role.");
     }
-  };
+  } catch (err) {
+    toast.error(err?.message || "User login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="login-container d-flex vh-100 position-relative">

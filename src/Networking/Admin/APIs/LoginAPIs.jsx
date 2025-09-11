@@ -9,7 +9,6 @@ export const LoginSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const url = `${baseURL}${login}`;
-      console.log(url, "baseURL");
       const response = await axios.post(url, credentials, {
         headers: {
           "Content-Type": "application/json",
@@ -23,12 +22,8 @@ export const LoginSubmit = createAsyncThunk(
       const expiryTime = Date.now() + expiresIn * 1000;
 
       if (token && role) {
-        sessionStorage.setItem('token', token);
-        sessionStorage.setItem('auth', JSON.stringify({ isAuthenticated: true, role }));
-        sessionStorage.setItem('tokenExpiry', expiryTime);
-
-        toast.success(response.data.message || "Login successful");
-        return { access_token: token, role };
+        // 🔹 return only, don't set storage here
+        return { access_token: token, role, expiryTime };
       } else {
         return rejectWithValue("Invalid login response");
       }
@@ -44,6 +39,7 @@ export const LoginSubmit = createAsyncThunk(
     }
   }
 );
+
 
 export const SignUpSubmit = createAsyncThunk(
   "auth/SignUpSubmit",
@@ -61,7 +57,7 @@ export const SignUpSubmit = createAsyncThunk(
 
       if (!access_token && message) {
         toast.success(message);
-        return { message }; 
+        return { message };
       }
 
       if (access_token && role) {
