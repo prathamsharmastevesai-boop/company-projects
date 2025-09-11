@@ -69,7 +69,7 @@ const handleLogin = async (e) => {
       toast.error("Unauthorized role.");
     }
   } catch (err) {
-    toast.error(err?.message || "User login failed");
+    // toast.error(err?.message || "User login failed");
   } finally {
     setLoading(false);
   }

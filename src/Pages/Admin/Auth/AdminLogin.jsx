@@ -55,7 +55,6 @@ export const AdminLogin = () => {
   try {
     const res = await dispatch(LoginSubmit({ email, password, role: "admin" })).unwrap();
     const { role, access_token, expiryTime } = res;
-console.log(role, access_token, expiryTime,"role, access_token, expiryTime");
 
     if ((role === "admin" || role === "superuser") && access_token) {
       sessionStorage.setItem("token", access_token);
@@ -73,7 +72,7 @@ console.log(role, access_token, expiryTime,"role, access_token, expiryTime");
       toast.error("Unauthorized role.");
     }
   } catch (err) {
-    toast.error(err?.message || "Admin login failed");
+    // toast.error(err?.message || "Admin login failed");
   } finally {
     setLoading(false);
   }
