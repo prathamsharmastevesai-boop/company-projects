@@ -20,8 +20,43 @@ export const CreateBuildingSubmit = createAsyncThunk(
       toast.success(response.data.message)
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Building creation failed");
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -43,12 +78,43 @@ export const ListBuildingSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      if (error.response?.status === 401) {
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
         toast.error("Session expired. Please log in again.");
-      } else {
-        toast.error(error.response?.data?.message || "Something went wrong");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
       }
-      throw error;
     }
   }
 );
@@ -61,7 +127,6 @@ export const UpdateBuildingSubmit = createAsyncThunk(
 
     try {
       const url = `${baseURL}${UpdateBuildingEndpoint}`;
-      console.log(url, "url");
 
       const response = await axios.patch(url, data, {
         headers: {
@@ -70,13 +135,46 @@ export const UpdateBuildingSubmit = createAsyncThunk(
           "ngrok-skip-browser-warning": "true",
         },
       });
-      console.log(url, "url");
-      console.log(response, "response");
       toast.success(response.data.message)
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Building Updation failed");
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -88,7 +186,6 @@ export const DeleteBuilding = createAsyncThunk(
 
     try {
       const url = `${baseURL}${DeleteBuildingEndpoint}?building_id=${id}`;
-      console.log(url, "DELETE Building URL");
 
       const response = await axios.delete(url, {
         headers: {
@@ -101,8 +198,43 @@ export const DeleteBuilding = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Building deletion failed");
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );

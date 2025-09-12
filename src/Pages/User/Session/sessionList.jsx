@@ -12,7 +12,6 @@ export const SessionList = ({ setShowSessionModal }) => {
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
   const fetchChatHistory = async (id) => {
-    console.log("Fetching chat history for session:", id);
   };
 
   const fetchSessions = async () => {

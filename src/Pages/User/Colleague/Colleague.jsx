@@ -172,7 +172,7 @@ export const ColleagueChat = () => {
 
       if (response?.answer) {
         const adminMessage = {
-          message: response.answer.answer,
+          message: response.answer,
           file: response.answer.file,
           sender: "Admin",
           timestamp: new Date(),

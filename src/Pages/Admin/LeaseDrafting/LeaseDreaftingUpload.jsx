@@ -140,7 +140,6 @@ setTimeout(() => {
         setEditedDraft(Textdata);
         setLoading(false);
       }, 2000);
-  console.log(Metadata, Textdata, "Metadata");
 } catch (error) {
   console.error("Error fetching data:", error);
 }
@@ -210,7 +209,6 @@ const handleSaveDraft = async (id) => {
       toast.error("Please select 👍 or 👎 before submitting feedback.");
       return;
     }
-    console.log("Feedback submitted:", { feedback, feedbackComment });
     setSubmittedFeedback(true);
     toast.success("Feedback submitted. Thank you!");
   };

@@ -48,7 +48,6 @@ export const UpdateBuilding = () => {
         year: b.year,
       }));
 
-      console.log("Formatted for API:", formattedBuildings);
 
       await dispatch(UpdateBuildingSubmit(formattedBuildings[0])).unwrap();
       navigate("/building_list");

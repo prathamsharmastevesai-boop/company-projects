@@ -14,7 +14,6 @@ export const AdminDashboard = () => {
     const fetchDashboard = async () => {
       try {
         const res = await dispatch(getdashboardApi()).unwrap();
-        console.log(res, "res");
         setDashboardData(res);
       } catch (error) {
         console.error("Error fetching dashboard:", error);

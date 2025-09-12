@@ -98,7 +98,6 @@ export const ListBuilding = () => {
   };
 
   const handleSubmit = (buildingId) => {
-    console.log(buildingId,"buildingId");
        navigate("/LeaseList", { state: { office: { buildingId } } });
   };
 

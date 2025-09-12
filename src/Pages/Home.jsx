@@ -15,7 +15,7 @@ export const Home = () => {
       if (auth.role === "user") {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
-        navigate("/CreateBuilding");
+        navigate("/AdminDashboard");
       }
     }
   }, []);

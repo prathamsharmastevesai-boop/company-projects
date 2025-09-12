@@ -7,7 +7,6 @@ import { AskGeneralDoc, baseURL, listGeneralInfoDoc, updateGenralDoc, UploadGene
 export const UploadGeneralDocSubmit = createAsyncThunk(
   '/UploadGeneralDocSubmit',
   async ({ file, category }, { rejectWithValue }) => {
-    console.log({ file, category }, "Uploading document...");
 
     const token = sessionStorage.getItem('token');
     const url = `${baseURL}/admin_user_chat/upload?category=${encodeURIComponent(category)}`;
@@ -27,10 +26,44 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
 
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast.error(error.response?.data?.message || error.message || "File upload failed");
-      return rejectWithValue(error.response?.data || error.message);
+    }catch (error) {
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -55,9 +88,43 @@ export const UpdateGeneralDocSubmit = createAsyncThunk(
       toast.success(response?.data?.message || "File updated successfully");
       return response.data;
     } catch (error) {
-      console.error("File update error:", error);
-      toast.error(error.response?.data?.message || error.message || "Update failed");
-      return rejectWithValue(error.response?.data || error.message);
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -65,7 +132,6 @@ export const UpdateGeneralDocSubmit = createAsyncThunk(
 export const DeleteGeneralDocSubmit = createAsyncThunk(
   'DeleteGeneralDocSubmit',
   async ({ file_id, category }, { rejectWithValue }) => {
-    console.log({ file_id, category }, "Deleting file...");
 
     const token = sessionStorage.getItem('token');
     const url = `${baseURL}/admin_user_chat/delete?category=${encodeURIComponent(category)}`;
@@ -85,10 +151,43 @@ export const DeleteGeneralDocSubmit = createAsyncThunk(
       return response.data;
 
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "File deletion failed.";
-      toast.error(errorMsg);
-      console.error("Delete error:", errorMsg);
-      return rejectWithValue(error.response?.data || errorMsg);
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -112,8 +211,43 @@ export const GeneralInfoSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message );
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -133,9 +267,43 @@ export const AskQuestionGeneralAPI = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      const errMsg = error.response?.data?.message || "Question not sent";
-      toast.error(errMsg);
-      return rejectWithValue(errMsg);
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "Question not sent";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );

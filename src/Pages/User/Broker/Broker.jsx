@@ -169,7 +169,7 @@ export const BrokerChat = () => {
 
       if (response?.answer) {
         const adminMessage = {
-          message: response.answer.answer,
+          message: response.answer,
           file: response.answer.file,
           sender: "Admin",
           timestamp: new Date(),
@@ -179,6 +179,8 @@ export const BrokerChat = () => {
 
       scrollToBottom();
     } catch (error) {
+      console.log(error.response,"error");
+      
       console.error(error);
     } finally {
       setIsSending(false);

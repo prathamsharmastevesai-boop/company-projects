@@ -21,8 +21,43 @@ export const CreateLeaseSubmit = createAsyncThunk(
       toast.success(response.data.message)
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message );
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -46,8 +81,43 @@ export const ListLeaseSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message );
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -69,10 +139,43 @@ export const UpdateLeaseSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(error, "error");
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
 
-      toast.error(error.response?.data?.message || "Failed to update Lease");
-      throw error;
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );
@@ -80,13 +183,11 @@ export const UpdateLeaseSubmit = createAsyncThunk(
 export const DeleteLease = createAsyncThunk(
   'auth/DeleteLease',
   async (id) => {
-    console.log(id, "id");
 
     const token = sessionStorage.getItem('token');
 
     try {
       const url = `${baseURL}${DeleteLeaseEndpoint}?lease_id=${id.lease_id}&building_id=${id.building_id}`;
-      console.log(url, "url");
 
       const response = await axios.delete(url, {
         headers: {
@@ -96,11 +197,45 @@ export const DeleteLease = createAsyncThunk(
         },
       });
       toast.success(response.data.message)
-      console.log(response, "response");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Lease deletion failed");
-      throw error;
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
+
+      console.log(status, "error.");
+
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
     }
   }
 );

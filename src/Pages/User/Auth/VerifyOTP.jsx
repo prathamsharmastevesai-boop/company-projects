@@ -16,7 +16,6 @@ export const VerifyOtp = () => {
   const navigate = useNavigate();
 
   const data = location.state;
-  console.log(data, "email");
 
 
   const handleChange = (value, index) => {

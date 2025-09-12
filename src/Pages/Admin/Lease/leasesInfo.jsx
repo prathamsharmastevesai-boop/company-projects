@@ -50,7 +50,6 @@ export const LeaseInfomation = () => {
       }
     } catch (err) {
       console.error("Error fetching Lease docs:", err);
-      toast.error("Failed to load documents.");
     } finally {
       setLoading(false);
     }

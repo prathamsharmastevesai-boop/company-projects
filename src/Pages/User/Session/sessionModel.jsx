@@ -10,9 +10,9 @@ export const SessionListModal = ({ show, onClose }) => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-  const fetchChatHistory = async (id) => {
-    console.log("Fetching chat history for session:", id);
-  };
+  // const fetchChatHistory = async (id) => {
+  //   console.log("Fetching chat history for session:", id);
+  // };
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);

@@ -16,6 +16,8 @@ export const AdminManagement = () => {
     const [admin_name,setadmin_name] = useState();
     const [loading, setLoading] = useState(false);
     const [inviteLoading, setInviteLoading] = useState(false);
+const [errors, setErrors] = useState({});
+
 
     useEffect(() => {
         fetchadmin();
@@ -47,22 +49,61 @@ const handleDelete = async (email) => {
         }
     };
 
-    const handleInviteAdmin = async () => {
-        if (!email) {
-            alert("Please enter an email address");
-            return;
-        }
-        setInviteLoading(true);
-        try {
-            await dispatch(inviteAdminApi({ email , company_name ,admin_name})).unwrap();
-            setEmail("");
-            fetchadmin();
-        } catch (err) {
-            console.error("Invite failed:", err);
-        } finally {
-            setInviteLoading(false);
-        }
-    };
+    // const handleInviteAdmin = async () => {
+    //     if (!email) {
+    //         alert("Please enter an email address");
+    //         return;
+    //     }
+    //     setInviteLoading(true);
+    //     try {
+    //         await dispatch(inviteAdminApi({ email , company_name ,admin_name})).unwrap();
+    //         setEmail("");
+    //         fetchadmin();
+    //     } catch (err) {
+    //         console.error("Invite failed:", err);
+    //     } finally {
+    //         setInviteLoading(false);
+    //     }
+    // };
+
+const handleInviteAdmin = async () => {
+  const newErrors = {};
+
+  if (!admin_name) newErrors.admin_name = "Admin Name is required";
+  if (!company_name) newErrors.company_name = "Company Name is required";
+  if (!email) {
+    newErrors.email = "Email is required";
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+  }
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setErrors({}); // clear errors if validation passed
+  setInviteLoading(true);
+  try {
+    await dispatch(inviteAdminApi({ email, company_name, admin_name })).unwrap();
+
+    // reset fields
+    setEmail("");
+    setcompany_name("");
+    setadmin_name("");
+    fetchadmin();
+  } catch (err) {
+    console.error("Invite failed:", err);
+    toast.error("Failed to send invite");
+  } finally {
+    setInviteLoading(false);
+  }
+};
+
+
 
     return (
         <div className="container p-4">
@@ -90,35 +131,47 @@ const handleDelete = async (email) => {
 
    <div className="d-flex justify-content-between me-3 ">
       <div className="col-md-6 mx-1">
-         <Form.Control
-        type="text"
-        placeholder="Enter Admin Name..."
-        value={admin_name || ""}
-        onChange={(e) => setadmin_name(e.target.value)}
-        disabled={inviteLoading}
-      />
+      <Form.Control
+  type="text"
+  placeholder="Enter Admin Name..."
+  value={admin_name || ""}
+  onChange={(e) => setadmin_name(e.target.value)}
+  disabled={inviteLoading}
+  isInvalid={!!errors.admin_name}
+/>
+<Form.Control.Feedback type="invalid">
+  {errors.admin_name}
+</Form.Control.Feedback>
       </div>
 
      <div className="col-md-6 mx-1">
-         <Form.Control
-        type="text"
-        placeholder="Enter Company Name..."
-        value={company_name || ""}
-        onChange={(e) => setcompany_name(e.target.value)}
-        disabled={inviteLoading}
-      />
+        <Form.Control
+  type="text"
+  placeholder="Enter Company Name..."
+  value={company_name || ""}
+  onChange={(e) => setcompany_name(e.target.value)}
+  disabled={inviteLoading}
+  isInvalid={!!errors.company_name}
+/>
+<Form.Control.Feedback type="invalid">
+  {errors.company_name}
+</Form.Control.Feedback>
      </div>
    </div>
 
       {/* Email */}
       <div className="d-flex gap-2">
-        <Form.Control
-          type="email"
-          placeholder="Enter Admin Email..."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={inviteLoading}
-        />
+       <Form.Control
+  type="email"
+  placeholder="Enter Admin Email..."
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  disabled={inviteLoading}
+  isInvalid={!!errors.email}
+/>
+<Form.Control.Feedback type="invalid">
+  {errors.email}
+</Form.Control.Feedback>
         <Button
           variant="primary w-25"
           onClick={handleInviteAdmin}

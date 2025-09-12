@@ -60,11 +60,10 @@ export const Aianalytics = () => {
       setDashboardData(null);
     }
   };
-  
+
   const AIInslights = async () => {
     try {
       const res = await dispatch(getInslightApi()).unwrap();
-      console.log("AI Insights response:", res);
 
       let insights = {};
       if (res?.insight) {
@@ -74,13 +73,13 @@ export const Aianalytics = () => {
 
         try {
           if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
-            // JSON format
+
             insights = JSON.parse(rawInsight);
           } else {
-            // Plain text → split into bullet points
+
             insights = rawInsight
               .split("\n")
-              .map((line) => line.replace(/^\*+\s*/, "").trim()) // remove leading * or ** markers
+              .map((line) => line.replace(/^\*+\s*/, "").trim())
               .filter((line) => line.length > 0);
           }
         } catch (err) {
@@ -101,7 +100,6 @@ export const Aianalytics = () => {
   const fetchRecentQuestions = async () => {
     try {
       const res = await dispatch(getRecentQuestionApi()).unwrap();
-      console.log("Recent Questions:", res);
 
       let parsedSummary = "";
       if (res?.recent_questions?.summary) {
@@ -139,7 +137,6 @@ export const Aianalytics = () => {
   const fetchUsageTreads = async () => {
     try {
       const res = await dispatch(getUsageTreadApi({ days })).unwrap();
-      console.log("Usage Trends:", res);
 
       let insights = {};
       if (res?.ai_insights?.trend_summary) {
@@ -168,7 +165,6 @@ export const Aianalytics = () => {
   const fetchActivitySummary = async () => {
     try {
       const res = await dispatch(getActivitySummaryApi({ days })).unwrap();
-      console.log("Activity Summary:", res);
 
       const daily = Object.entries(res.daily_activity_summary || {}).map(
         ([date, values]) => ({
@@ -334,7 +330,7 @@ export const Aianalytics = () => {
             <h6 className="fw-bold mb-3">Usage Trends</h6>
 
             {!usageData ? (
-             <div className="text-center text-muted">
+              <div className="text-center text-muted">
                 <div
                   className="spinner-border text-secondary mb-2"
                   role="status"

@@ -16,8 +16,8 @@ export const PortfolioVoice = () => {
   const [isDeleting, setIsDeleting] = useState({});
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState(null); // "date" or "size"
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+  const [sortBy, setSortBy] = useState(null); 
+  const [sortOrder, setSortOrder] = useState("asc"); 
 
   useEffect(() => {
     fetchDocuments();
@@ -34,7 +34,6 @@ export const PortfolioVoice = () => {
       setDocuments(docs);
     } catch (error) {
       console.error("Failed to fetch documents:", error);
-      toast.error("Failed to fetch documents");
     } finally {
       setLoading(false);
     }
@@ -89,12 +88,10 @@ export const PortfolioVoice = () => {
     }
   };
 
-  // Filter documents by search
   const filteredDocs = documents.filter((doc) =>
     doc.original_file_name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Sort filtered documents
   const sortedDocs = [...filteredDocs].sort((a, b) => {
     if (!sortBy) return 0;
 
@@ -117,7 +114,6 @@ export const PortfolioVoice = () => {
     return 0;
   });
 
-  // Calculate total size in MB
   const totalSizeMB = documents.reduce((sum, doc) => {
     const sizeNum = parseFloat(doc.size) || 0;
     return sum + (doc.size?.toLowerCase().includes("kb") ? sizeNum / 1024 : sizeNum);

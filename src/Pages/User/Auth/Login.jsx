@@ -7,6 +7,7 @@ import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import RAGLoader from "../../../Component/Loader";
 import headerimage from "../../../assets/images.jpeg";
 import side_photo from "../../../assets/side_photo.png";
+import { Eye, EyeOff } from "lucide-react";
 
 export const Login = () => {
 
@@ -15,6 +16,7 @@ export const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -66,7 +68,7 @@ const handleLogin = async (e) => {
       toast.success("User login successful");
       navigate("/dashboard", { state: { email } });
     } else {
-      toast.error("Unauthorized role.");
+      toast.error("Invalid Credentials");
     }
   } catch (err) {
     // toast.error(err?.message || "User login failed");
@@ -112,19 +114,31 @@ const handleLogin = async (e) => {
               {errors.email && <div className="invalid-feedback">{errors.email}</div>}
             </div>
 
-            <div className="mb-3">
-              <label className="form-label">Password</label>
-              <input
-                type="password"
-                className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+             <div className="mb-3">
+              <label className="form-label">Your Password</label>
+              <div className="input-group">
+                <span className="input-group-text">
+                  <i className="bi bi-lock"></i>
+                </span>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+                <span
+                  className="input-group-text"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </span>
+                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+              </div>
             </div>
-
             {/* <div className="mb-3 text-end">
               <span
                 className="text-primary"
@@ -136,7 +150,7 @@ const handleLogin = async (e) => {
             </div> */}
 
             <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
-              {loading ? <RAGLoader /> : "Sign in"}
+              Sign in
             </button>
           </form>
 

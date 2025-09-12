@@ -54,7 +54,7 @@ export const Doc_Delete_Specific = "/user/delete_simple_file/";
 export const listGeneralInfoDoc = "/admin_user_chat/list";
 export const UploadGeneralDoc = "/admin_user_chat/upload";
 export const updateGenralDoc = "/admin_user_chat/update";
-export const AskGeneralDoc = "/admin_user_chat/ask";
+export const AskGeneralDoc = "/user/ask_simple/";
 
 //PERMISSON FOR BUILDING
 export const Request_list = "/building_permissions/pending_requests";
@@ -98,5 +98,5 @@ export const updatetextdata = "/generate_lease/files/update-extracted-text";
 
 
 //SUPER ADMIN
-export const  inviteAdmin = "/auth/invite-admin";  
+export const inviteAdmin = "/auth/invite-admin";
 export const listAdmin = "/invite_user/list";

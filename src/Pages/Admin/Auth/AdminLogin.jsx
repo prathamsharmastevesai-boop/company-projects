@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 import side_photo from "../../../assets/side_photo.png";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 export const AdminLogin = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export const AdminLogin = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -47,36 +50,36 @@ export const AdminLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setLoading(true);
-  try {
-    const res = await dispatch(LoginSubmit({ email, password, role: "admin" })).unwrap();
-    const { role, access_token, expiryTime } = res;
+    setLoading(true);
+    try {
+      const res = await dispatch(LoginSubmit({ email, password, role: "admin" })).unwrap();
+      const { role, access_token, expiryTime } = res;
 
-    if ((role === "admin" || role === "superuser") && access_token) {
-      sessionStorage.setItem("token", access_token);
-      sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
-      sessionStorage.setItem("tokenExpiry", expiryTime);
+      if ((role === "admin" || role === "superuser") && access_token) {
+        sessionStorage.setItem("token", access_token);
+        sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
+        sessionStorage.setItem("tokenExpiry", expiryTime);
 
-      if (role === "admin") {
-        toast.success("Admin login successful");
-        navigate("/AdminDashboard");
-      } else if (role === "superuser") {
-        toast.success("Superuser login successful");
-        navigate("/AdminManagement");
+        if (role === "admin") {
+          toast.success("Admin login successful");
+          navigate("/AdminDashboard");
+        } else if (role === "superuser") {
+          toast.success("Superuser login successful");
+          navigate("/AdminManagement");
+        }
+      } else {
+        toast.error("Invalid Credentials");
       }
-    } else {
-      toast.error("Unauthorized role.");
+    } catch (err) {
+      // toast.error(err?.message || "Admin login failed");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    // toast.error(err?.message || "Admin login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
   return (
@@ -126,7 +129,7 @@ export const AdminLogin = () => {
                   <i className="bi bi-lock"></i>
                 </span>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className={`form-control ${errors.password ? "is-invalid" : ""}`}
                   placeholder="••••••••"
                   value={password}
@@ -134,9 +137,17 @@ export const AdminLogin = () => {
                   required
                   disabled={loading}
                 />
+                <span
+                  className="input-group-text"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </span>
                 {errors.password && <div className="invalid-feedback">{errors.password}</div>}
               </div>
             </div>
+
 
             {/* <div className="form-check mb-3">
               <input type="checkbox" className="form-check-input" id="rememberMe" disabled={loading} />
@@ -148,7 +159,7 @@ export const AdminLogin = () => {
               className="btn btn-primary w-100 mb-3"
               disabled={loading}
             >
-              {loading ? <RAGLoader /> : "Log in"}
+              Log in
             </button>
           </form>
         </div>
