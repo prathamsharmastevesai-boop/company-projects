@@ -65,9 +65,10 @@ export const LeaseInfomation = () => {
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+           "text/csv",
       ].includes(file.type)
     ) {
-      toast.error("Only PDF, DOC, DOCX, XLS, XLSX files are allowed");
+      toast.error("Only PDF, DOC,CSV, DOCX, XLS, XLSX files are allowed");
       return;
     }
 
@@ -193,13 +194,13 @@ export const LeaseInfomation = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-            accept=".pdf,.docx,.xlsx"
+           accept=".pdf,.csv,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />
         </label>
         <p className="small text-muted mt-2">
-          Supports PDF, DOCX, XLSX files up to 30MB
+          Supports PDF, DOCX, CSV, XLSX files up to 30MB
         </p>
         {loading && <RAGLoader />}
       </div>
@@ -240,7 +241,7 @@ export const LeaseInfomation = () => {
 
       <input
         type="file"
-        accept=".pdf,.docx,.xlsx"
+        accept=".pdf,.csv,.docx,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}

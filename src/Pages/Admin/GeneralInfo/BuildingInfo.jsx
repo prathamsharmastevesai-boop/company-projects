@@ -48,6 +48,7 @@ export const BuildingInfo = () => {
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+           "text/csv",
       ].includes(file.type)
     ) {
       toast.error("Only PDF, DOCX, XLSX files are allowed");
@@ -167,13 +168,13 @@ export const BuildingInfo = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-            accept=".pdf,.docx,.xlsx"
+           accept=".pdf,.csv,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />
         </label>
         <p className="small text-muted mt-2">
-          Supports PDF,DOCX, XLSX files up to 30MB
+          Supports PDF, DOCX, CSV, XLSX files up to 30MB
         </p>
         {loading && <RAGLoader />}
       </div>
