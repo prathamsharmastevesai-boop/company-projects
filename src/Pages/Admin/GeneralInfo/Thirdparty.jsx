@@ -163,7 +163,7 @@ export const Thirdparty = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx"
+            accept=".pdf,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />
@@ -216,7 +216,7 @@ export const Thirdparty = () => {
 
       <input
         type="file"
-        accept=".pdf,.doc,.docx,.xls,.xlsx"
+        accept=".pdf,.docx,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}

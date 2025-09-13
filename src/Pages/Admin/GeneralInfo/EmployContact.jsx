@@ -46,9 +46,7 @@ export const EmployContact = () => {
     if (
       ![
         "application/pdf",
-        "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ].includes(file.type)
     ) {
@@ -169,7 +167,7 @@ export const EmployContact = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx"
+            accept=".pdf,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />
@@ -222,7 +220,7 @@ export const EmployContact = () => {
 
       <input
         type="file"
-        accept=".pdf,.doc,.docx,.xls,.xlsx"
+        accept=".pdf,.docx,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}

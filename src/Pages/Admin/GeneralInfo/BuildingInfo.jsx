@@ -46,13 +46,11 @@ export const BuildingInfo = () => {
     if (
       ![
         "application/pdf",
-        "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ].includes(file.type)
     ) {
-      toast.error("Only PDF, DOC, DOCX, XLS, XLSX files are allowed");
+      toast.error("Only PDF, DOCX, XLSX files are allowed");
       return;
     }
 
@@ -169,7 +167,7 @@ export const BuildingInfo = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx"
+            accept=".pdf,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />
@@ -222,7 +220,7 @@ export const BuildingInfo = () => {
 
       <input
         type="file"
-        accept=".pdf,.doc,.docx,.xls,.xlsx"
+        accept=".pdf,.docx,.xls,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}
