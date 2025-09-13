@@ -169,7 +169,7 @@ export const Thirdparty = () => {
           />
         </label>
         <p className="small text-muted mt-2">
-          Supports PDF, DOC, DOCX, XLS, XLSX files up to 30MB
+          Supports PDF, DOCX, XLSX files up to 30MB
         </p>
         {loading && <RAGLoader />}
       </div>
