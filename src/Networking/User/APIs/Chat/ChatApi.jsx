@@ -205,7 +205,8 @@ export const Upload_specific_file_Api = createAsyncThunk(
         },
         body: formData,
       });
-      toast.success("Files uploaded successfully");
+      toast.success(response.data.message);
+      
       const data = await response.json();
       return data;
     } catch (error) {
