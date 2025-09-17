@@ -32,9 +32,17 @@ export const UserChat = () => {
     setLoadingSessions(true);
     try {
       const res = await dispatch(getlist_his_oldApi()).unwrap();
-      setChatList(res);
+      const filtered = res.filter((chat) => {
+        const matchType = type ? chat.category === type : true;
+        const matchBuilding =
+          Building_id !== undefined && Building_id !== null
+            ? String(chat.building_id) === String(Building_id)
+            : true;
+        return matchType && matchBuilding;
+      });
 
-      const filtered = type ? res.filter((chat) => chat.category === type) : res;
+      setChatList(filtered);
+
 
       if (incomingSessionId) {
         setSelectedChatId(incomingSessionId);
@@ -303,7 +311,7 @@ export const UserChat = () => {
                     key={i}
                     className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
-                     <div
+                    <div
                       className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
                         ? "bg-secondary text-white"
                         : "bg-primary text-white"
@@ -317,7 +325,7 @@ export const UserChat = () => {
                     >
                       {msg.message}
                     </div>
-                     
+
                     <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
@@ -351,8 +359,8 @@ export const UserChat = () => {
 
                   const ta = textareaRef.current;
                   if (ta) {
-                    ta.style.height = "auto"; 
-                    const lineHeight = 20; 
+                    ta.style.height = "auto";
+                    const lineHeight = 20;
                     const maxHeight = lineHeight * 3;
                     ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
                   }
@@ -362,14 +370,14 @@ export const UserChat = () => {
 
                   if (e.key === "Enter" && !isComposing) {
                     if (e.shiftKey) {
-          
+
                       return;
                     } else {
 
                       e.preventDefault();
                       if (!isSending) {
                         handleSendMessage();
-        
+
                         if (textareaRef.current) {
                           textareaRef.current.style.height = "auto";
                         }
