@@ -40,12 +40,12 @@ export const ColleagueChat = () => {
       if (incomingSessionId) {
         setSelectedChatId(incomingSessionId);
         setSessionId(incomingSessionId);
-        await fetchChatHistory(incomingSessionId);
+        // await fetchChatHistory(incomingSessionId);
       } else if (colleagueSessions.length > 0) {
         const latestChat = colleagueSessions[0];
         setSelectedChatId(latestChat.session_id);
         setSessionId(latestChat.session_id);
-        await fetchChatHistory(latestChat.session_id);
+        // await fetchChatHistory(latestChat.session_id);
       } else {
         const newId = uuidv4();
         const newChat = {
@@ -69,47 +69,47 @@ export const ColleagueChat = () => {
     }
   };
 
-  const fetchChatHistory = async (id) => {
-    setIsLoadingMessages(true);
-    try {
-      const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
+  // const fetchChatHistory = async (id) => {
+  //   setIsLoadingMessages(true);
+  //   try {
+  //     const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
 
-      if (Array.isArray(res)) {
-        const formattedMessages = res.flatMap((chat) => {
-          const msgs = [
-            {
-              message: chat.question,
-              sender: "User",
-              timestamp: new Date(chat.timestamp),
-            },
-          ];
-          if (Array.isArray(chat.answers)) {
-            chat.answers.forEach((ans) =>
-              msgs.push({
-                message: ans.answer,
-                sender: "Admin",
-                timestamp: new Date(chat.timestamp),
-              })
-            );
-          } else if (chat.answer) {
-            msgs.push({
-              message: chat.answer,
-              sender: "Admin",
-              timestamp: new Date(chat.timestamp),
-            });
-          }
-          return msgs;
-        });
-        setMessages(formattedMessages);
-        setSessionId(id);
-      }
-    } catch (error) {
-      console.error("Failed to fetch chat history:", error);
-      setMessages([]);
-    } finally {
-      setIsLoadingMessages(false);
-    }
-  };
+  //     if (Array.isArray(res)) {
+  //       const formattedMessages = res.flatMap((chat) => {
+  //         const msgs = [
+  //           {
+  //             message: chat.question,
+  //             sender: "User",
+  //             timestamp: new Date(chat.timestamp),
+  //           },
+  //         ];
+  //         if (Array.isArray(chat.answers)) {
+  //           chat.answers.forEach((ans) =>
+  //             msgs.push({
+  //               message: ans.answer,
+  //               sender: "Admin",
+  //               timestamp: new Date(chat.timestamp),
+  //             })
+  //           );
+  //         } else if (chat.answer) {
+  //           msgs.push({
+  //             message: chat.answer,
+  //             sender: "Admin",
+  //             timestamp: new Date(chat.timestamp),
+  //           });
+  //         }
+  //         return msgs;
+  //       });
+  //       setMessages(formattedMessages);
+  //       setSessionId(id);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch chat history:", error);
+  //     setMessages([]);
+  //   } finally {
+  //     setIsLoadingMessages(false);
+  //   }
+  // };
 
   const scrollToBottom = () => {
     if (chatRef.current) {
@@ -211,7 +211,7 @@ export const ColleagueChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
+        {/* <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
@@ -272,7 +272,7 @@ export const ColleagueChat = () => {
                     onClick={() => {
                       setSelectedChatId(chat.session_id);
                       setSessionId(chat.session_id);
-                      fetchChatHistory(chat.session_id);
+                      // fetchChatHistory(chat.session_id);
                     }}
                   >
                     <div className="flex-grow-1">
@@ -316,10 +316,10 @@ export const ColleagueChat = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Right: chat messages */}
-        <div className="col-md-9 d-flex flex-column">
+        <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
             <h5 className="text-muted mb-3">💬 Employee Contact Information</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>

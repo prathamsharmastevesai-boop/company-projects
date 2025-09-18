@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-import buildingCardImg from '../../../assets/building-card-bg2.jpeg';
-import { ListBuildingSubmit } from '../../../Networking/Admin/APIs/BuildingApi';
-import { RequestPermissionSubmit } from '../../../Networking/User/APIs/Permission/PermissionApi';
-import RAGLoader from '../../../Component/Loader';
+import buildingCardImg from "../../../assets/building-card-bg2.jpeg";
+import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
+import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
+import RAGLoader from "../../../Component/Loader";
 
 export const Dashboard = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export const Dashboard = () => {
   const [requestingPermissionId, setRequestingPermissionId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { BuildingList, loading } = useSelector(state => state.BuildingSlice);
+  const { BuildingList, loading } = useSelector((state) => state.BuildingSlice);
 
   useEffect(() => {
     dispatch(ListBuildingSubmit());
@@ -37,9 +37,9 @@ export const Dashboard = () => {
   const filteredBuildings =
     searchTerm.trim() === ""
       ? BuildingList
-      : BuildingList.filter(building =>
-        building.address?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      : BuildingList.filter((building) =>
+          building.address?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
   const handleRequestPermission = async (building_id) => {
     if (requestingPermissionId === building_id) return;
@@ -55,12 +55,11 @@ export const Dashboard = () => {
   };
 
   const handleSubmit = async (building) => {
-    const buildingId = building.id
+    const buildingId = building.id;
     if (building.access_status === "NULL") {
       toast.warning("you have not access to this building contact to admin");
     } else if (building.access_status === "approved") {
       navigate("/UserLease", { state: { office: { buildingId } } });
-
     } else if (building.access_status === "pending") {
       toast.warning("Request in Pending State");
     } else {
@@ -69,55 +68,64 @@ export const Dashboard = () => {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: "relative" }}>
       {requestingPermissionId && (
         <div
           style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
-            width: '100vw',
-            height: '100vh',
-            backdropFilter: 'blur(5px)',
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 2000
+            width: "100vw",
+            height: "100vh",
+            backdropFilter: "blur(5px)",
+            backgroundColor: "rgba(0,0,0,0.3)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 2000,
           }}
         >
-          <div className="spinner-border text-warning" style={{ width: '3rem', height: '3rem' }} role="status">
+          <div
+            className="spinner-border text-warning"
+            style={{ width: "3rem", height: "3rem" }}
+            role="status"
+          >
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       )}
 
       <section
-        style={{ height: '40vh', backgroundColor: '#1f1f1f' }}
+        style={{ height: "40vh", backgroundColor: "#1f1f1f" }}
         className="hero-section text-white d-flex align-items-center justify-content-center text-center"
       >
         <div>
           <img
             src="https://cdn-icons-png.flaticon.com/512/6789/6789463.png"
             alt="Under Construction"
-            style={{ width: '100px' }}
+            style={{ width: "100px" }}
             className="mb-3 animate__animated animate__fadeInDown"
           />
-          <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">Welcome to Portfolio Pulse</h1>
-          <p className="lead animate__animated animate__fadeInUp">Your real estate management dashboard is under construction 🛠️</p>
+          <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">
+            Welcome to Portfolio Pulse
+          </h1>
+          {/* <p className="lead animate__animated animate__fadeInUp">Your real estate management dashboard is under construction 🛠️</p> */}
         </div>
       </section>
 
       <div className="container p-4">
         <div className="row align-items-center my-4">
           <div className="col-md-8">
-            <h2 className="text-start mb-0 fw-bold">🏢 Featured Buildings</h2>
+            <div className="d-flex align-items-center mb-2">
+              <h2 className="mb-0 me-2">🏢</h2>
+              <h2 className="text-start mb-0 fw-bold">Featured Buildings</h2>
+            </div>
           </div>
           <div className="col-md-4">
             <input
               type="search"
               className="form-control"
-              placeholder="Search buildings by address..."
+              placeholder="Search address..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               aria-label="Search Buildings by Address"
@@ -134,7 +142,9 @@ export const Dashboard = () => {
             <p className="mt-3 text-muted">Loading buildings...</p>
           </div>
         ) : filteredBuildings.length === 0 ? (
-          <div className="alert alert-info">No buildings found matching your search.</div>
+          <div className="alert alert-info">
+            No buildings found matching your search.
+          </div>
         ) : (
           <div className="row">
             {[...filteredBuildings].reverse().map((building, index) => (
@@ -142,7 +152,11 @@ export const Dashboard = () => {
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
                   className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
-                  style={{ backgroundColor: "#e6f7ff", borderRadius: "16px", minHeight: "80px" }}
+                  style={{
+                    backgroundColor: "#e6f7ff",
+                    borderRadius: "16px",
+                    minHeight: "80px",
+                  }}
                 >
                   <div
                     className="rounded-circle me-3 flex-shrink-0"
@@ -170,7 +184,10 @@ export const Dashboard = () => {
                           handleRequestPermission(building.id);
                         }}
                       >
-                        <i className="bi bi-shield-lock-fill text-warning fs-5" style={{ cursor: "pointer" }}></i>
+                        <i
+                          className="bi bi-shield-lock-fill text-warning fs-5"
+                          style={{ cursor: "pointer" }}
+                        ></i>
                       </div>
                     )}
                     <p className="mb-1">

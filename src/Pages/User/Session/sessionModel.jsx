@@ -32,7 +32,7 @@ export const SessionListModal = ({ show, onClose }) => {
 
   const handleSelect = async (session) => {
     setSelectedChatId(session.session_id);
-    await fetchChatHistory(session.session_id);
+    // await fetchChatHistory(session.session_id);
     onClose();
 
     switch (session.category) {

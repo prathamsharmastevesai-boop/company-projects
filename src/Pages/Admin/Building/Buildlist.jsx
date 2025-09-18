@@ -110,6 +110,7 @@ export const ListBuilding = () => {
 
   const BuildingCard = ({ building, index }) => (
     <div
+    
       ref={(el) => (cardsRef.current[index] = el)}
       className="card border-0 shadow-sm hover-shadow w-100"
       style={{ borderRadius: "16px", backgroundColor: "#f8fbff" }}
@@ -163,8 +164,16 @@ export const ListBuilding = () => {
             onClick={() => handleSubmit(building.id)}
             style={{ cursor: "pointer" }}
           >
-            <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-            <strong>Address:</strong> {building.address || "N/A"}
+          
+           <div className="col-md-4">
+             <div className="d-flex mx-1">
+               <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+              <strong>Address:</strong> 
+            </div>
+            <div className="mx-2">
+              {building.address || "N/A"}
+            </div>
+           </div>
           </p>
         )}
       </div>

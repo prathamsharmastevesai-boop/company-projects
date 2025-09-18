@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigate()
+  const navigate = useNavigate();
 
   const [dashboardData, setDashboardData] = useState(null);
 
@@ -23,29 +23,24 @@ export const AdminDashboard = () => {
     fetchDashboard();
   }, [dispatch]);
 
-  const hanldeAIAnalystic = () => {
-    navigation("/Aianalytics")
-  }
-
-  const handleBuilding = () => {
-    navigation("/Building_list")
-  }
-
-  const handleUpload = () => {
-    navigation("/Building_list")
-  }
+  const handleAIAnalytics = () => navigate("/Aianalytics");
+  const handleBuilding = () => navigate("/Building_list");
+  const handleUpload = () => navigate("/Building_list");
 
   return (
-    <div className="container p-4">
-      <div className="mb-4">
+    <div className="container p-3 p-md-4">
+      {/* Header */}
+      <div className="mb-4 text-center text-md-start">
         <h2 className="fw-bold">Dashboard Overview</h2>
         <p className="text-muted">
           Manage your real estate portfolio data and AI system
         </p>
       </div>
 
+      {/* Dashboard Cards */}
       <div className="row g-3 mb-4">
-        <div className="col-6 col-md-3">
+        {/* Total Documents */}
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
             <div className="card-body d-flex align-items-center">
@@ -61,7 +56,8 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="col-6 col-md-3">
+        {/* Buildings */}
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
             <div className="card-body d-flex align-items-center">
@@ -77,7 +73,8 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="col-6 col-md-3">
+        {/* Recent Uploads */}
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
             <div className="card-body d-flex align-items-center">
@@ -93,7 +90,8 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="col-6 col-md-3">
+        {/* AI Queries */}
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
             <div className="card-body d-flex align-items-center">
@@ -110,8 +108,10 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Bottom Section: Recent Activity & Quick Actions */}
       <div className="row g-3">
-        <div className="col-md-6">
+        {/* Recent Activity */}
+        <div className="col-12 col-lg-6">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body">
               <h5 className="fw-semibold mb-3">Recent Activity</h5>
@@ -123,30 +123,32 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="col-md-6">
+        {/* Quick Actions */}
+        <div className="col-12 col-lg-6">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body">
               <h5 className="fw-semibold mb-3">Quick Actions</h5>
               <div className="row g-3">
-                <div className="col-6">
-                   <button className="btn btn-outline-dark w-100 py-3" onClick={hanldeAIAnalystic}>
+                <div className="col-12 col-sm-6">
+                  <button className="btn btn-outline-dark w-100 py-3" onClick={handleAIAnalytics}>
                     <TrendingUp size={20} className="me-2" />
                     AI Analytics
                   </button>
-                  {/* <button className="btn btn-outline-primary w-100 py-3" onClick={handleUpload}>
-                    <Upload size={20} className="me-2" />
-                    Upload Documents
-                  </button> */}
                 </div>
-                <div className="col-6">
+                <div className="col-12 col-sm-6">
                   <button className="btn btn-outline-success w-100 py-3" onClick={handleBuilding}>
                     <Building2 size={20} className="me-2" />
                     Add Building
                   </button>
                 </div>
+                {/* Future button
                 <div className="col-12">
-                 
-                </div>
+                  <button className="btn btn-outline-primary w-100 py-3" onClick={handleUpload}>
+                    <Upload size={20} className="me-2" />
+                    Upload Documents
+                  </button>
+                </div> 
+                */}
               </div>
             </div>
           </div>

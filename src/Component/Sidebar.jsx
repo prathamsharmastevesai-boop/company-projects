@@ -19,10 +19,33 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleSidebar = () => {
-    if (openMenu) setOpenMenu(null);
-    else setCollapsed((prev) => !prev);
+  // const toggleSidebar = () => {
+  //   if (openMenu) setOpenMenu(null);
+  //   else setCollapsed((prev) => !prev);
+  // };
+
+  useEffect(() => {
+  const handleResize = () => {
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+
+    if (!mobile) {
+      setCollapsed(false); // Always open on desktop
+    }
   };
+
+  handleResize(); // Run initially
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+const toggleSidebar = () => {
+  if (isMobile) {
+    setCollapsed((prev) => !prev);
+  }
+};
+
 
   const isActive = (path) => location.pathname === path;
 
@@ -44,12 +67,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
       >
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
-          <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
+         {isMobile && (
+  <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
+    <i
+      className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"}`}
+    />
+  </button>
+)}
+
+
+          {/* <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
             <i
               className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
                 }`}
             />
-          </button>
+          </button> */}
         </div>
 
         <div
@@ -361,7 +393,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 )}
 
                 {/* Session History */}
-                {!collapsed && (
+                {/* {!collapsed && (
                   <li
                     className={`nav-header text-light small mt-3 d-flex justify-content-between align-items-center ${showSessionModal ? "active" : ""
                       }`}
@@ -374,7 +406,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </span>
                     <i className="bi bi-list-task ms-2" />
                   </li>
-                )}
+                )} */}
 
                 {/* Mobile Session Modal */}
                 {isMobile && showSessionModal && (

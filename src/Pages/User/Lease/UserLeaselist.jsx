@@ -15,7 +15,7 @@ export const UserLeaseList = () => {
     <>
       <div
         className="hero-section text-center bg-white pt-5 animate__animated animate__fadeInDown"
-        style={{ position: "sticky", top: 0, zIndex: 10, height: "20vh", borderBottom: "1px solid #dee2e6" }}
+        style={{ position: "sticky", top: 0, zIndex: 10, height: "20vh",marginBottom:"30px", borderBottom: "1px solid #dee2e6" }}
       >
         <h5 className="heading_lease text-center text-light">Select Section to Chat with Lease Agreement or Letter of Intent</h5>
       </div>

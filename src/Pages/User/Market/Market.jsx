@@ -35,7 +35,7 @@ export const MarketChat = () => {
         const latestChat = marketSessions[0];
         setSelectedChatId(latestChat.session_id);
         setSessionId(latestChat.session_id);
-        await fetchChatHistory(latestChat.session_id);
+        // await fetchChatHistory(latestChat.session_id);
       } else {
         const newId = uuidv4();
         const newChat = {
@@ -56,46 +56,46 @@ export const MarketChat = () => {
     }
   };
 
-  const fetchChatHistory = async (id) => {
-    setIsLoadingMessages(true);
-    try {
-      const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
+  // const fetchChatHistory = async (id) => {
+  //   setIsLoadingMessages(true);
+  //   try {
+  //     const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
 
-      if (Array.isArray(res)) {
-        const formattedMessages = res.flatMap((chat) => {
-          const msgs = [
-            { message: chat.question, sender: "User", timestamp: new Date(chat.timestamp) },
-          ];
+  //     if (Array.isArray(res)) {
+  //       const formattedMessages = res.flatMap((chat) => {
+  //         const msgs = [
+  //           { message: chat.question, sender: "User", timestamp: new Date(chat.timestamp) },
+  //         ];
 
-          if (Array.isArray(chat.answers)) {
-            chat.answers.forEach((ans) => {
-              msgs.push({
-                message: ans.answer,
-                sender: "Admin",
-                timestamp: new Date(chat.timestamp),
-              });
-            });
-          } else if (chat.answer) {
-            msgs.push({
-              message: chat.answer,
-              sender: "Admin",
-              timestamp: new Date(chat.timestamp),
-            });
-          }
+  //         if (Array.isArray(chat.answers)) {
+  //           chat.answers.forEach((ans) => {
+  //             msgs.push({
+  //               message: ans.answer,
+  //               sender: "Admin",
+  //               timestamp: new Date(chat.timestamp),
+  //             });
+  //           });
+  //         } else if (chat.answer) {
+  //           msgs.push({
+  //             message: chat.answer,
+  //             sender: "Admin",
+  //             timestamp: new Date(chat.timestamp),
+  //           });
+  //         }
 
-          return msgs;
-        });
+  //         return msgs;
+  //       });
 
-        setMessages(formattedMessages);
-        setSessionId(id);
-      }
-    } catch (error) {
-      console.error("Failed to fetch chat history:", error);
-      setMessages([]);
-    } finally {
-      setIsLoadingMessages(false);
-    }
-  };
+  //       setMessages(formattedMessages);
+  //       setSessionId(id);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch chat history:", error);
+  //     setMessages([]);
+  //   } finally {
+  //     setIsLoadingMessages(false);
+  //   }
+  // };
 
   const scrollToBottom = () => {
     if (chatRef.current) {
@@ -198,7 +198,7 @@ export const MarketChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
+        {/* <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
@@ -256,7 +256,7 @@ export const MarketChat = () => {
                       : "bg-light text-dark"
                       } border`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => fetchChatHistory(chat.session_id)}
+                    // onClick={() => fetchChatHistory(chat.session_id)}
                   >
                     <div className="flex-grow-1">
                       <div className="fw-semibold">
@@ -299,9 +299,9 @@ export const MarketChat = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
-        <div className="col-md-9 d-flex flex-column">
+        <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
             <h5 className="text-muted mb-3">💬 Market Intelligence Data</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>

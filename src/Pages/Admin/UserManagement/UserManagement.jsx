@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Form, Spinner } from "react-bootstrap";
+import { Card, Button, Form, Spinner, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getUserlistApi, inviteUserApi } from "../../../Networking/Admin/APIs/UserManagement";
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
 
 export const UserManagement = () => {
-
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
@@ -18,19 +17,18 @@ export const UserManagement = () => {
         fetchUsers();
     }, []);
 
-const handleDelete = async (email) => {
-  if (!email) {
-    return toast.error("Email is required");
-  }
+    const handleDelete = async (email) => {
+        if (!email) {
+            return toast.error("Email is required");
+        }
 
-  try {
-    await dispatch(DeleteUser(email));
-    fetchUsers();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
+        try {
+            await dispatch(DeleteUser(email));
+            fetchUsers();
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -83,36 +81,44 @@ const handleDelete = async (email) => {
                     <h5 className="mb-3">
                         <i className="bi bi-person-plus me-2"></i> Add New User
                     </h5>
-                    <div className="d-flex gap-2">
-                        <Form.Control
-                            type="email"
-                            placeholder="Enter user email address..."
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            disabled={inviteLoading}
-                        />
-                        <Button
-                            variant="primary w-25"
-                            onClick={handleInviteUser}
-                            disabled={inviteLoading}
-                        >
-                            {inviteLoading ? (
-                                <>
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
-                                    />{" "}
-                                    Sending...
-                                </>
-                            ) : (
-                                "Invite User"
-                            )}
-                        </Button>
-                    </div>
-                    <small className="text-muted">
+                    <Form>
+                        <Row className="g-2">
+                            <Col xs={12} md={8}>
+                                <Form.Control
+                                    type="email"
+                                    placeholder="Enter user email address..."
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    disabled={inviteLoading}
+                                    className="w-100"
+                                />
+                            </Col>
+                            <Col xs={12} md={4}>
+                                <Button
+                                    variant="primary"
+                                    onClick={handleInviteUser}
+                                    disabled={inviteLoading}
+                                    className="w-100"
+                                >
+                                    {inviteLoading ? (
+                                        <>
+                                            <Spinner
+                                                as="span"
+                                                animation="border"
+                                                size="sm"
+                                                role="status"
+                                                aria-hidden="true"
+                                            />{" "}
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        "Invite User"
+                                    )}
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                    <small className="text-muted d-block mt-2">
                         User will receive secure login credentials via email and be prompted
                         to create their own password.
                     </small>
@@ -121,61 +127,63 @@ const handleDelete = async (email) => {
 
             <Card className="border-0 shadow-sm">
                 <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
                         <h5 className="mb-0">Active Users</h5>
                         <span className="badge bg-dark">{users.length} Total Users</span>
                     </div>
 
-                    <table className="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Display Name</th>
-                                <th>Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                    <div className="table-responsive">
+                        <table className="table table-hover align-middle mb-0">
+                            <thead>
                                 <tr>
-                                    <td colSpan={5} className="text-center text-muted">
-                                        Loading...
-                                    </td>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Display Name</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ) : users.length > 0 ? (
-                                users.map((user, index) => (
-                                    <tr key={index}>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            <span className={`badge ${user.status === "Verified" ? "bg-success" : "bg-secondary"}`}>
-                                                {user.status}
-                                            </span>
-                                        </td>
-                                        <td>{user.display || user.name}</td>
-                                        <td>{new Date(user.created).toLocaleDateString()}</td>
-                                        <td>
-                                            {user.actions?.includes("delete") && (
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline-danger"
-                                                    onClick={() => handleDelete(user.email)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            )}
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={5} className="text-center text-muted">
+                                            Loading...
                                         </td>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={5} className="text-center text-muted">
-                                        No users found
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                ) : users.length > 0 ? (
+                                    users.map((user, index) => (
+                                        <tr key={index}>
+                                            <td>{user.email}</td>
+                                            <td>
+                                                <span className={`badge ${user.status === "Verified" ? "bg-success" : "bg-secondary"}`}>
+                                                    {user.status}
+                                                </span>
+                                            </td>
+                                            <td>{user.display || user.name}</td>
+                                            <td>{new Date(user.created).toLocaleDateString()}</td>
+                                            <td>
+                                                {user.actions?.includes("delete") && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline-danger"
+                                                        onClick={() => handleDelete(user.email)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={5} className="text-center text-muted">
+                                            No users found
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </Card.Body>
             </Card>
         </div>

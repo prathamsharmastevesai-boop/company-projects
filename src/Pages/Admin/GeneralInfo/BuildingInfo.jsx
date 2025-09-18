@@ -152,7 +152,7 @@ export const BuildingInfo = () => {
       </p>
 
       <div
-        className={`border border-2 rounded-3 p-5 text-center mb-4 ${
+        className={`border border-2 rounded-3 p-2 text-center mb-4 ${
           isDragging ? "border-primary bg-light" : "border-dashed bg-light"
         }`}
         onDragOver={handleDragOver}

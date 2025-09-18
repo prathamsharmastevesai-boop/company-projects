@@ -382,3 +382,14 @@
   z-index: 1050;
   transition: all 0.3s ease;
 }
+
+.hero-section {
+  padding-top: 5rem; /* Default padding */
+}
+
+@media (max-width: 767px) {
+  .hero-section {
+    padding-top: 3rem; /* Increased padding for mobile view */
+  }
+}
+

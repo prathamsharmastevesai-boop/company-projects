@@ -210,7 +210,7 @@ export const UserChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
+        {/* <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
           <button
             className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
             onClick={() => {
@@ -294,9 +294,9 @@ export const UserChat = () => {
               <div className="text-muted small text-center mt-3">No chat sessions yet.</div>
             )}
           </div>
-        </div>
+        </div> */}
 
-        <div className="col-md-9 d-flex flex-column">
+        <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
             <h5 className="text-muted mb-3">💬 Chat With  {type == "Lease" ? "Lease Agreement" : "Letter of Intent"}
             </h5>

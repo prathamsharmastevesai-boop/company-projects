@@ -16,8 +16,8 @@ export const PortfolioVoice = () => {
   const [isDeleting, setIsDeleting] = useState({});
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState(null); 
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortBy, setSortBy] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
 
   useEffect(() => {
     fetchDocuments();
@@ -60,14 +60,15 @@ export const PortfolioVoice = () => {
 
     try {
       setIsUploading(true);
-      const res = await dispatch(
-        Upload_specific_file_Api({ files: selectedFiles, category: "portfolio" })
+      await dispatch(
+        Upload_specific_file_Api({
+          files: selectedFiles,
+          category: "portfolio",
+        })
       ).unwrap();
       await fetchDocuments();
-     
     } catch (error) {
-      const errorMsg =
-        error?.response?.data?.msg || error?.message || "Upload failed";
+      console.error(error);
     } finally {
       setIsUploading(false);
       e.target.value = null;
@@ -116,12 +117,14 @@ export const PortfolioVoice = () => {
 
   const totalSizeMB = documents.reduce((sum, doc) => {
     const sizeNum = parseFloat(doc.size) || 0;
-    return sum + (doc.size?.toLowerCase().includes("kb") ? sizeNum / 1024 : sizeNum);
+    return (
+      sum + (doc.size?.toLowerCase().includes("kb") ? sizeNum / 1024 : sizeNum)
+    );
   }, 0);
 
   return (
-    <div className="container p-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
+    <div className="container p-3 p-md-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <div>
           <h4 className="fw-bold mb-1">Portfolio Voice</h4>
           <p className="text-muted mb-0">
@@ -146,20 +149,22 @@ export const PortfolioVoice = () => {
 
       <div className="card shadow-sm">
         <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="fw-bold mb-0">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+            <h5 className="fw-bold mb-2 mb-md-0">
               <i className="bi bi-file-earmark-text me-2"></i> Document Library
             </h5>
-            <div className="d-flex align-items-center">
-              <span className="badge bg-dark me-2">{documents.length} Documents</span>
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <span className="badge bg-dark">
+                {documents.length} Documents
+              </span>
               <span className="badge bg-light text-dark">
                 {totalSizeMB.toFixed(2)} MB Total
               </span>
             </div>
           </div>
 
-          <div className="d-flex mb-3">
-            <div className="flex-grow-1 me-2">
+          <div className="d-flex flex-column flex-md-row gap-2 mb-3 w-100">
+            <div className="flex-grow-1">
               <input
                 type="text"
                 className="form-control"
@@ -168,24 +173,34 @@ export const PortfolioVoice = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <button
-              className="btn btn-outline-secondary me-2"
-              onClick={() => {
-                setSortBy("date");
-                setSortOrder(sortBy === "date" && sortOrder === "asc" ? "desc" : "asc");
-              }}
-            >
-              Sort by Date {sortBy === "date" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-            </button>
-            <button
-              className="btn btn-outline-secondary"
-              onClick={() => {
-                setSortBy("size");
-                setSortOrder(sortBy === "size" && sortOrder === "asc" ? "desc" : "asc");
-              }}
-            >
-              Sort by Size {sortBy === "size" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-            </button>
+
+            <div className="d-flex gap-2 flex-wrap mt-2 mt-md-0">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => {
+                  setSortBy("date");
+                  setSortOrder(
+                    sortBy === "date" && sortOrder === "asc" ? "desc" : "asc"
+                  );
+                }}
+              >
+                Sort by Date{" "}
+                {sortBy === "date" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+              </button>
+
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => {
+                  setSortBy("size");
+                  setSortOrder(
+                    sortBy === "size" && sortOrder === "asc" ? "desc" : "asc"
+                  );
+                }}
+              >
+                Sort by Size{" "}
+                {sortBy === "size" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+              </button>
+            </div>
           </div>
 
           {loading ? (
@@ -193,48 +208,56 @@ export const PortfolioVoice = () => {
               <RAGLoader />
             </div>
           ) : sortedDocs.length > 0 ? (
-            <table className="table table-hover align-middle">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Size</th>
-                  <th>Uploaded</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedDocs.map((doc) => (
-                  <tr key={doc.file_id}>
-                    <td>
-                      <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                        {doc.original_file_name}
-                      </a>
-                    </td>
-                    <td>
-                      {parseFloat(doc.size)
-                        ? (doc.size.toLowerCase().includes("kb")
-                          ? parseFloat(doc.size) / 1024
-                          : parseFloat(doc.size)
-                        ).toFixed(2)
-                        : doc.size}{" "}
-                      MB
-                    </td>
-                    <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleDeleteDoc(doc.file_id)}
-                        disabled={isDeleting[doc.file_id]}
-                      >
-                        {isDeleting[doc.file_id] ? "Deleting..." : "Delete"}
-                      </button>
-                    </td>
+            <div className="table-responsive">
+              <table className="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Uploaded</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {sortedDocs.map((doc) => (
+                    <tr key={doc.file_id}>
+                      <td>
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.original_file_name}
+                        </a>
+                      </td>
+                      <td>
+                        {parseFloat(doc.size)
+                          ? (doc.size.toLowerCase().includes("kb")
+                              ? parseFloat(doc.size) / 1024
+                              : parseFloat(doc.size)
+                            ).toFixed(2)
+                          : doc.size}{" "}
+                        MB
+                      </td>
+                      <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleDeleteDoc(doc.file_id)}
+                          disabled={isDeleting[doc.file_id]}
+                        >
+                          {isDeleting[doc.file_id] ? "Deleting..." : "Delete"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
-            <div className="text-center text-muted py-4">No documents uploaded yet.</div>
+            <div className="text-center text-muted py-4">
+              No documents uploaded yet.
+            </div>
           )}
         </div>
       </div>

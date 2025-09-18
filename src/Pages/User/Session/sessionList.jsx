@@ -11,8 +11,8 @@ export const SessionList = ({ setShowSessionModal }) => {
   const [sessionId, setSessionId] = useState(null);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-  const fetchChatHistory = async (id) => {
-  };
+  // const fetchChatHistory = async (id) => {
+  // };
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
@@ -24,7 +24,7 @@ export const SessionList = ({ setShowSessionModal }) => {
         const latestChat = res[0];
         setSelectedChatId(latestChat.session_id);
         setSessionId(latestChat.session_id);
-        await fetchChatHistory(latestChat.session_id);
+        // await fetchChatHistory(latestChat.session_id);
       }
     } catch (error) {
       console.error(error);
