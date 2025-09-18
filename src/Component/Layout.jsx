@@ -7,6 +7,7 @@ export const DashboardLayout = () => {
 
   return (
     <div className={`main-wrapper ${collapsed ? "" : "open"}`}
+    style={{ height: "100dvh" }}
     >
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} className="" />
 
