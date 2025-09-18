@@ -25,27 +25,26 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   // };
 
   useEffect(() => {
-  const handleResize = () => {
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
 
-    if (!mobile) {
-      setCollapsed(false); // Always open on desktop
+      if (!mobile) {
+        setCollapsed(false); // Always open on desktop
+      }
+    };
+
+    handleResize(); // Run initially
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    if (isMobile) {
+      setCollapsed((prev) => !prev);
     }
   };
-
-  handleResize(); // Run initially
-
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-
-const toggleSidebar = () => {
-  if (isMobile) {
-    setCollapsed((prev) => !prev);
-  }
-};
-
 
   const isActive = (path) => location.pathname === path;
 
@@ -61,20 +60,27 @@ const toggleSidebar = () => {
   return (
     <>
       <aside
-        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${isMobile && !collapsed ? "sidebar-mobile-open" : ""
-          }`}
-        style={{ height: "100dvh", zIndex: 1100 }}
+        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
+          isMobile && !collapsed ? "sidebar-mobile-open" : ""
+        }`}
+        style={{ height: "100vh", zIndex: 1100 , overflowY:'auto'}}
       >
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
-         {isMobile && (
-  <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
-    <i
-      className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"}`}
-    />
-  </button>
-)}
-
+          {isMobile && (
+            <button
+              className="btn btn-sm btn-outline-light"
+              onClick={toggleSidebar}
+            >
+              <i
+                className={`bi ${
+                  collapsed
+                    ? "bi-chevron-double-right"
+                    : "bi-chevron-double-left"
+                }`}
+              />
+            </button>
+          )}
 
           {/* <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
             <i
@@ -89,7 +95,6 @@ const toggleSidebar = () => {
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
-
             {Role === "superuser" && (
               <>
                 {!collapsed && (
@@ -100,7 +105,11 @@ const toggleSidebar = () => {
 
                 <li className="nav-header text-light small">Main</li>
 
-                <li className={`nav-item ${isActive("/AdminManagement") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/AdminManagement") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/AdminManagement")}
                     className="nav-link text-white"
@@ -123,7 +132,11 @@ const toggleSidebar = () => {
 
                 <li className="nav-header text-light small">Main</li>
 
-                <li className={`nav-item ${isActive("/AdminDashboard") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/AdminDashboard") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/AdminDashboard")}
                     className="nav-link text-white"
@@ -134,7 +147,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/UserManagement") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/UserManagement") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/UserManagement")}
                     className="nav-link text-white"
@@ -145,7 +162,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/Aianalytics") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/Aianalytics") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/Aianalytics")}
                     className="nav-link text-white"
@@ -156,7 +177,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/RagSystem") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/RagSystem") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/RagSystem")}
                     className="nav-link text-white"
@@ -167,7 +192,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/PortfolioVoice") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/PortfolioVoice") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/PortfolioVoice")}
                     className="nav-link text-white"
@@ -197,15 +226,22 @@ const toggleSidebar = () => {
                   >
                     <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${openMenu === "dataCategories" ? "bi-chevron-down" : "bi-chevron-right"
-                        }`}
+                      className={`bi ms-2 ${
+                        openMenu === "dataCategories"
+                          ? "bi-chevron-down"
+                          : "bi-chevron-right"
+                      }`}
                     />
                   </li>
                 )}
 
                 {openMenu === "dataCategories" && (
                   <>
-                    <li className={`nav-item ${isActive("/Thirdparty") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/Thirdparty") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/Thirdparty")}
                         className="nav-link text-white"
@@ -215,7 +251,11 @@ const toggleSidebar = () => {
                         Third Party Contact Info
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/EmployContact") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/EmployContact") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/EmployContact")}
                         className="nav-link text-white"
@@ -225,7 +265,11 @@ const toggleSidebar = () => {
                         Employee Contact Info
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/MarketIntelligence") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/MarketIntelligence") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/MarketIntelligence")}
                         className="nav-link text-white"
@@ -235,7 +279,11 @@ const toggleSidebar = () => {
                         Market Intelligence Data
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/BuildingInfo") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/BuildingInfo") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/BuildingInfo")}
                         className="nav-link text-white"
@@ -255,24 +303,33 @@ const toggleSidebar = () => {
                   >
                     <span>Admin Tools</span>
                     <i
-                      className={`bi ms-2 ${openMenu === "adminTools" ? "bi-chevron-down" : "bi-chevron-right"
-                        }`}
+                      className={`bi ms-2 ${
+                        openMenu === "adminTools"
+                          ? "bi-chevron-down"
+                          : "bi-chevron-right"
+                      }`}
                     />
                   </li>
                 )}
 
                 {openMenu === "adminTools" && (
                   <>
-                    <li className={`nav-item ${isActive("/Building_list") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/Building_list") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/Building_list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
-                        <i className="bi bi-plus-circle me-2" style={{ fontSize: 14 }} />
+                        <i
+                          className="bi bi-plus-circle me-2"
+                          style={{ fontSize: 14 }}
+                        />
                         Add Building (LOI & Lease)
                       </span>
-
                     </li>
                   </>
                 )}
@@ -289,7 +346,11 @@ const toggleSidebar = () => {
 
                 <li className="nav-header text-light small">Main</li>
 
-                <li className={`nav-item ${isActive("/UserProfile") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/UserProfile") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/UserProfile")}
                     className="nav-link text-white"
@@ -300,7 +361,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/dashboard") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/dashboard")}
                     className="nav-link text-white"
@@ -311,7 +376,11 @@ const toggleSidebar = () => {
                   </span>
                 </li>
 
-                <li className={`nav-item ${isActive("/ChatWithAnyDoc") ? "active" : ""}`}>
+                <li
+                  className={`nav-item ${
+                    isActive("/ChatWithAnyDoc") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/ChatWithAnyDoc")}
                     className="nav-link text-white"
@@ -331,15 +400,22 @@ const toggleSidebar = () => {
                   >
                     <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${openMenu === "generalInfo" ? "bi-chevron-down" : "bi-chevron-right"
-                        }`}
+                      className={`bi ms-2 ${
+                        openMenu === "generalInfo"
+                          ? "bi-chevron-down"
+                          : "bi-chevron-right"
+                      }`}
                     />
                   </li>
                 )}
 
                 {openMenu === "generalInfo" && !collapsed && (
                   <ul className="nav flex-column mt-1">
-                    <li className={`nav-item ${isActive("/BrokerChat") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/BrokerChat") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/BrokerChat")}
                         className="nav-link text-white"
@@ -349,7 +425,11 @@ const toggleSidebar = () => {
                         Third Party Contact Info
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/ColleagueChat") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/ColleagueChat") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/ColleagueChat")}
                         className="nav-link text-white"
@@ -359,7 +439,11 @@ const toggleSidebar = () => {
                         Employee Contact Info
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/BuildingChat") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/BuildingChat") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/BuildingChat")}
                         className="nav-link text-white"
@@ -369,7 +453,11 @@ const toggleSidebar = () => {
                         Building Info Data
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/MarketChat") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/MarketChat") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/MarketChat")}
                         className="nav-link text-white"
@@ -379,7 +467,11 @@ const toggleSidebar = () => {
                         Market Intelligence Data
                       </span>
                     </li>
-                    <li className={`nav-item ${isActive("/UserBuildinglist") ? "active" : ""}`}>
+                    <li
+                      className={`nav-item ${
+                        isActive("/UserBuildinglist") ? "active" : ""
+                      }`}
+                    >
                       <span
                         onClick={() => handleLinkClick("/UserBuildinglist")}
                         className="nav-link text-white"
