@@ -170,7 +170,7 @@ export const ListBuilding = () => {
                <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
               <strong>Address:</strong> 
             </div>
-            <div className="mx-2">
+            <div className="mx-2 check"> 
               {building.address || "N/A"}
             </div>
            </div>
