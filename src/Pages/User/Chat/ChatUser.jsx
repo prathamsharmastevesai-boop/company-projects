@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import ReactMarkdown from "react-markdown";
 
 import {
   getlist_his_oldApi,
@@ -15,7 +16,11 @@ export const UserChat = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const textareaRef = useRef(null);
-  const { sessionId: incomingSessionId = null, type, Building_id } = location.state || {};
+  const {
+    sessionId: incomingSessionId = null,
+    type,
+    Building_id,
+  } = location.state || {};
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -43,16 +48,15 @@ export const UserChat = () => {
 
       setChatList(filtered);
 
-
       if (incomingSessionId) {
         setSelectedChatId(incomingSessionId);
         setSessionId(incomingSessionId);
-        await handleSessionHistory(incomingSessionId);
+        // await handleSessionHistory(incomingSessionId);
       } else if (filtered.length > 0) {
         const latestChat = filtered[0];
         setSelectedChatId(latestChat.session_id);
         setSessionId(latestChat.session_id);
-        await handleSessionHistory(latestChat.session_id);
+        // await handleSessionHistory(latestChat.session_id);
       } else {
         const newId = uuidv4();
         const newChat = {
@@ -152,47 +156,6 @@ export const UserChat = () => {
     }
   };
 
-
-  const handleSessionHistory = async (id) => {
-    setLoadingMessages(true);
-    try {
-      const res = await dispatch(get_chathistory_Api(id)).unwrap();
-      if (Array.isArray(res)) {
-        const formatted = res.flatMap((chat) => {
-          const msgs = [
-            { message: chat.question, sender: "User", timestamp: new Date(chat.timestamp), file: chat.file },
-          ];
-
-          if (Array.isArray(chat.answers)) {
-            chat.answers.forEach((ans) =>
-              msgs.push({
-                message: ans.answer,
-                sender: "Admin",
-                timestamp: new Date(ans.timestamp || chat.timestamp),
-                file: ans.file || null,
-              })
-            );
-          } else if (chat.answer) {
-            msgs.push({
-              message: chat.answer,
-              sender: "Admin",
-              timestamp: new Date(chat.timestamp),
-              file: chat.file || null,
-            });
-          }
-          return msgs;
-        });
-        setMessages(formatted);
-        setSessionId(id);
-      }
-    } catch (e) {
-      console.error("Failed to get chat history:", e);
-      setMessages([]);
-    } finally {
-      setLoadingMessages(false);
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       await dispatch(Delete_Chat_Session(id)).unwrap();
@@ -210,95 +173,11 @@ export const UserChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        {/* <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
-          <button
-            className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
-            onClick={() => {
-              // Prevent creating new session if current one is empty
-              const hasMessages = messages.length > 0;
-              const currentChat = chatList.find((chat) => chat.session_id === selectedChatId);
-
-              if (!hasMessages && !currentChat?.title) {
-                toast.info("Please send a message in this chat before starting a new one.");
-                return;
-              }
-
-              const newId = uuidv4();
-              const newChat = {
-                session_id: newId,
-                name: newId,
-                created_at: new Date().toISOString(),
-                category: type || "general",
-              };
-
-              setChatList((prev) => [newChat, ...prev]);
-              setSessionId(newId);
-              setSelectedChatId(newId);
-              setMessages([]);
-            }}
-          >
-            <span className="fw-semibold">➕ New Chat</span>
-          </button>
-
-
-          <div className="flex-grow-1 chat-item-wrapper overflow-auto hide-scrollbar">
-            {loadingSessions ? (
-              <div className="text-center py-3">
-                <div className="spinner-border text-primary"></div>
-              </div>
-            ) : chatList?.length > 0 ? (
-              chatList
-                .filter((chat) => chat.category === type)
-                .map((chat) => (
-                  <div
-                    key={chat.session_id}
-                    className={`chat-item d-flex justify-content-between align-items-start p-2 ${selectedChatId === chat.session_id
-                      ? "bg-dark text-white"
-                      : "bg-light text-dark"
-                      } border`}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setSelectedChatId(chat.session_id);
-                      setSessionId(chat.session_id);
-                      handleSessionHistory(chat.session_id);
-                    }}
-                  >
-                    <div className="flex-grow-1">
-                      <div className="fw-semibold">
-                        {chat?.title ? `${chat.title.substring(0, 10)}...` : `${chat.session_id.substring(0, 10)}...`}
-                      </div>
-                      <div
-                        className={`small ${selectedChatId === chat.session_id ? "text-white" : "text-muted"
-                          }`}
-                      >
-                        {chat.created_at
-                          ? new Date(chat.created_at).toLocaleDateString()
-                          : "Just now"}
-                      </div>
-
-                    </div>
-                    {!isSending &&
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(chat.session_id);
-                        }}
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    }
-                  </div>
-                ))
-            ) : (
-              <div className="text-muted small text-center mt-3">No chat sessions yet.</div>
-            )}
-          </div>
-        </div> */}
-
         <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">💬 Chat With  {type == "Lease" ? "Lease Agreement" : "Letter of Intent"}
+            <h5 className="text-muted mb-3">
+              💬 Chat With{" "}
+              {type == "Lease" ? "Lease Agreement" : "Letter of Intent"}
             </h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {loadingMessages ? (
@@ -309,25 +188,36 @@ export const UserChat = () => {
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
+                    className={`mb-2 small ${
+                      msg.sender === "Admin" ? "text-start" : "text-end"
+                    }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
-                        ? "bg-secondary text-white"
-                        : "bg-primary text-white"
-                        }`}
+                      className={`d-inline-block px-3 py-2 rounded ${
+                        msg.sender === "Admin"
+                          ? "bg-secondary text-white"
+                          : "bg-primary text-white"
+                      }`}
                       style={{
                         maxWidth: "75%",
                         wordWrap: "break-word",
                         whiteSpace: "pre-wrap",
-                        textAlign: "left"
+                        textAlign: "left",
                       }}
                     >
-                      {msg.message}
+                      {msg.sender === "Admin" ? (
+                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
 
-                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
-                      {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
+                    <div
+                      className="text-muted fst-italic mt-1"
+                      style={{ fontSize: "0.75rem" }}
+                    >
+                      {msg.sender} •{" "}
+                      {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
                 ))
@@ -338,7 +228,10 @@ export const UserChat = () => {
               {isSending && (
                 <div className="text-start small mt-2">
                   <div className="d-inline-block px-3 py-2 rounded bg-secondary text-white">
-                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                    />
                     Admin is typing...
                   </div>
                 </div>
@@ -362,18 +255,18 @@ export const UserChat = () => {
                     ta.style.height = "auto";
                     const lineHeight = 20;
                     const maxHeight = lineHeight * 3;
-                    ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
+                    ta.style.height =
+                      Math.min(ta.scrollHeight, maxHeight) + "px";
                   }
                 }}
                 onKeyDown={(e) => {
-                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+                  const isComposing =
+                    e.nativeEvent && e.nativeEvent.isComposing;
 
                   if (e.key === "Enter" && !isComposing) {
                     if (e.shiftKey) {
-
                       return;
                     } else {
-
                       e.preventDefault();
                       if (!isSending) {
                         handleSendMessage();

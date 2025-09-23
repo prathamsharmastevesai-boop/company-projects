@@ -18,6 +18,8 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import ReactMarkdown from "react-markdown";
+
 
 export const Aianalytics = () => {
   const [activeTab, setActiveTab] = useState("AI Insights");
@@ -61,41 +63,35 @@ export const Aianalytics = () => {
     }
   };
 
-  const AIInslights = async () => {
-    try {
-      const res = await dispatch(getInslightApi()).unwrap();
+const AIInslights = async () => {
+  try {
+    const res = await dispatch(getInslightApi()).unwrap();
 
-      let insights = {};
-      if (res?.insight) {
-        const rawInsight = res.insight
-          .replace(/json|```/g, "")
-          .trim();
+    let insights = [];
+    if (res?.insight) {
+      const rawInsight = res.insight.replace(/```(json)?/g, "").trim();
 
-        try {
-          if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
-
-            insights = JSON.parse(rawInsight);
-          } else {
-
-            insights = rawInsight
-              .split("\n")
-              .map((line) => line.replace(/^\*+\s*/, "").trim())
-              .filter((line) => line.length > 0);
-          }
-        } catch (err) {
-          console.error("Failed to parse AI insights:", err);
-          insights = [rawInsight];
+      try {
+        if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
+          const parsed = JSON.parse(rawInsight);
+          insights = Array.isArray(parsed) ? parsed : [parsed];
+        } else {
+          insights = [rawInsight]; // keep full markdown
         }
+      } catch (err) {
+        console.error("Failed to parse AI insights:", err);
+        insights = [rawInsight];
       }
-
-      setDashboardData((prev) => ({
-        ...prev,
-        aiInsights: insights,
-      }));
-    } catch (error) {
-      console.error("Failed to fetch AI insights:", error);
     }
-  };
+
+    setDashboardData((prev) => ({
+      ...prev,
+      aiInsights: insights,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch AI insights:", error);
+  }
+};
 
   const fetchRecentQuestions = async () => {
     try {
@@ -285,29 +281,12 @@ export const Aianalytics = () => {
             <h6 className="fw-bold mb-3">AI-Generated Insights</h6>
             {dashboardData?.aiInsights?.length > 0 ? (
               <div className="list-group">
-                {dashboardData.aiInsights.map((insight, idx) => {
-                  if (typeof insight === "string") {
-                    const match = insight.match(/^\*\*(.*?)\*\*[:\-]?\s*(.*)/);
-                    if (match) {
-                      return (
-                        <div key={idx} className="list-group-item">
-                          <h6 className="fw-bold mb-1">{match[1]}</h6>
-                          <p className="text-muted mb-0">{match[2]}</p>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={idx} className="list-group-item">
-                        {insight}
-                      </div>
-                    );
-                  }
-                  return (
-                    <div key={idx} className="list-group-item">
-                      {JSON.stringify(insight)}
-                    </div>
-                  );
-                })}
+          {dashboardData.aiInsights.map((insight, idx) => (
+  <div key={idx} className="list-group-item">
+    <ReactMarkdown>{typeof insight === "string" ? insight : JSON.stringify(insight, null, 2)}</ReactMarkdown>
+  </div>
+))}
+
               </div>
 
             ) : (

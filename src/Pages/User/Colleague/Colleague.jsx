@@ -9,6 +9,8 @@ import {
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+import ReactMarkdown from "react-markdown";
+
 
 export const ColleagueChat = () => {
   const dispatch = useDispatch();
@@ -349,7 +351,15 @@ export const ColleagueChat = () => {
                         textAlign: "left"
                       }}
                     >
-                      {msg.message}
+                      {msg.sender === "Admin" ? (
+                      
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      
+                        ) : (
+                      
+                          msg.message
+                      
+                        )}
                     </div>
                     <div
                       className="text-muted fst-italic mt-1"

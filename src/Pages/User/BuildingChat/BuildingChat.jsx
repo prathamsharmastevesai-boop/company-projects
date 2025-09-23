@@ -9,6 +9,7 @@ import {
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+import ReactMarkdown from "react-markdown";
 
 export const BuildingChat = () => {
   const dispatch = useDispatch();
@@ -187,8 +188,6 @@ export const BuildingChat = () => {
     }
   };
 
-
-
   const handleDelete = async (id) => {
     try {
       setDeletingSessionId(id);
@@ -323,28 +322,38 @@ export const BuildingChat = () => {
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {isLoadingMessages ? (
                 <div className="text-center py-4">
-                  <div className="spinner-border text-secondary" role="status"></div>
+                  <div
+                    className="spinner-border text-secondary"
+                    role="status"
+                  ></div>
                 </div>
               ) : messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"
-                      }`}
+                    className={`mb-2 small ${
+                      msg.sender === "Admin" ? "text-start" : "text-end"
+                    }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
-                        ? "bg-secondary text-white"
-                        : "bg-primary text-white"
-                        }`}
+                      className={`d-inline-block px-3 py-2 rounded ${
+                        msg.sender === "Admin"
+                          ? "bg-secondary text-white"
+                          : "bg-primary text-white"
+                      }`}
                     >
-                      {msg.message}
+                      {msg.sender === "Admin" ? (
+                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
                     <div
                       className="text-muted fst-italic mt-1"
                       style={{ fontSize: "0.75rem" }}
                     >
-                      {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
+                      {msg.sender} •{" "}
+                      {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
                 ))
@@ -369,7 +378,7 @@ export const BuildingChat = () => {
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <textarea
                 ref={textareaRef}
-                rows={1} 
+                rows={1}
                 className="form-control me-2"
                 placeholder="Type a message..."
                 value={message}
@@ -378,25 +387,25 @@ export const BuildingChat = () => {
 
                   const ta = textareaRef.current;
                   if (ta) {
-                    ta.style.height = "auto"; 
+                    ta.style.height = "auto";
                     const lineHeight = 20;
-                    const maxHeight = lineHeight * 3; 
-                    ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
+                    const maxHeight = lineHeight * 3;
+                    ta.style.height =
+                      Math.min(ta.scrollHeight, maxHeight) + "px";
                   }
                 }}
                 onKeyDown={(e) => {
-                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
+                  const isComposing =
+                    e.nativeEvent && e.nativeEvent.isComposing;
 
                   if (e.key === "Enter" && !isComposing) {
                     if (e.shiftKey) {
-            
                       return;
                     } else {
-  
                       e.preventDefault();
                       if (!isSending) {
                         handleSendMessage();
-                        
+
                         if (textareaRef.current) {
                           textareaRef.current.style.height = "auto";
                         }

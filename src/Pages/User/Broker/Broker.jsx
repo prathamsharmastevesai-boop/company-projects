@@ -9,6 +9,7 @@ import {
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+import ReactMarkdown from "react-markdown";
 
 export const BrokerChat = () => {
   const dispatch = useDispatch();
@@ -349,7 +350,15 @@ export const BrokerChat = () => {
                         textAlign: "left"
                       }}
                     >
-                      {msg.message}
+                     {msg.sender === "Admin" ? (
+                     
+                         <ReactMarkdown>{msg.message}</ReactMarkdown>
+                     
+                       ) : (
+                     
+                         msg.message
+                     
+                       )}
                     </div>
                     <div
                       className="text-muted fst-italic mt-1"
