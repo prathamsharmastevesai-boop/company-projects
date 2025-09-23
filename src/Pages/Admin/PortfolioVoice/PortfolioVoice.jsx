@@ -89,9 +89,12 @@ export const PortfolioVoice = () => {
     }
   };
 
-  const filteredDocs = documents.filter((doc) =>
+const filteredDocs = documents.filter(
+  (doc) =>
+    doc.category === "portfolio" &&
     doc.original_file_name.toLowerCase().includes(search.toLowerCase())
-  );
+);
+
 
   const sortedDocs = [...filteredDocs].sort((a, b) => {
     if (!sortBy) return 0;
