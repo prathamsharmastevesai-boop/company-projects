@@ -63,7 +63,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
           isMobile && !collapsed ? "sidebar-mobile-open" : ""
         }`}
-        style={{ height: "100dvh", zIndex: 1100 }}
+      
       >
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
