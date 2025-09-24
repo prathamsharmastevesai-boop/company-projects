@@ -95,7 +95,7 @@ export const UserProfile = () => {
         style={{
           position: "sticky",
           top: 0,
-          zIndex: 10,
+          zIndex: 3,
           height: "20vh",
           borderBottom: "1px solid #dee2e6",
         }}
