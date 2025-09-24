@@ -7,259 +7,253 @@ import { toast } from "react-toastify";
 import { getAdminlistApi, inviteAdminApi } from "../../../Networking/SuperAdmin/AdminSuperApi";
 
 export const AdminManagement = () => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [admin, setadmin] = useState([]);
+  const [company_name, setcompany_name] = useState("");
+  const [admin_name, setadmin_name] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-    const [email, setEmail] = useState("");
-    const [admin, setadmin] = useState([]);
-    const [company_name, setcompany_name] = useState();
-    const [admin_name,setadmin_name] = useState();
-    const [loading, setLoading] = useState(false);
-    const [inviteLoading, setInviteLoading] = useState(false);
-const [errors, setErrors] = useState({});
-
-
-    useEffect(() => {
-        fetchadmin();
-    }, []);
-
-const handleDelete = async (email) => {
-  if (!email) {
-    return toast.error("Email is required");
-  }
-
-  try {
-    await dispatch(DeleteUser(email));
+  useEffect(() => {
     fetchadmin();
-  } catch (error) {
-    console.error(error);
-  }
-};
+  }, []);
 
-
-    const fetchadmin = async () => {
-        setLoading(true);
-        try {
-            const res = await dispatch(getAdminlistApi()).unwrap();
-            setadmin(res || []);
-        } catch (err) {
-            console.error("Failed to fetch admin:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // const handleInviteAdmin = async () => {
-    //     if (!email) {
-    //         alert("Please enter an email address");
-    //         return;
-    //     }
-    //     setInviteLoading(true);
-    //     try {
-    //         await dispatch(inviteAdminApi({ email , company_name ,admin_name})).unwrap();
-    //         setEmail("");
-    //         fetchadmin();
-    //     } catch (err) {
-    //         console.error("Invite failed:", err);
-    //     } finally {
-    //         setInviteLoading(false);
-    //     }
-    // };
-
-const handleInviteAdmin = async () => {
-  const newErrors = {};
-
-  if (!admin_name) newErrors.admin_name = "Admin Name is required";
-  if (!company_name) newErrors.company_name = "Company Name is required";
-  if (!email) {
-    newErrors.email = "Email is required";
-  } else {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      newErrors.email = "Enter a valid email address";
+  const handleDelete = async (email) => {
+    if (!email) {
+      return toast.error("Email is required");
     }
-  }
 
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
+    try {
+      await dispatch(DeleteUser(email));
+      fetchadmin();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  setErrors({}); // clear errors if validation passed
-  setInviteLoading(true);
-  try {
-    await dispatch(inviteAdminApi({ email, company_name, admin_name })).unwrap();
+  const fetchadmin = async () => {
+    setLoading(true);
+    try {
+      const res = await dispatch(getAdminlistApi()).unwrap();
+      setadmin(res || []);
+    } catch (err) {
+      console.error("Failed to fetch admin:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // reset fields
-    setEmail("");
-    setcompany_name("");
-    setadmin_name("");
-    fetchadmin();
-  } catch (err) {
-    console.error("Invite failed:", err);
-    toast.error("Failed to send invite");
-  } finally {
-    setInviteLoading(false);
-  }
-};
+  const handleInviteAdmin = async () => {
+    const newErrors = {};
 
+    if (!admin_name) newErrors.admin_name = "Admin Name is required";
+    if (!company_name) newErrors.company_name = "Company Name is required";
+    if (!email) {
+      newErrors.email = "Email is required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newErrors.email = "Enter a valid email address";
+      }
+    }
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
-    return (
-        <div className="container p-4">
-            <h4 className="fw-bold">Admin Management</h4>
-            <p className="text-muted">
-                Control Admin access to Portfolio Pulse documents and features
-            </p>
+    setErrors({});
+    setInviteLoading(true);
+    try {
+      await dispatch(inviteAdminApi({ email, company_name, admin_name })).unwrap();
+      setEmail("");
+      setcompany_name("");
+      setadmin_name("");
+      fetchadmin();
+    } catch (err) {
+      console.error("Invite failed:", err);
+      toast.error("Failed to send invite");
+    } finally {
+      setInviteLoading(false);
+    }
+  };
 
-            <Card className="mb-4 border-0 shadow-sm">
-                <Card.Body>
-                    <p className="mb-0">
-                        <strong>🔒 Security Model:</strong> Only Super Administrators can create
-                        Super Administrators accounts. Admin receive secure credentials via email.
-                    </p>
-                </Card.Body>
-            </Card>
+  return (
+    <div className="container-fluid p-3">
+      <h4 className="fw-bold">Admin Management</h4>
+      <p className="text-muted">
+        Control Admin access to Portfolio Pulse documents and features
+      </p>
 
-           <Card className="mb-4 border-0 shadow-sm">
-  <Card.Body>
-    <h5 className="mb-3">
-      <i className="bi bi-person-plus me-2"></i> Add New Admin
-    </h5>
+      {/* Security Info */}
+      <Card className="mb-4 border-0 shadow-sm">
+        <Card.Body>
+          <p className="mb-0">
+            <strong>🔒 Security Model:</strong> Only Super Administrators can create
+            Super Administrators accounts. Admins receive secure credentials via email.
+          </p>
+        </Card.Body>
+      </Card>
 
-    <div className="d-flex flex-column gap-3">
+      {/* Add New Admin */}
+      <Card className="mb-4 border-0 shadow-sm">
+        <Card.Body>
+          <h5 className="mb-3">
+            <i className="bi bi-person-plus me-2"></i> Add New Admin
+          </h5>
 
-   <div className="d-flex justify-content-between me-3 ">
-      <div className="col-md-6 mx-1">
-      <Form.Control
-  type="text"
-  placeholder="Enter Admin Name..."
-  value={admin_name || ""}
-  onChange={(e) => setadmin_name(e.target.value)}
-  disabled={inviteLoading}
-  isInvalid={!!errors.admin_name}
-/>
-<Form.Control.Feedback type="invalid">
-  {errors.admin_name}
-</Form.Control.Feedback>
-      </div>
+          <Form>
+            <div className="row g-3">
+              {/* Admin Name */}
+              <div className="col-md-6">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Admin Name..."
+                  value={admin_name}
+                  onChange={(e) => setadmin_name(e.target.value)}
+                  disabled={inviteLoading}
+                  isInvalid={!!errors.admin_name}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.admin_name}
+                </Form.Control.Feedback>
+              </div>
 
-     <div className="col-md-6 mx-1">
-        <Form.Control
-  type="text"
-  placeholder="Enter Company Name..."
-  value={company_name || ""}
-  onChange={(e) => setcompany_name(e.target.value)}
-  disabled={inviteLoading}
-  isInvalid={!!errors.company_name}
-/>
-<Form.Control.Feedback type="invalid">
-  {errors.company_name}
-</Form.Control.Feedback>
-     </div>
-   </div>
+              {/* Company Name */}
+              <div className="col-md-6">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Company Name..."
+                  value={company_name}
+                  onChange={(e) => setcompany_name(e.target.value)}
+                  disabled={inviteLoading}
+                  isInvalid={!!errors.company_name}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.company_name}
+                </Form.Control.Feedback>
+              </div>
+            </div>
 
-      {/* Email */}
-      <div className="d-flex gap-2">
-       <Form.Control
-  type="email"
-  placeholder="Enter Admin Email..."
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  disabled={inviteLoading}
-  isInvalid={!!errors.email}
-/>
-<Form.Control.Feedback type="invalid">
-  {errors.email}
-</Form.Control.Feedback>
-        <Button
-          variant="primary w-25"
-          onClick={handleInviteAdmin}
-          disabled={inviteLoading}
-        >
-          {inviteLoading ? (
-            <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-              />{" "}
-              Sending...
-            </>
-          ) : (
-            "Invite Admin"
-          )}
-        </Button>
-      </div>
+            <div className="row g-3 mt-2">
+              {/* Email */}
+              <div className="col-md-9">
+                <Form.Control
+                  type="email"
+                  placeholder="Enter Admin Email..."
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={inviteLoading}
+                  isInvalid={!!errors.email}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              </div>
+
+              {/* Invite Button */}
+              <div className="col-md-3 d-grid">
+                <Button
+                  variant="primary"
+                  onClick={handleInviteAdmin}
+                  disabled={inviteLoading}
+                >
+                  {inviteLoading ? (
+                    <>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />{" "}
+                      Sending...
+                    </>
+                  ) : (
+                    "Invite Admin"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </Form>
+
+          <small className="text-muted d-block mt-2">
+            Admin will receive secure login credentials via email.
+          </small>
+        </Card.Body>
+      </Card>
+
+      {/* Admin List */}
+      <Card className="border-0 shadow-sm">
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+            <h5 className="mb-0">Active Admins</h5>
+            <span className="badge bg-dark mt-2 mt-sm-0">{admin.length} Total Admin</span>
+          </div>
+
+          <div className="table-responsive">
+            <table className="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Display Name</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="text-center text-muted">
+                      Loading...
+                    </td>
+                  </tr>
+                ) : admin.length > 0 ? (
+                  admin.map((user, index) => (
+                    <tr key={index}>
+                      <td>{user.email}</td>
+                      <td>
+                        <span
+                          className={`badge ${
+                            user.status === "Verified"
+                              ? "bg-success"
+                              : "bg-secondary"
+                          }`}
+                        >
+                          {user.status}
+                        </span>
+                      </td>
+                      <td>{user.display || user.name}</td>
+                      <td>{new Date(user.created).toLocaleDateString()}</td>
+                      <td>
+                        {user.actions?.includes("delete") && (
+                          <Button
+                            size="sm"
+                            variant="outline-danger"
+                            onClick={() => handleDelete(user.email)}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="text-center text-muted">
+                      No admin found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
-
-    <small className="text-muted">
-      Admin will receive secure login credentials via email.
-    </small>
-  </Card.Body>
-</Card>
-
-            <Card className="border-0 shadow-sm">
-                <Card.Body>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="mb-0">Active Admins</h5>
-                        <span className="badge bg-dark">{admin.length} Total Admin</span>
-                    </div>
-
-                    <table className="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Display Name</th>
-                                <th>Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={5} className="text-center text-muted">
-                                        Loading...
-                                    </td>
-                                </tr>
-                            ) : admin.length > 0 ? (
-                                admin.map((user, index) => (
-                                    <tr key={index}>
-                                        <td>{user.email}</td>
-                                        <td>
-                                            <span className={`badge ${user.status === "Verified" ? "bg-success" : "bg-secondary"}`}>
-                                                {user.status}
-                                            </span>
-                                        </td>
-                                        <td>{user.display || user.name}</td>
-                                        <td>{new Date(user.created).toLocaleDateString()}</td>
-                                        <td>
-                                            {user.actions?.includes("delete") && (
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline-danger"
-                                                    onClick={() => handleDelete(user.email)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={5} className="text-center text-muted">
-                                        No admin found
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </Card.Body>
-            </Card>
-        </div>
-    );
+  );
 };
