@@ -1,117 +1,123 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { inviteAdminApi, getAdminlistApi } from "../redux/adminApis";
-import { Spinner } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { baseURL, inviteAdmin, listAdmin } from '../NWconfig';
 
-const AdminManagement = () => {
-  const dispatch = useDispatch();
+export const inviteAdminApi = createAsyncThunk(
+    'inviteAdminApi',
+    async (credentials) => {
 
-  // Local state for invite form
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+        const token = sessionStorage.getItem('token');
 
-  // Redux state
-  const { adminList, loading, error } = useSelector((state) => state.admin);
+        try {
+            const url = `${baseURL}${inviteAdmin}`;
+            const response = await axios.post(url, credentials, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
 
-  useEffect(() => {
-    dispatch(getAdminlistApi());
-  }, [dispatch]);
+            toast.success(response.data.message)
+            return response.data;
+        } catch (error) {
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
 
-  const handleInvite = (e) => {
-    e.preventDefault();
-    dispatch(inviteAdminApi({ email, role }));
-    setEmail("");
-    setRole("");
-  };
+      console.log(status, "error.");
 
-  return (
-    <div className="container mt-4">
-      {/* Responsive Row */}
-      <div className="row">
-        {/* Invite Admin Form */}
-        <div className="col-lg-4 col-md-6 col-sm-12 mb-4">
-          <div className="card shadow p-3">
-            <h5 className="mb-3">Invite Admin</h5>
-            <form onSubmit={handleInvite}>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  placeholder="Enter admin email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
+    }
+    }
+);
 
-              <div className="mb-3">
-                <label className="form-label">Role</label>
-                <select
-                  className="form-select"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  required
-                >
-                  <option value="">Select role</option>
-                  <option value="superadmin">Super Admin</option>
-                  <option value="manager">Manager</option>
-                  <option value="editor">Editor</option>
-                </select>
-              </div>
+export const getAdminlistApi = createAsyncThunk(
+    'getAdminlistApi',
+    async () => {
 
-              <button type="submit" className="btn btn-primary w-100">
-                Invite
-              </button>
-            </form>
-          </div>
-        </div>
+        const token = sessionStorage.getItem('token');
 
-        {/* Admin List */}
-        <div className="col-lg-8 col-md-6 col-sm-12">
-          <div className="card shadow p-3">
-            <h5 className="mb-3">Admin List</h5>
+        try {
+            const url = `${baseURL}${listAdmin}`;
 
-            {loading && (
-              <div className="text-center">
-                <Spinner animation="border" />
-              </div>
-            )}
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "ngrok-skip-browser-warning": "true",
+                    "Content-Type": "application/json",
+                },
+            });
 
-            {error && (
-              <div className="alert alert-danger">{error}</div>
-            )}
+            return response.data;
+        } catch (error) {
+      const status = error.response?.status;
+      const message = error.response?.data?.detail || error.response?.data?.message;
 
-            {!loading && adminList?.length > 0 ? (
-              <div className="table-responsive">
-                <table className="table table-striped table-hover">
-                  <thead className="table-dark">
-                    <tr>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {adminList.map((admin, idx) => (
-                      <tr key={idx}>
-                        <td>{admin.email}</td>
-                        <td>{admin.role}</td>
-                        <td>{admin.status || "Active"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              !loading && <p>No admins found.</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+      console.log(status, "error.");
 
-export default AdminManagement;
+      if (status === 401) {
+        toast.error("Session expired. Please log in again.");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("auth");
+        sessionStorage.removeItem("tokenExpiry");
+        window.location.href = "/";
+        return rejectWithValue("Session expired");
+      } 
+      else if ([400, 403, 404, 409].includes(status)) {
+        let errorMessage = "An error occurred. Please try again.";
+        switch (status) {
+          case 400:
+            errorMessage = message || "Bad Request. Please check the input and try again.";
+            break;
+          case 403:
+            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
+            break;
+          case 404:
+            errorMessage = message || "Not Found. The requested resource could not be found.";
+            break;
+          case 409:
+            errorMessage = message || "Conflict. There was a conflict with your request.";
+            break;
+        }
+        toast.error(errorMessage);
+        return rejectWithValue(errorMessage);
+      } 
+      else {
+        const errMsg = message || "An internal server error occurred. Please try again later.";
+        toast.error(errMsg);
+        return rejectWithValue(errMsg);
+      }
+    }
+    }
+);
