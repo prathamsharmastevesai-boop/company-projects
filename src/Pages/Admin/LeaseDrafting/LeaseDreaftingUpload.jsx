@@ -15,11 +15,11 @@ import {
 export const LeaseDraftingUpload = () => {
   const dispatch = useDispatch();
   const bottomRef = useRef(null);
-   const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const [docs, setDocs] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState(null);
-  
+
   const [loading, setLoading] = useState(false);
   const [aiDraft, setAiDraft] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,18 +31,17 @@ export const LeaseDraftingUpload = () => {
   const [loader, setLoader] = useState(false);
   const [updateloading, setUpadteLoading] = useState(false);
 
-
   const [metadata, setMetadata] = useState({
     tenant: "",
     rent: "",
     term: "",
   });
- 
+
   useEffect(() => {
-  if (bottomRef.current) {
-    bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-}, [aiDraft, submittedFeedback]);
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [aiDraft, submittedFeedback]);
 
   const fetchDocs = () => {
     setLoader(true);
@@ -73,11 +72,10 @@ export const LeaseDraftingUpload = () => {
       return;
     }
 
-  if (file.size > 30 * 1024 * 1024) {
-  toast.error("File must be under 30MB");
-  return;
-}
-
+    if (file.size > 30 * 1024 * 1024) {
+      toast.error("File must be under 30MB");
+      return;
+    }
 
     const payload = { file, category: "lease" };
     setLoader(true);
@@ -101,35 +99,34 @@ export const LeaseDraftingUpload = () => {
   };
 
   const handleDelete = (fileId) => {
-      if (!window.confirm("Are you sure you want to delete this document?"))
-        return;
+    if (!window.confirm("Are you sure you want to delete this document?"))
+      return;
 
-      setLoader(true);
-      dispatch(DeleteDrafingDoc({ fileId }))
-        .unwrap()
-        .then(() => {
-          fetchDocs();
-        })
-        .catch((err) => {
-          console.error("Delete failed:", err);
-        })
-        .finally(() => setLoader(false));
+    setLoader(true);
+    dispatch(DeleteDrafingDoc({ fileId }))
+      .unwrap()
+      .then(() => {
+        fetchDocs();
+      })
+      .catch((err) => {
+        console.error("Delete failed:", err);
+      })
+      .finally(() => setLoader(false));
   };
 
-    const handleGenerateDraft = async (id) => {
-    
-    if (!selectedDoc) { 
+  const handleGenerateDraft = async (id) => {
+    if (!selectedDoc) {
       toast.error("Please select a document first");
       return;
     }
 
     setLoading(true);
-   try {
-  const [Metadata, Textdata] = await Promise.all([
-    dispatch(getMetaData(id)).unwrap(),
-    dispatch(getTextData(id)).unwrap(),
-  ]);
-setTimeout(() => {
+    try {
+      const [Metadata, Textdata] = await Promise.all([
+        dispatch(getMetaData(id)).unwrap(),
+        dispatch(getTextData(id)).unwrap(),
+      ]);
+      setTimeout(() => {
         setMetadata({
           tenant: Metadata.structured_metadata.tenant_name,
           rent: Metadata.structured_metadata.rent_amount,
@@ -140,16 +137,15 @@ setTimeout(() => {
         setEditedDraft(Textdata);
         setLoading(false);
       }, 2000);
-} catch (error) {
-  console.error("Error fetching data:", error);
-}
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  
   // const handleGenerateDraft = async (id) => {
-  //   console.log(id,"ididi");1  
-    
-  //   if (!selectedDoc) { 
+  //   console.log(id,"ididi");1
+
+  //   if (!selectedDoc) {
   //     toast.error("Please select a document first");
   //     return;
   //   }
@@ -159,7 +155,7 @@ setTimeout(() => {
   //    const Metadata = dispatch(getMetaData()).unwrap();
   //    const Textdata = dispatch(getTextData()).unwrap();
   //    console.log(Metadata,Textdata,"Metadata");
-     
+
   //     setTimeout(() => {
   //       setMetadata({
   //         tenant: "Alphabets Childcare",
@@ -179,30 +175,30 @@ setTimeout(() => {
   //   }
   // };
 
-const handleSaveDraft = async (id) => {
-  setAiDraft(editedDraft);
-  setUpadteLoading(true); 
+  const handleSaveDraft = async (id) => {
+    setAiDraft(editedDraft);
+    setUpadteLoading(true);
 
-  try {
-    await dispatch(UpdateDraftingtext({
-      file_id: id,
-      raw_text: editedDraft
-    })).unwrap();
-  setUpadteLoading(false);
-    await Promise.all([
-      dispatch(getMetaData(id)).unwrap(),
-      dispatch(getTextData(id)).unwrap()
-    ]);
+    try {
+      await dispatch(
+        UpdateDraftingtext({
+          file_id: id,
+          raw_text: editedDraft,
+        })
+      ).unwrap();
+      setUpadteLoading(false);
+      await Promise.all([
+        dispatch(getMetaData(id)).unwrap(),
+        dispatch(getTextData(id)).unwrap(),
+      ]);
 
-    setIsEditing(false);
-    setShowDiff(false);
-  } catch (error) {
-    console.error("Error saving draft:", error);
-  } finally {
-  
-  }
-};
-
+      setIsEditing(false);
+      setShowDiff(false);
+    } catch (error) {
+      console.error("Error saving draft:", error);
+    } finally {
+    }
+  };
 
   const handleSubmitFeedback = () => {
     if (!feedback) {
@@ -263,7 +259,7 @@ const handleSaveDraft = async (id) => {
         automatically.
       </p>
 
-      <div className="border border-2 rounded-3 p-5 text-center mb-4 bg-light">
+      <div className="border border-2 rounded-3 py-5 text-center mb-4 bg-light">
         <i className="bi bi-upload fs-1 text-primary"></i>
         <h6 className="fw-semibold mt-3">Upload Letter of Intent</h6>
         <p className="text-muted mb-3">
@@ -329,9 +325,9 @@ const handleSaveDraft = async (id) => {
           </ul>
         )}
       </div>
- <button
+      <button
         className="btn btn-primary mb-4 d-flex align-items-center justify-content-center gap-2"
-        onClick={()=>handleGenerateDraft(selectedDoc?.file_id)}
+        onClick={() => handleGenerateDraft(selectedDoc?.file_id)}
         disabled={!selectedDoc || loading}
         style={{ minWidth: "180px", height: "45px" }}
       >
@@ -412,14 +408,17 @@ const handleSaveDraft = async (id) => {
                   onClick={() => setShowDiff(!showDiff)}
                 />
                 {updateloading ? (
-  <div className="spinner-border spinner-border-sm text-success" role="status" />
-) : (
-  <i
-    className="bi bi-check-circle-fill text-success"
-    style={{ cursor: "pointer", fontSize: "1.2rem" }}
-    onClick={() => handleSaveDraft(selectedDoc?.file_id)}
-  />
-)}
+                  <div
+                    className="spinner-border spinner-border-sm text-success"
+                    role="status"
+                  />
+                ) : (
+                  <i
+                    className="bi bi-check-circle-fill text-success"
+                    style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                    onClick={() => handleSaveDraft(selectedDoc?.file_id)}
+                  />
+                )}
 
                 <i
                   className="bi bi-x-circle-fill text-danger"
@@ -455,14 +454,16 @@ const handleSaveDraft = async (id) => {
               <h6 className="fw-semibold mb-2">Provide Feedback</h6>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <i
-                  className={`bi bi-hand-thumbs-up-fill ${feedback === "up" ? "text-success" : "text-muted"
-                    }`}
+                  className={`bi bi-hand-thumbs-up-fill ${
+                    feedback === "up" ? "text-success" : "text-muted"
+                  }`}
                   style={{ cursor: "pointer", fontSize: "1.5rem" }}
                   onClick={() => setFeedback("up")}
                 />
                 <i
-                  className={`bi bi-hand-thumbs-down-fill ${feedback === "down" ? "text-danger" : "text-muted"
-                    }`}
+                  className={`bi bi-hand-thumbs-down-fill ${
+                    feedback === "down" ? "text-danger" : "text-muted"
+                  }`}
                   style={{ cursor: "pointer", fontSize: "1.5rem" }}
                   onClick={() => setFeedback("down")}
                 />
@@ -483,20 +484,18 @@ const handleSaveDraft = async (id) => {
             </div>
           )}
 
-         {submittedFeedback && (
-  <div className="card-footer text-success fw-semibold">
-    Thank you for your feedback!
-  </div>
-)}
+          {submittedFeedback && (
+            <div className="card-footer text-success fw-semibold">
+              Thank you for your feedback!
+            </div>
+          )}
 
-<div ref={bottomRef}></div>
+          <div ref={bottomRef}></div>
         </div>
       )}
     </div>
   );
 };
-
-
 
 // import React, { useState, useRef, useEffect } from "react";
 // import { toast } from "react-toastify";
@@ -591,7 +590,7 @@ const handleSaveDraft = async (id) => {
 //       "application/msword",
 //       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 //     ];
-    
+
 //     if (!validTypes.includes(file.type)) {
 //       toast.error("Only PDF, DOC, or DOCX files are allowed");
 //       return;
@@ -693,7 +692,7 @@ const handleSaveDraft = async (id) => {
 //         template_id: selectedTemplate.file_id,
 //         metadata: extractedData ? metadata : null
 //       };
-      
+
 //       const response = ""
 //       // await dispatch(GenerateLeaseDraft(payload)).unwrap();
 //       setAiDraft(response.draft);
@@ -720,7 +719,7 @@ const handleSaveDraft = async (id) => {
 //       //   draft_id: draftId,
 //       //   content: editedDraft
 //       // })).unwrap();
-      
+
 //       setAiDraft(editedDraft);
 //       setIsEditing(false);
 //       setShowDiff(false);
@@ -751,7 +750,7 @@ const handleSaveDraft = async (id) => {
 //       //   feedback,
 //       //   comment: feedbackComment
 //       // })).unwrap();
-      
+
 //       setSubmittedFeedback(true);
 //       toast.success("Feedback submitted. Thank you!");
 //     } catch (err) {
@@ -902,7 +901,7 @@ const handleSaveDraft = async (id) => {
 
 //       <ul className="nav nav-tabs mb-4">
 //         <li className="nav-item">
-//           <button 
+//           <button
 //             className={`nav-link ${activeTab === "upload" ? "active" : ""}`}
 //             onClick={() => setActiveTab("upload")}
 //           >
@@ -910,7 +909,7 @@ const handleSaveDraft = async (id) => {
 //           </button>
 //         </li>
 //         <li className="nav-item">
-//           <button 
+//           <button
 //             className={`nav-link ${activeTab === "draft" ? "active" : ""}`}
 //             onClick={() => setActiveTab("draft")}
 //             disabled={!selectedDoc}
@@ -919,7 +918,7 @@ const handleSaveDraft = async (id) => {
 //           </button>
 //         </li>
 //         <li className="nav-item">
-//           <button 
+//           <button
 //             className={`nav-link ${activeTab === "templates" ? "active" : ""}`}
 //             onClick={() => setActiveTab("templates")}
 //           >
@@ -951,7 +950,7 @@ const handleSaveDraft = async (id) => {
 //           <div className="card shadow-sm mb-4">
 //             <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
 //               <span>Uploaded LOI Documents</span>
-//               <button 
+//               <button
 //                 className="btn btn-sm btn-outline-secondary"
 //                 onClick={fetchDocs}
 //               >
@@ -1022,7 +1021,7 @@ const handleSaveDraft = async (id) => {
 //             <div className="card shadow-sm mb-4">
 //               <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
 //                 <span>Extracted Key Terms</span>
-//                 <button 
+//                 <button
 //                   className="btn btn-sm btn-outline-primary"
 //                   onClick={() => setExtractedData(null)}
 //                 >
@@ -1126,7 +1125,7 @@ const handleSaveDraft = async (id) => {
 //           <div className="card shadow-sm mb-4">
 //             <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
 //               <span>Available Lease Templates</span>
-//               <button 
+//               <button
 //                 className="btn btn-sm btn-outline-secondary"
 //                 onClick={fetchTemplates}
 //               >
@@ -1230,10 +1229,10 @@ const handleSaveDraft = async (id) => {
 //                 />
 //               )
 //             ) : (
-//               <div 
-//                 style={{ 
-//                   whiteSpace: "pre-wrap", 
-//                   fontFamily: "monospace", 
+//               <div
+//                 style={{
+//                   whiteSpace: "pre-wrap",
+//                   fontFamily: "monospace",
 //                   fontSize: "14px",
 //                   maxHeight: "500px",
 //                   overflowY: "auto"

@@ -19,22 +19,17 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const toggleSidebar = () => {
-  //   if (openMenu) setOpenMenu(null);
-  //   else setCollapsed((prev) => !prev);
-  // };
-
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
 
       if (!mobile) {
-        setCollapsed(false); // Always open on desktop
+        setCollapsed(false); 
       }
     };
 
-    handleResize(); // Run initially
+    handleResize(); 
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -63,7 +58,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
           isMobile && !collapsed ? "sidebar-mobile-open" : ""
         }`}
-      
       >
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
@@ -207,7 +201,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                {/* <li className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""}`}>
+                {/* <li
+                  className={`nav-item ${
+                    isActive("/LeaseDraftingUpload") ? "active" : ""
+                  }`}
+                >
                   <span
                     onClick={() => handleLinkClick("/LeaseDraftingUpload")}
                     className="nav-link text-white"
@@ -248,7 +246,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-people me-2" />
-                        Third Party Contact Info
+                        {!collapsed && "Third Party Contact Info"}
                       </span>
                     </li>
                     <li
@@ -262,7 +260,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-person-badge me-2" />
-                        Employee Contact Info
+                        {!collapsed && "  Employee Contact Info "}
                       </span>
                     </li>
                     <li
@@ -276,7 +274,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-graph-up-arrow me-2" />
-                        Market Intelligence Data
+                        {!collapsed && " Market Intelligence Data "}
                       </span>
                     </li>
                     <li
@@ -290,7 +288,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-building me-2" />
-                        Building Info Data
+                        {!collapsed && "Building Info Data "}
                       </span>
                     </li>
                   </>
@@ -328,7 +326,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                           className="bi bi-plus-circle me-2"
                           style={{ fontSize: 14 }}
                         />
-                        Add Building (LOI & Lease)
+                        {!collapsed && "Add Building (LOI & Lease) "}
                       </span>
                     </li>
                   </>
@@ -391,7 +389,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                {/* User Data Categories */}
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
@@ -409,7 +406,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </li>
                 )}
 
-                {openMenu === "generalInfo" && !collapsed && (
+                {openMenu === "generalInfo" && (
                   <ul className="nav flex-column mt-1">
                     <li
                       className={`nav-item ${
@@ -421,8 +418,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
-                        <i className="bi bi-people-fill me-1" />
-                        Third Party Contact Info
+                        <i className="bi bi-telephone-fill me-1" />
+                        {!collapsed && "Third Party Contact Info"}
                       </span>
                     </li>
                     <li
@@ -436,7 +433,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-people-fill me-1" />
-                        Employee Contact Info
+                        {!collapsed && "Employee Contact Info"}
                       </span>
                     </li>
                     <li
@@ -450,7 +447,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-building me-1" />
-                        Building Info Data
+                        {!collapsed && "Building Info Data"}
                       </span>
                     </li>
                     <li
@@ -464,7 +461,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-graph-up me-1" />
-                        Market Intelligence Data
+                        {!collapsed && "Market Intelligence Data"}
                       </span>
                     </li>
                     <li
@@ -478,29 +475,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi-journal-text me-1" />
-                        Leases Agreement Data & LOI Data
+                        {!collapsed && "Leases Agreement Data & LOI Data"}
                       </span>
                     </li>
                   </ul>
                 )}
 
-                {/* Session History */}
-                {/* {!collapsed && (
-                  <li
-                    className={`nav-header text-light small mt-3 d-flex justify-content-between align-items-center ${showSessionModal ? "active" : ""
-                      }`}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => setShowSessionModal(!showSessionModal)}
-                  >
-                    <span className="d-flex align-items-center">
-                      <i className="bi bi-clock me-2" />
-                      history
-                    </span>
-                    <i className="bi bi-list-task ms-2" />
-                  </li>
-                )} */}
-
-                {/* Mobile Session Modal */}
                 {isMobile && showSessionModal && (
                   <div className="mt-2">
                     <div className="bg-dark border w-75 rounded p-2">
@@ -513,7 +493,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           </ul>
         </div>
 
-        {/* Logout */}
         <div className="mt-auto p-3 border-top">
           <button
             onClick={() => {
@@ -529,7 +508,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         </div>
       </aside>
 
-      {/* Desktop Session Modal */}
       {!isMobile && showSessionModal && (
         <div
           className="modal d-flex align-items-center justify-content-start"

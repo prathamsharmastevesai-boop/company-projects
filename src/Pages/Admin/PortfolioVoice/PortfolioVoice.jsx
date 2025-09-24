@@ -39,41 +39,54 @@ export const PortfolioVoice = () => {
     }
   };
 
-  const handleFileChange = async (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    if (!selectedFiles.length) {
-      toast.warning("No files selected.");
-      return;
-    }
+ const handleFileChange = async (e) => {
+  const selectedFiles = Array.from(e.target.files);
+  if (!selectedFiles.length) {
+    toast.warning("No files selected.");
+    return;
+  }
 
-    const MAX_FILE_SIZE_MB = 30;
-    const oversizedFiles = selectedFiles.filter(
-      (file) => file.size > MAX_FILE_SIZE_MB * 1024 * 1024
-    );
+  const MAX_FILE_SIZE_MB = 30;
+  const oversizedFiles = selectedFiles.filter(
+    (file) => file.size > MAX_FILE_SIZE_MB * 1024 * 1024
+  );
 
-    if (oversizedFiles.length > 0) {
-      toast.error(
-        "Some files exceed the 30MB size limit. Please upload smaller files."
-      );
-      return;
-    }
+  if (oversizedFiles.length > 0) {
+    toast.error("Some files exceed the 30MB size limit. Please upload smaller files.");
+    return;
+  }
 
-    try {
-      setIsUploading(true);
-      await dispatch(
-        Upload_specific_file_Api({
-          files: selectedFiles,
-          category: "portfolio",
-        })
-      ).unwrap();
-      await fetchDocuments();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsUploading(false);
-      e.target.value = null;
-    }
-  };
+  const ALLOWED_TYPES = [
+     "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+           "text/csv",
+  ];
+
+  const invalidFiles = selectedFiles.filter(file => !ALLOWED_TYPES.includes(file.type));
+  if (invalidFiles.length > 0) {
+    toast.error("Some files are not supported document types.");
+    return;
+  }
+
+  try {
+    setIsUploading(true);
+    await dispatch(
+      Upload_specific_file_Api({
+        files: selectedFiles,
+        category: "portfolio",
+      })
+    ).unwrap();
+    await fetchDocuments();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsUploading(false);
+    e.target.value = null;
+  }
+};
 
   const handleDeleteDoc = async (id) => {
     try {
@@ -131,16 +144,16 @@ const filteredDocs = documents.filter(
         <div>
           <h4 className="fw-bold mb-1">Portfolio Voice</h4>
           <p className="text-muted mb-0">
-            Upload and manage PDF documents for data retrieval
+            Upload and manage documents for data retrieval
           </p>
         </div>
         <div>
           <label className="btn btn-primary d-flex align-items-center mb-0">
             <i className="bi bi-upload me-2"></i>
-            {isUploading ? "Uploading..." : "Upload PDFs"}
+            {isUploading ? "Uploading..." : "Upload Files"}
             <input
               type="file"
-              accept="application/pdf"
+              accept=".pdf,.docx,.csv,.xlsx"
               multiple
               hidden
               onChange={handleFileChange}
@@ -178,7 +191,7 @@ const filteredDocs = documents.filter(
             </div>
 
             <div className="d-flex gap-2 flex-wrap mt-2 mt-md-0">
-              <button
+              {/* <button
                 className="btn btn-outline-secondary"
                 onClick={() => {
                   setSortBy("date");
@@ -189,7 +202,7 @@ const filteredDocs = documents.filter(
               >
                 Sort by Date{" "}
                 {sortBy === "date" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-              </button>
+              </button> */}
 
               <button
                 className="btn btn-outline-secondary"

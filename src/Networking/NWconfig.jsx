@@ -31,13 +31,11 @@ export const UpdateDoc = "/chatbot/update_files/";
 export const ListDoc = "/chatbot/files/";
 export const DeleteDoc = "/chatbot/delete_files/";
 
-
 //ASK QUESTION
 export const AskQuestion = "/chatbot/ask_question/";
 export const Old_history = "/chatbot/chat/sessions/";
 export const Chat_history = "/chatbot/chat/history/";
 export const Del_Chat_Session = "/chatbot/chat/";
-
 
 //SPECIFIC CHAT
 export const Upload_specific_file = "/user/standalone/upload";
@@ -46,7 +44,7 @@ export const AskQuestion_Specific = "/user/ask_simple/";
 // export const Session_List_Specific = "/user/chat/sessions/";
 export const Session_List_Specific = "/chatbot/chat/sessions/";
 // export const Chat_history_Specific = "/admin_user_chat/chat/history/";
-export const Chat_history_Specific = "/user/chat/history/"
+export const Chat_history_Specific = "/user/chat/history/";
 export const Session_Delete_Specific = "/user/chat/delete/";
 export const Doc_Delete_Specific = "/user/delete_simple_file/";
 
@@ -64,8 +62,8 @@ export const Approved_list = "/building_permissions/approved_requests";
 export const Denied_list = "/building_permissions/denied_requests";
 
 //GENERAL INFO BUILDING
-export const Upload_General_info = "/genral-builidng/buildings/documents/upload"
-
+export const Upload_General_info =
+  "/genral-builidng/buildings/documents/upload";
 
 //Admin Dashboard
 export const dashboardData = "/admin/stats";
@@ -89,13 +87,12 @@ export const InviteUser = "/invite_user/admin";
 export const userList = "/invite_user/admin/invited-users";
 
 //AI LEASE DRAFTING
-export const upload_Drafting_Lease = "/generate_lease/upload/simple";
-export const listDraftingDoc = "/generate_lease/list_category_files/"
-export const deleteDraftingDoc = "/generate_lease/delete_file/";
+export const upload_Drafting_Lease = "/lease_gen/upload/simple";
+export const listDraftingDoc = "/lease_gen/list_category_files/";
+export const deleteDraftingDoc = "/lease_gen/delete_file/";
 export const extractMetadata = "/generate_lease/files/extract-metadata";
 export const extractTextdata = "/generate_lease/files/lease-agreement-text";
 export const updatetextdata = "/generate_lease/files/update-extracted-text";
-
 
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";
