@@ -75,7 +75,6 @@ export const AdminLogin = () => {
         toast.error("Invalid Credentials");
       }
     } catch (err) {
-      // toast.error(err?.message || "Admin login failed");
     } finally {
       setLoading(false);
     }
@@ -147,12 +146,6 @@ export const AdminLogin = () => {
                 {errors.password && <div className="invalid-feedback">{errors.password}</div>}
               </div>
             </div>
-
-
-            {/* <div className="form-check mb-3">
-              <input type="checkbox" className="form-check-input" id="rememberMe" disabled={loading} />
-              <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
-            </div> */}
 
             <button
               type="submit"

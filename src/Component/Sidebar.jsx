@@ -201,7 +201,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                {/* <li
+                <li
                   className={`nav-item ${
                     isActive("/LeaseDraftingUpload") ? "active" : ""
                   }`}
@@ -214,7 +214,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <i className="bi bi-cpu me-2" />
                     {!collapsed && "AI Lease Drafting"}
                   </span>
-                </li> */}
+                </li>
+
+ <li
+                  className={`nav-item ${
+                    isActive("/ComparativeBuildingData") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/ComparativeBuildingData")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-cpu me-2" />
+                    {!collapsed && "Comparative Buildings Data"}
+                  </span>
+                </li>
 
                 {!collapsed && (
                   <li
@@ -386,6 +401,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <i className="bi bi-mic me-2" />
                     {!collapsed && "Portfolio Voice"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/ComparativeBuildingChat") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/ComparativeBuildingChat")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-mic me-2" />
+                    {!collapsed && "Comparative Building Data"}
                   </span>
                 </li>
 

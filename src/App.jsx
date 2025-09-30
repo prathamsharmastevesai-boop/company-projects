@@ -47,6 +47,8 @@ import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 import { SessionList } from "./Pages/User/Session/sessionList";
 import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/LeaseDreaftingUpload";
 import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
+import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/comparetiveBuilding";
+import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
 
 
 function App() {
@@ -116,6 +118,7 @@ function App() {
 
             <Route path="/Approved_Denied_list" element={<Approved_Denied_list />} />
 
+            <Route path="/ComparativeBuildingData" element={<ComparativeBuildingData />} />
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
           </Route>
 
@@ -137,7 +140,7 @@ function App() {
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
 
             <Route path="/UserProfile" element={<UserProfile />} />
-
+ <Route path="/ComparativeBuildingChat" element={<ComparativeBuildingChat />} />
             <Route path="/BrokerChat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />

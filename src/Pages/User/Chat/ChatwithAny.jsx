@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
   Delete_Chat_Specific_Session,
-  get_chathistory_Specific_Api,
   get_Session_List_Specific,
   AskQuestion_Specific_API,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
@@ -13,9 +12,11 @@ import ReactMarkdown from "react-markdown";
 
 export const ChatWithAnyDoc = () => {
   const dispatch = useDispatch();
-  const chatRef = useRef(null);
   const location = useLocation();
+  const chatRef = useRef(null);
   const textareaRef = useRef(null);
+  const recognitionRef = useRef(null);
+
   const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
@@ -26,7 +27,7 @@ export const ChatWithAnyDoc = () => {
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
-  const [deletingSessionId, setDeletingSessionId] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
@@ -34,9 +35,7 @@ export const ChatWithAnyDoc = () => {
       const res = await dispatch(get_Session_List_Specific()).unwrap();
       setSessionList(res);
 
-      const portfolioSessions = res.filter(
-        (chat) => chat.category === "portfolio"
-      );
+      const portfolioSessions = res.filter((chat) => chat.category === "portfolio");
 
       if (portfolioSessions.length > 0) {
         const latestChat = portfolioSessions[0];
@@ -73,14 +72,68 @@ export const ChatWithAnyDoc = () => {
   }, [incomingSessionId]);
 
   const scrollToBottom = () => {
-    if (chatRef.current)
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  const startRecording = async () => {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      toast.error("Speech Recognition not supported in this browser.");
+      return;
+    }
+
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      if (!recognitionRef.current) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = "en-US";
+
+        recognitionRef.current.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          setMessage(transcript);
+        };
+
+        recognitionRef.current.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+          toast.error(
+            event.error === "not-allowed"
+              ? "Microphone access denied."
+              : "Voice recognition error: " + event.error
+          );
+          setIsRecording(false);
+        };
+
+        recognitionRef.current.onend = () => setIsRecording(false);
+      }
+
+      if (!isRecording) {
+        recognitionRef.current.start();
+        setIsRecording(true);
+      } else {
+        recognitionRef.current.stop();
+        setIsRecording(false);
+      }
+    } catch (err) {
+      console.error("Microphone access error:", err);
+      toast.error("Microphone not found or access denied.");
+    }
+  };
+
+      const speak = (text) => {
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
+  
   const handleSendMessage = async () => {
     if (!message.trim()) {
       toast.warning("Please enter a message.");
@@ -123,9 +176,7 @@ export const ChatWithAnyDoc = () => {
         question: message,
         category: "portfolio",
       };
-      const response = await dispatch(
-        AskQuestion_Specific_API(payload)
-      ).unwrap();
+      const response = await dispatch(AskQuestion_Specific_API(payload)).unwrap();
 
       if (response?.answer) {
         const adminMessage = {
@@ -134,6 +185,7 @@ export const ChatWithAnyDoc = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
+        speak(response.answer);
       }
 
       scrollToBottom();
@@ -153,24 +205,17 @@ export const ChatWithAnyDoc = () => {
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {isLoadingMessages ? (
                 <div className="text-center py-4">
-                  <div
-                    className="spinner-border text-secondary"
-                    role="status"
-                  ></div>
+                  <div className="spinner-border text-secondary" role="status"></div>
                 </div>
               ) : messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${
-                      msg.sender === "Admin" ? "text-start" : "text-end"
-                    }`}
+                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
                       className={`d-inline-block px-3 py-2 rounded ${
-                        msg.sender === "Admin"
-                          ? "bg-secondary text-white"
-                          : "bg-primary text-white"
+                        msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
                       style={{
                         maxWidth: "75%",
@@ -186,12 +231,8 @@ export const ChatWithAnyDoc = () => {
                       )}
                     </div>
 
-                    <div
-                      className="text-muted fst-italic mt-1"
-                      style={{ fontSize: "0.75rem" }}
-                    >
-                      {msg.sender} •{" "}
-                      {new Date(msg.timestamp).toLocaleTimeString()}
+                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
+                      {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
                 ))
@@ -201,10 +242,7 @@ export const ChatWithAnyDoc = () => {
               {isSending && (
                 <div className="text-start small mt-2">
                   <div className="d-inline-block px-3 py-2 rounded bg-secondary text-white">
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                    />
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
                     Admin is typing...
                   </div>
                 </div>
@@ -214,6 +252,14 @@ export const ChatWithAnyDoc = () => {
 
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
+              <button
+                className={`btn me-2 ${isRecording ? "btn-danger" : "btn-outline-secondary"}`}
+                onClick={startRecording}
+                aria-label="Record message"
+              >
+                <i className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"}`}></i>
+              </button>
+
               <textarea
                 ref={textareaRef}
                 rows={1}
@@ -222,45 +268,27 @@ export const ChatWithAnyDoc = () => {
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
-
                   const ta = textareaRef.current;
                   if (ta) {
                     ta.style.height = "auto";
                     const lineHeight = 20;
                     const maxHeight = lineHeight * 3;
-                    ta.style.height =
-                      Math.min(ta.scrollHeight, maxHeight) + "px";
+                    ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
                   }
                 }}
                 onKeyDown={(e) => {
-                  const isComposing =
-                    e.nativeEvent && e.nativeEvent.isComposing;
-
-                  if (e.key === "Enter" && !isComposing) {
-                    if (e.shiftKey) {
-                      return;
-                    } else {
-                      e.preventDefault();
-                      if (!isSending) {
-                        handleSendMessage();
-
-                        if (textareaRef.current) {
-                          textareaRef.current.style.height = "auto";
-                        }
-                      }
-                    }
+                  const isComposing = e.nativeEvent?.isComposing;
+                  if (e.key === "Enter" && !isComposing && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                    if (textareaRef.current) textareaRef.current.style.height = "auto";
                   }
                 }}
                 style={{ resize: "none", overflow: "auto" }}
                 disabled={isSending}
               />
 
-              <button
-                className="btn btn-primary"
-                onClick={handleSendMessage}
-                disabled={isSending}
-                aria-label="Send message"
-              >
+              <button className="btn btn-primary" onClick={handleSendMessage} disabled={isSending}>
                 <i className="bi bi-send"></i>
               </button>
             </div>

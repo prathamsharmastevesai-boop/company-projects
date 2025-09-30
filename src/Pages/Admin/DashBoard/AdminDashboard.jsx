@@ -29,7 +29,6 @@ export const AdminDashboard = () => {
 
   return (
     <div className="container p-3 p-md-4">
-      {/* Header */}
       <div className="mb-4 text-center text-md-start">
         <h2 className="fw-bold">Dashboard Overview</h2>
         <p className="text-muted">
@@ -37,9 +36,7 @@ export const AdminDashboard = () => {
         </p>
       </div>
 
-      {/* Dashboard Cards */}
       <div className="row g-3 mb-4">
-        {/* Total Documents */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
@@ -56,7 +53,6 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Buildings */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
@@ -73,7 +69,6 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Recent Uploads */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
@@ -90,7 +85,6 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* AI Queries */}
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="card border-0 shadow-sm rounded-4 h-100"
             style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
@@ -108,9 +102,7 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Bottom Section: Recent Activity & Quick Actions */}
       <div className="row g-3">
-        {/* Recent Activity */}
         <div className="col-12 col-lg-6">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body">
@@ -123,7 +115,6 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Quick Actions */}
         <div className="col-12 col-lg-6">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body">
@@ -141,14 +132,7 @@ export const AdminDashboard = () => {
                     Add Building
                   </button>
                 </div>
-                {/* Future button
-                <div className="col-12">
-                  <button className="btn btn-outline-primary w-100 py-3" onClick={handleUpload}>
-                    <Upload size={20} className="me-2" />
-                    Upload Documents
-                  </button>
-                </div> 
-                */}
+               
               </div>
             </div>
           </div>

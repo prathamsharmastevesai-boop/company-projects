@@ -109,7 +109,7 @@ export const Dashboard = () => {
           <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">
             Welcome to Portfolio Pulse
           </h1>
-          {/* <p className="lead animate__animated animate__fadeInUp">Your real estate management dashboard is under construction 🛠️</p> */}
+          
         </div>
       </section>
 

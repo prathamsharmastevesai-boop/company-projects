@@ -5,17 +5,18 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
   Delete_Chat_Specific_Session,
+  get_chathistory_Specific_Api,
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import ReactMarkdown from "react-markdown";
 
-export const ColleagueChat = () => {
+export const ComparativeBuildingChat = () => {
   const dispatch = useDispatch();
   const chatRef = useRef(null);
+  const location = useLocation();
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
-  const location = useLocation();
   const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
@@ -34,47 +35,47 @@ export const ColleagueChat = () => {
     }
   };
 
-  // const fetchSessions = async () => {
-  //   setIsLoadingSessions(true);
-  //   try {
-  //     const res = await dispatch(get_Session_List_Specific()).unwrap();
-  //     setSessionList(res);
+  const fetchSessions = async () => {
+    setIsLoadingSessions(true);
+    try {
+      const res = await dispatch(get_Session_List_Specific()).unwrap();
+      setSessionList(res);
 
-  //     const colleagueSessions = res.filter((chat) => chat.category === "Colleague");
+      const buildingSessions = res.filter((chat) => chat.category === "ComparativeBuilding");
 
-  //     if (incomingSessionId) {
-  //       setSelectedChatId(incomingSessionId);
-  //       setSessionId(incomingSessionId);
-  //     } else if (colleagueSessions.length > 0) {
-  //       const latestChat = colleagueSessions[0];
-  //       setSelectedChatId(latestChat.session_id);
-  //       setSessionId(latestChat.session_id);
-  //     } else {
-  //       const newId = uuidv4();
-  //       const newChat = {
-  //         session_id: newId,
-  //         name: newId,
-  //         category: "Colleague",
-  //         created_at: new Date().toISOString(),
-  //       };
-  //       setSessionList((prev) => [newChat, ...prev]);
-  //       setSessionId(newId);
-  //       setSelectedChatId(newId);
-  //       setMessages([]);
-  //     }
+      if (incomingSessionId) {
+        setSelectedChatId(incomingSessionId);
+        setSessionId(incomingSessionId);
+      } else if (buildingSessions.length > 0) {
+        const latestChat = buildingSessions[0];
+        setSelectedChatId(latestChat.session_id);
+        setSessionId(latestChat.session_id);
+      } else {
+        const newId = uuidv4();
+        const newChat = {
+          session_id: newId,
+          name: newId,
+          category: "ComparativeBuilding",
+          created_at: new Date().toISOString(),
+        };
+        setSessionList([newChat, ...res]);
+        setSessionId(newId);
+        setSelectedChatId(newId);
+        setMessages([]);
+      }
 
-  //     return res;
-  //   } catch (error) {
-  //     console.error("Fetch sessions failed:", error);
-  //     return [];
-  //   } finally {
-  //     setIsLoadingSessions(false);
-  //   }
-  // };
+      return res;
+    } catch (error) {
+      console.error("Fetch sessions failed:", error);
+      return [];
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchSessions();
-  // }, [incomingSessionId]);
+  useEffect(() => {
+    fetchSessions();
+  }, [incomingSessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -147,7 +148,7 @@ export const ColleagueChat = () => {
       const newChat = {
         session_id: newId,
         name: newId,
-        category: "Colleague",
+        category: "ComparativeBuilding",
         created_at: new Date().toISOString(),
         title: message,
       };
@@ -175,7 +176,7 @@ export const ColleagueChat = () => {
       const payload = {
         session_id: activeSessionId,
         question: userMessage.message,
-        category: "Colleague",
+        category: "ComparativeBuildings",
       };
 
       const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
@@ -187,7 +188,7 @@ export const ColleagueChat = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-         speak(response.answer);
+        speak(response.answer);
       }
 
       scrollToBottom();
@@ -198,47 +199,42 @@ export const ColleagueChat = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      setDeletingSessionId(id);
-      await dispatch(Delete_Chat_Specific_Session(id)).unwrap();
-      await fetchSessions();
-
-      if (selectedChatId === id) {
-        setSelectedChatId(null);
-        setSessionId(null);
-        setMessages([]);
-      }
-    } catch (error) {
-      console.error("Error deleting chat session:", error);
-    } finally {
-      setDeletingSessionId(null);
-    }
-  };
-
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        {/* Right: chat messages */}
         <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">💬 Employee Contact Information</h5>
+            <h5 className="text-muted mb-3">💬 Comparative Building Chat</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
+                    className={`mb-2 small ${
+                      msg.sender === "Admin" ? "text-start" : "text-end"
+                    }`}
                   >
                     <div
                       className={`d-inline-block px-3 py-2 rounded ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
-                      style={{ maxWidth: "75%", wordWrap: "break-word", whiteSpace: "pre-wrap", textAlign: "left" }}
+                      style={{
+                        maxWidth: "75%",
+                        wordWrap: "break-word",
+                        whiteSpace: "pre-wrap",
+                        textAlign: "left",
+                      }}
                     >
-                      {msg.sender === "Admin" ? <ReactMarkdown>{msg.message}</ReactMarkdown> : msg.message}
+                      {msg.sender === "Admin" ? (
+                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
-                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
+                    <div
+                      className="text-muted fst-italic mt-1"
+                      style={{ fontSize: "0.75rem" }}
+                    >
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
@@ -257,7 +253,6 @@ export const ColleagueChat = () => {
             </div>
           </div>
 
-          {/* Input box */}
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <button
@@ -296,7 +291,12 @@ export const ColleagueChat = () => {
                 disabled={isSending}
               />
 
-              <button className="btn btn-primary" onClick={handleSendMessage} disabled={isSending}>
+              <button
+                className="btn btn-primary"
+                onClick={handleSendMessage}
+                disabled={isSending}
+                aria-label="Send message"
+              >
                 <i className="bi bi-send"></i>
               </button>
             </div>

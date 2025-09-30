@@ -67,9 +67,6 @@ export const RagSystem = () => {
             Monitor query performance, confidence scores, and user feedback
           </p>
         </div>
-        {/* <button className="btn btn-outline-primary btn-sm">
-          <i className="bi bi-activity me-2"></i> Real-time Monitoring
-        </button> */}
       </div>
 
       <div className="row mb-4">

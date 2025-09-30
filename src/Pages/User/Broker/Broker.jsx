@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
   Delete_Chat_Specific_Session,
-  get_chathistory_Specific_Api,
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
@@ -13,21 +12,77 @@ import ReactMarkdown from "react-markdown";
 
 export const BrokerChat = () => {
   const dispatch = useDispatch();
-  const chatRef = useRef(null);
   const location = useLocation();
+  const chatRef = useRef(null);
   const textareaRef = useRef(null);
+  const recognitionRef = useRef(null);
+
   const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const [sessionList, setSessionList] = useState([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [deletingSessionId, setDeletingSessionId] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
 
+ const startRecording = async () => {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      toast.error("Speech Recognition not supported in this browser.");
+      return;
+    }
+
+    try {
+      // Check microphone access
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      if (!recognitionRef.current) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = false;
+        recognitionRef.current.lang = "en-US";
+
+        recognitionRef.current.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          setMessage(transcript);
+        };
+
+        recognitionRef.current.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+          toast.error(
+            event.error === "not-allowed"
+              ? "Microphone access denied. Please allow it in browser settings."
+              : "Voice recognition error: " + event.error
+          );
+          setIsRecording(false);
+        };
+
+        recognitionRef.current.onend = () => setIsRecording(false);
+      }
+
+      if (!isRecording) {
+        recognitionRef.current.start();
+        setIsRecording(true);
+      } else {
+        recognitionRef.current.stop();
+        setIsRecording(false);
+      }
+    } catch (err) {
+      console.error("Microphone access error:", err);
+      toast.error("Microphone not found or access denied. Check your device and browser settings.");
+    }
+  };
+
+  const speak = (text) => {
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
@@ -40,12 +95,10 @@ export const BrokerChat = () => {
       if (incomingSessionId) {
         setSelectedChatId(incomingSessionId);
         setSessionId(incomingSessionId);
-        // await fetchChatHistory(incomingSessionId);
       } else if (brokerSessions.length > 0) {
         const latestChat = brokerSessions[0];
         setSelectedChatId(latestChat.session_id);
         setSessionId(latestChat.session_id);
-        // await fetchChatHistory(latestChat.session_id);
       } else {
         const newId = uuidv4();
         const newChat = {
@@ -54,7 +107,7 @@ export const BrokerChat = () => {
           category: "Broker",
           created_at: new Date().toISOString(),
         };
-        setSessionList((prev) => [newChat, ...prev]);
+        setSessionList([newChat, ...res]);
         setSessionId(newId);
         setSelectedChatId(newId);
         setMessages([]);
@@ -72,47 +125,6 @@ export const BrokerChat = () => {
   useEffect(() => {
     fetchSessions();
   }, [incomingSessionId]);
-
-  // const fetchChatHistory = async (id) => {
-  //   setIsLoadingMessages(true);
-  //   try {
-  //     const res = await dispatch(get_chathistory_Specific_Api(id)).unwrap();
-  //     if (Array.isArray(res)) {
-  //       const formattedMessages = res.flatMap((chat) => {
-  //         const msgs = [
-  //           {
-  //             message: chat.question,
-  //             sender: "User",
-  //             timestamp: new Date(chat.timestamp),
-  //           },
-  //         ];
-  //         if (Array.isArray(chat.answers)) {
-  //           chat.answers.forEach((ans) =>
-  //             msgs.push({
-  //               message: ans.answer,
-  //               sender: "Admin",
-  //               timestamp: new Date(chat.timestamp),
-  //             })
-  //           );
-  //         } else if (chat.answer) {
-  //           msgs.push({
-  //             message: chat.answer,
-  //             sender: "Admin",
-  //             timestamp: new Date(chat.timestamp),
-  //           });
-  //         }
-  //         return msgs;
-  //       });
-  //       setMessages(formattedMessages);
-  //       setSessionId(id);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch chat history:", error);
-  //     setMessages([]);
-  //   } finally {
-  //     setIsLoadingMessages(false);
-  //   }
-  // };
 
   const scrollToBottom = () => {
     if (chatRef.current) {
@@ -156,14 +168,13 @@ export const BrokerChat = () => {
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
-    setMessage("");
-    scrollToBottom();
+    setMessage(""); 
 
     try {
       setIsSending(true);
       const payload = {
         session_id: activeSessionId,
-        question: message,
+        question: userMessage.message,
         category: "Broker",
       };
       const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
@@ -171,24 +182,20 @@ export const BrokerChat = () => {
       if (response?.answer) {
         const adminMessage = {
           message: response.answer,
-          file: response.answer.file,
           sender: "Admin",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
+        speak(response.answer);
       }
 
       scrollToBottom();
     } catch (error) {
-      console.log(error.response,"error");
-      
-      console.error(error);
+      console.error("Send message error:", error);
     } finally {
       setIsSending(false);
     }
   };
-
-
 
   const handleDelete = async (id) => {
     try {
@@ -211,161 +218,37 @@ export const BrokerChat = () => {
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
-        {/* <div className="col-md-3 border-end bg-light d-flex flex-column p-3">
-          <button
-            className="btn btn-light d-flex align-items-center justify-content-start gap-2 w-100 mb-3 border"
-            onClick={() => {
-              const currentChat = sessionList.find(
-                (chat) => chat.session_id === selectedChatId
-              );
-
-              if (messages.length === 0 && !currentChat?.title) {
-                const toastId = "empty-session-warning";
-                if (!toast.isActive(toastId)) {
-                  toast.info("Please send a message in this chat before starting a new one.", { toastId });
-                }
-                return;
-              }
-
-
-              const newId = uuidv4();
-              const newChat = {
-                session_id: newId,
-                name: newId,
-                category: "Broker",
-                created_at: new Date().toISOString(),
-              };
-
-              setSessionList((prev) => [newChat, ...prev]);
-              setSessionId(newId);
-              setSelectedChatId(newId);
-              setMessages([]);
-            }}
-          >
-            <span className="fw-semibold"> ➕ New Chat</span>
-          </button>
-
-
-          <div className="flex-grow-1 chat-item-wrapper hide-scrollbar overflow-auto">
-            {isLoadingSessions ? (
-              <div className="text-center py-4">
-                <div
-                  className="spinner-border text-primary"
-                  style={{ width: "1.5rem", height: "1.5rem" }}
-                  role="status"
-                ></div>
-                <div className="mt-2 text-muted small">
-                  Loading chat sessions...
-                </div>
-              </div>
-            ) : sessionList?.length > 0 ? (
-              sessionList
-                ?.filter((chat) => chat?.category === "Broker")
-                .map((chat) => (
-                  <div
-                    key={chat.session_id}
-                    className={`chat-item d-flex justify-between align-items-start p-2 ${selectedChatId === chat.session_id
-                      ? "bg-dark text-white"
-                      : "bg-light text-dark"
-                      } border`}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => {
-                      setSelectedChatId(chat.session_id);
-                      setSessionId(chat.session_id);
-                      fetchChatHistory(chat.session_id);
-                    }}
-                  >
-                    <div className="flex-grow-1">
-                      <div className="fw-semibold">
-                        {chat?.title ? `${chat.title.substring(0, 10)}...` : `${chat.session_id.substring(0, 10)}...`}
-                      </div>
-                      <div
-                        className={`small ${selectedChatId === chat.session_id ? "text-white" : "text-muted"
-                          }`}
-                      >
-                        {chat.created_at
-                          ? new Date(chat.created_at).toLocaleDateString()
-                          : "Just now"}
-                      </div>
-
-                    </div>
-                    {!isSending &&
-                      <button
-                        className="btn btn-sm btn-outline-danger delete-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(chat.session_id);
-                        }}
-                        disabled={deletingSessionId === chat.session_id}
-                      >
-                        {deletingSessionId === chat.session_id ? (
-                          <div
-                            className="spinner-border spinner-border-sm text-danger"
-                            role="status"
-                          />
-                        ) : (
-                          <i className="bi bi-trash"></i>
-                        )}
-                      </button>
-                    }
-                  </div>
-                ))
-            ) : (
-              <div className="text-muted small text-center mt-3">
-                No chat sessions yet.
-              </div>
-            )}
-          </div>
-        </div> */}
-
         <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">
-              💬 Third Party Contact Information
-            </h5>
+            <h5 className="text-muted mb-3">💬 Third Party Contact Information</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
-              {isLoadingMessages ? (
-                <div className="text-center py-4">
-                  <div
-                    className="spinner-border text-secondary"
-                    role="status"
-                  ></div>
-                </div>
-              ) : messages.length > 0 ? (
+              {messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"
-                      }`}
+                    className={`mb-2 small ${
+                      msg.sender === "Admin" ? "text-start" : "text-end"
+                    }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${msg.sender === "Admin"
-                        ? "bg-secondary text-white"
-                        : "bg-primary text-white"
-                        }`}
+                      className={`d-inline-block px-3 py-2 rounded ${
+                        msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
+                      }`}
                       style={{
                         maxWidth: "75%",
                         wordWrap: "break-word",
                         whiteSpace: "pre-wrap",
-                        textAlign: "left"
+                        textAlign: "left",
                       }}
                     >
-                     {msg.sender === "Admin" ? (
-                     
-                         <ReactMarkdown>{msg.message}</ReactMarkdown>
-                     
-                       ) : (
-                     
-                         msg.message
-                     
-                       )}
+                      {msg.sender === "Admin" ? (
+                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
-                    <div
-                      className="text-muted fst-italic mt-1"
-                      style={{ fontSize: "0.75rem" }}
-                    >
-                      {msg.sender} •{" "}
-                      {new Date(msg.timestamp).toLocaleTimeString()}
+                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
+                      {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
                 ))
@@ -375,18 +258,24 @@ export const BrokerChat = () => {
               {isSending && (
                 <div className="text-start small mt-2">
                   <div className="d-inline-block px-3 py-2 rounded bg-secondary text-white">
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                    />
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
                     Admin is typing...
                   </div>
                 </div>
               )}
             </div>
           </div>
+
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
+              <button
+                className={`btn me-2 ${isRecording ? "btn-danger" : "btn-outline-secondary"}`}
+                onClick={startRecording}
+                aria-label="Record message"
+              >
+                <i className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"}`}></i>
+              </button>
+
               <textarea
                 ref={textareaRef}
                 rows={1}
@@ -395,41 +284,25 @@ export const BrokerChat = () => {
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
-
                   const ta = textareaRef.current;
                   if (ta) {
-                    ta.style.height = "auto"; 
-                    const lineHeight = 20; 
-                    const maxHeight = lineHeight * 3; 
+                    ta.style.height = "auto";
+                    const lineHeight = 20;
+                    const maxHeight = lineHeight * 3;
                     ta.style.height = Math.min(ta.scrollHeight, maxHeight) + "px";
                   }
                 }}
                 onKeyDown={(e) => {
-                  const isComposing = e.nativeEvent && e.nativeEvent.isComposing;
-
-                  if (e.key === "Enter" && !isComposing) {
-                    if (e.shiftKey) {
-                   
-                      return;
-                    } else {
-                     
-                      e.preventDefault();
-                      if (!isSending) {
-                        handleSendMessage();
-                    
-                        if (textareaRef.current) {
-                          textareaRef.current.style.height = "auto";
-                        }
-                      }
-                    }
+                  const isComposing = e.nativeEvent?.isComposing;
+                  if (e.key === "Enter" && !isComposing && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                    if (textareaRef.current) textareaRef.current.style.height = "auto";
                   }
                 }}
                 style={{ resize: "none", overflow: "auto" }}
                 disabled={isSending}
               />
-
-
-
 
               <button
                 className="btn btn-primary"

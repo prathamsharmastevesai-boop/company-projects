@@ -22,7 +22,6 @@ export const LoginSubmit = createAsyncThunk(
       const expiryTime = Date.now() + expiresIn * 1000;
 
       if (token && role) {
-        // 🔹 return only, don't set storage here
         return { access_token: token, role, expiryTime };
       } else {
         return rejectWithValue("Invalid login response");

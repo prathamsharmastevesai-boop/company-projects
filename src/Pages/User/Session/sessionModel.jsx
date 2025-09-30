@@ -10,9 +10,6 @@ export const SessionListModal = ({ show, onClose }) => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-  // const fetchChatHistory = async (id) => {
-  //   console.log("Fetching chat history for session:", id);
-  // };
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
@@ -32,7 +29,6 @@ export const SessionListModal = ({ show, onClose }) => {
 
   const handleSelect = async (session) => {
     setSelectedChatId(session.session_id);
-    // await fetchChatHistory(session.session_id);
     onClose();
 
     switch (session.category) {
@@ -68,17 +64,15 @@ export const SessionListModal = ({ show, onClose }) => {
     }
   };
 
-  if (!show) return null; // render nothing if modal is hidden
+  if (!show) return null; 
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="modal-backdrop fade show"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div
         className="modal fade show d-block"
         role="dialog"

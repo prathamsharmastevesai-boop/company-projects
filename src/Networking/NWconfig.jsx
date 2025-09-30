@@ -87,12 +87,13 @@ export const InviteUser = "/invite_user/admin";
 export const userList = "/invite_user/admin/invited-users";
 
 //AI LEASE DRAFTING
-export const upload_Drafting_Lease = "/lease_gen/upload/simple";
-export const listDraftingDoc = "/lease_gen/list_category_files/";
-export const deleteDraftingDoc = "/lease_gen/delete_file/";
-export const extractMetadata = "/generate_lease/files/extract-metadata";
+export const upload_Drafting_Lease = "/generate_lease/upload/simple";
+export const listDraftingDoc = "/generate_lease/list_category_files/";
+export const deleteDraftingDoc = "/generate_lease/delete_file/";
+export const extractMetadata = "/generate_lease/files/structured_metadata?";
 export const extractTextdata = "/generate_lease/files/lease-agreement-text";
-export const updatetextdata = "/generate_lease/files/update-extracted-text";
+export const extractTextViewdata = "/generate_lease/files/view_generated_lease/text";
+export const updatetextdata = "/generate_lease/files/text";
 
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";

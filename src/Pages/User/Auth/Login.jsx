@@ -71,7 +71,6 @@ const handleLogin = async (e) => {
       toast.error("Invalid Credentials");
     }
   } catch (err) {
-    // toast.error(err?.message || "User login failed");
   } finally {
     setLoading(false);
   }
@@ -139,31 +138,13 @@ const handleLogin = async (e) => {
                 {errors.password && <div className="invalid-feedback">{errors.password}</div>}
               </div>
             </div>
-            {/* <div className="mb-3 text-end">
-              <span
-                className="text-primary"
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate("/ForgotPassword")}
-              >
-                Forgot password?
-              </span>
-            </div> */}
-
+          
             <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
               Sign in
             </button>
           </form>
 
-          {/* <p className="text-center">
-            Are you new?{" "}
-            <span
-              className="text-primary"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/SignUp")}
-            >
-              Create an Account
-            </span>
-          </p> */}
+          
         </div>
       </div>
 

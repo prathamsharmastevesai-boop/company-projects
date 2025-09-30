@@ -11,7 +11,6 @@ const store = configureStore({
         BuildingSlice: BuildingReducer,
         LeaseSlice: OfficeReducer,
         DocSlice: DocReducer,
-        //user slice
         ProfileSlice: ProfileReducer
     },
 });

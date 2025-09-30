@@ -88,7 +88,6 @@ export const AdminManagement = () => {
         Control Admin access to Portfolio Pulse documents and features
       </p>
 
-      {/* Security Info */}
       <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>
           <p className="mb-0">
@@ -98,7 +97,6 @@ export const AdminManagement = () => {
         </Card.Body>
       </Card>
 
-      {/* Add New Admin */}
       <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>
           <h5 className="mb-3">
@@ -107,7 +105,6 @@ export const AdminManagement = () => {
 
           <Form>
             <div className="row g-3">
-              {/* Admin Name */}
               <div className="col-md-6">
                 <Form.Control
                   type="text"
@@ -122,7 +119,6 @@ export const AdminManagement = () => {
                 </Form.Control.Feedback>
               </div>
 
-              {/* Company Name */}
               <div className="col-md-6">
                 <Form.Control
                   type="text"
@@ -139,7 +135,6 @@ export const AdminManagement = () => {
             </div>
 
             <div className="row g-3 mt-2">
-              {/* Email */}
               <div className="col-md-9">
                 <Form.Control
                   type="email"
@@ -154,7 +149,6 @@ export const AdminManagement = () => {
                 </Form.Control.Feedback>
               </div>
 
-              {/* Invite Button */}
               <div className="col-md-3 d-grid">
                 <Button
                   variant="primary"
@@ -186,7 +180,6 @@ export const AdminManagement = () => {
         </Card.Body>
       </Card>
 
-      {/* Admin List */}
       <Card className="border-0 shadow-sm">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">

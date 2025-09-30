@@ -76,7 +76,7 @@ const AIInslights = async () => {
           const parsed = JSON.parse(rawInsight);
           insights = Array.isArray(parsed) ? parsed : [parsed];
         } else {
-          insights = [rawInsight]; // keep full markdown
+          insights = [rawInsight];
         }
       } catch (err) {
         console.error("Failed to parse AI insights:", err);
