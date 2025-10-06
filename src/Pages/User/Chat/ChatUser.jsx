@@ -7,7 +7,6 @@ import ReactMarkdown from "react-markdown";
 
 import {
   getlist_his_oldApi,
-  Delete_Chat_Session,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionAPI } from "../../../Networking/Admin/APIs/UploadDocApi";
 
@@ -28,53 +27,54 @@ export const UserChat = () => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
 
+  const [speakingIndex, setSpeakingIndex] = useState(null); // 🔊 track currently speaking message index
   const chatRef = useRef(null);
 
-  const fetchMessages = async () => {
-    setLoadingSessions(true);
-    try {
-      const res = await dispatch(getlist_his_oldApi()).unwrap();
-      const filtered = res.filter((chat) => {
-        const matchType = type ? chat.category === type : true;
-        const matchBuilding =
-          Building_id !== undefined && Building_id !== null
-            ? String(chat.building_id) === String(Building_id)
-            : true;
-        return matchType && matchBuilding;
-      });
+  // const fetchMessages = async () => {
+  //   setLoadingSessions(true);
+  //   try {
+  //     const res = await dispatch(getlist_his_oldApi()).unwrap();
+  //     const filtered = res.filter((chat) => {
+  //       const matchType = type ? chat.category === type : true;
+  //       const matchBuilding =
+  //         Building_id !== undefined && Building_id !== null
+  //           ? String(chat.building_id) === String(Building_id)
+  //           : true;
+  //       return matchType && matchBuilding;
+  //     });
 
-      setChatList(filtered);
+  //     setChatList(filtered);
 
-      if (incomingSessionId) {
-        setSelectedChatId(incomingSessionId);
-        setSessionId(incomingSessionId);
-      } else if (filtered.length > 0) {
-        const latestChat = filtered[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          created_at: new Date().toISOString(),
-          category: type,
-        };
-        setChatList([newChat]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-    } catch (e) {
-      console.error("Fetch messages failed:", e);
-    } finally {
-      setLoadingSessions(false);
-    }
-  };
+  //     if (incomingSessionId) {
+  //       setSelectedChatId(incomingSessionId);
+  //       setSessionId(incomingSessionId);
+  //     } else if (filtered.length > 0) {
+  //       const latestChat = filtered[0];
+  //       setSelectedChatId(latestChat.session_id);
+  //       setSessionId(latestChat.session_id);
+  //     } else {
+  //       const newId = uuidv4();
+  //       const newChat = {
+  //         session_id: newId,
+  //         name: newId,
+  //         created_at: new Date().toISOString(),
+  //         category: type,
+  //       };
+  //       setChatList([newChat]);
+  //       setSessionId(newId);
+  //       setSelectedChatId(newId);
+  //       setMessages([]);
+  //     }
+  //   } catch (e) {
+  //     console.error("Fetch messages failed:", e);
+  //   } finally {
+  //     setLoadingSessions(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchMessages();
-  }, [incomingSessionId]);
+    // useEffect(() => {
+    //   fetchMessages();
+    // }, [incomingSessionId]);
 
   useEffect(() => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -127,11 +127,18 @@ export const UserChat = () => {
     }
   };
 
-     const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -194,7 +201,6 @@ export const UserChat = () => {
             timestamp: new Date(),
           };
           setMessages((prev) => [...prev, adminMessage]);
-           speak(response.answer);
         }
       }
     } catch (e) {
@@ -212,6 +218,7 @@ export const UserChat = () => {
             <h5 className="text-muted mb-3">
               💬 Chat With {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
             </h5>
+
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {messages.length > 0 ? (
                 messages.map((msg, i) => (
@@ -220,14 +227,50 @@ export const UserChat = () => {
                     className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
-                      style={{ maxWidth: "75%", wordWrap: "break-word", whiteSpace: "pre-wrap", textAlign: "left" }}
+                      style={{
+                        maxWidth: "75%",
+                        wordWrap: "break-word",
+                        whiteSpace: "pre-wrap",
+                        textAlign: "left",
+                      }}
                     >
-                      {msg.sender === "Admin" ? <ReactMarkdown>{msg.message}</ReactMarkdown> : msg.message}
+                      {msg.sender === "Admin" ? (
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+
+                          <i
+                            className={`bi ${
+                              speakingIndex === i
+                                ? "bi-volume-up-fill"
+                                : "bi-volume-mute"
+                            } ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "6px",
+                            }}
+                            title={
+                              speakingIndex === i
+                                ? "Stop speaking"
+                                : "Read this message aloud"
+                            }
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                        </>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
-                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
+                    <div
+                      className="text-muted fst-italic mt-1"
+                      style={{ fontSize: "0.75rem" }}
+                    >
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
@@ -235,10 +278,14 @@ export const UserChat = () => {
               ) : (
                 <div className="text-muted">No messages yet.</div>
               )}
+
               {isSending && (
                 <div className="text-start small mt-2">
                   <div className="d-inline-block px-3 py-2 rounded bg-secondary text-white">
-                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                    />
                     Admin is typing...
                   </div>
                 </div>
@@ -253,7 +300,11 @@ export const UserChat = () => {
                 onClick={startRecording}
                 aria-label="Record message"
               >
-                <i className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"}`}></i>
+                <i
+                  className={`bi ${
+                    isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                  }`}
+                ></i>
               </button>
 
               <textarea
@@ -277,14 +328,19 @@ export const UserChat = () => {
                   if (e.key === "Enter" && !isComposing && !e.shiftKey) {
                     e.preventDefault();
                     handleSendMessage();
-                    if (textareaRef.current) textareaRef.current.style.height = "auto";
+                    if (textareaRef.current)
+                      textareaRef.current.style.height = "auto";
                   }
                 }}
                 style={{ resize: "none", overflow: "auto" }}
                 disabled={isSending}
               />
 
-              <button className="btn btn-primary" onClick={handleSendMessage} disabled={isSending}>
+              <button
+                className="btn btn-primary"
+                onClick={handleSendMessage}
+                disabled={isSending}
+              >
                 <i className="bi bi-send"></i>
               </button>
             </div>

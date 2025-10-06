@@ -30,8 +30,8 @@ export const LeaseDraftingUpload = () => {
   const [submittedFeedback, setSubmittedFeedback] = useState(false);
   const [loader, setLoader] = useState(false);
   const [updateloading, setUpadteLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
-  const [previewData, setPreviewData] = useState(""); // State for Textdata1
+  const [showModal, setShowModal] = useState(false);
+  const [previewData, setPreviewData] = useState("");
 
   const [metadata, setMetadata] = useState({
     tenant_name: "",
@@ -116,7 +116,7 @@ export const LeaseDraftingUpload = () => {
         dispatch(getTextViewData(fileId)).unwrap(),
       ]);
       setPreviewData(Textdata1);
-      setShowModal(true); 
+      setShowModal(true);
     } catch (error) {
       console.error("Failed to fetch preview data:", error);
     } finally {
@@ -160,11 +160,13 @@ export const LeaseDraftingUpload = () => {
           lease_term: Metadata.structured_metadata.lease_term || "",
           rent_amount: Metadata.structured_metadata.rent_amount || "",
           square_footage: Metadata.structured_metadata.square_footage || "",
-          commencement_date: Metadata.structured_metadata.commencement_date || "",
+          commencement_date:
+            Metadata.structured_metadata.commencement_date || "",
           expiration_date: Metadata.structured_metadata.expiration_date || "",
           security_deposit: Metadata.structured_metadata.security_deposit || "",
           use_clause: Metadata.structured_metadata.use_clause || "",
-          tenant_improvements: Metadata.structured_metadata.tenant_improvements || "",
+          tenant_improvements:
+            Metadata.structured_metadata.tenant_improvements || "",
           additional_terms: Metadata.structured_metadata.additional_terms || "",
         });
 
@@ -206,6 +208,20 @@ export const LeaseDraftingUpload = () => {
     }
     setSubmittedFeedback(true);
     toast.success("Feedback submitted. Thank you!");
+  };
+
+  // ✅ NEW: Download draft as text file
+  const handleDownloadDraft = () => {
+    const textToDownload = isEditing ? editedDraft : aiDraft;
+    const blob = new Blob([textToDownload], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = selectedDoc
+      ? `${selectedDoc.original_file_name.replace(/\.[^/.]+$/, "")}_draft.txt`
+      : "lease_draft.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const renderDiff = () => {
@@ -251,7 +267,8 @@ export const LeaseDraftingUpload = () => {
     <div className="container p-4">
       <h5 className="fw-bold">📑 AI Lease Drafting</h5>
       <p className="text-muted">
-        Upload an LOI, review extracted terms, and generate a draft lease automatically.
+        Upload an LOI, review extracted terms, and generate a draft lease
+        automatically.
       </p>
 
       <div className="border border-2 rounded-3 py-5 text-center mb-4 bg-light">
@@ -339,11 +356,7 @@ export const LeaseDraftingUpload = () => {
               ></button>
             </div>
             <div className="modal-body" style={{ whiteSpace: "pre-wrap" }}>
-              {previewData ? (
-                <p>{previewData}</p>
-              ) : (
-                <p>No preview data available.</p>
-              )}
+              {previewData ? <p>{previewData}</p> : <p>No preview data available.</p>}
             </div>
             <div className="modal-footer">
               <button
@@ -381,157 +394,6 @@ export const LeaseDraftingUpload = () => {
           </>
         )}
       </button>
-
-      {selectedDoc && aiDraft && (
-        <div className="card shadow-sm mb-4">
-          <div className="card-header fw-semibold">Extracted Key Terms</div>
-          <div className="card-body">
-            <div className="mb-3">
-              <label className="form-label">Tenant Name</label>
-              <input
-                type="text"
-                className="form-control"
-                value={metadata.tenant_name}
-                disabled
-                onChange={(e) =>
-                  setMetadata({ ...metadata, tenant_name: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Landlord Name</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.landlord_name}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, landlord_name: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Property Address</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.property_address}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, property_address: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Lease Term</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.lease_term}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, lease_term: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Rent Amount</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.rent_amount}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, rent_amount: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Square Footage</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.square_footage}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, square_footage: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Commencement Date</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.commencement_date}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, commencement_date: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Expiration Date</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.expiration_date}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, expiration_date: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Security Deposit</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.security_deposit}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, security_deposit: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Use Clause</label>
-              <input
-                type="text"
-                className="form-control"
-                disabled
-                value={metadata.use_clause}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, use_clause: e.target.value })
-                }
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Tenant Improvements</label>
-              <textarea
-                className="form-control"
-                disabled
-                value={metadata.tenant_improvements}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, tenant_improvements: e.target.value })
-                }
-                rows="4"
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Additional Terms</label>
-              <textarea
-                className="form-control"
-                value={metadata.additional_terms}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, additional_terms: e.target.value })
-                }
-                rows="4"
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
       {aiDraft && (
         <div className="card shadow-sm">
@@ -574,6 +436,7 @@ export const LeaseDraftingUpload = () => {
               </div>
             )}
           </div>
+
           <div className="card-body">
             {isEditing ? (
               showDiff ? (
@@ -590,8 +453,20 @@ export const LeaseDraftingUpload = () => {
               <div style={{ whiteSpace: "pre-wrap" }}>{aiDraft}</div>
             )}
           </div>
+
+          {/* ✅ Download button before feedback */}
           {!isEditing && !submittedFeedback && (
             <div className="card-footer">
+              <div className="d-flex justify-content-end mb-3">
+                <button
+                  className="btn btn-outline-success"
+                  onClick={handleDownloadDraft}
+                >
+                  <i className="bi bi-download me-2"></i>
+                  Download Draft
+                </button>
+              </div>
+
               <h6 className="fw-semibold mb-2">Provide Feedback</h6>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <i
@@ -624,11 +499,13 @@ export const LeaseDraftingUpload = () => {
               </button>
             </div>
           )}
+
           {submittedFeedback && (
             <div className="card-footer text-success fw-semibold">
               Thank you for your feedback!
             </div>
           )}
+
           <div ref={bottomRef}></div>
         </div>
       )}

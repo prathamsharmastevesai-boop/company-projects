@@ -28,54 +28,12 @@ export const BuildingChat = () => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [deletingSessionId, setDeletingSessionId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null); // track which message is speaking
 
   const scrollToBottom = () => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
   };
 
-  const fetchSessions = async () => {
-    setIsLoadingSessions(true);
-    try {
-      const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setSessionList(res);
-
-      const buildingSessions = res.filter((chat) => chat.category === "Building");
-
-      if (incomingSessionId) {
-        setSelectedChatId(incomingSessionId);
-        setSessionId(incomingSessionId);
-      } else if (buildingSessions.length > 0) {
-        const latestChat = buildingSessions[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          category: "Building",
-          created_at: new Date().toISOString(),
-        };
-        setSessionList([newChat, ...res]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-
-      return res;
-    } catch (error) {
-      console.error("Fetch sessions failed:", error);
-      return [];
-    } finally {
-      setIsLoadingSessions(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, [incomingSessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -88,7 +46,6 @@ export const BuildingChat = () => {
     }
 
     try {
-      // Check microphone access
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
       if (!recognitionRef.current) {
@@ -107,7 +64,7 @@ export const BuildingChat = () => {
           console.error("Speech recognition error:", event.error);
           toast.error(
             event.error === "not-allowed"
-              ? "Microphone access denied. Please allow it in browser settings."
+              ? "Microphone access denied."
               : "Voice recognition error: " + event.error
           );
           setIsRecording(false);
@@ -125,15 +82,23 @@ export const BuildingChat = () => {
       }
     } catch (err) {
       console.error("Microphone access error:", err);
-      toast.error("Microphone not found or access denied. Check your device and browser settings.");
+      toast.error("Microphone not found or access denied.");
     }
   };
 
-    const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
+  // Toggle speech for a specific message
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -188,7 +153,6 @@ export const BuildingChat = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-        speak(response.answer);
       }
 
       scrollToBottom();
@@ -215,7 +179,7 @@ export const BuildingChat = () => {
                     }`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
                       style={{
@@ -226,7 +190,24 @@ export const BuildingChat = () => {
                       }}
                     >
                       {msg.sender === "Admin" ? (
-                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          {/* Speaker icon for this admin message */}
+                          <i
+                            className={`bi ${
+                              speakingIndex === i ? "bi-volume-up-fill" : "bi-volume-mute"
+                            } ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "8px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                        </>
                       ) : (
                         msg.message
                       )}

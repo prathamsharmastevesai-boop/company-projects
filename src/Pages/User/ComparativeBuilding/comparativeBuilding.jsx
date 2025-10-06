@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
   Delete_Chat_Specific_Session,
-  get_chathistory_Specific_Api,
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
@@ -14,68 +13,27 @@ import ReactMarkdown from "react-markdown";
 export const ComparativeBuildingChat = () => {
   const dispatch = useDispatch();
   const chatRef = useRef(null);
-  const location = useLocation();
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
+  const location = useLocation();
   const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const [sessionList, setSessionList] = useState([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [deletingSessionId, setDeletingSessionId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
 
   const scrollToBottom = () => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   };
-
-  const fetchSessions = async () => {
-    setIsLoadingSessions(true);
-    try {
-      const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setSessionList(res);
-
-      const buildingSessions = res.filter((chat) => chat.category === "ComparativeBuilding");
-
-      if (incomingSessionId) {
-        setSelectedChatId(incomingSessionId);
-        setSessionId(incomingSessionId);
-      } else if (buildingSessions.length > 0) {
-        const latestChat = buildingSessions[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          category: "ComparativeBuilding",
-          created_at: new Date().toISOString(),
-        };
-        setSessionList([newChat, ...res]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-
-      return res;
-    } catch (error) {
-      console.error("Fetch sessions failed:", error);
-      return [];
-    } finally {
-      setIsLoadingSessions(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, [incomingSessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -88,7 +46,6 @@ export const ComparativeBuildingChat = () => {
     }
 
     try {
-      // Check microphone access
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
       if (!recognitionRef.current) {
@@ -125,17 +82,26 @@ export const ComparativeBuildingChat = () => {
       }
     } catch (err) {
       console.error("Microphone access error:", err);
-      toast.error("Microphone not found or access denied. Check your device and browser settings.");
+      toast.error("Microphone not found or access denied.");
     }
   };
 
-    const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
+  // Text-to-speech toggle for Admin messages
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
+  // Send message
   const handleSendMessage = async () => {
     if (!message.trim()) {
       toast.warning("Please enter a message.");
@@ -188,7 +154,6 @@ export const ComparativeBuildingChat = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-        speak(response.answer);
       }
 
       scrollToBottom();
@@ -203,6 +168,7 @@ export const ComparativeBuildingChat = () => {
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
+          {/* Chat messages */}
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
             <h5 className="text-muted mb-3">💬 Comparative Building Chat</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
@@ -210,31 +176,35 @@ export const ComparativeBuildingChat = () => {
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${
-                      msg.sender === "Admin" ? "text-start" : "text-end"
-                    }`}
+                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
-                      style={{
-                        maxWidth: "75%",
-                        wordWrap: "break-word",
-                        whiteSpace: "pre-wrap",
-                        textAlign: "left",
-                      }}
+                      style={{ maxWidth: "75%", wordWrap: "break-word", whiteSpace: "pre-wrap", textAlign: "left" }}
                     >
                       {msg.sender === "Admin" ? (
-                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          <i
+                            className={`bi ${speakingIndex === i ? "bi-volume-up-fill" : "bi-volume-mute"} ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "8px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                        </>
                       ) : (
                         msg.message
                       )}
                     </div>
-                    <div
-                      className="text-muted fst-italic mt-1"
-                      style={{ fontSize: "0.75rem" }}
-                    >
+                    <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
@@ -253,6 +223,7 @@ export const ComparativeBuildingChat = () => {
             </div>
           </div>
 
+          {/* Input */}
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <button

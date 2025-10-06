@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaUserShield } from 'react-icons/fa';
-import bgImage from '../../src/assets/side_photo.png';
+import bgImage from '../../src/assets/side_photo.jpg';
 
 export const Home = () => {
 

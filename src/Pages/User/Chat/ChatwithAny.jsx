@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,52 +24,9 @@ export const ChatWithAnyDoc = () => {
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [sessionList, setSessionList] = useState([]);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-
-  const fetchSessions = async () => {
-    setIsLoadingSessions(true);
-    try {
-      const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setSessionList(res);
-
-      const portfolioSessions = res.filter((chat) => chat.category === "portfolio");
-
-      if (portfolioSessions.length > 0) {
-        const latestChat = portfolioSessions[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else if (incomingSessionId) {
-        setSelectedChatId(incomingSessionId);
-        setSessionId(incomingSessionId);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          category: "portfolio",
-          created_at: new Date().toISOString(),
-        };
-        setSessionList((prev) => [newChat, ...prev]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-
-      return res;
-    } catch (error) {
-      console.error("Fetch sessions failed:", error);
-      return [];
-    } finally {
-      setIsLoadingSessions(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, [incomingSessionId]);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
 
   const scrollToBottom = () => {
     if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -84,7 +41,6 @@ export const ChatWithAnyDoc = () => {
       toast.error("Speech Recognition not supported in this browser.");
       return;
     }
-
 
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -127,14 +83,21 @@ export const ChatWithAnyDoc = () => {
     }
   };
 
-      const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
+    }
   };
-  
-  const handleSendMessage = async () => {
+
+  const handleSendMessage = useCallback(async () => {
     if (!message.trim()) {
       toast.warning("Please enter a message.");
       return;
@@ -185,7 +148,6 @@ export const ChatWithAnyDoc = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-        speak(response.answer);
       }
 
       scrollToBottom();
@@ -194,43 +156,48 @@ export const ChatWithAnyDoc = () => {
     } finally {
       setIsSending(false);
     }
-  };
+  }, [dispatch, message, sessionId]);
 
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
+          {/* Chat Messages */}
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
             <h5 className="text-muted mb-3">💬 Portfolio Voice</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
-              {isLoadingMessages ? (
-                <div className="text-center py-4">
-                  <div className="spinner-border text-secondary" role="status"></div>
-                </div>
-              ) : messages.length > 0 ? (
+              {messages.length > 0 ? (
                 messages.map((msg, i) => (
                   <div
                     key={i}
                     className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
-                      style={{
-                        maxWidth: "75%",
-                        wordWrap: "break-word",
-                        whiteSpace: "pre-wrap",
-                        textAlign: "left",
-                      }}
+                      style={{ maxWidth: "75%", wordWrap: "break-word", whiteSpace: "pre-wrap", textAlign: "left" }}
                     >
                       {msg.sender === "Admin" ? (
-                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          <i
+                            className={`bi ${speakingIndex === i ? "bi-volume-up-fill" : "bi-volume-mute"} ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "8px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                        </>
                       ) : (
                         msg.message
                       )}
                     </div>
-
                     <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
@@ -250,6 +217,7 @@ export const ChatWithAnyDoc = () => {
             </div>
           </div>
 
+          {/* Input Box */}
           <div className="pt-2">
             <div className="d-flex align-items-center border rounded p-2 bg-white">
               <button

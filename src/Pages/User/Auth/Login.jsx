@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 
 import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import RAGLoader from "../../../Component/Loader";
-import headerimage from "../../../assets/images.jpeg";
-import side_photo from "../../../assets/side_photo.png";
+import headerimage from "../../../assets/side_photo.jpg";
+import side_photo from "../../../assets/side_photo.jpg";
 import { Eye, EyeOff } from "lucide-react";
 
 export const Login = () => {

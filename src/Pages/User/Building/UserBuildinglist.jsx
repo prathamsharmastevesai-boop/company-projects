@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
-import buildingCardImg from '../../../assets/building-card-bg2.jpeg';
+import buildingCardImg from '../../../assets/side_photo.jpg';
 import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";

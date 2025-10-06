@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
-import side_photo from "../../../assets/side_photo.png";
+import side_photo from "../../../assets/side_photo.jpg";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 

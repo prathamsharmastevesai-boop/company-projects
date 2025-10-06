@@ -24,19 +24,24 @@ export const BrokerChat = () => {
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [sessionList, setSessionList] = useState([]);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  const [deletingSessionId, setDeletingSessionId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null); // track which message is speaking
 
- const startRecording = async () => {
+  const scrollToBottom = () => {
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const startRecording = async () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
       toast.error("Speech Recognition not supported in this browser.");
       return;
     }
 
     try {
-      // Check microphone access
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
       if (!recognitionRef.current) {
@@ -52,10 +57,9 @@ export const BrokerChat = () => {
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
           toast.error(
             event.error === "not-allowed"
-              ? "Microphone access denied. Please allow it in browser settings."
+              ? "Microphone access denied."
               : "Voice recognition error: " + event.error
           );
           setIsRecording(false);
@@ -72,75 +76,26 @@ export const BrokerChat = () => {
         setIsRecording(false);
       }
     } catch (err) {
-      console.error("Microphone access error:", err);
-      toast.error("Microphone not found or access denied. Check your device and browser settings.");
+      toast.error("Microphone not found or access denied.");
     }
   };
 
-  const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const fetchSessions = async () => {
-    setIsLoadingSessions(true);
-    try {
-      const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setSessionList(res);
-
-      const brokerSessions = res.filter((chat) => chat.category === "Broker");
-
-      if (incomingSessionId) {
-        setSelectedChatId(incomingSessionId);
-        setSessionId(incomingSessionId);
-      } else if (brokerSessions.length > 0) {
-        const latestChat = brokerSessions[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          category: "Broker",
-          created_at: new Date().toISOString(),
-        };
-        setSessionList([newChat, ...res]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-
-      return res;
-    } catch (error) {
-      console.error("Fetch sessions failed:", error);
-      return [];
-    } finally {
-      setIsLoadingSessions(false);
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
     }
   };
-
-  useEffect(() => {
-    fetchSessions();
-  }, [incomingSessionId]);
-
-  const scrollToBottom = () => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!message.trim()) {
-      toast.warning("Please enter a message.");
-      return;
-    }
+    if (!message.trim()) return toast.warning("Please enter a message.");
 
     let activeSessionId = sessionId;
     if (!activeSessionId) {
@@ -154,21 +109,12 @@ export const BrokerChat = () => {
       };
       setSessionList((prev) => [newChat, ...prev]);
       setSessionId(newId);
-      setSelectedChatId(newId);
       activeSessionId = newId;
-    } else {
-      setSessionList((prev) =>
-        prev.map((chat) =>
-          chat.session_id === activeSessionId && !chat.title
-            ? { ...chat, title: message }
-            : chat
-        )
-      );
     }
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
-    setMessage(""); 
+    setMessage("");
 
     try {
       setIsSending(true);
@@ -186,7 +132,6 @@ export const BrokerChat = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-        speak(response.answer);
       }
 
       scrollToBottom();
@@ -194,24 +139,6 @@ export const BrokerChat = () => {
       console.error("Send message error:", error);
     } finally {
       setIsSending(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      setDeletingSessionId(id);
-      await dispatch(Delete_Chat_Specific_Session(id)).unwrap();
-      await fetchSessions();
-
-      if (selectedChatId === id) {
-        setSelectedChatId(null);
-        setSessionId(null);
-        setMessages([]);
-      }
-    } catch (error) {
-      console.error("Error deleting chat session:", error);
-    } finally {
-      setDeletingSessionId(null);
     }
   };
 
@@ -226,12 +153,10 @@ export const BrokerChat = () => {
                 messages.map((msg, i) => (
                   <div
                     key={i}
-                    className={`mb-2 small ${
-                      msg.sender === "Admin" ? "text-start" : "text-end"
-                    }`}
+                    className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
                       style={{
@@ -242,7 +167,21 @@ export const BrokerChat = () => {
                       }}
                     >
                       {msg.sender === "Admin" ? (
-                        <ReactMarkdown>{msg.message}</ReactMarkdown>
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          <i
+                            className={`bi ${speakingIndex === i ? "bi-volume-up-fill" : "bi-volume-mute"} ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "8px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                        </>
                       ) : (
                         msg.message
                       )}

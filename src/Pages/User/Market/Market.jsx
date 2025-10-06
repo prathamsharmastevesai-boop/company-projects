@@ -20,13 +20,20 @@ export const MarketChat = () => {
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [sessionList, setSessionList] = useState([]);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  const [deletingSessionId, setDeletingSessionId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null); // track which message is speaking
 
+  const scrollToBottom = () => {
+    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  };
 
-   const startRecording = async () => {
+ 
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const startRecording = async () => {
     if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
       toast.error("Speech Recognition not supported in this browser.");
       return;
@@ -43,12 +50,10 @@ export const MarketChat = () => {
         recognitionRef.current.lang = "en-US";
 
         recognitionRef.current.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          setMessage(transcript);
+          setMessage(event.results[0][0].transcript);
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
           toast.error(
             event.error === "not-allowed"
               ? "Microphone access denied."
@@ -68,63 +73,25 @@ export const MarketChat = () => {
         setIsRecording(false);
       }
     } catch (err) {
-      console.error("Microphone access error:", err);
       toast.error("Microphone not found or access denied.");
     }
   };
 
-    const speak = (text) => {
-    if (!text) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
-  };
-
-
-  const scrollToBottom = () => {
-    if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight;
-  };
-
-  const fetchSessions = async () => {
-    setIsLoadingSessions(true);
-    try {
-      const res = await dispatch(get_Session_List_Specific()).unwrap();
-      setSessionList(res);
-
-      const marketSessions = res.filter((chat) => chat.category === "Market");
-
-      if (marketSessions.length > 0) {
-        const latestChat = marketSessions[0];
-        setSelectedChatId(latestChat.session_id);
-        setSessionId(latestChat.session_id);
-      } else {
-        const newId = uuidv4();
-        const newChat = {
-          session_id: newId,
-          name: newId,
-          category: "Market",
-          created_at: new Date().toISOString(),
-        };
-        setSessionList((prev) => [newChat, ...prev]);
-        setSessionId(newId);
-        setSelectedChatId(newId);
-        setMessages([]);
-      }
-    } catch (error) {
-      console.error("Fetch sessions failed:", error);
-    } finally {
-      setIsLoadingSessions(false);
+  const toggleSpeak = (index, text) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+    } else {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.onend = () => setSpeakingIndex(null);
+      setSpeakingIndex(index);
+      window.speechSynthesis.speak(utterance);
     }
   };
 
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
+ 
   const handleSendMessage = async () => {
     if (!message.trim()) {
       toast.warning("Please enter a message.");
@@ -145,14 +112,6 @@ export const MarketChat = () => {
       setSessionId(newId);
       setSelectedChatId(newId);
       activeSessionId = newId;
-    } else {
-      setSessionList((prev) =>
-        prev.map((chat) =>
-          chat.session_id === activeSessionId && !chat.title
-            ? { ...chat, title: message.substring(0, 10) }
-            : chat
-        )
-      );
     }
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
@@ -177,7 +136,6 @@ export const MarketChat = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, adminMessage]);
-         speak(response.answer);
       }
 
       scrollToBottom();
@@ -185,24 +143,6 @@ export const MarketChat = () => {
       console.error("Error sending message:", error);
     } finally {
       setIsSending(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      setDeletingSessionId(id);
-      await dispatch(Delete_Chat_Specific_Session(id)).unwrap();
-      await fetchSessions();
-
-      if (selectedChatId === id) {
-        setSelectedChatId(null);
-        setSessionId(null);
-        setMessages([]);
-      }
-    } catch (error) {
-      console.error("Error deleting chat session:", error);
-    } finally {
-      setDeletingSessionId(null);
     }
   };
 
@@ -220,12 +160,30 @@ export const MarketChat = () => {
                     className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"}`}
                   >
                     <div
-                      className={`d-inline-block px-3 py-2 rounded ${
+                      className={`d-inline-block px-3 py-2 rounded position-relative ${
                         msg.sender === "Admin" ? "bg-secondary text-white" : "bg-primary text-white"
                       }`}
                       style={{ maxWidth: "75%", wordWrap: "break-word", whiteSpace: "pre-wrap", textAlign: "left" }}
                     >
-                      {msg.sender === "Admin" ? <ReactMarkdown>{msg.message}</ReactMarkdown> : msg.message}
+                      {msg.sender === "Admin" ? (
+                        <>
+                          <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          <i
+                            className={`bi ${speakingIndex === i ? "bi-volume-up-fill" : "bi-volume-mute"} ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000000ff" : "#ccc",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "8px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          />
+                        </>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
                     <div className="text-muted fst-italic mt-1" style={{ fontSize: "0.75rem" }}>
                       {msg.sender} • {new Date(msg.timestamp).toLocaleTimeString()}
@@ -251,7 +209,6 @@ export const MarketChat = () => {
               <button
                 className={`btn me-2 ${isRecording ? "btn-danger" : "btn-outline-secondary"}`}
                 onClick={startRecording}
-                aria-label="Record message"
               >
                 <i className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"}`}></i>
               </button>
