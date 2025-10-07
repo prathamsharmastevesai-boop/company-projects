@@ -142,7 +142,7 @@ export const ComparativeBuildingChat = () => {
       const payload = {
         session_id: activeSessionId,
         question: userMessage.message,
-        category: "ComparativeBuildings",
+        category: "ComparativeBuilding",
       };
 
       const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
