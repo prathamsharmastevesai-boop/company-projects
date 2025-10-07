@@ -49,6 +49,8 @@ import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/LeaseDreaftingU
 import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
 import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/comparetiveBuilding";
 import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
+import { Feedback } from "./Pages/User/Feedback/feedback";
+import { AdminFeedback } from "./Pages/Admin/Feedback/adminFeedback";
 
 
 function App() {
@@ -120,6 +122,9 @@ function App() {
 
             <Route path="/ComparativeBuildingData" element={<ComparativeBuildingData />} />
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
+
+            <Route path="/adminFeedback" element={<AdminFeedback />} />
+            
           </Route>
 
           <Route
@@ -141,6 +146,8 @@ function App() {
 
             <Route path="/UserProfile" element={<UserProfile />} />
  <Route path="/ComparativeBuildingChat" element={<ComparativeBuildingChat />} />
+ <Route path="/Feedback" element={<Feedback />} />
+
             <Route path="/BrokerChat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />

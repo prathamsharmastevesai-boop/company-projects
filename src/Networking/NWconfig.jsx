@@ -95,6 +95,11 @@ export const extractTextdata = "/generate_lease/files/lease-agreement-text";
 export const extractTextViewdata = "/generate_lease/files/view_generated_lease/text";
 export const updatetextdata = "/generate_lease/files/text";
 
+//Feedback
+export const feedbacksubmit = "/feedback/submit"; 
+export const getfeedback="/feedback/my-feedback";
+export const getadminfeedback = "/feedback/company-feedback";
+
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";
 export const listAdmin = "/invite_user/list";

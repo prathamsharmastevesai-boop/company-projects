@@ -230,7 +230,20 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     {!collapsed && "Comparative Buildings Data"}
                   </span>
                 </li>
-
+ <li
+                  className={`nav-item ${
+                    isActive("/adminFeedback") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/adminFeedback")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi-pencil-square me-2" />
+                    {!collapsed && "Feedback"}
+                  </span>
+                </li>
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
@@ -418,6 +431,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     {!collapsed && "Comparative Building Data"}
                   </span>
                 </li>
+
+                 <li
+                  className={`nav-item ${
+                    isActive("/Feedback") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/Feedback")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi-pencil-square me-2" />
+                    {!collapsed && "Feedback"}
+                  </span>
+                </li>
+
 
                 {!collapsed && (
                   <li
