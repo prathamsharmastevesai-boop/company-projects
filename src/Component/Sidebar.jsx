@@ -309,21 +309,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
-                        isActive("/TenantsMarket") ? "active" : ""
-                      }`}
-                    >
-                      <span
-                        onClick={() => handleLinkClick("/TenantsMarket")}
-                        className="nav-link text-white"
-                        style={{ cursor: "pointer", fontSize: 12 }}
-                      >
-                        <i className="bi bi-building me-2" />{" "}
-                        {!collapsed && "Tenants in the Market"}
-                      </span>
-                    </li>
-
-                    <li
-                      className={`nav-item ${
                         isActive("/TenantInformation") ? "active" : ""
                       }`}
                     >
@@ -334,6 +319,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       >
                         <i className="bi bi-card-list me-2" />{" "}
                         {!collapsed && "Tenant Information"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/TenantsMarket") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/TenantsMarket")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-building me-2" />{" "}
+                        {!collapsed && "Tenants in the Market"}
                       </span>
                     </li>
 
@@ -553,7 +553,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-chat-left-text me-2" />{" "}
-                        {/* Chat icon */}
                         {!collapsed && "Tenant Information"}
                       </span>
                     </li>
@@ -569,7 +568,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-people-fill me-2" />{" "}
-                        {/* Market / tenants icon */}
                         {!collapsed && "Tenants in the Market"}
                       </span>
                     </li>
@@ -585,7 +583,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi bi-bar-chart-line-fill me-2" />{" "}
-                        {/* Comps / chart icon */}
                         {!collapsed && "Comps"}
                       </span>
                     </li>
