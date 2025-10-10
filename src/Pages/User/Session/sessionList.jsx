@@ -11,7 +11,6 @@ export const SessionList = ({ setShowSessionModal }) => {
   const [sessionId, setSessionId] = useState(null);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
     try {
@@ -34,38 +33,53 @@ export const SessionList = ({ setShowSessionModal }) => {
     fetchSessions();
   }, []);
 
-const handleSelect = async (session) => {
-  setSelectedChatId(session.session_id);
-  setSessionId(session.session_id);
-  await fetchChatHistory(session.session_id);
+  const handleSelect = async (session) => {
+    setSelectedChatId(session.session_id);
+    setSessionId(session.session_id);
+    await fetchChatHistory(session.session_id);
 
-  if (setShowSessionModal) setShowSessionModal(false);
+    if (setShowSessionModal) setShowSessionModal(false);
 
-  switch (session.category) {
-    case "Broker":
-      navigate("/BrokerChat", { state: { sessionId: session.session_id, type: session.category } });
-      break;
-    case "Colleague":
-      navigate("/ColleagueChat", { state: { sessionId: session.session_id, type: session.category } });
-      break;
-    case "Building":
-      navigate("/BuildingChat", { state: { sessionId: session.session_id, type: session.category } });
-      break;
-    case "Market":
-      navigate("/MarketChat", { state: { sessionId: session.session_id, type: session.category } });
-      break;
-    case "portfolio":
-      navigate("/ChatWithAnyDoc", { state: { sessionId: session.session_id, type: session.category } });
-      break;
-    case "Lease":
-    case "LOI":
-      navigate("/UserChat", { state: { sessionId: session.session_id, type: session.category, Building_id: session.building_id } });
-      break;
-    default:
-      console.warn("Unknown category:", session.category);
-  }
-};
-
+    switch (session.category) {
+      case "Broker":
+        navigate("/BrokerChat", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "Colleague":
+        navigate("/ColleagueChat", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "Building":
+        navigate("/BuildingChat", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "Market":
+        navigate("/CompsChat", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "portfolio":
+        navigate("/ChatWithAnyDoc", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "Lease":
+      case "LOI":
+        navigate("/UserChat", {
+          state: {
+            sessionId: session.session_id,
+            type: session.category,
+            Building_id: session.building_id,
+          },
+        });
+        break;
+      default:
+        console.warn("Unknown category:", session.category);
+    }
+  };
 
   const getCategoryStyle = (category) => {
     switch (category) {

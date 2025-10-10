@@ -9,7 +9,7 @@ import {
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
 
-export const MarketIntelligence = () => {
+export const TenantInformationUpload = () => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,16 +23,18 @@ export const MarketIntelligence = () => {
     try {
       const res = await dispatch(GeneralInfoSubmit()).unwrap();
       if (Array.isArray(res)) {
-        const marketDocs = res.filter((f) => f.category === "Market");
+        const TenantInformationDocs = res.filter(
+          (f) => f.category === "TenantInformation"
+        );
         setDocs(
-          marketDocs.map((f) => ({
+          TenantInformationDocs.map((f) => ({
             file_id: f.file_id,
             name: f.original_file_name,
           }))
         );
       }
     } catch (err) {
-      console.error("Error fetching Market docs:", err);
+      console.error("Error fetching TenantInformation docs:", err);
     } finally {
       setListLoading(false);
     }
@@ -63,7 +65,7 @@ export const MarketIntelligence = () => {
     setLoading(true);
     try {
       await dispatch(
-        UploadGeneralDocSubmit({ file, category: "Market" })
+        UploadGeneralDocSubmit({ file, category: "TenantInformation" })
       ).unwrap();
 
       await fetchData();
@@ -113,7 +115,7 @@ export const MarketIntelligence = () => {
         UpdateGeneralDocSubmit({
           file_id: editingFile.file_id,
           new_file: newFile,
-          category: "Market",
+          category: "TenantInformation",
         })
       ).unwrap();
 
@@ -132,7 +134,10 @@ export const MarketIntelligence = () => {
     setLoading(true);
     try {
       await dispatch(
-        DeleteGeneralDocSubmit({ file_id: file.file_id, category: "Market" })
+        DeleteGeneralDocSubmit({
+          file_id: file.file_id,
+          category: "TenantInformation",
+        })
       ).unwrap();
 
       await fetchData();
@@ -146,8 +151,10 @@ export const MarketIntelligence = () => {
 
   return (
     <div className="container p-4">
-      <h5 className="fw-bold">Comps</h5>
-      <p className="text-muted">Upload and manage documents for Comps</p>
+      <h5 className="fw-bold">Tenant Information</h5>
+      <p className="text-muted">
+        Upload and manage documents for Tenant Information
+      </p>
 
       <div
         className={`border border-2 rounded-3 p-2 text-center mb-4 ${

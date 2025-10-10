@@ -10,7 +10,6 @@ export const SessionListModal = ({ show, onClose }) => {
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
     try {
@@ -36,13 +35,15 @@ export const SessionListModal = ({ show, onClose }) => {
         navigate("/BrokerChat", { state: { sessionId: session.session_id } });
         break;
       case "Colleague":
-        navigate("/ColleagueChat", { state: { sessionId: session.session_id } });
+        navigate("/ColleagueChat", {
+          state: { sessionId: session.session_id },
+        });
         break;
       case "Building":
         navigate("/BuildingChat", { state: { sessionId: session.session_id } });
         break;
       case "Market":
-        navigate("/MarketChat", { state: { sessionId: session.session_id } });
+        navigate("/CompsChat", { state: { sessionId: session.session_id } });
         break;
       default:
         console.warn("Unknown category:", session.category);
@@ -64,25 +65,22 @@ export const SessionListModal = ({ show, onClose }) => {
     }
   };
 
-  if (!show) return null; 
+  if (!show) return null;
 
   return (
     <>
-      <div
-        className="modal-backdrop fade show"
-        onClick={onClose}
-      />
+      <div className="modal-backdrop fade show" onClick={onClose} />
 
-      <div
-        className="modal fade show d-block"
-        role="dialog"
-        aria-modal="true"
-      >
+      <div className="modal fade show d-block" role="dialog" aria-modal="true">
         <div className="modal-dialog modal-dialog-centered modal-sm">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Session List</h5>
-              <button type="button" className="btn-close" onClick={onClose}></button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={onClose}
+              ></button>
             </div>
             <div className="modal-body">
               {isLoadingSessions ? (
@@ -96,11 +94,13 @@ export const SessionListModal = ({ show, onClose }) => {
                     <button
                       key={session.session_id}
                       onClick={() => handleSelect(session)}
-                      className={`list-group-item d-flex justify-content-between align-items-center ${selectedChatId === session.session_id ? "active" : ""
-                        }`}
+                      className={`list-group-item d-flex justify-content-between align-items-center ${
+                        selectedChatId === session.session_id ? "active" : ""
+                      }`}
                     >
                       <span>
-                        {session.name || `Session ${session.session_id.slice(0, 8)}`}
+                        {session.name ||
+                          `Session ${session.session_id.slice(0, 8)}`}
                       </span>
                       <span className={getCategoryColor(session.category)}>
                         {session.category}

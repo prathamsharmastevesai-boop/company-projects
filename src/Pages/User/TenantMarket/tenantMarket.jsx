@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -9,19 +10,22 @@ import {
 import { AskQuestionGeneralAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import ReactMarkdown from "react-markdown";
 
-export const MarketChat = () => {
+export const TenantMarket = () => {
   const dispatch = useDispatch();
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
+  const location = useLocation();
+  const incomingSessionId = location.state?.sessionId || null;
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [sessionList, setSessionList] = useState([]);
+  const [selectedChatId, setSelectedChatId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [speakingIndex, setSpeakingIndex] = useState(null); // track which message is speaking
+  const [speakingIndex, setSpeakingIndex] = useState(null);
 
   const scrollToBottom = () => {
     if (chatRef.current)
@@ -52,7 +56,8 @@ export const MarketChat = () => {
         recognitionRef.current.lang = "en-US";
 
         recognitionRef.current.onresult = (event) => {
-          setMessage(event.results[0][0].transcript);
+          const transcript = event.results[0][0].transcript;
+          setMessage(transcript);
         };
 
         recognitionRef.current.onerror = (event) => {
@@ -100,14 +105,14 @@ export const MarketChat = () => {
     }
 
     let activeSessionId = sessionId;
-
     if (!activeSessionId) {
       const newId = uuidv4();
       const newChat = {
         session_id: newId,
         name: newId,
-        title: message,
+        category: "TenantMarket",
         created_at: new Date().toISOString(),
+        title: message,
       };
       setSessionList((prev) => [newChat, ...prev]);
       setSessionId(newId);
@@ -125,7 +130,7 @@ export const MarketChat = () => {
       const payload = {
         session_id: activeSessionId,
         question: userMessage.message,
-        category: "Market",
+        category: "TenantMarket",
       };
 
       const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
@@ -152,7 +157,7 @@ export const MarketChat = () => {
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">💬 Comps</h5>
+            <h5 className="text-muted mb-3">💬 Tenants in the Market</h5>
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {messages.length > 0 ? (
                 messages.map((msg, i) => (
@@ -193,7 +198,7 @@ export const MarketChat = () => {
                               bottom: "8px",
                             }}
                             onClick={() => toggleSpeak(i, msg.message)}
-                          />
+                          ></i>
                         </>
                       ) : (
                         msg.message

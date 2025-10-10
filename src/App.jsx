@@ -1,8 +1,8 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./Networking/Admin/Store/Store";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { DashboardLayout } from "./Component/Layout";
 import { UserAccess } from "./Pages/Admin/UserAccess";
@@ -21,7 +21,7 @@ import { VerifyOtp } from "../src/Pages/User/Auth/VerifyOTP";
 import { Dashboard } from "../src/Pages/User/Dashboard/Dashboard";
 import { Login } from "../src/Pages/User/Auth/Login";
 import { UserBuildinglist } from "./Pages/User/Building/UserBuildinglist";
-import { UserLeaseList } from "./Pages/User/Lease/UserLeaselist"
+import { UserLeaseList } from "./Pages/User/Lease/UserLeaselist";
 import { UserProfile } from "./Pages/User/Profile/UserProfile";
 import { UserChat } from "./Pages/User/Chat/ChatUser";
 import { ChatWithAnyDoc } from "./Pages/User/Chat/ChatwithAny";
@@ -51,10 +51,12 @@ import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/compa
 import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
 import { Feedback } from "./Pages/User/Feedback/feedback";
 import { AdminFeedback } from "./Pages/Admin/Feedback/adminFeedback";
-
+import { TenantMarket } from "./Pages/User/TenantMarket/tenantMarket";
+import { TenantMarketUpload } from "./Pages/Admin/GeneralInfo/TenantMarket";
+import { TenantInformation } from "./Pages/User/TenantInformation/tenantInformationChat";
+import { TenantInformationUpload } from "./Pages/Admin/GeneralInfo/TenantInformation";
 
 function App() {
-
   useEffect(() => {
     const expiry = sessionStorage.getItem("tokenExpiry");
 
@@ -65,7 +67,6 @@ function App() {
       sessionStorage.removeItem("tokenExpiry");
       window.location.href = "/#/";
     }
-
   }, []);
 
   return (
@@ -80,36 +81,51 @@ function App() {
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
 
-          <Route element={
-            <ProtectedRoute allowedRoles={["superuser"]}>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }>
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={["superuser"]}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="/AdminManagement" element={<AdminManagement />} />
           </Route>
 
-          <Route element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }>
+          <Route
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="/AdminDashboard" element={<AdminDashboard />} />
 
             <Route path="/UserManagement" element={<UserManagement />} />
             <Route path="/Aianalytics" element={<Aianalytics />} />
             <Route path="/RagSystem" element={<RagSystem />} />
             <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
-            <Route path="/LeaseDraftingUpload" element={<LeaseDraftingUpload />} />
+            <Route
+              path="/LeaseDraftingUpload"
+              element={<LeaseDraftingUpload />}
+            />
 
             <Route path="/Thirdparty" element={<Thirdparty />} />
             <Route path="/EmployContact" element={<EmployContact />} />
-            <Route path="/MarketIntelligence" element={<MarketIntelligence />} />
+            <Route path="/Comps" element={<MarketIntelligence />} />
+            <Route path="/TenantsMarket" element={<TenantMarketUpload />} />
             <Route path="/BuildingInfo" element={<BuildingInfo />} />
+            <Route
+              path="/TenantInformation"
+              element={<TenantInformationUpload />}
+            />
 
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
             <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
-            <Route path="/BuildingPdfUploader" element={<BuildingPdfUploader />} />
+            <Route
+              path="/BuildingPdfUploader"
+              element={<BuildingPdfUploader />}
+            />
 
             <Route path="/UserAccess" element={<UserAccess />} />
 
@@ -118,13 +134,18 @@ function App() {
             <Route path="/UpdateLease" element={<UpdateLease />} />
             <Route path="/LeaseInfo" element={<LeaseInfomation />} />
 
-            <Route path="/Approved_Denied_list" element={<Approved_Denied_list />} />
+            <Route
+              path="/Approved_Denied_list"
+              element={<Approved_Denied_list />}
+            />
 
-            <Route path="/ComparativeBuildingData" element={<ComparativeBuildingData />} />
+            <Route
+              path="/ComparativeBuildingData"
+              element={<ComparativeBuildingData />}
+            />
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
 
             <Route path="/adminFeedback" element={<AdminFeedback />} />
-            
           </Route>
 
           <Route
@@ -145,13 +166,21 @@ function App() {
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
 
             <Route path="/UserProfile" element={<UserProfile />} />
- <Route path="/ComparativeBuildingChat" element={<ComparativeBuildingChat />} />
- <Route path="/Feedback" element={<Feedback />} />
+            <Route
+              path="/ComparativeBuildingChat"
+              element={<ComparativeBuildingChat />}
+            />
+            <Route path="/Feedback" element={<Feedback />} />
 
             <Route path="/BrokerChat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />
-            <Route path="/MarketChat" element={<MarketChat />} />
+            <Route path="/CompsChat" element={<MarketChat />} />
+            <Route path="/TenantMarket" element={<TenantMarket />} />
+            <Route
+              path="/TenantInformationChat"
+              element={<TenantInformation />}
+            />
 
             <Route path="/SessionList" element={<SessionList />} />
           </Route>
