@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
-import {
-  getProfileDetail,
-  ProfileUpdateApi,
-} from "../../../Networking/User/APIs/Profile/ProfileApi";
+import { getProfileDetail, ProfileUpdateApi } from "../../../Networking/User/APIs/Profile/ProfileApi";
 import { useDispatch, useSelector } from "react-redux";
 import { FaEdit, FaCamera, FaSave, FaTimes } from "react-icons/fa";
 import RAGLoader from "../../../Component/Loader";
 import { toast } from "react-toastify";
 
 export const UserProfile = () => {
+
   const { userdata } = useSelector((state) => state.ProfileSlice);
+
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [photoUrl, setPhotoUrl] = useState(null);
-  const [bgPhotoUrl, setBgPhotoUrl] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
-  const [bgPhotoFile, setBgPhotoFile] = useState(null);
   const [tempPhoto, setTempPhoto] = useState(null);
-  const [tempBgPhoto, setTempBgPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
       setLoadingProfile(true);
@@ -39,69 +34,44 @@ export const UserProfile = () => {
     fetchProfile();
   }, [dispatch]);
 
-  // Set state from profile data
   useEffect(() => {
     if (userdata) {
       setName(userdata.name || "");
       setNumber(userdata.number || "");
       setPhotoUrl(userdata.photo_base64 || "https://placehold.co/100x100");
-      setBgPhotoUrl(
-        userdata.bg_photo_base64 ||
-          "https://images.unsplash.com/photo-1580587771525-78b9dba3b914"
-      );
     }
   }, [userdata]);
 
-  // Profile photo change
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     const MAX_FILE_SIZE_MB = 1;
-    if (!file) return;
 
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      alert("⚠️ Profile photo must be less than 1MB.");
-      return;
+    if (file) {
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        alert("⚠️ Profile photo must be less than 1MB.");
+        return;
+      }
+
+      setPhotoFile(file);
+      setTempPhoto(URL.createObjectURL(file));
     }
-
-    setPhotoFile(file);
-    setTempPhoto(URL.createObjectURL(file));
-  };
-
-  // Background photo change
-  const handleBgPhotoChange = (e) => {
-    const file = e.target.files[0];
-    const MAX_FILE_SIZE_MB = 2; // Allow bigger bg image
-    if (!file) return;
-
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      alert("⚠️ Background photo must be less than 2MB.");
-      return;
-    }
-
-    setBgPhotoFile(file);
-    setTempBgPhoto(URL.createObjectURL(file));
   };
 
   const cancelEditing = () => {
     setName(userdata.name || "");
     setNumber(userdata.number || "");
     setPhotoFile(null);
-    setBgPhotoFile(null);
     setTempPhoto(null);
-    setTempBgPhoto(null);
     setIsEditing(false);
   };
 
-  // Profile update handler
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     const formData = new FormData();
     formData.append("name", name);
     formData.append("number", number);
     if (photoFile) formData.append("photo", photoFile);
-    if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
 
     try {
       await dispatch(ProfileUpdateApi(formData));
@@ -109,9 +79,7 @@ export const UserProfile = () => {
       dispatch(getProfileDetail());
       setIsEditing(false);
       setPhotoFile(null);
-      setBgPhotoFile(null);
       setTempPhoto(null);
-      setTempBgPhoto(null);
     } catch (error) {
       console.error("Update failed:", error);
       alert("Failed to update profile.");
@@ -144,42 +112,15 @@ export const UserProfile = () => {
           </div>
         ) : (
           <div className="card shadow-sm overflow-hidden">
-            {/* Banner / Background */}
             <div
               style={{
-                backgroundImage: `url(${tempBgPhoto || bgPhotoUrl})`,
+                backgroundImage: `url(${userdata.bannerImage || "https://images.unsplash.com/photo-1580587771525-78b9dba3b914"})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 height: "180px",
                 position: "relative",
               }}
             >
-              {isEditing && (
-                <label
-                  htmlFor="bg-photo-upload"
-                  className="btn btn-light rounded-circle"
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    height: "40px",
-                    width: "40px",
-                    cursor: "pointer",
-                  }}
-                  title="Change background photo"
-                >
-                  <FaCamera />
-                  <input
-                    id="bg-photo-upload"
-                    type="file"
-                    onChange={handleBgPhotoChange}
-                    style={{ display: "none" }}
-                    accept="image/*"
-                  />
-                </label>
-              )}
-
-              {/* Profile photo */}
               <div style={{ position: "relative", display: "inline-block" }}>
                 <img
                   src={tempPhoto || photoUrl}
@@ -223,22 +164,15 @@ export const UserProfile = () => {
               </div>
             </div>
 
-            {/* Profile Info Form */}
             <div className="card-body pt-5">
               <div className="d-flex justify-content-between align-items-center">
                 <h4>Profile Info</h4>
                 {!isEditing ? (
-                  <button
-                    className="btn btn-outline-dark"
-                    onClick={() => setIsEditing(true)}
-                  >
+                  <button className="btn btn-outline-dark" onClick={() => setIsEditing(true)}>
                     <FaEdit className="me-1" /> Edit
                   </button>
                 ) : (
-                  <button
-                    className="btn btn-outline-secondary"
-                    onClick={cancelEditing}
-                  >
+                  <button className="btn btn-outline-secondary" onClick={cancelEditing}>
                     <FaTimes className="me-1" />
                   </button>
                 )}
@@ -248,18 +182,13 @@ export const UserProfile = () => {
                 <div className="mb-2">
                   {!isEditing ? (
                     <>
-                      <label className="form-label fw-bold">Full Name</label>
-                      <br />
+                      <label className="form-label fw-bold">Full Name</label><br />
                       <label>{name}</label>
                     </>
                   ) : (
                     <>
                       <label className="form-label">Name</label>
-                      <input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="form-control"
-                      />
+                      <input value={name} onChange={(e) => setName(e.target.value)} className="form-control" />
                     </>
                   )}
                 </div>
@@ -267,40 +196,24 @@ export const UserProfile = () => {
                 <div className="mb-3">
                   {!isEditing ? (
                     <>
-                      <label className="form-label fw-bold">Phone Number</label>
-                      <br />
+                      <label className="form-label fw-bold">Phone Number</label><br />
                       <label>{number}</label>
                     </>
                   ) : (
                     <>
                       <label className="form-label">Phone Number</label>
-                      <input
-                        value={number}
-                        onChange={(e) => setNumber(e.target.value)}
-                        className="form-control"
-                      />
+                      <input value={number} onChange={(e) => setNumber(e.target.value)} className="form-control" />
                     </>
                   )}
                 </div>
 
                 {isEditing && (
                   <div className="d-flex justify-content-end gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger"
-                      onClick={cancelEditing}
-                      disabled={loading}
-                    >
+                    <button type="button" className="btn btn-outline-danger" onClick={cancelEditing} disabled={loading}>
                       Cancel
                     </button>
-                    <button
-                      type="submit"
-                      className="btn btn-warning"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        "Saving..."
-                      ) : (
+                    <button type="submit" className="btn btn-warning" disabled={loading}>
+                      {loading ? "Saving..." : (
                         <>
                           <FaSave className="me-1" /> Save Changes
                         </>
