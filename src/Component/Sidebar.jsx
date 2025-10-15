@@ -459,7 +459,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi bi-cpu me-2" />
+                    <i className="bi bi-mic me-2" />
                     {!collapsed && "Comparative Building Data"}
                   </span>
                 </li>
