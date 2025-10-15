@@ -148,7 +148,7 @@
   width: 70px;
   position: fixed;
   top: 0px;
-  height: 100vh;
+  height: 100dvh;
   transition: all 0.3s ease;
 }
 
@@ -173,7 +173,7 @@
     width: 70px;
     position: fixed;
     top: 0px;
-    height: 100vh;
+    height: 100dvh;
     transition: all 0.3s ease;
     z-index: 999;
   }
