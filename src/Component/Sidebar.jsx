@@ -212,7 +212,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
                     <i className="bi bi-cpu me-2" />
-                    {!collapsed && "AI Lease Drafting"}
+                    {!collapsed && "AI Lease Abstract"}
                   </span>
                 </li>
 

@@ -12,6 +12,7 @@ import {
   UpdateDraftingtext,
   UploadDraftingLeaseDoc,
 } from "../../../Networking/Admin/APIs/AiDraftingLeaseAPi";
+import { baseURL } from "../../../Networking/NWconfig";
 
 export const LeaseDraftingUpload = () => {
   const dispatch = useDispatch();
@@ -228,7 +229,10 @@ export const LeaseDraftingUpload = () => {
     const diff = diffWords(aiDraft, editedDraft);
     return (
       <div className="row">
-        <div className="col-6 border-end pe-3" style={{ whiteSpace: "pre-wrap" }}>
+        <div
+          className="col-6 border-end pe-3"
+          style={{ whiteSpace: "pre-wrap" }}
+        >
           <h6 className="fw-semibold text-muted">Original Draft</h6>
           {diff.map((part, idx) => (
             <span
@@ -265,7 +269,7 @@ export const LeaseDraftingUpload = () => {
 
   return (
     <div className="container p-4">
-      <h5 className="fw-bold">📑 AI Lease Drafting</h5>
+      <h5 className="fw-bold">📑 AI Lease Abstract</h5>
       <p className="text-muted">
         Upload an LOI, review extracted terms, and generate a draft lease
         automatically.
@@ -308,13 +312,13 @@ export const LeaseDraftingUpload = () => {
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
                 <div>
-                  <input
+                  {/* <input
                     type="radio"
                     name="selectedDoc"
                     checked={selectedDoc?.file_id === doc.file_id}
                     onChange={() => setSelectedDoc(doc)}
                     className="me-2"
-                  />
+                  /> */}
                   {doc.original_file_name}
                 </div>
                 <div className="d-flex gap-3 align-items-center">
@@ -323,9 +327,11 @@ export const LeaseDraftingUpload = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-sm btn-outline-info"
-                    onClick={() => handlefilePreview(doc.file_id)}
+                    onClick={() =>
+                      window.open(baseURL + doc.file_url, "_blank")
+                    }
                   >
-                    Preview
+                    Download
                   </a>
                   <i
                     className="bi bi-trash text-danger"
@@ -339,11 +345,12 @@ export const LeaseDraftingUpload = () => {
         )}
       </div>
 
-      {/* Modal for Preview */}
-      <div
+      {/* <div
         className={`modal fade ${showModal ? "show d-block" : ""}`}
         tabIndex="-1"
-        style={{ backgroundColor: showModal ? "rgba(0,0,0,0.5)" : "transparent" }}
+        style={{
+          backgroundColor: showModal ? "rgba(0,0,0,0.5)" : "transparent",
+        }}
       >
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
@@ -356,7 +363,11 @@ export const LeaseDraftingUpload = () => {
               ></button>
             </div>
             <div className="modal-body" style={{ whiteSpace: "pre-wrap" }}>
-              {previewData ? <p>{previewData}</p> : <p>No preview data available.</p>}
+              {previewData ? (
+                <p>{previewData}</p>
+              ) : (
+                <p>No preview data available.</p>
+              )}
             </div>
             <div className="modal-footer">
               <button
@@ -454,7 +465,6 @@ export const LeaseDraftingUpload = () => {
             )}
           </div>
 
-          {/* ✅ Download button before feedback */}
           {!isEditing && !submittedFeedback && (
             <div className="card-footer">
               <div className="d-flex justify-content-end mb-3">
@@ -508,7 +518,7 @@ export const LeaseDraftingUpload = () => {
 
           <div ref={bottomRef}></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
