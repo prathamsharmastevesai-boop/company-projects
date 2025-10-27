@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import buildingCardImg from '../../../assets/side_photo.jpg';
+import buildingCardImg from "../../../assets/side_photo.jpg";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
 import RAGLoader from "../../../Component/Loader";
@@ -109,7 +109,6 @@ export const Dashboard = () => {
           <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">
             Welcome to Portfolio Pulse
           </h1>
-          
         </div>
       </section>
 
@@ -159,17 +158,6 @@ export const Dashboard = () => {
                   }}
                 >
                   <div
-                    className="rounded-circle me-3 flex-shrink-0"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      backgroundImage: `url(${buildingCardImg})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
-
-                  <div
                     className="card-body d-flex flex-column justify-content-center position-relative p-0"
                     onClick={() => handleSubmit(building)}
                     style={{ cursor: "pointer" }}
@@ -191,7 +179,8 @@ export const Dashboard = () => {
                       </div>
                     )}
                     <p className="mb-1">
-                      <strong>Address:</strong> {building.address || "N/A"}
+                      <strong>Portfolio Pulse, Curated Intelligence:</strong>{" "}
+                      {building.address || "N/A"}
                     </p>
                   </div>
                 </div>

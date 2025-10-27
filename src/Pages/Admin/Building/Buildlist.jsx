@@ -5,7 +5,7 @@ import {
   DeleteBuilding,
   ListBuildingSubmit,
   CreateBuildingSubmit,
-  UpdateBuildingSubmit, 
+  UpdateBuildingSubmit,
 } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
@@ -48,7 +48,7 @@ export const ListBuilding = () => {
 
   const startEdit = (building) => {
     setEditBuildingId(building.id);
-    setEditFieldValue(building.address || ""); 
+    setEditFieldValue(building.address || "");
   };
 
   const saveEdit = async (buildingId) => {
@@ -57,7 +57,7 @@ export const ListBuilding = () => {
     try {
       const payload = {
         building_id: buildingId,
-        address: editFieldValue, 
+        address: editFieldValue,
       };
       await dispatch(UpdateBuildingSubmit(payload)).unwrap();
       await dispatch(ListBuildingSubmit());
@@ -98,7 +98,7 @@ export const ListBuilding = () => {
   };
 
   const handleSubmit = (buildingId) => {
-       navigate("/LeaseList", { state: { office: { buildingId } } });
+    navigate("/LeaseList", { state: { office: { buildingId } } });
   };
 
   const filteredBuildings = BuildingList.filter((building) => {
@@ -110,7 +110,6 @@ export const ListBuilding = () => {
 
   const BuildingCard = ({ building, index }) => (
     <div
-    
       ref={(el) => (cardsRef.current[index] = el)}
       className="card border-0 shadow-sm hover-shadow w-100"
       style={{ borderRadius: "16px", backgroundColor: "#f8fbff" }}
@@ -164,16 +163,13 @@ export const ListBuilding = () => {
             onClick={() => handleSubmit(building.id)}
             style={{ cursor: "pointer" }}
           >
-          
-           <div className="col-md-4">
-             <div className="d-flex mx-1">
-               <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-              <strong>Address:</strong> 
+            <div className="col-md-4">
+              <div className="d-flex mx-1">
+                <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+                <strong>Portfolio Pulse, Curated Intelligence:</strong>
+              </div>
+              <div className="mx-2 check">{building.address || "N/A"}</div>
             </div>
-            <div className="mx-2 check"> 
-              {building.address || "N/A"}
-            </div>
-           </div>
           </p>
         )}
       </div>
@@ -256,7 +252,7 @@ export const ListBuilding = () => {
 
           {filteredBuildings.length === 0 ? (
             <p className="text-center text-muted mt-3">
-              No buildings found. Add a new one above 
+              No buildings found. Add a new one above
             </p>
           ) : (
             [...filteredBuildings]

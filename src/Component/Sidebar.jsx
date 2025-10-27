@@ -22,10 +22,14 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
+
       setIsMobile(mobile);
 
       if (!mobile) {
         setCollapsed(false);
+      } else {
+        setCollapsed(true);
+        setOpenMenu(null);
       }
     };
 
@@ -75,13 +79,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               />
             </button>
           )}
-
-          {/* <button className="btn btn-sm btn-outline-light" onClick={toggleSidebar}>
-            <i
-              className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
-                }`}
-            />
-          </button> */}
         </div>
 
         <div

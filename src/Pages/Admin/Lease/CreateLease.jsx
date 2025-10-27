@@ -5,17 +5,15 @@ import { CreateLeaseSubmit } from "../../../Networking/Admin/APIs/LeaseApi";
 import RAGLoader from "../../../Component/Loader";
 
 export const CreateLease = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const BuildingId = location.state?.BuildingId;
-  console.log("Building ID:", BuildingId);
 
   const [loading, setLoading] = useState(false);
   const [Leases, setLeases] = useState([
-    { tenant_name: "", suite_number: "", building_id: BuildingId }
+    { tenant_name: "", suite_number: "", building_id: BuildingId },
   ]);
 
   const handleChange = (index, field, value) => {
@@ -27,7 +25,7 @@ export const CreateLease = () => {
   const addLease = () => {
     setLeases([
       ...Leases,
-      { tenant_name: "", suite_number: "", building_id: BuildingId }
+      { tenant_name: "", suite_number: "", building_id: BuildingId },
     ]);
   };
 
@@ -53,7 +51,9 @@ export const CreateLease = () => {
     <div className="container py-5 position-relative">
       <div className="text-center mb-5">
         <h2 className="fw-bold text-dark">🏢 Create Lease</h2>
-        <p className="text-muted">Add one or more lease records to your workspace.</p>
+        <p className="text-muted">
+          Add one or more lease records to your workspace.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -86,7 +86,9 @@ export const CreateLease = () => {
                     className="form-control"
                     placeholder="e.g. John Smith"
                     value={Lease.tenant_name}
-                    onChange={(e) => handleChange(index, "tenant_name", e.target.value)}
+                    onChange={(e) =>
+                      handleChange(index, "tenant_name", e.target.value)
+                    }
                     required
                     disabled={loading}
                   />
@@ -104,7 +106,9 @@ export const CreateLease = () => {
                     className="form-control"
                     placeholder="e.g. Suite 305"
                     value={Lease.suite_number}
-                    onChange={(e) => handleChange(index, "suite_number", e.target.value)}
+                    onChange={(e) =>
+                      handleChange(index, "suite_number", e.target.value)
+                    }
                     required
                     disabled={loading}
                   />
@@ -124,11 +128,7 @@ export const CreateLease = () => {
             <i className="bi bi-plus-circle"></i> Add Another Lease
           </button>
 
-          <button
-            type="submit"
-            className="btn btn-success"
-            disabled={loading}
-          >
+          <button type="submit" className="btn btn-success" disabled={loading}>
             <i className="bi bi-send-fill"></i> Submit
           </button>
         </div>

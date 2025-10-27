@@ -28,7 +28,6 @@ export const LeaseList = () => {
 
   return (
     <>
-      {/* Header */}
       <div
         className="text-center bg-white py-3 mb-4 shadow-sm"
         style={{
@@ -43,7 +42,6 @@ export const LeaseList = () => {
         </h5>
       </div>
 
-      {/* Back Button */}
       <div className="px-3 mb-4 d-flex justify-content-center justify-content-md-start">
         <div
           className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
@@ -59,17 +57,15 @@ export const LeaseList = () => {
         </div>
       </div>
 
-      {/* Cards Section */}
       <Container className="pb-5">
         <Row className="justify-content-center g-4">
-          {/* Lease Agreement */}
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Lease Agreement</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to{" "}
-                  <strong>Lease Agreement</strong> here.
+                  Upload documents related to <strong>Lease Agreement</strong>{" "}
+                  here.
                 </Card.Text>
                 <Button
                   variant="dark"
@@ -83,14 +79,13 @@ export const LeaseList = () => {
             </Card>
           </Col>
 
-          {/* Letter of Intent */}
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Letter of Intent</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to{" "}
-                  <strong>Letter of Intent</strong> here.
+                  Upload documents related to <strong>Letter of Intent</strong>{" "}
+                  here.
                 </Card.Text>
                 <Button
                   variant="dark"

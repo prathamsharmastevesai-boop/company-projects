@@ -3,13 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
-import buildingCardImg from '../../../assets/side_photo.jpg';
+import buildingCardImg from "../../../assets/side_photo.jpg";
 import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
 
 export const UserBuildinglist = () => {
-
   const { BuildingList, loading } = useSelector((state) => state.BuildingSlice);
 
   const dispatch = useDispatch();
@@ -38,15 +37,17 @@ export const UserBuildinglist = () => {
     searchTerm.trim() === ""
       ? BuildingList
       : BuildingList.filter((building) =>
-        building.address?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+          building.address?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
   const handleRequestPermission = async (building_id) => {
     if (requestingPermissionId === building_id) return;
 
     setRequestingPermissionId(building_id);
     try {
-      const res = await dispatch(RequestPermissionSubmit({ building_id })).unwrap();
+      const res = await dispatch(
+        RequestPermissionSubmit({ building_id })
+      ).unwrap();
     } catch (err) {
       console.error("Permission request failed:", err);
     } finally {
@@ -55,7 +56,7 @@ export const UserBuildinglist = () => {
   };
 
   const handleSubmit = async (building) => {
-    const buildingId = building.id
+    const buildingId = building.id;
     if (building.access_status === "NULL") {
       toast.warning("you have not access to this building contact to admin");
     } else if (building.access_status === "approved") {
@@ -95,15 +96,7 @@ export const UserBuildinglist = () => {
         </div>
       )}
 
-      <div
-        className="hero-section text-center bg-white py-3 mb-4 animate__animated animate__fadeInDown"
-        style={{ position: "sticky", top: 0, zIndex: 10, height: "20vh", borderBottom: "1px solid #dee2e6" }}
-      >
-        <h2 className="fw-bold text-light">🏢 Buildings</h2>
-        <p className="text-light mb-0">Here’s a summary of all the submitted buildings.</p>
-      </div>
-
-      <div className="container mb-3">
+      <div className="container mb-3 mt-3">
         <input
           type="search"
           className="form-control"
@@ -122,7 +115,9 @@ export const UserBuildinglist = () => {
             <p className="mt-3 text-muted">Loading buildings...</p>
           </div>
         ) : filteredBuildings.length === 0 ? (
-          <div className="alert alert-info">No buildings found matching your search.</div>
+          <div className="alert alert-info">
+            No buildings found matching your search.
+          </div>
         ) : (
           <div className="row">
             {[...filteredBuildings].reverse().map((building, index) => (
@@ -130,19 +125,12 @@ export const UserBuildinglist = () => {
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
                   className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
-                  style={{ backgroundColor: "#e6f7ff", borderRadius: "16px", minHeight: "80px" }}
+                  style={{
+                    backgroundColor: "#e6f7ff",
+                    borderRadius: "16px",
+                    minHeight: "80px",
+                  }}
                 >
-                  <div
-                    className="rounded-circle me-3 flex-shrink-0"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      backgroundImage: `url(${buildingCardImg})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
-
                   <div
                     className="card-body d-flex flex-column justify-content-center position-relative p-0"
                     onClick={() => handleSubmit(building)}
@@ -158,17 +146,19 @@ export const UserBuildinglist = () => {
                           handleRequestPermission(building.id);
                         }}
                       >
-                        <i className="bi bi-shield-lock-fill text-warning fs-5" style={{ cursor: "pointer" }}></i>
+                        <i
+                          className="bi bi-shield-lock-fill text-warning fs-5"
+                          style={{ cursor: "pointer" }}
+                        ></i>
                       </div>
                     )}
                     <p className="mb-1">
-                      <strong>Address:</strong> {building.address || "N/A"}
+                      <strong>Portfolio Pulse, Curated Intelligence:</strong>
+                      {building.address || "N/A"}
                     </p>
                   </div>
                 </div>
               </div>
-
-
             ))}
           </div>
         )}

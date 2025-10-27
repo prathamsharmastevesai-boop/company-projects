@@ -1,86 +1,31 @@
+// src/components/ChatWindow.jsx
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
+import { AskQuestionGeneralAPI } from "../Networking/Admin/APIs/GeneralinfoApi";
 
-import { getlist_his_oldApi } from "../../../Networking/User/APIs/Chat/ChatApi";
-import { AskQuestionAPI } from "../../../Networking/Admin/APIs/UploadDocApi";
-
-export const UserChat = () => {
+export const ChatWindow = ({ category, heading }) => {
   const dispatch = useDispatch();
-  const location = useLocation();
+  const chatRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  const {
-    sessionId: incomingSessionId = null,
-    type,
-    Building_id,
-  } = location.state || {};
-
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [loadingSessions, setLoadingSessions] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
-  const [chatList, setChatList] = useState([]);
-  const [selectedChatId, setSelectedChatId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-
   const [speakingIndex, setSpeakingIndex] = useState(null);
-  const chatRef = useRef(null);
 
-  // const fetchMessages = async () => {
-  //   setLoadingSessions(true);
-  //   try {
-  //     const res = await dispatch(getlist_his_oldApi()).unwrap();
-  //     const filtered = res.filter((chat) => {
-  //       const matchType = type ? chat.category === type : true;
-  //       const matchBuilding =
-  //         Building_id !== undefined && Building_id !== null
-  //           ? String(chat.building_id) === String(Building_id)
-  //           : true;
-  //       return matchType && matchBuilding;
-  //     });
-
-  //     setChatList(filtered);
-
-  //     if (incomingSessionId) {
-  //       setSelectedChatId(incomingSessionId);
-  //       setSessionId(incomingSessionId);
-  //     } else if (filtered.length > 0) {
-  //       const latestChat = filtered[0];
-  //       setSelectedChatId(latestChat.session_id);
-  //       setSessionId(latestChat.session_id);
-  //     } else {
-  //       const newId = uuidv4();
-  //       const newChat = {
-  //         session_id: newId,
-  //         name: newId,
-  //         created_at: new Date().toISOString(),
-  //         category: type,
-  //       };
-  //       setChatList([newChat]);
-  //       setSessionId(newId);
-  //       setSelectedChatId(newId);
-  //       setMessages([]);
-  //     }
-  //   } catch (e) {
-  //     console.error("Fetch messages failed:", e);
-  //   } finally {
-  //     setLoadingSessions(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchMessages();
-  // }, [incomingSessionId]);
-
-  useEffect(() => {
+  const scrollToBottom = () => {
     if (chatRef.current)
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
   }, [messages]);
 
   const startRecording = async () => {
@@ -108,7 +53,6 @@ export const UserChat = () => {
         };
 
         recognitionRef.current.onerror = (event) => {
-          console.error("Speech recognition error:", event.error);
           toast.error(
             event.error === "not-allowed"
               ? "Microphone access denied."
@@ -127,8 +71,7 @@ export const UserChat = () => {
         recognitionRef.current.stop();
         setIsRecording(false);
       }
-    } catch (err) {
-      console.error("Microphone access error:", err);
+    } catch {
       toast.error("Microphone not found or access denied.");
     }
   };
@@ -151,66 +94,39 @@ export const UserChat = () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
 
     let activeSessionId = sessionId;
-
     if (!activeSessionId) {
       const newId = uuidv4();
-      const newChat = {
-        session_id: newId,
-        name: newId,
-        created_at: new Date().toISOString(),
-        title: message,
-        category: type,
-      };
-      setChatList((prev) => [newChat, ...prev]);
       setSessionId(newId);
-      setSelectedChatId(newId);
       activeSessionId = newId;
-    } else {
-      setChatList((prev) =>
-        prev.map((chat) =>
-          chat.session_id === activeSessionId && !chat.title
-            ? { ...chat, title: message }
-            : chat
-        )
-      );
     }
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
+    scrollToBottom();
 
     try {
       setIsSending(true);
       const payload = {
-        question: userMessage.message,
-        building_id: Building_id,
-        category: type,
         session_id: activeSessionId,
+        question: userMessage.message,
+        category,
       };
 
-      const response = await dispatch(AskQuestionAPI(payload)).unwrap();
+      const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
 
       if (response?.answer) {
-        if (Array.isArray(response.answer)) {
-          const newMsgs = response.answer.map((ans) => ({
-            message: ans.answer,
-            file: ans.file || null,
-            sender: "Admin",
-            timestamp: new Date(),
-          }));
-          setMessages((prev) => [...prev, ...newMsgs]);
-        } else {
-          const adminMessage = {
-            message: response.answer,
-            file: response.answer.file || null,
-            sender: "Admin",
-            timestamp: new Date(),
-          };
-          setMessages((prev) => [...prev, adminMessage]);
-        }
+        const adminMessage = {
+          message: response.answer,
+          sender: "Admin",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, adminMessage]);
       }
-    } catch (e) {
-      console.error("Send message failed:", e);
+
+      scrollToBottom();
+    } catch (error) {
+      console.error("Error sending message:", error);
     } finally {
       setIsSending(false);
     }
@@ -221,10 +137,7 @@ export const UserChat = () => {
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
-            <h5 className="text-muted mb-3">
-              💬 Chat With{" "}
-              {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
-            </h5>
+            <h5 className="text-muted mb-3">{heading}</h5>
 
             <div className="message-container1 hide-scrollbar" ref={chatRef}>
               {messages.length > 0 ? (
@@ -237,9 +150,7 @@ export const UserChat = () => {
                   >
                     <div
                       className={`d-inline-block px-3 py-2 position-relative responsive-box ${
-                        msg.sender === "Admin"
-                          ? null
-                          : "bg-secondary text-light"
+                        msg.sender === "Admin" ? "" : "bg-secondary text-light"
                       }`}
                     >
                       {msg.sender === "Admin" ? (
@@ -278,6 +189,7 @@ export const UserChat = () => {
                   No messages yet.
                 </div>
               )}
+
               {isSending && (
                 <div className="text-start small mt-2">
                   <div className="d-inline-block px-3 py-2 rounded text-dark">
@@ -293,7 +205,7 @@ export const UserChat = () => {
           </div>
 
           <div className="pt-2">
-            <div className="d-flex align-items-center  rounded py-2 bg-white">
+            <div className="d-flex align-items-center rounded py-2 bg-white">
               <textarea
                 ref={textareaRef}
                 rows={1}

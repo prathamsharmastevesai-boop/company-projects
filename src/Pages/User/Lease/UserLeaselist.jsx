@@ -14,7 +14,6 @@ export const UserLeaseList = () => {
 
   return (
     <>
-      {/* Hero Section */}
       <div
         className="text-center bg-dark pt-5 animate__animated animate__fadeInDown"
         style={{
@@ -31,7 +30,6 @@ export const UserLeaseList = () => {
         </h5>
       </div>
 
-      {/* Back Button */}
       <div className="px-3 mb-4 d-flex justify-content-center justify-content-md-start">
         <div
           className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
@@ -47,17 +45,15 @@ export const UserLeaseList = () => {
         </div>
       </div>
 
-      {/* Lease Options Section */}
       <Container className="pb-5">
         <Row className="justify-content-center g-4">
-          {/* Lease Agreement Card */}
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Lease Agreement</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to{" "}
-                  <strong>Lease Agreement</strong> here.
+                  Upload documents related to <strong>Lease Agreement</strong>{" "}
+                  here.
                 </Card.Text>
                 <Button
                   variant="dark"
@@ -73,14 +69,13 @@ export const UserLeaseList = () => {
             </Card>
           </Col>
 
-          {/* Letter of Intent Card */}
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Letter of Intent</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to{" "}
-                  <strong>Letter of Intent</strong> here.
+                  Upload documents related to <strong>Letter of Intent</strong>{" "}
+                  here.
                 </Card.Text>
                 <Button
                   variant="dark"

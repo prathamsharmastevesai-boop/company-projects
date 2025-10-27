@@ -3,7 +3,10 @@ import { useDispatch } from "react-redux";
 import { Spinner, Form, Button, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { FeedbackSubmit, gefeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
+import {
+  FeedbackSubmit,
+  gefeedbackSubmit,
+} from "../../../Networking/User/APIs/Feedback/feedbackApi";
 
 export const Feedback = () => {
   const dispatch = useDispatch();
@@ -31,9 +34,8 @@ export const Feedback = () => {
       setRating(0);
       setHover(0);
 
-      const updatedList = ""
+      const updatedList = "";
       setFeedbackList(updatedList);
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -47,7 +49,6 @@ export const Feedback = () => {
 
   return (
     <div className="container py-5 d-flex flex-column align-items-center">
-      {/* Feedback Form */}
       <Card
         className="p-4 shadow-lg border-0 rounded-4 mb-5"
         style={{ width: "100%", maxWidth: 500, background: "#f8f9fa" }}
@@ -69,13 +70,16 @@ export const Feedback = () => {
             />
           </Form.Group>
 
-          {/* Star Rating */}
           <div className="mb-4 text-center">
-            <Form.Label className="fw-semibold d-block mb-2">Rate Us</Form.Label>
+            <Form.Label className="fw-semibold d-block mb-2">
+              Rate Us
+            </Form.Label>
             {[1, 2, 3, 4, 5].map((star) => (
               <i
                 key={star}
-                className={`bi ${star <= (hover || rating) ? "bi-star-fill" : "bi-star"}`}
+                className={`bi ${
+                  star <= (hover || rating) ? "bi-star-fill" : "bi-star"
+                }`}
                 style={{
                   fontSize: "2rem",
                   color: star <= (hover || rating) ? "#f8c300" : "#ccc",
@@ -90,7 +94,6 @@ export const Feedback = () => {
             ))}
           </div>
 
-          {/* Submit Button */}
           <div className="text-center">
             <Button
               type="submit"
@@ -103,13 +106,15 @@ export const Feedback = () => {
               }}
               disabled={loading}
             >
-              {loading ? <Spinner size="sm" animation="border" /> : "Submit Feedback"}
+              {loading ? (
+                <Spinner size="sm" animation="border" />
+              ) : (
+                "Submit Feedback"
+              )}
             </Button>
           </div>
         </Form>
       </Card>
-
-     
     </div>
   );
 };

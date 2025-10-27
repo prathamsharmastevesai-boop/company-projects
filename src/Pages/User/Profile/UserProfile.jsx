@@ -144,7 +144,6 @@ export const UserProfile = () => {
           </div>
         ) : (
           <div className="card shadow-sm overflow-hidden">
-            {/* Banner / Background */}
             <div
               style={{
                 backgroundImage: `url(${tempBgPhoto || bgPhotoUrl})`,
@@ -179,7 +178,6 @@ export const UserProfile = () => {
                 </label>
               )}
 
-              {/* Profile photo */}
               <div style={{ position: "relative", display: "inline-block" }}>
                 <img
                   src={tempPhoto || photoUrl}
@@ -223,7 +221,6 @@ export const UserProfile = () => {
               </div>
             </div>
 
-            {/* Profile Info Form */}
             <div className="card-body pt-5">
               <div className="d-flex justify-content-between align-items-center">
                 <h4>Profile Info</h4>
