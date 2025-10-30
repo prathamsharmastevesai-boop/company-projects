@@ -111,13 +111,13 @@ export const ListBuilding = () => {
   const BuildingCard = ({ building, index }) => (
     <div
       ref={(el) => (cardsRef.current[index] = el)}
-      className="card shadow-sm slide-in-top d-flex flex-row align-items-center"
+      className="card border-0 shadow-sm hover-shadow w-100"
+      // style={{ borderRadius: "16px", backgroundColor: "#fff" }}
       style={{
         backgroundColor: "#fff",
         borderWidth: "0.1px",
         borderColor: "#cacacaff",
         borderRadius: "16px",
-        minHeight: "80px",
       }}
     >
       <div className="position-absolute top-0 end-0 p-2">

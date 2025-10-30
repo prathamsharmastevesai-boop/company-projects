@@ -97,9 +97,7 @@ export const PortfolioVoice = () => {
       setIsDeleting((prev) => ({ ...prev, [id]: true }));
       await dispatch(Delete_Doc_Specific(id)).unwrap();
       await fetchDocuments();
-      toast.success("Document deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete document.");
       console.error("Failed to delete document:", error);
     } finally {
       setIsDeleting((prev) => ({ ...prev, [id]: false }));
