@@ -200,6 +200,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
+                    isActive("/LeaseAbstractUpload") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/LeaseAbstractUpload")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-file-earmark-text me-2" />
+                    {!collapsed && "AI Lease Abstract"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
                     isActive("/LeaseDraftingUpload") ? "active" : ""
                   }`}
                 >
@@ -208,8 +223,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi bi-cpu me-2" />
-                    {!collapsed && "AI Lease Abstract"}
+                    <i className="bi bi-pencil-square me-2" />
+                    {!collapsed && "AI Lease Drafting"}
                   </span>
                 </li>
 
@@ -223,10 +238,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi bi-cpu me-2" />
+                    <i className="bi bi-bar-chart-line me-2" />
                     {!collapsed && "Comparative Buildings Data"}
                   </span>
                 </li>
+
                 <li
                   className={`nav-item ${
                     isActive("/adminFeedback") ? "active" : ""
@@ -476,6 +492,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
+                <li
+                  className={`nav-item ${
+                    isActive("/LeaseAbstractUpload1") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/LeaseAbstractUpload1")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-cpu me-2" />
+                    {!collapsed && "AI Lease Abstract"}
+                  </span>
+                </li>
+
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
@@ -627,6 +658,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           </button>
         </div>
       </aside>
+
+      <div className="chat-modify-btn p-3 border-bottom  justify-content-between align-items-center">
+        {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
+        {isMobile && (
+          <button
+            className="btn btn-sm btn-outline-light"
+            onClick={toggleSidebar}
+          >
+            <i
+              className={`bi ${
+                collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
+              }`}
+            />
+          </button>
+        )}
+      </div>
 
       {!isMobile && showSessionModal && (
         <div

@@ -10,13 +10,12 @@ import side_photo from "../../../assets/side_photo.jpg";
 import { Eye, EyeOff } from "lucide-react";
 
 export const Login = () => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -29,8 +28,8 @@ export const Login = () => {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
         navigate("/CreateBuilding");
-      } else if (auth.role === "superuser"){
-         navigate("/AdminManagement");
+      } else if (auth.role === "superuser") {
+        navigate("/AdminManagement");
       }
     }
   }, []);
@@ -51,31 +50,41 @@ export const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setLoading(true);
-  try {
-    const res = await dispatch(LoginSubmit({ email, password, role: "user" })).unwrap();
-    const { role, access_token, expiryTime } = res;
+    setLoading(true);
+    try {
+      const res = await dispatch(
+        LoginSubmit({ email, password, role: "user" })
+      ).unwrap();
+      const { role, access_token, expiryTime } = res;
+      console.log(
+        role,
+        access_token,
+        expiryTime,
+        "role, access_token, expiryTime"
+      );
 
-    if (role === "user" && access_token) {
-      sessionStorage.setItem("token", access_token);
-      sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
-      sessionStorage.setItem("tokenExpiry", expiryTime);
+      if (role === "user" && access_token) {
+        sessionStorage.setItem("token", access_token);
+        sessionStorage.setItem(
+          "auth",
+          JSON.stringify({ isAuthenticated: true, role })
+        );
+        sessionStorage.setItem("tokenExpiry", expiryTime);
 
-      toast.success("User login successful");
-      navigate("/dashboard", { state: { email } });
-    } else {
-      toast.error("Invalid Credentials");
+        toast.success("User login successful");
+        navigate("/dashboard", { state: { email } });
+      } else {
+        toast.error("Invalid Credentials");
+      }
+    } catch (err) {
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="login-container d-flex vh-100 position-relative">
@@ -88,13 +97,22 @@ const handleLogin = async (e) => {
           position: "relative",
         }}
       >
-        <h1 className="display-5 fw-bold position-relative z-1">CRE Portfolio Pulse</h1>
+        <h1 className="display-5 fw-bold position-relative z-1">
+          CRE Portfolio Pulse
+        </h1>
       </div>
 
       <div className="login-right col-12 col-md-6 d-flex justify-content-center align-items-center bg-white">
-        <div className="login-card shadow rounded p-4 w-100" style={{ maxWidth: "400px" }}>
+        <div
+          className="login-card shadow rounded p-4 w-100"
+          style={{ maxWidth: "400px" }}
+        >
           <div className="mb-4 text-center">
-            <img src={headerimage} alt="Logo" style={{ height: 80, width: 100 }} />
+            <img
+              src={headerimage}
+              alt="Logo"
+              style={{ height: 80, width: 100 }}
+            />
             <h4 className="fw-bold mt-3">USER LOGIN</h4>
             <p className="text-muted small">Please enter your details</p>
           </div>
@@ -110,10 +128,12 @@ const handleLogin = async (e) => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+              {errors.email && (
+                <div className="invalid-feedback">{errors.email}</div>
+              )}
             </div>
 
-             <div className="mb-3">
+            <div className="mb-3">
               <label className="form-label">Your Password</label>
               <div className="input-group">
                 <span className="input-group-text">
@@ -121,7 +141,9 @@ const handleLogin = async (e) => {
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.password ? "is-invalid" : ""
+                  }`}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -135,16 +157,20 @@ const handleLogin = async (e) => {
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </span>
-                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                {errors.password && (
+                  <div className="invalid-feedback">{errors.password}</div>
+                )}
               </div>
             </div>
-          
-            <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
+
+            <button
+              type="submit"
+              className="btn btn-dark w-100 mb-3"
+              disabled={loading}
+            >
               Sign in
             </button>
           </form>
-
-          
         </div>
       </div>
 

@@ -25,7 +25,6 @@ export const AdminDashboard = () => {
 
   const handleAIAnalytics = () => navigate("/Aianalytics");
   const handleBuilding = () => navigate("/Building_list");
-  const handleUpload = () => navigate("/Building_list");
 
   return (
     <div className="container p-3 p-md-4">
@@ -38,64 +37,96 @@ export const AdminDashboard = () => {
 
       <div className="row g-3 mb-4">
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card border-0 shadow-sm rounded-4 h-100"
-            style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
+          <div
+            className="card border-0 shadow-sm rounded-4 h-100"
+            style={{
+              background: "linear-gradient(to right, #f3f6ff, #f8faff)",
+            }}
+          >
             <div className="card-body d-flex align-items-center">
-              <div className="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
-                style={{ width: "42px", height: "42px" }}>
+              <div
+                className="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}
+              >
                 <FileText size={20} />
               </div>
               <div>
                 <h6 className="text-muted mb-1">Total Documents</h6>
-                <h5 className="fw-bold mb-0">{dashboardData?.total_documents ?? 0}</h5>
+                <h5 className="fw-bold mb-0">
+                  {dashboardData?.total_documents ?? 0}
+                </h5>
               </div>
             </div>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card border-0 shadow-sm rounded-4 h-100"
-            style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
+          <div
+            className="card border-0 shadow-sm rounded-4 h-100"
+            style={{
+              background: "linear-gradient(to right, #f3fff6, #f8fffb)",
+            }}
+          >
             <div className="card-body d-flex align-items-center">
-              <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
-                style={{ width: "42px", height: "42px" }}>
+              <div
+                className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}
+              >
                 <Building2 size={20} />
               </div>
               <div>
                 <h6 className="text-muted mb-1">Buildings</h6>
-                <h5 className="fw-bold mb-0">{dashboardData?.buildings ?? 0}</h5>
+                <h5 className="fw-bold mb-0">
+                  {dashboardData?.buildings ?? 0}
+                </h5>
               </div>
             </div>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card border-0 shadow-sm rounded-4 h-100"
-            style={{ background: "linear-gradient(to right, #f3f6ff, #f8faff)" }}>
+          <div
+            className="card border-0 shadow-sm rounded-4 h-100"
+            style={{
+              background: "linear-gradient(to right, #f3f6ff, #f8faff)",
+            }}
+          >
             <div className="card-body d-flex align-items-center">
-              <div className="rounded-3 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center me-3"
-                style={{ width: "42px", height: "42px" }}>
+              <div
+                className="rounded-3 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}
+              >
                 <Upload size={20} />
               </div>
               <div>
                 <h6 className="text-muted mb-1">Recent Uploads</h6>
-                <h5 className="fw-bold mb-0">{dashboardData?.recent_uploads ?? 0}</h5>
+                <h5 className="fw-bold mb-0">
+                  {dashboardData?.recent_uploads ?? 0}
+                </h5>
               </div>
             </div>
           </div>
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card border-0 shadow-sm rounded-4 h-100"
-            style={{ background: "linear-gradient(to right, #f3fff6, #f8fffb)" }}>
+          <div
+            className="card border-0 shadow-sm rounded-4 h-100"
+            style={{
+              background: "linear-gradient(to right, #f3fff6, #f8fffb)",
+            }}
+          >
             <div className="card-body d-flex align-items-center">
-              <div className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
-                style={{ width: "42px", height: "42px" }}>
+              <div
+                className="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3"
+                style={{ width: "42px", height: "42px" }}
+              >
                 <TrendingUp size={20} />
               </div>
               <div>
                 <h6 className="text-muted mb-1">AI Queries</h6>
-                <h5 className="fw-bold mb-0">{dashboardData?.AI_queries ?? 0}</h5>
+                <h5 className="fw-bold mb-0">
+                  {dashboardData?.AI_queries ?? 0}
+                </h5>
               </div>
             </div>
           </div>
@@ -121,18 +152,23 @@ export const AdminDashboard = () => {
               <h5 className="fw-semibold mb-3">Quick Actions</h5>
               <div className="row g-3">
                 <div className="col-12 col-sm-6">
-                  <button className="btn btn-outline-dark w-100 py-3" onClick={handleAIAnalytics}>
+                  <button
+                    className="btn btn-outline-dark w-100 py-3"
+                    onClick={handleAIAnalytics}
+                  >
                     <TrendingUp size={20} className="me-2" />
                     AI Analytics
                   </button>
                 </div>
                 <div className="col-12 col-sm-6">
-                  <button className="btn btn-outline-success w-100 py-3" onClick={handleBuilding}>
+                  <button
+                    className="btn btn-outline-success w-100 py-3"
+                    onClick={handleBuilding}
+                  >
                     <Building2 size={20} className="me-2" />
                     Add Building
                   </button>
                 </div>
-               
               </div>
             </div>
           </div>

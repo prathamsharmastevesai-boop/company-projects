@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 import side_photo from "../../../assets/side_photo.jpg";
 import { toast } from "react-toastify";
@@ -25,8 +25,7 @@ export const AdminLogin = () => {
     if (token && auth?.isAuthenticated) {
       if (auth.role === "superuser") {
         navigate("/AdminManagement");
-      }
-      else if (auth.role === "user") {
+      } else if (auth.role === "user") {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
         navigate("/AdminDashboard");
@@ -56,12 +55,17 @@ export const AdminLogin = () => {
 
     setLoading(true);
     try {
-      const res = await dispatch(LoginSubmit({ email, password, role: "admin" })).unwrap();
+      const res = await dispatch(
+        LoginSubmit({ email, password, role: "admin" })
+      ).unwrap();
       const { role, access_token, expiryTime } = res;
 
       if ((role === "admin" || role === "superuser") && access_token) {
         sessionStorage.setItem("token", access_token);
-        sessionStorage.setItem("auth", JSON.stringify({ isAuthenticated: true, role }));
+        sessionStorage.setItem(
+          "auth",
+          JSON.stringify({ isAuthenticated: true, role })
+        );
         sessionStorage.setItem("tokenExpiry", expiryTime);
 
         if (role === "admin") {
@@ -80,7 +84,6 @@ export const AdminLogin = () => {
     }
   };
 
-
   return (
     <div className="container-fluid min-vh-100 d-flex p-0 position-relative">
       <div
@@ -97,9 +100,13 @@ export const AdminLogin = () => {
       <div className="col-12 col-md-6 d-flex justify-content-center align-items-center bg-white">
         <div className="w-100 px-4" style={{ maxWidth: "400px" }}>
           <h2 className="fw-bold mb-1">LOGIN</h2>
-          <p className="text-muted mb-4">Enter your credentials and get ready to explore!</p>
+          <p className="text-muted mb-4">
+            Enter your credentials and get ready to explore!
+          </p>
 
-          {errors.general && <div className="alert alert-danger py-2">{errors.general}</div>}
+          {errors.general && (
+            <div className="alert alert-danger py-2">{errors.general}</div>
+          )}
 
           <form onSubmit={handleLogin}>
             <div className="mb-3">
@@ -117,7 +124,9 @@ export const AdminLogin = () => {
                   required
                   disabled={loading}
                 />
-                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                {errors.email && (
+                  <div className="invalid-feedback">{errors.email}</div>
+                )}
               </div>
             </div>
 
@@ -129,7 +138,9 @@ export const AdminLogin = () => {
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors.password ? "is-invalid" : ""
+                  }`}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -143,7 +154,9 @@ export const AdminLogin = () => {
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </span>
-                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                {errors.password && (
+                  <div className="invalid-feedback">{errors.password}</div>
+                )}
               </div>
             </div>
 

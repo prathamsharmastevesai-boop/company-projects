@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaEdit, FaCamera, FaSave, FaTimes } from "react-icons/fa";
 import RAGLoader from "../../../Component/Loader";
 import { toast } from "react-toastify";
+import { baseURL } from "../../../Networking/NWconfig";
 
 export const UserProfile = () => {
   const { userdata } = useSelector((state) => state.ProfileSlice);
@@ -24,7 +25,6 @@ export const UserProfile = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
       setLoadingProfile(true);
@@ -39,7 +39,6 @@ export const UserProfile = () => {
     fetchProfile();
   }, [dispatch]);
 
-  // Set state from profile data
   useEffect(() => {
     if (userdata) {
       setName(userdata.name || "");
@@ -52,7 +51,6 @@ export const UserProfile = () => {
     }
   }, [userdata]);
 
-  // Profile photo change
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     const MAX_FILE_SIZE_MB = 1;
@@ -67,10 +65,9 @@ export const UserProfile = () => {
     setTempPhoto(URL.createObjectURL(file));
   };
 
-  // Background photo change
   const handleBgPhotoChange = (e) => {
     const file = e.target.files[0];
-    const MAX_FILE_SIZE_MB = 2; // Allow bigger bg image
+    const MAX_FILE_SIZE_MB = 2;
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
@@ -92,7 +89,6 @@ export const UserProfile = () => {
     setIsEditing(false);
   };
 
-  // Profile update handler
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -102,10 +98,10 @@ export const UserProfile = () => {
     formData.append("number", number);
     if (photoFile) formData.append("photo", photoFile);
     if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
+    console.log(formData, "formData in comp");
 
     try {
       await dispatch(ProfileUpdateApi(formData));
-      toast.success("Profile updated successfully!");
       dispatch(getProfileDetail());
       setIsEditing(false);
       setPhotoFile(null);

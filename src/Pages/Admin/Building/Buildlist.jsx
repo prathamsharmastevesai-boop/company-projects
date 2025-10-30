@@ -111,8 +111,14 @@ export const ListBuilding = () => {
   const BuildingCard = ({ building, index }) => (
     <div
       ref={(el) => (cardsRef.current[index] = el)}
-      className="card border-0 shadow-sm hover-shadow w-100"
-      style={{ borderRadius: "16px", backgroundColor: "#f8fbff" }}
+      className="card shadow-sm slide-in-top d-flex flex-row align-items-center"
+      style={{
+        backgroundColor: "#fff",
+        borderWidth: "0.1px",
+        borderColor: "#cacacaff",
+        borderRadius: "16px",
+        minHeight: "80px",
+      }}
     >
       <div className="position-absolute top-0 end-0 p-2">
         {editBuildingId === building.id ? (
@@ -163,10 +169,10 @@ export const ListBuilding = () => {
             onClick={() => handleSubmit(building.id)}
             style={{ cursor: "pointer" }}
           >
-            <div className="col-md-4">
+            <div className="col-md-12 py-2">
               <div className="d-flex mx-1">
                 <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                <strong>Portfolio Pulse, Curated Intelligence:</strong>
+                <strong>Curated Intelligence:</strong>
               </div>
               <div className="mx-2 check">{building.address || "N/A"}</div>
             </div>
@@ -203,7 +209,7 @@ export const ListBuilding = () => {
         <input
           type="search"
           placeholder="Search by building name or address"
-          className="form-control mx-auto text-center"
+          className="form-control bg-white text-dark mx-auto text-center dark-placeholder"
           style={{ maxWidth: "420px" }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

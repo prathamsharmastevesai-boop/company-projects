@@ -1,18 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UpdateBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import RAGLoader from "../../../Component/Loader";
 
 export const UpdateBuilding = () => {
-  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const initialBuildings = Array.isArray(location.state?.buildings)
     ? location.state.buildings
-    : [location.state?.buildings || { id: "", building_name: "", address: "", year: "" }];
+    : [
+        location.state?.buildings || {
+          id: "",
+          building_name: "",
+          address: "",
+          year: "",
+        },
+      ];
 
   const [loading, setLoading] = useState(false);
   const [buildings, setBuildings] = useState(initialBuildings);
@@ -48,7 +54,6 @@ export const UpdateBuilding = () => {
         year: b.year,
       }));
 
-
       await dispatch(UpdateBuildingSubmit(formattedBuildings[0])).unwrap();
       navigate("/building_list");
     } catch (error) {
@@ -62,7 +67,9 @@ export const UpdateBuilding = () => {
     <div className="container py-5 position-relative">
       <div className="text-center mb-5">
         <h2 className="fw-bold text-dark">🛠️ Update Buildings</h2>
-        <p className="text-muted">Modify details for your existing buildings below.</p>
+        <p className="text-muted">
+          Modify details for your existing buildings below.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -82,7 +89,6 @@ export const UpdateBuilding = () => {
                   </button>
                 )}
               </div>
-               
 
               <div className="mb-2">
                 <label className="form-label">Address</label>
@@ -95,7 +101,9 @@ export const UpdateBuilding = () => {
                     className="form-control"
                     placeholder="e.g. 123 Main Street, New Delhi"
                     value={building.address}
-                    onChange={(e) => handleChange(index, "address", e.target.value)}
+                    onChange={(e) =>
+                      handleChange(index, "address", e.target.value)
+                    }
                     required
                     disabled={loading}
                   />
@@ -115,11 +123,7 @@ export const UpdateBuilding = () => {
             <i className="bi bi-plus-circle"></i> Add More
           </button>
 
-          <button
-            type="submit"
-            className="btn btn-warning"
-            disabled={loading}
-          >
+          <button type="submit" className="btn btn-warning" disabled={loading}>
             <i className="bi bi-pencil-square"></i> Update
           </button>
         </div>

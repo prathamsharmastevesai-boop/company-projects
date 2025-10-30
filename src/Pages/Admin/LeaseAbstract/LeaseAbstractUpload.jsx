@@ -4,17 +4,17 @@ import { diffWords } from "diff";
 import RAGLoader from "../../../Component/Loader";
 import { useDispatch } from "react-redux";
 import {
-  DeleteDrafingDoc,
+  DeleteAbstractDoc,
   getMetaData,
   getTextData,
   getTextViewData,
-  ListDraftingLeaseDoc,
+  ListAbstractLeaseDoc,
   UpdateDraftingtext,
-  UploadDraftingLeaseDoc,
-} from "../../../Networking/Admin/APIs/AiDraftingLeaseAPi";
+  UploadAbstractLeaseDoc,
+} from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
 import { baseURL } from "../../../Networking/NWconfig";
 
-export const LeaseDraftingUpload = () => {
+export const LeaseAbstractUpload = () => {
   const dispatch = useDispatch();
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -57,7 +57,7 @@ export const LeaseDraftingUpload = () => {
 
   const fetchDocs = () => {
     setLoader(true);
-    dispatch(ListDraftingLeaseDoc({ category: "lease" }))
+    dispatch(ListAbstractLeaseDoc({ category: "lease" }))
       .unwrap()
       .then((res) => {
         setDocs(res?.files || []);
@@ -91,7 +91,7 @@ export const LeaseDraftingUpload = () => {
 
     const payload = { file, category: "lease" };
     setLoader(true);
-    dispatch(UploadDraftingLeaseDoc(payload))
+    dispatch(UploadAbstractLeaseDoc(payload))
       .unwrap()
       .then(() => {
         toast.success(`${file.name} uploaded successfully`);
@@ -99,7 +99,6 @@ export const LeaseDraftingUpload = () => {
       })
       .catch((err) => {
         console.error("Upload failed:", err);
-        toast.error("Upload failed");
       })
       .finally(() => setLoader(false));
   };
@@ -130,7 +129,7 @@ export const LeaseDraftingUpload = () => {
       return;
 
     setLoader(true);
-    dispatch(DeleteDrafingDoc({ fileId }))
+    dispatch(DeleteAbstractDoc({ fileId }))
       .unwrap()
       .then(() => {
         fetchDocs();
@@ -211,7 +210,6 @@ export const LeaseDraftingUpload = () => {
     toast.success("Feedback submitted. Thank you!");
   };
 
-  // ✅ NEW: Download draft as text file
   const handleDownloadDraft = () => {
     const textToDownload = isEditing ? editedDraft : aiDraft;
     const blob = new Blob([textToDownload], { type: "text/plain" });

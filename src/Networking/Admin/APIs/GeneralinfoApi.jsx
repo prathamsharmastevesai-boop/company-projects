@@ -1,69 +1,27 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { AskGeneralDoc, baseURL, listGeneralInfoDoc, updateGenralDoc, UploadGeneralDoc, } from '../../NWconfig';
-
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axiosInstance from "./AxiosInstance";
+import {
+  AskGeneralDoc,
+  listGeneralInfoDoc,
+  updateGenralDoc,
+} from "../../NWconfig";
 
 export const UploadGeneralDocSubmit = createAsyncThunk(
-  '/UploadGeneralDocSubmit',
+  "general/UploadGeneralDocSubmit",
   async ({ file, category }, { rejectWithValue }) => {
-
-    const token = sessionStorage.getItem('token');
-    const url = `${baseURL}/admin_user_chat/upload?category=${encodeURIComponent(category)}`;
-
     try {
       const formData = new FormData();
       formData.append("files", file);
 
-      const response = await axios.post(url, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosInstance.post(
+        `/admin_user_chat/upload?category=${encodeURIComponent(category)}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
-      toast.success(response.data.message);
       return response.data;
-
-    }catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
@@ -72,182 +30,48 @@ export const UpdateGeneralDocSubmit = createAsyncThunk(
   "general/UpdateGeneralDocSubmit",
   async ({ file_id, new_file, category }, { rejectWithValue }) => {
     try {
-      const token = sessionStorage.getItem("token");
-      const url = `${baseURL}${updateGenralDoc}?file_id=${file_id}&category=${encodeURIComponent(category)}`;
-
       const formData = new FormData();
       formData.append("file", new_file);
 
-      const response = await axios.patch(url, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosInstance.patch(
+        `${updateGenralDoc}?file_id=${file_id}&category=${encodeURIComponent(
+          category
+        )}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
-      toast.success(response?.data?.message || "File updated successfully");
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const DeleteGeneralDocSubmit = createAsyncThunk(
-  'DeleteGeneralDocSubmit',
+  "general/DeleteGeneralDocSubmit",
   async ({ file_id, category }, { rejectWithValue }) => {
-
-    const token = sessionStorage.getItem('token');
-    const url = `${baseURL}/admin_user_chat/delete?category=${encodeURIComponent(category)}`;
-
     try {
-      const response = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-        },
-        params: {
-          file_id,
-        },
-      });
+      const response = await axiosInstance.delete(
+        `/admin_user_chat/delete?category=${encodeURIComponent(category)}`,
+        { params: { file_id } }
+      );
 
-      toast.success(response?.data?.message);
       return response.data;
-
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const GeneralInfoSubmit = createAsyncThunk(
-  'auth/GeneralInfoSubmit',
-  async () => {
-
-    const token = sessionStorage.getItem('token');
-
+  "general/GeneralInfoSubmit",
+  async (_, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${listGeneralInfoDoc}`;
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "ngrok-skip-browser-warning": "true",
-          "Content-Type": "application/json",
-        },
-      });
-
+      const response = await axiosInstance.get(listGeneralInfoDoc);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
@@ -256,54 +80,12 @@ export const AskQuestionGeneralAPI = createAsyncThunk(
   "chat/AskQuestionGeneralAPI",
   async (Data, { rejectWithValue }) => {
     try {
-      const token = sessionStorage.getItem("token");
-
-      const response = await axios.post(`${baseURL}${AskGeneralDoc}`, Data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
+      const response = await axiosInstance.post(AskGeneralDoc, Data);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "Question not sent";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(
+        error.response?.data?.message || "Question not sent"
+      );
     }
   }
 );

@@ -1,4 +1,3 @@
-// src/components/ChatWindow.jsx
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -56,7 +55,7 @@ export const ChatWindow = ({ category, heading }) => {
           toast.error(
             event.error === "not-allowed"
               ? "Microphone access denied."
-              : "Voice recognition error: " + event.error
+              : "Voice not recognized. Please try again later..."
           );
           setIsRecording(false);
         };
@@ -204,12 +203,12 @@ export const ChatWindow = ({ category, heading }) => {
             </div>
           </div>
 
-          <div className="pt-2">
-            <div className="d-flex align-items-center rounded py-2 bg-white">
+          <div className="pt-2 pb-1">
+            <div className="d-flex align-items-end rounded-pill py-2 px-3 bg-white shadow-sm border">
               <textarea
                 ref={textareaRef}
                 rows={1}
-                className="form-control mx-2"
+                className="form-control flex-grow-1 border-0 shadow-none bg-transparent me-2"
                 placeholder="Ask Now, Let’s Work…"
                 value={message}
                 onChange={(e) => {
@@ -232,25 +231,34 @@ export const ChatWindow = ({ category, heading }) => {
                       textareaRef.current.style.height = "auto";
                   }
                 }}
-                style={{ resize: "none", overflow: "auto" }}
+                style={{
+                  resize: "none",
+                  overflow: "hidden",
+                  maxHeight: "80px",
+                  lineHeight: "20px",
+                }}
                 disabled={isSending}
               />
+
               {message.length > 0 ? (
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary rounded-circle d-flex align-items-center justify-content-center"
                   onClick={handleSendMessage}
                   disabled={isSending}
                   aria-label="Send message"
+                  style={{ width: "38px", height: "38px", padding: "0" }}
                 >
-                  <i className="bi bi-send"></i>
+                  <i className="bi bi-send-fill"></i>
                 </button>
               ) : (
                 <button
-                  className={`btn me-2 ${
+                  className={`btn rounded-circle d-flex align-items-center justify-content-center ${
                     isRecording ? "btn-danger" : "btn-outline-secondary"
                   }`}
                   onClick={startRecording}
+                  disabled={isSending}
                   aria-label="Record message"
+                  style={{ width: "38px", height: "38px", padding: "0" }}
                 >
                   <i
                     className={`bi ${

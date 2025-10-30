@@ -5,11 +5,11 @@ import {
   UploadGeneralDocSubmit,
   UpdateGeneralDocSubmit,
   DeleteGeneralDocSubmit,
-} from "../../../Networking/Admin/APIs/GeneralinfoApi";
+} from "../Networking/Admin/APIs/GeneralinfoApi";
 import { toast } from "react-toastify";
-import RAGLoader from "../../../Component/Loader";
+import RAGLoader from "./Loader";
 
-export const ComparativeBuildingData = () => {
+const DocumentManager = ({ category, title, description }) => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,18 +23,16 @@ export const ComparativeBuildingData = () => {
     try {
       const res = await dispatch(GeneralInfoSubmit()).unwrap();
       if (Array.isArray(res)) {
-        const buildingDocs = res.filter(
-          (f) => f.category === "ComparativeBuilding"
-        );
+        const filteredDocs = res.filter((f) => f.category === category);
         setDocs(
-          buildingDocs.map((f) => ({
+          filteredDocs.map((f) => ({
             file_id: f.file_id,
             name: f.original_file_name,
           }))
         );
       }
     } catch (err) {
-      console.error("Error fetching Building docs:", err);
+      console.error(`Error fetching ${category} docs:`, err);
     } finally {
       setListLoading(false);
     }
@@ -42,7 +40,7 @@ export const ComparativeBuildingData = () => {
 
   useEffect(() => {
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, category]);
 
   const uploadFile = async (file) => {
     if (
@@ -53,7 +51,7 @@ export const ComparativeBuildingData = () => {
         "text/csv",
       ].includes(file.type)
     ) {
-      toast.error("Only PDF, DOCX, XLSX files are allowed");
+      toast.error("Only PDF, DOCX, XLSX, and CSV files are allowed");
       return;
     }
 
@@ -64,10 +62,7 @@ export const ComparativeBuildingData = () => {
 
     setLoading(true);
     try {
-      await dispatch(
-        UploadGeneralDocSubmit({ file, category: "ComparativeBuilding" })
-      ).unwrap();
-
+      await dispatch(UploadGeneralDocSubmit({ file, category })).unwrap();
       await fetchData();
       toast.success("File uploaded successfully!");
     } catch (err) {
@@ -114,13 +109,13 @@ export const ComparativeBuildingData = () => {
         UpdateGeneralDocSubmit({
           file_id: editingFile.file_id,
           new_file: newFile,
-          category: "ComparativeBuilding",
+          category,
         })
       ).unwrap();
-
       await fetchData();
     } catch (err) {
       console.error("Edit failed:", err);
+      toast.error("Edit failed!");
     } finally {
       setLoading(false);
       e.target.value = null;
@@ -133,12 +128,8 @@ export const ComparativeBuildingData = () => {
     setLoading(true);
     try {
       await dispatch(
-        DeleteGeneralDocSubmit({
-          file_id: file.file_id,
-          category: "ComparativeBuilding",
-        })
+        DeleteGeneralDocSubmit({ file_id: file.file_id, category })
       ).unwrap();
-
       await fetchData();
     } catch (err) {
       console.error("Delete failed:", err);
@@ -150,10 +141,8 @@ export const ComparativeBuildingData = () => {
 
   return (
     <div className="container p-4">
-      <h5 className="fw-bold">Comparative Building Data</h5>
-      <p className="text-muted">
-        Upload and manage documents for Building Information
-      </p>
+      <h5 className="fw-bold">{title}</h5>
+      <p className="text-muted">{description}</p>
 
       <div
         className={`border border-2 rounded-3 p-2 text-center mb-4 ${
@@ -191,19 +180,19 @@ export const ComparativeBuildingData = () => {
           </div>
         ) : (
           <ul className="list-group list-group-flush">
-            {docs?.length === 0 && (
+            {docs.length === 0 && (
               <li className="list-group-item text-muted">
                 No documents uploaded yet.
               </li>
             )}
-            {docs?.map((file) => (
+            {docs.map((file) => (
               <li
-                key={file?.file_id}
+                key={file.file_id}
                 className="list-group-item d-flex justify-content-between align-items-center"
               >
                 <span>
                   <i className="bi bi-file-earmark-text text-primary me-2"></i>
-                  {file?.name}
+                  {file.name}
                 </span>
                 <span>
                   <i
@@ -225,7 +214,7 @@ export const ComparativeBuildingData = () => {
 
       <input
         type="file"
-        accept=".pdf,.docx,.xls,.xlsx"
+        accept=".pdf,.csv,.docx,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}
@@ -233,3 +222,5 @@ export const ComparativeBuildingData = () => {
     </div>
   );
 };
+
+export default DocumentManager;

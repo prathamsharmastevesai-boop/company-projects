@@ -1,301 +1,79 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { ActivitySummary, AIAnalyticsData, AIInsights, baseURL, RecentQuestion, UsageTreads } from "../../NWconfig";
+import axiosInstance from "./AxiosInstance";
+import {
+  ActivitySummary,
+  AIAnalyticsData,
+  AIInsights,
+  RecentQuestion,
+  UsageTreads,
+} from "../../NWconfig";
 
 export const getAnalyticApi = createAsyncThunk(
   "getAnalyticApi",
-  async (Data) => {
-    const token = sessionStorage.getItem("token");
-
+  async (Data, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${AIAnalyticsData}`;
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axiosInstance.get(AIAnalyticsData, {
         params: Data,
       });
-
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const getInslightApi = createAsyncThunk(
   "getInslightApi",
-  async (_, thunkAPI) => {
-    const token = sessionStorage.getItem("token");
-
+  async (_, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${AIInsights}`;
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.data?.message) {
-        toast.success(response.data.message);
-      }
-
+      const response = await axiosInstance.get(AIInsights);
+      if (response.data?.message) toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const getRecentQuestionApi = createAsyncThunk(
   "getRecentQuestionApi",
-  async () => {
-    const token = sessionStorage.getItem("token");
-
+  async (_, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${RecentQuestion}`;
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
+      const response = await axiosInstance.get(RecentQuestion);
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const getUsageTreadApi = createAsyncThunk(
   "getUsageTreadApi",
-  async (days) => {
-    const token = sessionStorage.getItem("token");
-
+  async (days, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${UsageTreads}`;
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-          Authorization: `Bearer ${token}`,
-        },
-        params: days
-      });
-
+      const response = await axiosInstance.get(UsageTreads, { params: days });
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
 
 export const getActivitySummaryApi = createAsyncThunk(
   "getActivitySummaryApi",
-  async (days) => {
-    const token = sessionStorage.getItem("token");
-
+  async (days, { rejectWithValue }) => {
     try {
-      const url = `${baseURL}${ActivitySummary}`;
-      const response = await axios.get(url, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axiosInstance.get(ActivitySummary, {
         params: { days },
       });
-
       toast.success(response.data.message);
       return response.data;
     } catch (error) {
-      const status = error.response?.status;
-      const message = error.response?.data?.detail || error.response?.data?.message;
-
-      console.log(status, "error.");
-
-      if (status === 401) {
-        toast.error("Session expired. Please log in again.");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("auth");
-        sessionStorage.removeItem("tokenExpiry");
-        window.location.href = "/";
-        return rejectWithValue("Session expired");
-      } 
-      else if ([400, 403, 404, 409].includes(status)) {
-        let errorMessage = "An error occurred. Please try again.";
-        switch (status) {
-          case 400:
-            errorMessage = message || "Bad Request. Please check the input and try again.";
-            break;
-          case 403:
-            errorMessage = message || "Forbidden. You do not have permission to access this resource.";
-            break;
-          case 404:
-            errorMessage = message || "Not Found. The requested resource could not be found.";
-            break;
-          case 409:
-            errorMessage = message || "Conflict. There was a conflict with your request.";
-            break;
-        }
-        toast.error(errorMessage);
-        return rejectWithValue(errorMessage);
-      } 
-      else {
-        const errMsg = message || "An internal server error occurred. Please try again later.";
-        toast.error(errMsg);
-        return rejectWithValue(errMsg);
-      }
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
-

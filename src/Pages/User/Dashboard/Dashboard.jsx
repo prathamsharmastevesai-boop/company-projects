@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
-import buildingCardImg from "../../../assets/side_photo.jpg";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
 import RAGLoader from "../../../Component/Loader";
@@ -56,15 +54,7 @@ export const Dashboard = () => {
 
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    if (building.access_status === "NULL") {
-      toast.warning("you have not access to this building contact to admin");
-    } else if (building.access_status === "approved") {
-      navigate("/UserLease", { state: { office: { buildingId } } });
-    } else if (building.access_status === "pending") {
-      toast.warning("Request in Pending State");
-    } else {
-      toast.error("Request denied");
-    }
+    navigate("/UserLease", { state: { office: { buildingId } } });
   };
 
   return (
@@ -120,10 +110,15 @@ export const Dashboard = () => {
               <h2 className="text-start mb-0 fw-bold">Featured Buildings</h2>
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="col-md-12 py-2">
             <input
               type="search"
-              className="form-control"
+              style={{
+                borderWidth: "0.1px",
+                borderColor: "#cacacaff",
+                borderRadius: "16px",
+              }}
+              className="form-control bg-white text-dark dark-placeholder"
               placeholder="Search address..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -150,9 +145,11 @@ export const Dashboard = () => {
               <div className="col-12 mb-3" key={building.id}>
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
-                  className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
+                  className="card shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
                   style={{
-                    backgroundColor: "#e6f7ff",
+                    backgroundColor: "#fff",
+                    borderWidth: "0.1px",
+                    borderColor: "#cacacaff",
                     borderRadius: "16px",
                     minHeight: "80px",
                   }}
@@ -162,24 +159,8 @@ export const Dashboard = () => {
                     onClick={() => handleSubmit(building)}
                     style={{ cursor: "pointer" }}
                   >
-                    {building.access_status !== "approved" && (
-                      <div
-                        className="position-absolute"
-                        style={{ top: "10px", right: "10px", zIndex: 2 }}
-                        title="Request Access"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRequestPermission(building.id);
-                        }}
-                      >
-                        <i
-                          className="bi bi-shield-lock-fill text-warning fs-5"
-                          style={{ cursor: "pointer" }}
-                        ></i>
-                      </div>
-                    )}
                     <p className="mb-1">
-                      <strong>Portfolio Pulse, Curated Intelligence:</strong>{" "}
+                      <strong>Curated Intelligence:</strong>{" "}
                       {building.address || "N/A"}
                     </p>
                   </div>

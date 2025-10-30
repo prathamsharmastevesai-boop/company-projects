@@ -3,10 +3,7 @@ import { useDispatch } from "react-redux";
 import { Spinner, Form, Button, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import {
-  FeedbackSubmit,
-  gefeedbackSubmit,
-} from "../../../Networking/User/APIs/Feedback/feedbackApi";
+import { FeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
 
 export const Feedback = () => {
   const dispatch = useDispatch();

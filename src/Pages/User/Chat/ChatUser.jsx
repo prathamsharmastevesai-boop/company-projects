@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
 
-import { getlist_his_oldApi } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionAPI } from "../../../Networking/Admin/APIs/UploadDocApi";
 
 export const UserChat = () => {
@@ -22,7 +21,6 @@ export const UserChat = () => {
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [loadingSessions, setLoadingSessions] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [chatList, setChatList] = useState([]);
@@ -31,52 +29,6 @@ export const UserChat = () => {
 
   const [speakingIndex, setSpeakingIndex] = useState(null);
   const chatRef = useRef(null);
-
-  // const fetchMessages = async () => {
-  //   setLoadingSessions(true);
-  //   try {
-  //     const res = await dispatch(getlist_his_oldApi()).unwrap();
-  //     const filtered = res.filter((chat) => {
-  //       const matchType = type ? chat.category === type : true;
-  //       const matchBuilding =
-  //         Building_id !== undefined && Building_id !== null
-  //           ? String(chat.building_id) === String(Building_id)
-  //           : true;
-  //       return matchType && matchBuilding;
-  //     });
-
-  //     setChatList(filtered);
-
-  //     if (incomingSessionId) {
-  //       setSelectedChatId(incomingSessionId);
-  //       setSessionId(incomingSessionId);
-  //     } else if (filtered.length > 0) {
-  //       const latestChat = filtered[0];
-  //       setSelectedChatId(latestChat.session_id);
-  //       setSessionId(latestChat.session_id);
-  //     } else {
-  //       const newId = uuidv4();
-  //       const newChat = {
-  //         session_id: newId,
-  //         name: newId,
-  //         created_at: new Date().toISOString(),
-  //         category: type,
-  //       };
-  //       setChatList([newChat]);
-  //       setSessionId(newId);
-  //       setSelectedChatId(newId);
-  //       setMessages([]);
-  //     }
-  //   } catch (e) {
-  //     console.error("Fetch messages failed:", e);
-  //   } finally {
-  //     setLoadingSessions(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchMessages();
-  // }, [incomingSessionId]);
 
   useEffect(() => {
     if (chatRef.current)
@@ -112,7 +64,7 @@ export const UserChat = () => {
           toast.error(
             event.error === "not-allowed"
               ? "Microphone access denied."
-              : "Voice recognition error: " + event.error
+              : "Voice not recognized. Please try again later..."
           );
           setIsRecording(false);
         };
@@ -291,13 +243,12 @@ export const UserChat = () => {
               )}
             </div>
           </div>
-
-          <div className="pt-2">
-            <div className="d-flex align-items-center  rounded py-2 bg-white">
+          <div className="pt-2 pb-1">
+            <div className="d-flex align-items-end rounded-pill py-2 px-3 bg-white shadow-sm border">
               <textarea
                 ref={textareaRef}
                 rows={1}
-                className="form-control mx-2"
+                className="form-control flex-grow-1 border-0 shadow-none bg-transparent me-2"
                 placeholder="Ask Now, Let’s Work…"
                 value={message}
                 onChange={(e) => {
@@ -320,25 +271,34 @@ export const UserChat = () => {
                       textareaRef.current.style.height = "auto";
                   }
                 }}
-                style={{ resize: "none", overflow: "auto" }}
+                style={{
+                  resize: "none",
+                  overflow: "hidden",
+                  maxHeight: "80px",
+                  lineHeight: "20px",
+                }}
                 disabled={isSending}
               />
+
               {message.length > 0 ? (
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-secondary rounded-circle d-flex align-items-center justify-content-center"
                   onClick={handleSendMessage}
                   disabled={isSending}
                   aria-label="Send message"
+                  style={{ width: "38px", height: "38px", padding: "0" }}
                 >
-                  <i className="bi bi-send"></i>
+                  <i className="bi bi-send-fill"></i>
                 </button>
               ) : (
                 <button
-                  className={`btn me-2 ${
+                  className={`btn rounded-circle d-flex align-items-center justify-content-center ${
                     isRecording ? "btn-danger" : "btn-outline-secondary"
                   }`}
                   onClick={startRecording}
+                  disabled={isSending}
                   aria-label="Record message"
+                  style={{ width: "38px", height: "38px", padding: "0" }}
                 >
                   <i
                     className={`bi ${

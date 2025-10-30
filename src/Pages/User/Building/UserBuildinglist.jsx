@@ -1,11 +1,9 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
-import buildingCardImg from "../../../assets/side_photo.jpg";
-import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
-import { toast } from "react-toastify";
+
 import RAGLoader from "../../../Component/Loader";
 
 export const UserBuildinglist = () => {
@@ -40,32 +38,9 @@ export const UserBuildinglist = () => {
           building.address?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-  const handleRequestPermission = async (building_id) => {
-    if (requestingPermissionId === building_id) return;
-
-    setRequestingPermissionId(building_id);
-    try {
-      const res = await dispatch(
-        RequestPermissionSubmit({ building_id })
-      ).unwrap();
-    } catch (err) {
-      console.error("Permission request failed:", err);
-    } finally {
-      setRequestingPermissionId(null);
-    }
-  };
-
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    if (building.access_status === "NULL") {
-      toast.warning("you have not access to this building contact to admin");
-    } else if (building.access_status === "approved") {
-      navigate("/UserLease", { state: { office: { buildingId } } });
-    } else if (building.access_status === "pending") {
-      toast.warning("Request in Pending State");
-    } else {
-      toast.error("Request denied");
-    }
+    navigate("/UserLease", { state: { office: { buildingId } } });
   };
 
   return (
@@ -136,24 +111,8 @@ export const UserBuildinglist = () => {
                     onClick={() => handleSubmit(building)}
                     style={{ cursor: "pointer" }}
                   >
-                    {building.access_status !== "approved" && (
-                      <div
-                        className="position-absolute"
-                        style={{ top: "10px", right: "10px", zIndex: 2 }}
-                        title="Request Access"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRequestPermission(building.id);
-                        }}
-                      >
-                        <i
-                          className="bi bi-shield-lock-fill text-warning fs-5"
-                          style={{ cursor: "pointer" }}
-                        ></i>
-                      </div>
-                    )}
                     <p className="mb-1">
-                      <strong>Portfolio Pulse, Curated Intelligence:</strong>
+                      <strong>Curated Intelligence:</strong>
                       {building.address || "N/A"}
                     </p>
                   </div>

@@ -45,7 +45,7 @@ import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence
 import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
 import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 import { SessionList } from "./Pages/User/Session/sessionList";
-import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/LeaseDreaftingUpload";
+import { LeaseAbstractUpload } from "./Pages/Admin/LeaseAbstract/LeaseAbstractUpload";
 import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
 import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/comparetiveBuilding";
 import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
@@ -55,6 +55,7 @@ import { TenantMarket } from "./Pages/User/TenantMarket/tenantMarket";
 import { TenantMarketUpload } from "./Pages/Admin/GeneralInfo/TenantMarket";
 import { TenantInformation } from "./Pages/User/TenantInformation/tenantInformationChat";
 import { TenantInformationUpload } from "./Pages/Admin/GeneralInfo/TenantInformation";
+import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/leaseDrafting";
 
 function App() {
   useEffect(() => {
@@ -105,10 +106,14 @@ function App() {
             <Route path="/RagSystem" element={<RagSystem />} />
             <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
             <Route
+              path="/LeaseAbstractUpload"
+              element={<LeaseAbstractUpload />}
+            />
+
+            <Route
               path="/LeaseDraftingUpload"
               element={<LeaseDraftingUpload />}
             />
-
             <Route path="/Thirdparty" element={<Thirdparty />} />
             <Route path="/EmployContact" element={<EmployContact />} />
             <Route path="/Comps" element={<MarketIntelligence />} />
@@ -171,7 +176,10 @@ function App() {
               element={<ComparativeBuildingChat />}
             />
             <Route path="/Feedback" element={<Feedback />} />
-
+            <Route
+              path="/LeaseAbstractUpload1"
+              element={<LeaseAbstractUpload />}
+            />
             <Route path="/BrokerChat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />

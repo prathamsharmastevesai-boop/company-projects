@@ -86,18 +86,23 @@ export const SystemTracing = "/admin/system_tracing";
 export const InviteUser = "/invite_user/admin";
 export const userList = "/invite_user/admin/invited-users";
 
+//AI LEASE Abstract
+export const upload_Abstract_Lease = "/generate_lease/upload/simple";
+export const listAbstractDoc = "/generate_lease/list_category_files/";
+export const deleteAbstractDoc = "/generate_lease/delete_file/";
+
 //AI LEASE DRAFTING
-export const upload_Drafting_Lease = "/generate_lease/upload/simple";
-export const listDraftingDoc = "/generate_lease/list_category_files/";
-export const deleteDraftingDoc = "/generate_lease/delete_file/";
-export const extractMetadata = "/generate_lease/files/structured_metadata?";
-export const extractTextdata = "/generate_lease/files/lease-agreement-text";
-export const extractTextViewdata = "/generate_lease/files/view_generated_lease/text";
-export const updatetextdata = "/generate_lease/files/text";
+export const upload_Drafting_Lease = "/gen_lease/upload/simple";
+export const listDraftingDoc = "/gen_lease/list_category_files/";
+export const deleteDraftingDoc = "/gen_lease/delete_file/";
+export const extractMetadata = "/gen_lease/files/structured_metadata?";
+export const extractTextdata = "/gen_lease/files/lease-agreement-text";
+export const extractTextViewdata = "/gen_lease/files/view_generated_lease/text";
+export const updatetextdata = "/gen_lease/files/text";
 
 //Feedback
-export const feedbacksubmit = "/feedback/submit"; 
-export const getfeedback="/feedback/my-feedback";
+export const feedbacksubmit = "/feedback/submit";
+export const getfeedback = "/feedback/my-feedback";
 export const getadminfeedback = "/feedback/company-feedback";
 
 //SUPER ADMIN
