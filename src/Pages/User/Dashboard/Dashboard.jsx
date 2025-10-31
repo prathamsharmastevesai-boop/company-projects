@@ -151,7 +151,6 @@ export const Dashboard = () => {
                     borderWidth: "0.1px",
                     borderColor: "#cacacaff",
                     borderRadius: "16px",
-                    minHeight: "80px",
                   }}
                 >
                   <div
@@ -159,10 +158,12 @@ export const Dashboard = () => {
                     onClick={() => handleSubmit(building)}
                     style={{ cursor: "pointer" }}
                   >
-                    <p className="mb-1">
-                      {/* <strong>Curated Intelligence:</strong>{" "} */}
-                      {building.address || "N/A"}
-                    </p>
+                    <div className="d-flex mx-1">
+                      <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+                      <div className="mx-2 check">
+                        {building.address || "N/A"}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
