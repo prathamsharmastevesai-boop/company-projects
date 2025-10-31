@@ -172,9 +172,9 @@ export const ListBuilding = () => {
             <div className="col-md-12 py-2">
               <div className="d-flex mx-1">
                 <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+                <div className="mx-2 check">{building.address || "N/A"}</div>
                 {/* <strong>Curated Intelligence:</strong> */}
               </div>
-              <div className="mx-2 check">{building.address || "N/A"}</div>
             </div>
           </p>
         )}
