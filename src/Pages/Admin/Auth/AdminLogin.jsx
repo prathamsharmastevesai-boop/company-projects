@@ -58,10 +58,9 @@ export const AdminLogin = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "admin" })
       ).unwrap();
-      const { role, access_token, expiryTime } = res;
+      const { role, expiryTime } = res;
 
-      if ((role === "admin" || role === "superuser") && access_token) {
-        sessionStorage.setItem("token", access_token);
+      if (role === "admin" || role === "superuser") {
         sessionStorage.setItem(
           "auth",
           JSON.stringify({ isAuthenticated: true, role })

@@ -59,16 +59,10 @@ export const Login = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "user" })
       ).unwrap();
-      const { role, access_token, expiryTime } = res;
-      console.log(
-        role,
-        access_token,
-        expiryTime,
-        "role, access_token, expiryTime"
-      );
+      const { expiryTime } = res;
 
-      if (role === "user" && access_token) {
-        sessionStorage.setItem("token", access_token);
+      const role = res.role;
+      if (role === "user") {
         sessionStorage.setItem(
           "auth",
           JSON.stringify({ isAuthenticated: true, role })

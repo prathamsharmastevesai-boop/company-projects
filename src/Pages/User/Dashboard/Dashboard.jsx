@@ -160,7 +160,7 @@ export const Dashboard = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <p className="mb-1">
-                      <strong>Curated Intelligence:</strong>{" "}
+                      {/* <strong>Curated Intelligence:</strong>{" "} */}
                       {building.address || "N/A"}
                     </p>
                   </div>

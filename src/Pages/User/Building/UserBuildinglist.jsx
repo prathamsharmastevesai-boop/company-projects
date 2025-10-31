@@ -101,9 +101,10 @@ export const UserBuildinglist = () => {
                   ref={(el) => (cardsRef.current[building.id] = el)}
                   className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
                   style={{
-                    backgroundColor: "#e6f7ff",
+                    backgroundColor: "#fff",
+                    borderWidth: "0.1px",
+                    borderColor: "#cacacaff",
                     borderRadius: "16px",
-                    minHeight: "80px",
                   }}
                 >
                   <div
@@ -112,7 +113,7 @@ export const UserBuildinglist = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <p className="mb-1">
-                      <strong>Curated Intelligence:</strong>
+                      {/* <strong>Curated Intelligence:</strong> */}
                       {building.address || "N/A"}
                     </p>
                   </div>

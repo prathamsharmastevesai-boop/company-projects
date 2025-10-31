@@ -7,17 +7,11 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "multipart/form-data",
     "ngrok-skip-browser-warning": "true",
-    // "credrentuisld": "incluydes"
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
   if (config.data instanceof FormData) {
     config.headers["Content-Type"] = "multipart/form-data";
   } else {
@@ -36,10 +30,6 @@ axiosInstance.interceptors.response.use(
       error.response?.data?.detail || error.response?.data?.message;
 
     if (status === 401) {
-      toast.error("Session expired. Please log in again.");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("auth");
-      sessionStorage.removeItem("tokenExpiry");
       window.location.href = "/";
     } else if ([400, 403, 404, 409].includes(status)) {
       let errorMessage = "An error occurred. Please try again.";
