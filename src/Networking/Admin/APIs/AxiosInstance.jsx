@@ -1,6 +1,6 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import { baseURL } from "../../NWconfig";
+import { toast } from "react-toastify";
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
     "Content-Type": "multipart/form-data",
     "ngrok-skip-browser-warning": "true",
   },
-  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -18,6 +17,9 @@ axiosInstance.interceptors.request.use((config) => {
     config.headers["Content-Type"] = "application/json";
     config.headers["Accept"] = "application/json";
   }
+  const token = sessionStorage.getItem("access_token");
+
+  config.headers["Authorization"] = `Bearer ${token}`;
 
   return config;
 });

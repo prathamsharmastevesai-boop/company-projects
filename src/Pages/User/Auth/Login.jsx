@@ -50,6 +50,10 @@ export const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleforget = () => {
+    navigate("/ForgotPassword");
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -59,7 +63,6 @@ export const Login = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "user" })
       ).unwrap();
-      const { expiryTime } = res;
 
       const role = res.role;
       if (role === "user") {
@@ -67,7 +70,6 @@ export const Login = () => {
           "auth",
           JSON.stringify({ isAuthenticated: true, role })
         );
-        sessionStorage.setItem("tokenExpiry", expiryTime);
 
         toast.success("User login successful");
         navigate("/dashboard", { state: { email } });
@@ -164,6 +166,13 @@ export const Login = () => {
             >
               Sign in
             </button>
+            <div
+              className="text-end"
+              style={{ cursor: "pointer" }}
+              onClick={() => handleforget({ email })}
+            >
+              Forgot password?
+            </div>
           </form>
         </div>
       </div>

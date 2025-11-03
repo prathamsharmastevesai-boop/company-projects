@@ -11,11 +11,9 @@ export const LoginSubmit = createAsyncThunk(
         headers: { "Content-Type": "application/json" },
       });
 
-      const role = response.data?.role;
-      const expiresIn = response.data?.expires_in || 172800;
-      const expiryTime = Date.now() + expiresIn * 1000;
+      const res = response.data;
 
-      return { role: role, expiryTime };
+      return res;
     } catch (error) {
       const status = error.response?.status;
 
@@ -36,7 +34,7 @@ export const SignUpSubmit = createAsyncThunk(
     try {
       const response = await axiosInstance.post(Sigup, credentials);
 
-      const { role, expires_in, message } = response.data;
+      const { role, message } = response.data;
 
       if (message) {
         toast.success(message);
@@ -44,14 +42,11 @@ export const SignUpSubmit = createAsyncThunk(
       }
 
       if (role) {
-        const expiryTime = Date.now() + (expires_in || 172800) * 1000;
-
-        sessionStorage.setItem("token", "dgfhdsjh");
-        sessionStorage.setItem(
-          "auth",
-          JSON.stringify({ isAuthenticated: true, role })
-        );
-        sessionStorage.setItem("tokenExpiry", expiryTime);
+        //   sessionStorage.setItem("token", "dgfhdsjh");
+        //   sessionStorage.setItem(
+        //     "auth",
+        //     JSON.stringify({ isAuthenticated: true, role })
+        //   );
 
         return { role };
       }

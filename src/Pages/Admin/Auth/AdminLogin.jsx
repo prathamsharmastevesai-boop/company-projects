@@ -58,18 +58,25 @@ export const AdminLogin = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "admin" })
       ).unwrap();
-      const { role, expiryTime } = res;
+      console.log(res, "resres admin login");
+
+      const { role, access_token } = res;
 
       if (role === "admin" || role === "superuser") {
         sessionStorage.setItem(
           "auth",
           JSON.stringify({ isAuthenticated: true, role })
         );
-        sessionStorage.setItem("tokenExpiry", expiryTime);
+
+        if (access_token) {
+          console.log("got token");
+          sessionStorage.setItem("access_token", access_token);
+        }
 
         if (role === "admin") {
           toast.success("Admin login successful");
           navigate("/AdminDashboard");
+          console.log("admin login page");
         } else if (role === "superuser") {
           toast.success("Superuser login successful");
           navigate("/AdminManagement");
