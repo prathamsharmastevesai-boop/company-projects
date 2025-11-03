@@ -64,12 +64,18 @@ export const Login = () => {
         LoginSubmit({ email, password, role: "user" })
       ).unwrap();
 
-      const role = res.role;
+      const { role, access_token } = res;
+
       if (role === "user") {
         sessionStorage.setItem(
           "auth",
           JSON.stringify({ isAuthenticated: true, role })
         );
+
+        if (access_token) {
+          console.log("got token");
+          sessionStorage.setItem("access_token", access_token);
+        }
 
         toast.success("User login successful");
         navigate("/dashboard", { state: { email } });
