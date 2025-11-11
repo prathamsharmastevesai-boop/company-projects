@@ -11,13 +11,14 @@ export const DashboardLayout = () => {
     const chatRoutes = [
       "/UserChat",
       "/ChatWithAnyDoc",
-      "/BrokerChat",
+      "/ThirdParty",
       "/ColleagueChat",
       "/BuildingChat",
       "/CompsChat",
       "/ComparativeBuildingChat",
       "/TenantInformationChat",
       "/TenantMarket",
+      "/geminichat",
     ];
 
     const isChat = chatRoutes.some((path) =>

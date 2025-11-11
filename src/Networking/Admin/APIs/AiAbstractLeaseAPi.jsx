@@ -12,7 +12,32 @@ import {
   updatetextdata,
   upload_Abstract_Lease,
   upload_Drafting_Lease,
+  upload_Report_Generator,
 } from "../../NWconfig";
+
+export const UploadReportGenerator = createAsyncThunk(
+  "/UploadReportGenerator",
+  async ({ file, category }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("category", category.toLowerCase());
+
+      const response = await axiosInstance.post(
+        upload_Report_Generator,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Upload failed");
+    }
+  }
+);
 
 export const UploadAbstractLeaseDoc = createAsyncThunk(
   "/UploadAbstractLeaseDoc",

@@ -1,17 +1,20 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { SessionList } from "../Pages/User/Session/sessionList";
+import { getProfileDetail } from "../Networking/User/APIs/Profile/ProfileApi";
 
 export const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const { Role } = useSelector((state) => state.loginSlice);
 
   const [openMenu, setOpenMenu] = useState(null);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [Gemini, setGemimiStatus] = useState();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -38,6 +41,19 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await dispatch(getProfileDetail()).unwrap();
+        setGemimiStatus(response?.gemini_status);
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      } finally {
+      }
+    };
+    fetchProfile();
+  }, [dispatch]);
 
   const toggleSidebar = () => {
     if (isMobile) {
@@ -487,8 +503,66 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi bi-cpu me-2" />
+                    <i className="bi bi-file-earmark-text me-2" />{" "}
                     {!collapsed && "AI Lease Abstract"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/SummeryUpload") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/SummeryUpload")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-graph-up me-2" />
+                    {!collapsed && "Report Summarizer"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/EmailDrafting") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/EmailDrafting")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-envelope-open me-2" />{" "}
+                    {!collapsed && "Email Drafting"}
+                  </span>
+                </li>
+                {Gemini == true && (
+                  <li
+                    className={`nav-item ${
+                      isActive("/geminichat") ? "active" : ""
+                    }`}
+                  >
+                    <span
+                      onClick={() => handleLinkClick("/geminichat")}
+                      className="nav-link text-white"
+                      style={{ cursor: "pointer", fontSize: 12 }}
+                    >
+                      <i className="bi bi-chat-dots-fill me-2" />
+                      {!collapsed && "Gemini"}
+                    </span>
+                  </li>
+                )}
+                <li
+                  className={`nav-item ${isActive("/history") ? "active" : ""}`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/history")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-clock-history me-2" />
+                    {!collapsed && "History"}
                   </span>
                 </li>
 
@@ -513,11 +587,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   <ul className="nav flex-column mt-1">
                     <li
                       className={`nav-item ${
-                        isActive("/BrokerChat") ? "active" : ""
+                        isActive("/ThirdPartychat") ? "active" : ""
                       }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/BrokerChat")}
+                        onClick={() => handleLinkClick("/ThirdPartychat")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >

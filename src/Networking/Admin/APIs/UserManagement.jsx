@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "./AxiosInstance";
 import { toast } from "react-toastify";
-import { InviteUser, userList } from "../../NWconfig";
+import { InviteUser, userList, ToggleGemini } from "../../NWconfig";
 
 export const inviteUserApi = createAsyncThunk(
   "auth/inviteUserApi",
@@ -27,6 +27,22 @@ export const getUserlistApi = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch user list"
+      );
+    }
+  }
+);
+
+export const toggleGeminiApi = createAsyncThunk(
+  "user/toggleGeminiApi",
+  async ({ email, enable }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        ToggleGemini + `?email=${email}&enable=${enable}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle Gemini"
       );
     }
   }

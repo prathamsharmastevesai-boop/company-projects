@@ -32,7 +32,9 @@ export const SessionListModal = ({ show, onClose }) => {
 
     switch (session.category) {
       case "Broker":
-        navigate("/BrokerChat", { state: { sessionId: session.session_id } });
+        navigate("/ThirdPartychat", {
+          state: { sessionId: session.session_id },
+        });
         break;
       case "Colleague":
         navigate("/ColleagueChat", {

@@ -275,9 +275,9 @@ export const LeaseAbstractUpload = () => {
 
       <div className="border border-2 rounded-3 py-5 text-center mb-4 bg-light">
         <i className="bi bi-upload fs-1 text-primary"></i>
-        <h6 className="fw-semibold mt-3">Upload Letter of Intent</h6>
+        <h6 className="fw-semibold mt-3">Upload Lease Agreement</h6>
         <p className="text-muted mb-3">
-          Drag and drop Letter of Intent file here, or click to select file
+          Drag and drop Lease Agreement file here, or click to select file
         </p>
         <label className="btn btn-outline-primary">
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose File

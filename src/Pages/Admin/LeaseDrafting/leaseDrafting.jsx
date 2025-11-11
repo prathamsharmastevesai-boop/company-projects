@@ -208,7 +208,6 @@ export const LeaseDraftingUpload = () => {
     toast.success("Feedback submitted. Thank you!");
   };
 
-  // ✅ NEW: Download draft as text file
   const handleDownloadDraft = () => {
     const textToDownload = isEditing ? editedDraft : aiDraft;
     const blob = new Blob([textToDownload], { type: "text/plain" });
@@ -461,7 +460,6 @@ export const LeaseDraftingUpload = () => {
             )}
           </div>
 
-          {/* ✅ Download button before feedback */}
           {!isEditing && !submittedFeedback && (
             <div className="card-footer">
               <div className="d-flex justify-content-end mb-3">

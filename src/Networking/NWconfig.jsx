@@ -31,28 +31,29 @@ export const UpdateDoc = "/chatbot/update_files/";
 export const ListDoc = "/chatbot/files/";
 export const DeleteDoc = "/chatbot/delete_files/";
 
-//ASK QUESTION
+//ASK QUESTION building
 export const AskQuestion = "/chatbot/ask_question/";
-export const Old_history = "/chatbot/chat/sessions/";
-export const Chat_history = "/chatbot/chat/history/";
-export const Del_Chat_Session = "/chatbot/chat/";
+
+// chat Ask Question
+export const AskQuestionEndpoint = "/user/ask_simple/";
+export const Chat_history = "/chat/history/";
+export const Del_Chat_Session = "/chat/delete/";
+
+//session list
+export const Session_List_Specific = "/chat/sessions/";
+
+export const AskGemini = "gemini/chat";
+export const ToggleGemini = "/gemini/gemini-toggle";
 
 //SPECIFIC CHAT
 export const Upload_specific_file = "/user/standalone/upload";
 export const List_specific_Docs = "/user/list_simple_files/";
-export const AskQuestion_Specific = "/user/ask_simple/";
-// export const Session_List_Specific = "/user/chat/sessions/";
-export const Session_List_Specific = "/chatbot/chat/sessions/";
-// export const Chat_history_Specific = "/admin_user_chat/chat/history/";
-export const Chat_history_Specific = "/user/chat/history/";
-export const Session_Delete_Specific = "/user/chat/delete/";
 export const Doc_Delete_Specific = "/user/delete_simple_file/";
 
 //GENERAL INFO
 export const listGeneralInfoDoc = "/admin_user_chat/list";
 export const UploadGeneralDoc = "/admin_user_chat/upload";
 export const updateGenralDoc = "/admin_user_chat/update";
-export const AskGeneralDoc = "/user/ask_simple/";
 
 //PERMISSON FOR BUILDING
 export const Request_list = "/building_permissions/pending_requests";
@@ -87,6 +88,7 @@ export const InviteUser = "/invite_user/admin";
 export const userList = "/invite_user/admin/invited-users";
 
 //AI LEASE Abstract
+export const upload_Report_Generator = "/generate_lease/upload/summarize";
 export const upload_Abstract_Lease = "/generate_lease/upload/simple";
 export const listAbstractDoc = "/generate_lease/list_category_files/";
 export const deleteAbstractDoc = "/generate_lease/delete_file/";
@@ -104,6 +106,13 @@ export const updatetextdata = "/gen_lease/files/text";
 export const feedbacksubmit = "/feedback/submit";
 export const getfeedback = "/feedback/my-feedback";
 export const getadminfeedback = "/feedback/company-feedback";
+
+//Email Drafting
+export const AddnewTenent = "/mail_draft/tenants/create";
+export const AddnewEmailTemplate = "/mail_draft/templates/create";
+export const TenentName = "/mail_draft/tenants/list";
+export const EmailDraftingTemlate = "/mail_draft/templates/list";
+export const GenerateTemplate = "/mail_draft/generate";
 
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";

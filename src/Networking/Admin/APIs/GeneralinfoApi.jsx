@@ -1,7 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "./AxiosInstance";
 import {
-  AskGeneralDoc,
+  AskGemini,
+  AskQuestionEndpoint,
   listGeneralInfoDoc,
   updateGenralDoc,
 } from "../../NWconfig";
@@ -80,7 +81,21 @@ export const AskQuestionGeneralAPI = createAsyncThunk(
   "chat/AskQuestionGeneralAPI",
   async (Data, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(AskGeneralDoc, Data);
+      const response = await axiosInstance.post(AskQuestionEndpoint, Data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Question not sent"
+      );
+    }
+  }
+);
+
+export const AskQuestionGeminiAPI = createAsyncThunk(
+  "chat/AskQuestionGeminiAPI",
+  async (Data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(AskGemini, Data);
       return response.data;
     } catch (error) {
       return rejectWithValue(

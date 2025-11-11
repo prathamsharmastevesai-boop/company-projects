@@ -3,7 +3,7 @@ import DocumentManager from "../../../Component/DocumentManager";
 
 export const Thirdparty = () => (
   <DocumentManager
-    category="Broker"
+    category="ThirdParty"
     title="Third Party Contact Information"
     description="Upload and manage documents for third party contact information"
   />

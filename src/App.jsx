@@ -56,6 +56,9 @@ import { TenantMarketUpload } from "./Pages/Admin/GeneralInfo/TenantMarket";
 import { TenantInformation } from "./Pages/User/TenantInformation/tenantInformationChat";
 import { TenantInformationUpload } from "./Pages/Admin/GeneralInfo/TenantInformation";
 import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/leaseDrafting";
+import { SummeryUpload } from "./Pages/User/ReportSummery/reportsummarizer";
+import { EmailDrafting } from "./Pages/User/EmailDrafting/emailDrafting";
+import { GeminiChat } from "./Pages/User/GeminiChat/geminiChat";
 
 function App() {
   useEffect(() => {
@@ -180,7 +183,10 @@ function App() {
               path="/LeaseAbstractUpload1"
               element={<LeaseAbstractUpload />}
             />
-            <Route path="/BrokerChat" element={<BrokerChat />} />
+            <Route path="/SummeryUpload" element={<SummeryUpload />} />
+            <Route path="/EmailDrafting" element={<EmailDrafting />} />
+
+            <Route path="/ThirdPartychat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />
             <Route path="/CompsChat" element={<MarketChat />} />
@@ -190,7 +196,8 @@ function App() {
               element={<TenantInformation />}
             />
 
-            <Route path="/SessionList" element={<SessionList />} />
+            <Route path="/geminichat" element={<GeminiChat />} />
+            <Route path="/history" element={<SessionList />} />
           </Route>
         </Routes>
         <ToastContainer />
