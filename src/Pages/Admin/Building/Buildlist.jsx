@@ -112,7 +112,6 @@ export const ListBuilding = () => {
     <div
       ref={(el) => (cardsRef.current[index] = el)}
       className="card border-0 shadow-sm hover-shadow w-100"
-      // style={{ borderRadius: "16px", backgroundColor: "#fff" }}
       style={{
         backgroundColor: "#fff",
         borderWidth: "0.1px",

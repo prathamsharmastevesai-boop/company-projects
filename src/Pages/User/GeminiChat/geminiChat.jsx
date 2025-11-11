@@ -33,7 +33,7 @@ export const GeminiChat = () => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
 
-  const isLoading = isLoadingSession || isLoadingHistory;
+  const isLoading = isLoadingSession;
 
   useEffect(() => {
     const fetchLastSession = async () => {
@@ -217,7 +217,7 @@ export const GeminiChat = () => {
     setSessionId(newId);
     setMessages([]);
     setIsChatStarted(false);
-    toast.info(`Started a new chat session for "${category}".`);
+    toast.info(`Started a new chat session for Gemini`);
   };
 
   const LoadingSpinner = () => (

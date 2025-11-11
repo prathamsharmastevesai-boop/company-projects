@@ -61,7 +61,7 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
         }
       } catch (err) {
         console.error("Failed to fetch session list:", err);
-        // toast.error("Unable to load sessions.");
+
         setSessionId(null);
         setMessages([]);
       } finally {
