@@ -29,15 +29,17 @@ export const UserManagement = () => {
     if (!email) return toast.error("Email is required");
 
     setDeleteLoading(email);
+
     try {
-      const res = await dispatch(DeleteUser(email)).unwrap();
+      await dispatch(DeleteUser(email)).unwrap();
       toast.success("User deleted successfully");
       fetchUsers();
     } catch (error) {
       toast.error(error || "Failed to delete user");
-      console.error(error);
     } finally {
       setDeleteLoading(null);
+      setShowConfirm(false);
+      setSelectedEmail(null);
     }
   };
 
@@ -233,6 +235,54 @@ export const UserManagement = () => {
           </div>
         </Card.Body>
       </Card>
+      {/* Delete Confirmation Modal */}
+      <div
+        className={`modal fade ${showConfirm ? "show d-block" : ""}`}
+        tabIndex="-1"
+        style={{ background: "rgba(0,0,0,0.5)" }}
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content shadow">
+            <div className="modal-header">
+              <h5 className="modal-title">Confirm Delete</h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowConfirm(false)}
+              ></button>
+            </div>
+
+            <div className="modal-body">
+              <p>
+                Are you sure you want to delete user:{" "}
+                <strong>{selectedEmail}</strong>?
+              </p>
+            </div>
+
+            <div className="modal-footer">
+              <Button
+                variant="secondary"
+                onClick={() => setShowConfirm(false)}
+                disabled={deleteLoading !== null}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="danger"
+                onClick={() => handleDelete(selectedEmail)}
+                disabled={deleteLoading !== null}
+              >
+                {deleteLoading === selectedEmail ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  "Delete"
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
