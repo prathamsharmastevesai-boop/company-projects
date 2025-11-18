@@ -90,7 +90,7 @@ export const GeminiChat = () => {
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
-        toast.error("Failed to load chat history.");
+
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
@@ -337,7 +337,7 @@ export const GeminiChat = () => {
           >
             <div className="row h-100">
               <div className="col-md-12 d-flex flex-column">
-                <div className="chat-header d-flex justify-content-between align-items-center mb-2 px-2">
+                <div className="chat-header d-flex justify-content-between align-items-center mb-2 ">
                   <h5 className="chat-title text-muted mb-0">Gemini</h5>
                   <button
                     className="btn btn-outline-secondary btn-sm"

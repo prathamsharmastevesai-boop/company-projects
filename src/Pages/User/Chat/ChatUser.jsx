@@ -35,6 +35,7 @@ export const UserChat = () => {
 
   const isLoading = isLoadingSession || isLoadingHistory;
 
+  // ✅ AUTO-CREATE SESSION IF NONE EXISTS
   useEffect(() => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
@@ -49,14 +50,17 @@ export const UserChat = () => {
           const lastSession = categorySessions[categorySessions.length - 1];
           setSessionId(lastSession.session_id);
         } else {
-          setSessionId(null);
+          // ⭐ Auto-create new session
+          const newId = uuidv4();
+          setSessionId(newId);
           setMessages([]);
-          toast.info(`Start a new one.`);
         }
       } catch (err) {
         console.error("Failed to fetch session list:", err);
 
-        setSessionId(null);
+        // ⭐ Auto-create session even on error
+        const fallbackSession = uuidv4();
+        setSessionId(fallbackSession);
         setMessages([]);
       } finally {
         setIsLoadingSession(false);
@@ -70,6 +74,7 @@ export const UserChat = () => {
     }
   }, [type, sessionId, dispatch]);
 
+  // FETCH CHAT HISTORY
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (!sessionId) {
@@ -78,6 +83,7 @@ export const UserChat = () => {
       }
 
       setIsLoadingHistory(true);
+
       try {
         const res = await dispatch(get_Chat_History(sessionId)).unwrap();
 
@@ -91,26 +97,23 @@ export const UserChat = () => {
           setMessages([]);
         }
       } catch (error) {
-        console.error("Failed to fetch chat history:", error);
-        toast.error("Failed to load chat history.");
+        console.error("Failed to load history:", error);
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
       }
     };
 
-    if (sessionId) {
-      fetchChatHistory();
-    } else {
-      setIsLoadingHistory(false);
-    }
+    if (sessionId) fetchChatHistory();
   }, [sessionId, dispatch]);
 
+  // AUTO SCROLL
   useEffect(() => {
     if (chatRef.current)
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages]);
 
+  // SPEECH RECORDING
   const startRecording = async () => {
     if (
       !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
@@ -135,7 +138,7 @@ export const UserChat = () => {
           setMessage(transcript);
         };
 
-        recognitionRef.current.onerror = (event) => {
+        recognitionRef.current.onerror = () => {
           toast.error("Voice not recognized.");
           setIsRecording(false);
         };
@@ -155,6 +158,7 @@ export const UserChat = () => {
     }
   };
 
+  // TEXT-TO-SPEECH
   const toggleSpeak = (index, text) => {
     if (speakingIndex === index) {
       window.speechSynthesis.cancel();
@@ -169,12 +173,9 @@ export const UserChat = () => {
     }
   };
 
+  // SEND MESSAGE
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
-    if (!sessionId) {
-      toast.info("Please start a new chat session first.");
-      return;
-    }
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
@@ -182,6 +183,7 @@ export const UserChat = () => {
 
     try {
       setIsSending(true);
+
       const payload = {
         question: userMessage.message,
         building_id: Building_id,
@@ -207,15 +209,17 @@ export const UserChat = () => {
                 timestamp: new Date(),
               },
             ];
+
         setMessages((prev) => [...prev, ...newMessages]);
       }
-    } catch (e) {
+    } catch {
       toast.error("Failed to send message.");
     } finally {
       setIsSending(false);
     }
   };
 
+  // NEW SESSION BUTTON
   const handleNewSession = () => {
     const newId = uuidv4();
     setSessionId(newId);
@@ -227,119 +231,79 @@ export const UserChat = () => {
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
-          <div
-            className="
-    chat-header 
-    d-flex justify-content-between align-items-center 
-    mb-2 position-relative px-2 flex-wrap 
-  "
-          >
-            <div className="d-flex align-items-center position-relative">
-              <h5 className="chat-title text-muted mb-0 text-center flex-grow-1">
-                💬 Chat With{" "}
-                {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
-              </h5>
-              <button
-                className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-4  ms-md-0"
-                onClick={handleNewSession}
-                disabled={isLoading}
-              >
-                <i className="bi bi-plus-circle"></i>
-                <span className="d-none d-md-inline ms-1">New Session</span>
-              </button>
-            </div>
+          <div className="chat-header d-flex justify-content-between align-items-center mb-2">
+            <h5 className="chat-title text-muted m-0">
+              💬 Chat With{" "}
+              {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
+            </h5>
+
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={handleNewSession}
+              disabled={isLoading}
+            >
+              <i className="bi bi-plus-circle"></i> New Session
+            </button>
           </div>
 
-          <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
+          <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2">
             {isLoading ? (
               <div
                 className="d-flex justify-content-center align-items-center text-muted w-100"
                 style={{ minHeight: "60vh" }}
               >
-                <div
-                  className="spinner-border text-secondary me-2"
-                  role="status"
-                ></div>
+                <div className="spinner-border text-secondary me-2"></div>
                 Loading chat...
-              </div>
-            ) : sessionId === null ? (
-              <div
-                className="d-flex flex-column justify-content-center align-items-center text-muted w-100"
-                style={{ minHeight: "60vh" }}
-              >
-                <i className="bi bi-chat-dots display-4 mb-3"></i>
-                <p>
-                  No messages yet. Click 'New Session' to start a conversation.
-                </p>
               </div>
             ) : messages.length === 0 ? (
               <div
                 className="d-flex justify-content-center align-items-center text-muted w-100"
                 style={{ minHeight: "60vh" }}
               >
-                No messages yet. Start a new conversation!
+                No messages yet. Start typing...
               </div>
             ) : (
               <div className="message-container1 hide-scrollbar" ref={chatRef}>
-                {messages.length > 0 ? (
-                  messages.map((msg, i) => (
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`mb-2 small ${
+                      msg.sender === "Admin" ? "text-start" : "text-end"
+                    }`}
+                  >
                     <div
-                      key={i}
-                      className={`mb-2 small ${
-                        msg.sender === "Admin" ? "text-start" : "text-end"
+                      className={`d-inline-block px-3 py-2 position-relative responsive-box ${
+                        msg.sender === "Admin" ? "" : "bg-secondary text-light"
                       }`}
                     >
-                      <div
-                        className={`d-inline-block px-3 py-2 position-relative responsive-box ${
-                          msg.sender === "Admin"
-                            ? ""
-                            : "bg-secondary text-light"
-                        }`}
-                      >
-                        {msg.sender === "Admin" ? (
-                          <>
-                            <i
-                              className={`bi ${
-                                speakingIndex === i
-                                  ? "bi-volume-up-fill"
-                                  : "bi-volume-mute"
-                              } ms-2`}
-                              style={{
-                                cursor: "pointer",
-                                fontSize: "1rem",
-                                color: speakingIndex === i ? "#000" : "#999",
-                                position: "absolute",
-                                right: "8px",
-                                bottom: "18px",
-                              }}
-                              onClick={() => toggleSpeak(i, msg.message)}
-                            ></i>
-                            <div className="py-3">
-                              <ReactMarkdown>{msg.message}</ReactMarkdown>
-                            </div>
-                          </>
-                        ) : (
-                          msg.message
-                        )}
-                      </div>
+                      {msg.sender === "Admin" ? (
+                        <>
+                          <i
+                            className={`bi ${
+                              speakingIndex === i
+                                ? "bi-volume-up-fill"
+                                : "bi-volume-mute"
+                            } ms-2`}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              color: speakingIndex === i ? "#000" : "#999",
+                              position: "absolute",
+                              right: "8px",
+                              bottom: "18px",
+                            }}
+                            onClick={() => toggleSpeak(i, msg.message)}
+                          ></i>
+                          <div className="py-3">
+                            <ReactMarkdown>{msg.message}</ReactMarkdown>
+                          </div>
+                        </>
+                      ) : (
+                        msg.message
+                      )}
                     </div>
-                  ))
-                ) : !sessionId ? (
-                  <div
-                    className="d-flex flex-column justify-content-center align-items-center text-muted w-100"
-                    style={{ minHeight: "60vh" }}
-                  >
-                    <i className="bi bi-chat-dots display-4 mb-3"></i>
-                    <p>No chat yet</p>
                   </div>
-                ) : (
-                  <div
-                    className="d-flex justify-content-center align-items-center text-muted w-100"
-                    style={{ minHeight: "60vh" }}
-                  >
-                    No messages yet. Start a conversation!
-                  </div>
-                )}
+                ))}
 
                 {isSending && <TypingIndicator />}
               </div>
@@ -352,27 +316,18 @@ export const UserChat = () => {
                 ref={textareaRef}
                 rows={1}
                 className="form-control flex-grow-1 border-0 shadow-none bg-transparent me-2"
-                placeholder={
-                  sessionId
-                    ? "Ask Now, Let's Work..."
-                    : "Start a new session to chat..."
-                }
+                placeholder="Ask Now, Let's Work..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
-                    if (
-                      message.trim().length > 0 &&
-                      sessionId &&
-                      !isSending &&
-                      !isLoading
-                    ) {
+                    if (message.trim() && !isSending && !isLoading) {
                       handleSendMessage();
                     }
                   }
                 }}
-                disabled={!sessionId || isSending || isLoading}
+                disabled={isSending || isLoading}
                 style={{
                   resize: "none",
                   overflow: "hidden",
@@ -385,7 +340,7 @@ export const UserChat = () => {
                 <button
                   className="btn btn-secondary rounded-circle"
                   onClick={handleSendMessage}
-                  disabled={!sessionId || isSending || isLoading}
+                  disabled={isSending || isLoading}
                   style={{ width: "43px", height: "38px" }}
                 >
                   {isSending ? (
@@ -400,7 +355,7 @@ export const UserChat = () => {
                     isRecording ? "btn-danger" : "btn-outline-secondary"
                   }`}
                   onClick={startRecording}
-                  disabled={!sessionId || isSending || isLoading}
+                  disabled={isSending || isLoading}
                   style={{ width: "38px", height: "38px" }}
                 >
                   <i

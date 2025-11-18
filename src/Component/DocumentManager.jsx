@@ -64,7 +64,6 @@ const DocumentManager = ({ category, title, description }) => {
     try {
       await dispatch(UploadGeneralDocSubmit({ file, category })).unwrap();
       await fetchData();
-      toast.success("File uploaded successfully!");
     } catch (err) {
       console.error("Upload failed:", err);
     } finally {
@@ -115,7 +114,6 @@ const DocumentManager = ({ category, title, description }) => {
       await fetchData();
     } catch (err) {
       console.error("Edit failed:", err);
-      toast.error("Edit failed!");
     } finally {
       setLoading(false);
       e.target.value = null;
@@ -133,7 +131,6 @@ const DocumentManager = ({ category, title, description }) => {
       await fetchData();
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Delete failed!");
     } finally {
       setLoading(false);
     }

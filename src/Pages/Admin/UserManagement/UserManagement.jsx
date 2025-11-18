@@ -17,6 +17,9 @@ export const UserManagement = () => {
   const [loading, setLoading] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -24,11 +27,17 @@ export const UserManagement = () => {
 
   const handleDelete = async (email) => {
     if (!email) return toast.error("Email is required");
+
+    setDeleteLoading(email);
     try {
-      await dispatch(DeleteUser(email));
+      const res = await dispatch(DeleteUser(email)).unwrap();
+      toast.success("User deleted successfully");
       fetchUsers();
     } catch (error) {
+      toast.error(error || "Failed to delete user");
       console.error(error);
+    } finally {
+      setDeleteLoading(null);
     }
   };
 
@@ -89,7 +98,6 @@ export const UserManagement = () => {
         </Card.Body>
       </Card>
 
-      {/* --- Invite User Section --- */}
       <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>
           <h5 className="mb-3">
@@ -134,7 +142,6 @@ export const UserManagement = () => {
         </Card.Body>
       </Card>
 
-      {/* --- Users Table --- */}
       <Card className="border-0 shadow-sm">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -183,7 +190,10 @@ export const UserManagement = () => {
                           <Button
                             size="sm"
                             variant="outline-danger"
-                            onClick={() => handleDelete(user.email)}
+                            onClick={() => {
+                              setSelectedEmail(user.email);
+                              setShowConfirm(true);
+                            }}
                           >
                             Delete
                           </Button>

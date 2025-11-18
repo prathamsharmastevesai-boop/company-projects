@@ -13,7 +13,7 @@ export const CreateBuildingSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(CreateBuilding, credentials);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -38,7 +38,7 @@ export const UpdateBuildingSubmit = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.patch(UpdateBuildingEndpoint, data);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -53,7 +53,7 @@ export const DeleteBuilding = createAsyncThunk(
       const response = await axiosInstance.delete(
         `${DeleteBuildingEndpoint}?building_id=${id}`
       );
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

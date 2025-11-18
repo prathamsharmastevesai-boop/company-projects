@@ -39,6 +39,9 @@ export const AskQuestionEndpoint = "/user/ask_simple/";
 export const Chat_history = "/chat/history/";
 export const Del_Chat_Session = "/chat/delete/";
 
+// ASK QUESTION REPORT
+export const AskQuestionReportEndpoint = "/user/ask_summary_chat/";
+
 //session list
 export const Session_List_Specific = "/chat/sessions/";
 
@@ -117,3 +120,7 @@ export const GenerateTemplate = "/mail_draft/generate";
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";
 export const listAdmin = "/invite_user/list";
+
+//Tours
+export const createTours = "/tours/";
+export const getTours = "/tours/";

@@ -216,21 +216,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/LeaseAbstractUpload") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/LeaseAbstractUpload")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-file-earmark-text me-2" />
-                    {!collapsed && "AI Lease Abstract"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${
                     isActive("/LeaseDraftingUpload") ? "active" : ""
                   }`}
                 >
@@ -261,16 +246,18 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/adminFeedback") ? "active" : ""
+                    isActive("/adminInformationCollaboration") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/adminFeedback")}
+                    onClick={() =>
+                      handleLinkClick("/adminInformationCollaboration")
+                    }
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
                     <i className="bi-pencil-square me-2" />
-                    {!collapsed && "Feedback"}
+                    {!collapsed && "Information Collaboration"}
                   </span>
                 </li>
                 {!collapsed && (
@@ -292,6 +279,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 {openMenu === "dataCategories" && (
                   <>
+                    <li
+                      className={`nav-item ${
+                        isActive("/toursDetails") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/toursDetails")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-geo-alt me-2" />
+                        {!collapsed && "Tours"}
+                      </span>
+                    </li>
+
                     <li
                       className={`nav-item ${
                         isActive("/Thirdparty") ? "active" : ""
@@ -435,21 +437,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/UserProfile") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/UserProfile")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-person-circle me-2" />
-                    {!collapsed && "Profile"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${
                     isActive("/dashboard") ? "active" : ""
                   }`}
                 >
@@ -480,16 +467,48 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/Feedback") ? "active" : ""
+                    isActive("/EmailDrafting") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/Feedback")}
+                    onClick={() => handleLinkClick("/EmailDrafting")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi-pencil-square me-2" />
-                    {!collapsed && "Feedback"}
+                    <i className="bi bi-envelope-open me-2" />{" "}
+                    {!collapsed && "Email Drafting"}
+                  </span>
+                </li>
+
+                {Gemini == true && (
+                  <li
+                    className={`nav-item ${
+                      isActive("/geminichat") ? "active" : ""
+                    }`}
+                  >
+                    <span
+                      onClick={() => handleLinkClick("/geminichat")}
+                      className="nav-link text-white"
+                      style={{ cursor: "pointer", fontSize: 12 }}
+                    >
+                      <i className="bi bi-chat-dots-fill me-2" />
+                      {!collapsed && "Gemini"}
+                    </span>
+                  </li>
+                )}
+
+                <li
+                  className={`nav-item ${
+                    isActive("/SummeryUpload") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/SummeryUpload")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-graph-up me-2" />
+                    {!collapsed && "Report Summarizer"}
                   </span>
                 </li>
 
@@ -509,51 +528,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/SummeryUpload") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/SummeryUpload")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-graph-up me-2" />
-                    {!collapsed && "Report Summarizer"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${
-                    isActive("/EmailDrafting") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/EmailDrafting")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-envelope-open me-2" />{" "}
-                    {!collapsed && "Email Drafting"}
-                  </span>
-                </li>
-                {Gemini == true && (
-                  <li
-                    className={`nav-item ${
-                      isActive("/geminichat") ? "active" : ""
-                    }`}
-                  >
-                    <span
-                      onClick={() => handleLinkClick("/geminichat")}
-                      className="nav-link text-white"
-                      style={{ cursor: "pointer", fontSize: 12 }}
-                    >
-                      <i className="bi bi-chat-dots-fill me-2" />
-                      {!collapsed && "Gemini"}
-                    </span>
-                  </li>
-                )}
-                <li
                   className={`nav-item ${isActive("/history") ? "active" : ""}`}
                 >
                   <span
@@ -562,7 +536,37 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
                     <i className="bi bi-clock-history me-2" />
-                    {!collapsed && "History"}
+                    {!collapsed && "Chat History"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/InformationCollaboration") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/InformationCollaboration")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi-pencil-square me-2" />
+                    {!collapsed && "Information Collaboration"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/UserProfile") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/UserProfile")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-person-circle me-2" />
+                    {!collapsed && "Profile"}
                   </span>
                 </li>
 
@@ -585,6 +589,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 {openMenu === "generalInfo" && (
                   <ul className="nav flex-column mt-1">
+                    <li
+                      className={`nav-item ${
+                        isActive("/Tours") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/Tours")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-geo-alt me-2" />
+                        {!collapsed && "Tours"}
+                      </span>
+                    </li>
+
                     <li
                       className={`nav-item ${
                         isActive("/ThirdPartychat") ? "active" : ""

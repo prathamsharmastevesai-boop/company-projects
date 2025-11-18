@@ -49,6 +49,10 @@ export const AdminLogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleforget = () => {
+    navigate("/ForgotPassword");
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -173,6 +177,13 @@ export const AdminLogin = () => {
             >
               Log in
             </button>
+            <div
+              className="text-end"
+              style={{ cursor: "pointer" }}
+              onClick={() => handleforget({ email })}
+            >
+              Forgot password?
+            </div>
           </form>
         </div>
       </div>

@@ -1,16 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+
 import axiosInstance from "../../../Admin/APIs/AxiosInstance";
-import { feedbacksubmit, getfeedback } from "../../../NWconfig";
+import { createTours, getTours } from "../../../NWconfig";
 
 const getErrorMsg = (error, fallback = "Something went wrong") =>
   error?.response?.data?.message || error?.response?.data?.detail || fallback;
 
-export const FeedbackSubmit = createAsyncThunk(
-  "auth/FeedbackSubmit",
+export const toursCreateSubmit = createAsyncThunk(
+  "toursCreateSubmit",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(feedbacksubmit, data);
+      const response = await axiosInstance.post(createTours, data);
 
       return response.data;
     } catch (error) {
@@ -19,27 +19,24 @@ export const FeedbackSubmit = createAsyncThunk(
   }
 );
 
-export const GetFeedbackList = createAsyncThunk(
-  "auth/GetFeedbackList",
+export const GeToursList = createAsyncThunk(
+  "GeToursList",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(getfeedback);
+      const response = await axiosInstance.get(getTours);
       return response.data;
     } catch (error) {
-      toast.error(getErrorMsg(error));
       return rejectWithValue(getErrorMsg(error));
     }
   }
 );
 
-export const DeleteFeedbackSubmit = createAsyncThunk(
-  "DeleteFeedbackSubmit",
-  async (id, { rejectWithValue }) => {
+export const DeleteToursSubmit = createAsyncThunk(
+  "DeleteToursSubmit",
+  async (tour_id, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(
-        `/feedback/?feedback_id=${id}`
-      );
-      toast.success(response.data.message);
+      const response = await axiosInstance.delete(`/tours/${tour_id}`);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
