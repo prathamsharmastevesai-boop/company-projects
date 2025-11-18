@@ -8,7 +8,7 @@ export const Forget_passwordSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(ForgetPassword, credentials);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "OTP failed");
@@ -21,7 +21,7 @@ export const VerifyOtpSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(VerifyOtp, credentials);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -36,7 +36,7 @@ export const Reset_password_Submit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(ResetPasswod, credentials);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(

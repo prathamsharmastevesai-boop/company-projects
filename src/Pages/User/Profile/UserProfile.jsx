@@ -134,22 +134,22 @@ export const UserProfile = () => {
 
       <div className="container mt-2 px-4">
         {loadingProfile ? (
-          <div className="text-center my-5">
+          <div className="text-center ">
             <RAGLoader />
             <p className="mt-2 text-muted">Loading profile...</p>
           </div>
         ) : (
           <div className="card shadow-sm overflow-hidden">
             <div
-              style={{
-                backgroundImage: `url(${tempBgPhoto || bgPhotoUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                height: "180px",
-                position: "relative",
-              }}
+            // style={{
+            //   backgroundImage: `url(${tempBgPhoto || bgPhotoUrl})`,
+            //   backgroundSize: "cover",
+            //   backgroundPosition: "center",
+            //   height: "180px",
+            //   position: "relative",
+            // }}
             >
-              {isEditing && (
+              {/* {isEditing && (
                 <label
                   htmlFor="bg-photo-upload"
                   className="btn btn-light rounded-circle"
@@ -172,10 +172,10 @@ export const UserProfile = () => {
                     accept="image/*"
                   />
                 </label>
-              )}
+              )} */}
 
-              <div style={{ position: "relative", display: "inline-block" }}>
-                <img
+              {/* <div style={{ position: "relative", display: "inline-block" }}> */}
+              {/* <img
                   src={tempPhoto || photoUrl}
                   alt="Profile"
                   className="rounded-circle border border-3 border-white shadow"
@@ -188,38 +188,38 @@ export const UserProfile = () => {
                     left: "20px",
                     objectFit: "cover",
                   }}
-                />
+                /> */}
 
-                {isEditing && (
-                  <label
-                    htmlFor="profile-photo-upload"
-                    className="btn btn-light rounded-circle"
-                    style={{
-                      position: "absolute",
-                      height: "40px",
-                      width: "40px",
-                      top: "160px",
-                      left: "90px",
-                      cursor: "pointer",
-                    }}
-                    title="Change profile photo"
-                  >
-                    <FaCamera />
-                    <input
-                      id="profile-photo-upload"
-                      type="file"
-                      onChange={handlePhotoChange}
-                      style={{ display: "none" }}
-                      accept="image/*"
-                    />
-                  </label>
-                )}
-              </div>
+              {/* {isEditing && (
+                <label
+                  htmlFor="profile-photo-upload"
+                  className="btn btn-light rounded-circle"
+                  style={{
+                    position: "absolute",
+                    height: "40px",
+                    width: "40px",
+                    top: "160px",
+                    left: "90px",
+                    cursor: "pointer",
+                  }}
+                  title="Change profile photo"
+                >
+                  <FaCamera />
+                  <input
+                    id="profile-photo-upload"
+                    type="file"
+                    onChange={handlePhotoChange}
+                    style={{ display: "none" }}
+                    accept="image/*"
+                  />
+                </label>
+              )} */}
+              {/* </div> */}
             </div>
 
-            <div className="card-body pt-5">
+            <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
-                <h4>Profile Info</h4>
+                <h4> 👤 Profile Info</h4>
                 {!isEditing ? (
                   <button
                     className="btn btn-outline-dark"

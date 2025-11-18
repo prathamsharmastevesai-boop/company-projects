@@ -59,6 +59,10 @@ import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/leaseDrafting";
 import { SummeryUpload } from "./Pages/User/ReportSummery/reportsummarizer";
 import { EmailDrafting } from "./Pages/User/EmailDrafting/emailDrafting";
 import { GeminiChat } from "./Pages/User/GeminiChat/geminiChat";
+import { ChatWindow } from "./Component/ChatWindow";
+import { ReportChat } from "./Pages/User/ReportSummery/ReportChat";
+import { Tours } from "./Pages/User/Tours/tours";
+import { ToursDetails } from "./Pages/Admin/ToursDetails/toursDetails";
 
 function App() {
   useEffect(() => {
@@ -117,6 +121,7 @@ function App() {
               path="/LeaseDraftingUpload"
               element={<LeaseDraftingUpload />}
             />
+            <Route path="/toursDetails" element={<ToursDetails />} />
             <Route path="/Thirdparty" element={<Thirdparty />} />
             <Route path="/EmployContact" element={<EmployContact />} />
             <Route path="/Comps" element={<MarketIntelligence />} />
@@ -153,7 +158,10 @@ function App() {
             />
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
 
-            <Route path="/adminFeedback" element={<AdminFeedback />} />
+            <Route
+              path="/adminInformationCollaboration"
+              element={<AdminFeedback />}
+            />
           </Route>
 
           <Route
@@ -172,18 +180,22 @@ function App() {
             <Route path="/UserChat" element={<UserChat />} />
 
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
+            <Route path="/chatWindow" element={<ChatWindow />} />
 
             <Route path="/UserProfile" element={<UserProfile />} />
             <Route
               path="/ComparativeBuildingChat"
               element={<ComparativeBuildingChat />}
             />
-            <Route path="/Feedback" element={<Feedback />} />
+            <Route path="/InformationCollaboration" element={<Feedback />} />
             <Route
               path="/LeaseAbstractUpload1"
               element={<LeaseAbstractUpload />}
             />
             <Route path="/SummeryUpload" element={<SummeryUpload />} />
+
+            <Route path="/ReportChat" element={<ReportChat />} />
+
             <Route path="/EmailDrafting" element={<EmailDrafting />} />
 
             <Route path="/ThirdPartychat" element={<BrokerChat />} />
@@ -197,6 +209,8 @@ function App() {
             />
 
             <Route path="/geminichat" element={<GeminiChat />} />
+            <Route path="/tours" element={<Tours />} />
+
             <Route path="/history" element={<SessionList />} />
           </Route>
         </Routes>

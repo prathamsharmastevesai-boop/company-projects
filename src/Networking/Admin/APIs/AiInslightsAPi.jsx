@@ -16,7 +16,7 @@ export const getAnalyticApi = createAsyncThunk(
       const response = await axiosInstance.get(AIAnalyticsData, {
         params: Data,
       });
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -29,8 +29,7 @@ export const getInslightApi = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(AIInsights);
-      if (response.data?.message) toast.success(response.data.message);
-      return response.data;
+      if (response.data?.message) return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
@@ -42,7 +41,7 @@ export const getRecentQuestionApi = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(RecentQuestion);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -55,7 +54,7 @@ export const getUsageTreadApi = createAsyncThunk(
   async (days, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(UsageTreads, { params: days });
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -70,7 +69,6 @@ export const getActivitySummaryApi = createAsyncThunk(
       const response = await axiosInstance.get(ActivitySummary, {
         params: { days },
       });
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

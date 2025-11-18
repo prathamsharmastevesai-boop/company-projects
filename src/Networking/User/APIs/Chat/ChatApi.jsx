@@ -29,10 +29,8 @@ export const Upload_specific_file_Api = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message || "File uploaded successfully");
       return response.data;
     } catch (error) {
-      toast.error(getErrorMsg(error));
       return rejectWithValue(getErrorMsg(error));
     }
   }

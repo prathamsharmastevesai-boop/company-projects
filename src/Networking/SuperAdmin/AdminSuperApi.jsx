@@ -8,7 +8,7 @@ export const inviteAdminApi = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(inviteAdmin, credentials);
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

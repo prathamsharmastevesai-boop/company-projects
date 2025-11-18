@@ -31,7 +31,6 @@ export const UploadReportGenerator = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Upload failed");
@@ -55,7 +54,6 @@ export const UploadAbstractLeaseDoc = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Upload failed");
@@ -70,7 +68,7 @@ export const DeleteAbstractDoc = createAsyncThunk(
       const response = await axiosInstance.delete(deleteAbstractDoc, {
         params: { file_id: fileId },
       });
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -112,7 +110,6 @@ export const UploadDraftingLeaseDoc = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Upload failed");
@@ -127,7 +124,7 @@ export const DeleteDrafingDoc = createAsyncThunk(
       const response = await axiosInstance.delete(deleteDraftingDoc, {
         params: { file_id: fileId },
       });
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -208,7 +205,7 @@ export const UpdateDraftingtext = createAsyncThunk(
       const response = await axiosInstance.patch(updatetextdata, text, {
         params: { file_id },
       });
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Update failed");

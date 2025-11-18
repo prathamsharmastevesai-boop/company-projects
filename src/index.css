@@ -537,3 +537,22 @@
   transform: translateY(-10px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
+
+.header-bg {
+  background-color: #212529;
+  height: 62px;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.small-card {
+  border-radius: 10px;
+  transition: 0.2s;
+}
+.small-card:hover {
+  transform: scale(0.98);
+}

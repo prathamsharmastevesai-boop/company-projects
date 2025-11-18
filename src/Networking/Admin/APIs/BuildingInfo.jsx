@@ -11,7 +11,7 @@ export const UploadBuildinginfoSubmit = createAsyncThunk(
         Upload_General_info,
         credentials
       );
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

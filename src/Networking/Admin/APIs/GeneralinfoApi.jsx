@@ -3,6 +3,7 @@ import axiosInstance from "./AxiosInstance";
 import {
   AskGemini,
   AskQuestionEndpoint,
+  AskQuestionReportEndpoint,
   listGeneralInfoDoc,
   updateGenralDoc,
 } from "../../NWconfig";
@@ -96,6 +97,23 @@ export const AskQuestionGeminiAPI = createAsyncThunk(
   async (Data, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(AskGemini, Data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Question not sent"
+      );
+    }
+  }
+);
+
+export const AskQuestionReportAPI = createAsyncThunk(
+  "chat/AskQuestionGeneralAPI",
+  async (Data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        AskQuestionReportEndpoint,
+        Data
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(

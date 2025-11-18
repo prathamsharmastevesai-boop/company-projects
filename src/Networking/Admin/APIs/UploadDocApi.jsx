@@ -27,7 +27,6 @@ export const UploadDocSubmit = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -53,7 +52,6 @@ export const UpdateDocSubmit = createAsyncThunk(
         }
       );
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -83,7 +81,6 @@ export const DeleteDocSubmit = createAsyncThunk(
         params: { building_id, category, file_id },
       });
 
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -99,7 +96,7 @@ export const AskQuestionAPI = createAsyncThunk(
         `${baseURL}${AskQuestion}`,
         data
       );
-      toast.success(response.data.message);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error);

@@ -175,7 +175,7 @@ export const LeaseDraftingUpload = () => {
       }, 2000);
     } catch (error) {
       console.error("Error fetching data:", error);
-      toast.error("Failed to generate lease draft");
+
       setLoading(false);
     }
   };
@@ -339,7 +339,6 @@ export const LeaseDraftingUpload = () => {
         )}
       </div>
 
-      {/* Modal for Preview */}
       <div
         className={`modal fade ${showModal ? "show d-block" : ""}`}
         tabIndex="-1"

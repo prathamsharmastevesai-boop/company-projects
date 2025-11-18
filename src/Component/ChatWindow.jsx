@@ -4,14 +4,17 @@ import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
-import { AskQuestionGeneralAPI } from "../Networking/Admin/APIs/GeneralinfoApi";
+import {
+  AskQuestionGeneralAPI,
+  AskQuestionReportAPI,
+} from "../Networking/Admin/APIs/GeneralinfoApi";
 import {
   get_Chat_History,
   get_Session_List_Specific,
 } from "../Networking/User/APIs/Chat/ChatApi";
 import TypingIndicator from "./TypingIndicator";
 
-export const ChatWindow = ({ category: propCategory, heading }) => {
+export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -19,10 +22,16 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
+  const { fileName, fileUrl } = location.state || {};
+
   const [category, setCategory] = useState(
     location.state?.type || propCategory
   );
+
+  console.log(category, "category");
+
+  const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
+
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -38,35 +47,43 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       setIsLoadingHistory(true);
+
       try {
         const res = await dispatch(get_Session_List_Specific()).unwrap();
 
+        let sessionToUse = null;
+
         if (Array.isArray(res) && res.length > 0) {
+          // Filter by category
           const filtered = res.filter(
             (s) => s.category?.toLowerCase() === category?.toLowerCase()
           );
 
           if (filtered.length > 0) {
-            const lastSession = filtered[filtered.length - 1];
-            setSessionId(lastSession.session_id);
-          } else {
-            setSessionId(null);
-            setMessages([]);
-            toast.info(`Start a new one.`);
+            sessionToUse = filtered[filtered.length - 1].session_id;
           }
-        } else {
-          setSessionId(null);
-          setMessages([]);
-          toast.info("No sessions found. Start a new one.");
         }
+
+        // ⭐ If still no session, auto-create one
+        if (!sessionToUse) {
+          const newAutoId = uuidv4();
+          setSessionId(newAutoId);
+          setMessages([]);
+          return; // no need to load any history
+        }
+
+        // If previous session exists
+        setSessionId(sessionToUse);
       } catch (err) {
         console.error("Failed to fetch session list:", err);
 
-        setSessionId(null);
+        // Auto create session even if API call failed
+        const fallbackId = uuidv4();
+        setSessionId(fallbackId);
         setMessages([]);
       } finally {
         setIsLoadingSession(false);
-        setIsLoadingHistory(false);
+        // allow history loader to proceed to fetch or skip
       }
     };
 
@@ -95,7 +112,7 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
-        toast.error("Failed to load chat history.");
+
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
@@ -168,13 +185,9 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
       window.speechSynthesis.speak(utterance);
     }
   };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
-
-    if (!sessionId) {
-      toast.info("Please start a new chat session first.");
-      return;
-    }
 
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
@@ -189,9 +202,16 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
         session_id: sessionId,
         question: userMessage.message,
         category,
+        file_id: fileId,
       };
 
-      const response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+      let response;
+
+      if (category === "report_generation") {
+        response = await dispatch(AskQuestionReportAPI(payload)).unwrap();
+      } else {
+        response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+      }
 
       if (response?.answer) {
         const adminMessage = {
@@ -225,20 +245,20 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
-          <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative px-2 flex-wrap">
-            <div className="d-flex align-items-center position-relative">
-              <button
-                className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-4  ms-md-0"
-                onClick={handleNewSession}
-                disabled={isLoadingSession}
-              >
-                <i className="bi bi-plus-circle"></i>
-                <span className="d-none d-md-inline ms-1">New Session</span>
-              </button>
-              <h5 className="chat-title text-muted mb-0 text-center flex-grow-1">
-                {heading}
-              </h5>
-            </div>
+          <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
+            {/* <div className="d-flex align-items-center position-relative"> */}
+            <button
+              className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-4  ms-md-0"
+              onClick={handleNewSession}
+              disabled={isLoadingSession}
+            >
+              <i className="bi bi-plus-circle"></i>
+              <span className="d-none d-md-inline ms-1">New Session</span>
+            </button>
+            <h5 className="chat-title text-muted mb-0 text-center">
+              {heading}
+            </h5>
+            {/* </div> */}
           </div>
 
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
@@ -321,11 +341,7 @@ export const ChatWindow = ({ category: propCategory, heading }) => {
                 ref={textareaRef}
                 rows={1}
                 className="form-control flex-grow-1 border-0 shadow-none bg-transparent me-2"
-                placeholder={
-                  sessionId
-                    ? "Ask Now, Let's Work..."
-                    : "Create a new session to start chatting..."
-                }
+                placeholder={"Ask Now, Let's Work..."}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {

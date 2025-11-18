@@ -45,6 +45,12 @@ export const UserBuildinglist = () => {
 
   return (
     <>
+      <div
+        className="header-bg {
+-bg d-flex justify-content-start px-3 align-items-center sticky-header"
+      >
+        <h5 className="mb-0 text-light">Address</h5>
+      </div>
       {requestingPermissionId && (
         <div
           style={{
