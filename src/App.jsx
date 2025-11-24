@@ -61,8 +61,17 @@ import { EmailDrafting } from "./Pages/User/EmailDrafting/emailDrafting";
 import { GeminiChat } from "./Pages/User/GeminiChat/geminiChat";
 import { ChatWindow } from "./Component/ChatWindow";
 import { ReportChat } from "./Pages/User/ReportSummery/ReportChat";
-import { Tours } from "./Pages/User/Tours/tours";
-import { ToursDetails } from "./Pages/Admin/ToursDetails/toursDetails";
+import { Tours } from "./Pages/User/TourPage/Tours/tours";
+import { ToursDetails } from "./Pages/User/TourPage/ToursDetails/toursDetails";
+import { ToursPage } from "./Pages/User/TourPage/toursPage";
+import { Forum } from "./Pages/User/Forum/forum";
+import { CreateThread } from "./Pages/User/Forum/createThread";
+import { ComparativeBuildingList } from "./Pages/Admin/ComparativeBuilding/comparativeBuildinglist";
+import { BuildingInfoList } from "./Pages/Admin/GeneralInfo/BuildingInfoList";
+import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/comparativeUserBuildinglist";
+import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
+import { Calc } from "./Pages/User/Calc/calculator";
+import { InformationCollaborationPage } from "./Pages/User/Feedback/feedBackpages";
 
 function App() {
   useEffect(() => {
@@ -121,17 +130,18 @@ function App() {
               path="/LeaseDraftingUpload"
               element={<LeaseDraftingUpload />}
             />
-            <Route path="/toursDetails" element={<ToursDetails />} />
+
             <Route path="/Thirdparty" element={<Thirdparty />} />
             <Route path="/EmployContact" element={<EmployContact />} />
             <Route path="/Comps" element={<MarketIntelligence />} />
             <Route path="/TenantsMarket" element={<TenantMarketUpload />} />
             <Route path="/BuildingInfo" element={<BuildingInfo />} />
+            <Route path="/BuildingInfoList" element={<BuildingInfoList />} />
             <Route
               path="/TenantInformation"
               element={<TenantInformationUpload />}
             />
-
+            <Route path="/toursDetails" element={<ToursDetails />} />
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
             <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
@@ -156,6 +166,12 @@ function App() {
               path="/ComparativeBuildingData"
               element={<ComparativeBuildingData />}
             />
+
+            <Route
+              path="/ComparativeBuildingList"
+              element={<ComparativeBuildingList />}
+            />
+
             <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
 
             <Route
@@ -174,6 +190,10 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="/UserBuildinglist" element={<UserBuildinglist />} />
+            <Route
+              path="/ComparativeUserBuildinglist"
+              element={<ComparativeUserBuildinglist />}
+            />
 
             <Route path="/UserLease" element={<UserLeaseList />} />
 
@@ -189,6 +209,15 @@ function App() {
             />
             <Route path="/InformationCollaboration" element={<Feedback />} />
             <Route
+              path="/InformationCollaborationList"
+              element={<AdminFeedback />}
+            />
+            <Route
+              path="/InformationCollaborationPage"
+              element={<InformationCollaborationPage />}
+            />
+
+            <Route
               path="/LeaseAbstractUpload1"
               element={<LeaseAbstractUpload />}
             />
@@ -201,6 +230,11 @@ function App() {
             <Route path="/ThirdPartychat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />
+            <Route
+              path="/UserBuildingInfolist"
+              element={<UserBuildingInfolist />}
+            />
+
             <Route path="/CompsChat" element={<MarketChat />} />
             <Route path="/TenantMarket" element={<TenantMarket />} />
             <Route
@@ -209,9 +243,15 @@ function App() {
             />
 
             <Route path="/geminichat" element={<GeminiChat />} />
-            <Route path="/tours" element={<Tours />} />
+            <Route path="/tours" element={<ToursPage />} />
+
+            <Route path="/toursform" element={<Tours />} />
+            <Route path="/toursDetails" element={<ToursDetails />} />
+            <Route path="/forum" element={<CreateThread />} />
 
             <Route path="/history" element={<SessionList />} />
+
+            <Route path="/calculator" element={<Calc />} />
           </Route>
         </Routes>
         <ToastContainer />

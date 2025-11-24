@@ -14,7 +14,12 @@ import {
 } from "../Networking/User/APIs/Chat/ChatApi";
 import TypingIndicator from "./TypingIndicator";
 
-export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
+export const ChatWindow = ({
+  category: propCategory,
+  heading,
+  fileId,
+  building_id,
+}) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -27,8 +32,6 @@ export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
   const [category, setCategory] = useState(
     location.state?.type || propCategory
   );
-
-  console.log(category, "category");
 
   const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
 
@@ -54,7 +57,6 @@ export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
         let sessionToUse = null;
 
         if (Array.isArray(res) && res.length > 0) {
-          // Filter by category
           const filtered = res.filter(
             (s) => s.category?.toLowerCase() === category?.toLowerCase()
           );
@@ -64,26 +66,22 @@ export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
           }
         }
 
-        // ⭐ If still no session, auto-create one
         if (!sessionToUse) {
           const newAutoId = uuidv4();
           setSessionId(newAutoId);
           setMessages([]);
-          return; // no need to load any history
+          return;
         }
 
-        // If previous session exists
         setSessionId(sessionToUse);
       } catch (err) {
         console.error("Failed to fetch session list:", err);
 
-        // Auto create session even if API call failed
         const fallbackId = uuidv4();
         setSessionId(fallbackId);
         setMessages([]);
       } finally {
         setIsLoadingSession(false);
-        // allow history loader to proceed to fetch or skip
       }
     };
 
@@ -203,6 +201,7 @@ export const ChatWindow = ({ category: propCategory, heading, fileId }) => {
         question: userMessage.message,
         category,
         file_id: fileId,
+        building_id,
       };
 
       let response;

@@ -231,21 +231,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/ComparativeBuildingData") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/ComparativeBuildingData")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-bar-chart-line me-2" />
-                    {!collapsed && "Comparative Buildings Data"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${
                     isActive("/adminInformationCollaboration") ? "active" : ""
                   }`}
                 >
@@ -256,10 +241,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi-pencil-square me-2" />
+                    <i className="bi-people me-2" />
                     {!collapsed && "Information Collaboration"}
                   </span>
                 </li>
+
                 {!collapsed && (
                   <li
                     className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
@@ -340,6 +326,23 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
+                        isActive("/ComparativeBuildingList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() =>
+                          handleLinkClick("/ComparativeBuildingList")
+                        }
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-bar-chart-line me-2" />
+                        {!collapsed && "Comparative Buildings Data"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
                         isActive("/TenantInformation") ? "active" : ""
                       }`}
                     >
@@ -370,11 +373,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
-                        isActive("/BuildingInfo") ? "active" : ""
+                        isActive("/BuildingInfoList") ? "active" : ""
                       }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/BuildingInfo")}
+                        onClick={() => handleLinkClick("/BuildingInfoList")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -512,6 +515,20 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
+                {/* <li
+                  className={`nav-item ${isActive("/forum") ? "active" : ""}`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/forum")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-chat-square-dots me-2" />
+
+                    {!collapsed && "Portfolio Forum"}
+                  </span>
+                </li> */}
+
                 <li
                   className={`nav-item ${
                     isActive("/LeaseAbstractUpload1") ? "active" : ""
@@ -542,19 +559,35 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/InformationCollaboration") ? "active" : ""
+                    isActive("/InformationCollaborationPage") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/InformationCollaboration")}
+                    onClick={() =>
+                      handleLinkClick("/InformationCollaborationPage")
+                    }
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi-pencil-square me-2" />
+                    <i className="bi-people me-2" />
                     {!collapsed && "Information Collaboration"}
                   </span>
                 </li>
+                <li
+                  className={`nav-item ${
+                    isActive("/calculator") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/calculator")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi-calculator me-2" />
 
+                    {!collapsed && "Calculator"}
+                  </span>
+                </li>
                 <li
                   className={`nav-item ${
                     isActive("/UserProfile") ? "active" : ""
@@ -634,11 +667,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
                     <li
                       className={`nav-item ${
-                        isActive("/BuildingChat") ? "active" : ""
+                        isActive("/UserBuildingInfolist") ? "active" : ""
                       }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/BuildingChat")}
+                        onClick={() => handleLinkClick("/UserBuildingInfolist")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -649,12 +682,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
-                        isActive("/ComparativeBuildingChat") ? "active" : ""
+                        isActive("/ComparativeUserBuildinglist") ? "active" : ""
                       }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/ComparativeBuildingChat")
+                          handleLinkClick("/ComparativeUserBuildinglist")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}

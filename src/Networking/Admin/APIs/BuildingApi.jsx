@@ -10,9 +10,9 @@ import {
 
 export const CreateBuildingSubmit = createAsyncThunk(
   "auth/CreateBuildingSubmit",
-  async (credentials, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(CreateBuilding, credentials);
+      const response = await axiosInstance.post(CreateBuilding, payload);
 
       return response.data;
     } catch (error) {
@@ -23,9 +23,12 @@ export const CreateBuildingSubmit = createAsyncThunk(
 
 export const ListBuildingSubmit = createAsyncThunk(
   "auth/ListBuildingSubmit",
-  async (_, { rejectWithValue }) => {
+  async (category, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(ListBuilding);
+      const response = await axiosInstance.get(ListBuilding, {
+        params: { category: category },
+      });
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -35,9 +38,12 @@ export const ListBuildingSubmit = createAsyncThunk(
 
 export const UpdateBuildingSubmit = createAsyncThunk(
   "auth/UpdateBuildingSubmit",
-  async (data, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.patch(UpdateBuildingEndpoint, data);
+      const response = await axiosInstance.patch(
+        UpdateBuildingEndpoint,
+        payload
+      );
 
       return response.data;
     } catch (error) {

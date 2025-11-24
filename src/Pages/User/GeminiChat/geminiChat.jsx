@@ -10,7 +10,10 @@ import {
   get_Session_List_Specific,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import TypingIndicator from "../../../Component/TypingIndicator";
-import { AskQuestionGeminiAPI } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+import {
+  AskQuestionGeminiAPI,
+  UploadGeneralDocSubmit,
+} from "../../../Networking/Admin/APIs/GeneralinfoApi";
 
 export const GeminiChat = () => {
   const dispatch = useDispatch();
@@ -32,6 +35,7 @@ export const GeminiChat = () => {
   const [isReplyLoading, setIsReplyLoading] = useState(false);
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const isLoading = isLoadingSession;
 
@@ -165,6 +169,50 @@ export const GeminiChat = () => {
     }
   };
 
+  const uploadFile = async (file) => {
+    if (
+      ![
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "text/csv",
+      ].includes(file.type)
+    ) {
+      toast.error("Only PDF, DOCX, XLSX, and CSV files are allowed");
+      return;
+    }
+
+    if (file.size > 30 * 1024 * 1024) {
+      toast.error("File size must be under 30MB");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+
+      await dispatch(
+        UploadGeneralDocSubmit({
+          file,
+          sessionId,
+          category: "Gemini",
+        })
+      ).unwrap();
+
+      toast.success("File uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("Upload failed!");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) await uploadFile(file);
+    e.target.value = null;
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
 
@@ -217,7 +265,7 @@ export const GeminiChat = () => {
     setSessionId(newId);
     setMessages([]);
     setIsChatStarted(false);
-    toast.info(`Started a new chat session for Gemini`);
+    // toast.info(`Started a new chat session for Gemini`);
   };
 
   const LoadingSpinner = () => (
@@ -245,12 +293,35 @@ export const GeminiChat = () => {
               className="p-4 bg-white shadow-sm rounded-4 text-center"
               style={{ width: "100%", maxWidth: 600 }}
             >
-              <h5 className="mb-3 text-muted d-flex align-items-center justify-content-center">
-                <i
-                  className="bi bi-stars me-2 text-secondary"
-                  style={{ fontSize: "1.3rem" }}
-                ></i>
-                Gemini
+              <h5 className="mb-3 text-muted d-flex align-items-center justify-content-between">
+                <span className="d-flex align-items-center">
+                  <i
+                    className="bi bi-stars me-2 text-secondary"
+                    style={{ fontSize: "1.3rem" }}
+                  ></i>
+                  Gemini
+                </span>
+
+                <label
+                  htmlFor="fileUpload"
+                  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                  style={{ borderRadius: "20px" }}
+                >
+                  <i className="bi bi-upload me-1"></i> Upload
+                </label>
+
+                <input
+                  type="file"
+                  id="fileUpload"
+                  className="d-none"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    toast.info(`Selected: ${file.name}`);
+                  }}
+                />
               </h5>
 
               {isLoading ? (
@@ -337,15 +408,19 @@ export const GeminiChat = () => {
           >
             <div className="row h-100">
               <div className="col-md-12 d-flex flex-column">
-                <div className="chat-header d-flex justify-content-between align-items-center mb-2 ">
-                  <h5 className="chat-title text-muted mb-0">Gemini</h5>
-                  <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={handleNewSession}
-                    disabled={isLoading}
-                  >
-                    <i className="bi bi-plus-circle me-1"></i> New Session
-                  </button>
+                <div className="chat-header d-flex justify-content-between align-items-center mb-2">
+                  <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
+                    Gemini
+                  </h5>
+
+                  <div className="d-flex align-items-center gap-2">
+                    <button
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={handleNewSession}
+                    >
+                      <i className="bi bi-plus-circle me-1"></i> New Session
+                    </button>
+                  </div>
                 </div>
 
                 <div
@@ -429,6 +504,41 @@ export const GeminiChat = () => {
 
                 <div className="pt-2 pb-1">
                   <div className="d-flex align-items-end rounded-pill py-2 px-3 bg-white shadow-sm border">
+                    {isUploading ? (
+                      <div className="spinner-border spinner-border-sm text-secondary m-2" />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="chatFileUpload"
+                          className="btn btn-link p-0 me-2 d-flex align-items-center"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <i
+                            className="bi bi-upload text-secondary"
+                            style={{ fontSize: "1.2rem" }}
+                          ></i>
+                        </label>
+
+                        <input
+                          id="chatFileUpload"
+                          type="file"
+                          className="d-none"
+                          accept=".pdf,.docx,.xlsx,.csv"
+                          onChange={handleFileChange}
+                          disabled={isUploading}
+                        />
+                      </>
+                    )}
+
+                    <input
+                      id="chatFileUpload"
+                      type="file"
+                      className="d-none"
+                      accept=".pdf,.docx,.xlsx,.csv"
+                      onChange={handleFileChange}
+                    />
+
+                    {/* Text Area */}
                     <textarea
                       ref={textareaRef}
                       rows={1}
@@ -444,6 +554,8 @@ export const GeminiChat = () => {
                       }}
                       disabled={isSending || isReplyLoading}
                     />
+
+                    {/* Send / Mic Button */}
                     {message.length > 0 ? (
                       <button
                         className="btn btn-secondary rounded-circle"

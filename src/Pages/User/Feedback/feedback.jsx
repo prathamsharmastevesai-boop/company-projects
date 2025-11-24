@@ -38,12 +38,6 @@ export const Feedback = () => {
 
   return (
     <>
-      <div
-        className="header-bg {
--bg d-flex justify-content-start px-3 align-items-center sticky-header"
-      >
-        <h5 className="mb-0 text-light">Information Collaboration</h5>
-      </div>
       <div className="container py-5 d-flex flex-column align-items-center">
         <Card
           className="p-4 shadow-lg border-0 rounded-4 mb-5"

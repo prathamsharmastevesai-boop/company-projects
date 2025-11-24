@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { toursCreateSubmit } from "../../../Networking/User/APIs/Tours/toursApi";
+import { toursCreateSubmit } from "../../../../Networking/User/APIs/Tours/toursApi";
 
 export const Tours = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export const Tours = () => {
     setLoading(true);
 
     try {
-      await dispatch(toursCreateSubmit(formData)).unwrap(); // WAIT for API
+      await dispatch(toursCreateSubmit(formData)).unwrap();
       toast.success("Tour created successfully");
 
       setFormData({
@@ -46,21 +46,14 @@ export const Tours = () => {
         notes: "",
       });
     } catch (err) {
-      toast.error("Failed to create tour");
+      toast.error("Failed to Add tour");
     } finally {
-      setLoading(false); // stop loader after API finishes
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <div
-        className="header-bg {
--bg d-flex justify-content-start px-3 align-items-center sticky-header"
-      >
-        <h5 className="mb-0 text-light">Create Tour</h5>
-      </div>
-
       <Card className="p-3 shadow-sm border-0">
         <Form onSubmit={handleSubmit}>
           <Row>

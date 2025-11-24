@@ -56,7 +56,6 @@ export const SummeryUpload = () => {
   const handlePreview = async (doc) => {
     try {
       const token = sessionStorage.getItem("access_token");
-      console.log(token, "token");
 
       if (!token) {
         toast.error("Authentication token missing.");

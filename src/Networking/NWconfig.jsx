@@ -116,6 +116,8 @@ export const AddnewEmailTemplate = "/mail_draft/templates/create";
 export const TenentName = "/mail_draft/tenants/list";
 export const EmailDraftingTemlate = "/mail_draft/templates/list";
 export const GenerateTemplate = "/mail_draft/generate";
+export const updateMailTemplate = "/mail_draft/templates/";
+export const Deletetemplatemplate = "/mail_draft/templates/";
 
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";

@@ -5,11 +5,12 @@ import { FaArrowLeft } from "react-icons/fa";
 
 export const UserLeaseList = () => {
   const location = useLocation();
+
   const navigate = useNavigate();
   const initialBuildings = location.state?.office;
 
-  const handleLease = (Building_id, type) => {
-    navigate("/UserChat", { state: { Building_id, type } });
+  const handleLease = (initialBuildings, type) => {
+    navigate("/UserChat", { state: { Building_id: initialBuildings, type } });
   };
 
   return (

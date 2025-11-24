@@ -34,8 +34,6 @@ export const GeToursList = createAsyncThunk(
 export const DeleteToursSubmit = createAsyncThunk(
   "DeleteToursSubmit",
   async (tour_id, { rejectWithValue }) => {
-    console.log("tets");
-
     try {
       const response = await axiosInstance.delete(`/tours/${tour_id}`);
 

@@ -98,7 +98,6 @@ export const UserProfile = () => {
     formData.append("number", number);
     if (photoFile) formData.append("photo", photoFile);
     if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
-    console.log(formData, "formData in comp");
 
     try {
       await dispatch(ProfileUpdateApi(formData));

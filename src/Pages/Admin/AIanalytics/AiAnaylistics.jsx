@@ -20,11 +20,12 @@ import {
 } from "recharts";
 import ReactMarkdown from "react-markdown";
 
-
 export const Aianalytics = () => {
   const [activeTab, setActiveTab] = useState("AI Insights");
   const [days, setDays] = useState(7);
   const [dashboardData, setDashboardData] = useState(null);
+  console.log(dashboardData, "dashboardData");
+
   const [recentQuestions, setRecentQuestions] = useState(null);
   const [usageData, setUsageData] = useState(null);
   const [activitySummary, setActivitySummary] = useState(null);
@@ -63,35 +64,36 @@ export const Aianalytics = () => {
     }
   };
 
-const AIInslights = async () => {
-  try {
-    const res = await dispatch(getInslightApi()).unwrap();
+  const AIInslights = async () => {
+    try {
+      const res = await dispatch(getInslightApi()).unwrap();
+      console.log(res, "resresres");
 
-    let insights = [];
-    if (res?.insight) {
-      const rawInsight = res.insight.replace(/```(json)?/g, "").trim();
+      let insights = [];
+      if (res?.insight) {
+        const rawInsight = res.insight.replace(/```(json)?/g, "").trim();
 
-      try {
-        if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
-          const parsed = JSON.parse(rawInsight);
-          insights = Array.isArray(parsed) ? parsed : [parsed];
-        } else {
+        try {
+          if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
+            const parsed = JSON.parse(rawInsight);
+            insights = Array.isArray(parsed) ? parsed : [parsed];
+          } else {
+            insights = [rawInsight];
+          }
+        } catch (err) {
+          console.error("Failed to parse AI insights:", err);
           insights = [rawInsight];
         }
-      } catch (err) {
-        console.error("Failed to parse AI insights:", err);
-        insights = [rawInsight];
       }
-    }
 
-    setDashboardData((prev) => ({
-      ...prev,
-      aiInsights: insights,
-    }));
-  } catch (error) {
-    console.error("Failed to fetch AI insights:", error);
-  }
-};
+      setDashboardData((prev) => ({
+        ...prev,
+        aiInsights: insights,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch AI insights:", error);
+    }
+  };
 
   const fetchRecentQuestions = async () => {
     try {
@@ -128,7 +130,6 @@ const AIInslights = async () => {
       console.error("Failed to fetch recent questions:", error);
     }
   };
-
 
   const fetchUsageTreads = async () => {
     try {
@@ -263,16 +264,20 @@ const AIInslights = async () => {
       </div>
 
       <ul className="nav mb-3 custom-tabs flex-wrap justify-content-center">
-        {["AI Insights", "Usage Trends", "Recent Questions", "Analytics"].map((tab) => (
-          <li className="nav-item flex-fill mx-1 mx-md-2" key={tab}>
-            <button
-              className={`nav-link w-100 text-center ${activeTab === tab ? "active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          </li>
-        ))}
+        {["AI Insights", "Usage Trends", "Recent Questions", "Analytics"].map(
+          (tab) => (
+            <li className="nav-item flex-fill mx-1 mx-md-2" key={tab}>
+              <button
+                className={`nav-link w-100 text-center ${
+                  activeTab === tab ? "active" : ""
+                }`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            </li>
+          )
+        )}
       </ul>
 
       <div className="card shadow-sm p-4">
@@ -281,14 +286,16 @@ const AIInslights = async () => {
             <h6 className="fw-bold mb-3">AI-Generated Insights</h6>
             {dashboardData?.aiInsights?.length > 0 ? (
               <div className="list-group">
-          {dashboardData.aiInsights.map((insight, idx) => (
-  <div key={idx} className="list-group-item">
-    <ReactMarkdown>{typeof insight === "string" ? insight : JSON.stringify(insight, null, 2)}</ReactMarkdown>
-  </div>
-))}
-
+                {dashboardData?.aiInsights.map((insight, idx) => (
+                  <div key={idx} className="list-group-item">
+                    <ReactMarkdown>
+                      {typeof insight === "string"
+                        ? insight
+                        : JSON.stringify(insight, null, 2)}
+                    </ReactMarkdown>
+                  </div>
+                ))}
               </div>
-
             ) : (
               <div className="text-center text-muted">
                 <div
@@ -338,7 +345,6 @@ const AIInslights = async () => {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-
 
                 {usageData.insights?.trend_summary && (
                   <div className="card p-3 shadow-sm">
@@ -484,7 +490,6 @@ const AIInslights = async () => {
             )}
           </div>
         )}
-
       </div>
     </div>
   );

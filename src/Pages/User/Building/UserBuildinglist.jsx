@@ -17,8 +17,9 @@ export const UserBuildinglist = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    dispatch(ListBuildingSubmit({ navigate }));
-  }, [dispatch, navigate]);
+    const category = "Lease&Loi";
+    dispatch(ListBuildingSubmit(category));
+  }, [dispatch]);
 
   useEffect(() => {
     filteredBuildings.forEach((building, i) => {

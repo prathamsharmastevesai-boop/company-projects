@@ -3,12 +3,12 @@ import { useDispatch } from "react-redux";
 import { getadminfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
 import {
   Card,
-  Badge,
   Row,
   Col,
   Container,
   Modal,
   Button,
+  Accordion,
 } from "react-bootstrap";
 import RAGLoader from "../../../Component/Loader";
 import { DeleteFeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
@@ -68,53 +68,75 @@ export const AdminFeedback = () => {
 
   return (
     <Container fluid className="py-4 px-3">
-      <h2 className="mb-4 text-start text-dark fw-semibold">
+      <h2 className="mb-4 text-start fw-bold" style={{ color: "#333" }}>
         Information Collaboration
       </h2>
 
       {feedbacks.length === 0 ? (
-        <p className="text-center text-muted">No feedback available.</p>
+        <p className="text-center text-muted fs-5">No feedback available.</p>
       ) : (
         <Row className="g-4">
           {feedbacks.map((fb) => (
-            <Col
-              key={fb.id}
-              xs={12}
-              sm={12}
-              md={6}
-              lg={4}
-              xl={3}
-              className="d-flex"
-            >
+            <Col key={fb.id} xs={12} sm={12} md={6} lg={4} xl={3}>
               <Card
-                className="shadow-sm flex-fill border-0 hover-shadow"
+                className="border-0 shadow-sm"
                 style={{
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  borderRadius: "18px",
+                  background: "rgba(255,255,255,0.85)",
+                  backdropFilter: "blur(8px)",
+                  transition: "transform .25s ease, box-shadow .25s ease",
                 }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "translateY(-6px)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "translateY(0px)")
+                }
               >
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <Card.Title className="mb-0 text-truncate">
-                      {fb.user_email}
-                    </Card.Title>
+                <Card.Body className="p-3">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h6 className="fw-semibold mb-1 text-dark">
+                        {fb.user_email}
+                      </h6>
+                      <small className="text-muted">
+                        User Feedback Received
+                      </small>
+                    </div>
 
                     <button
-                      className="btn btn-sm btn-outline-danger p-1"
+                      className="btn btn-light border-0 p-1 shadow-sm"
+                      style={{
+                        borderRadius: "50%",
+                        width: 32,
+                        height: 32,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                       onClick={() => openDeleteModal(fb.id)}
-                      style={{ borderRadius: "50%" }}
                     >
-                      <i className="bi bi-trash"></i>
+                      <i className="bi bi-trash text-danger"></i>
                     </button>
                   </div>
 
-                  <Card.Text className="text-secondary mb-3">
-                    {fb.feedback}
-                  </Card.Text>
-                </Card.Body>
+                  <Accordion>
+                    <Accordion.Item
+                      eventKey="0"
+                      className="border-0 shadow-sm"
+                      style={{ borderRadius: "12px" }}
+                    >
+                      <Accordion.Header>View Feedback</Accordion.Header>
 
-                <Card.Footer className="text-muted small text-end bg-light">
-                  {new Date(fb.created_at).toLocaleString()}
-                </Card.Footer>
+                      <Accordion.Body
+                        className="text-secondary"
+                        style={{ lineHeight: 1.5 }}
+                      >
+                        {fb.feedback}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
+                </Card.Body>
               </Card>
             </Col>
           ))}
@@ -127,17 +149,17 @@ export const AdminFeedback = () => {
         centered
       >
         <Modal.Header closeButton={!deleteLoading}>
-          <Modal.Title>Confirm Delete</Modal.Title>
+          <Modal.Title className="fw-semibold">Delete Feedback</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body className="fs-6">
           {deleteLoading ? (
             <div className="text-center py-2">
               <div className="spinner-border text-danger" role="status"></div>
-              <p className="mt-2 small">Deleting...</p>
+              <p className="mt-2">Deleting, please wait...</p>
             </div>
           ) : (
-            "Are you sure you want to delete this feedback?"
+            "Are you sure you want to delete this feedback permanently?"
           )}
         </Modal.Body>
 
@@ -155,17 +177,7 @@ export const AdminFeedback = () => {
             onClick={handleDelete}
             disabled={deleteLoading}
           >
-            {deleteLoading ? (
-              <span>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                ></span>
-                Deleting...
-              </span>
-            ) : (
-              "Yes, Delete"
-            )}
+            {deleteLoading ? "Deleting..." : "Yes, Delete"}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 
-export const ListBuilding = () => {
+export const BuildingInfoList = () => {
   const { BuildingList } = useSelector((state) => state.BuildingSlice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export const ListBuilding = () => {
   useEffect(() => {
     const fetchBuildings = async () => {
       setLoading(true);
-      const category = "Lease&Loi";
+      const category = "BuildingInfo";
       await dispatch(ListBuildingSubmit(category));
       setLoading(false);
     };
@@ -64,7 +64,7 @@ export const ListBuilding = () => {
 
       await dispatch(UpdateBuildingSubmit(payload)).unwrap();
 
-      await dispatch(ListBuildingSubmit("Lease&Loi"));
+      await dispatch(ListBuildingSubmit("BuildingInfo"));
 
       setEditBuildingId(null);
     } catch (error) {
@@ -94,14 +94,14 @@ export const ListBuilding = () => {
     try {
       const payload = [
         {
-          category: "Lease&Loi",
+          category: "BuildingInfo",
           address: address,
         },
       ];
 
       await dispatch(CreateBuildingSubmit(payload)).unwrap();
 
-      await dispatch(ListBuildingSubmit("Lease&Loi"));
+      await dispatch(ListBuildingSubmit("BuildingInfo"));
 
       setAddress("");
     } catch (error) {
@@ -112,7 +112,7 @@ export const ListBuilding = () => {
   };
 
   const handleSubmit = (buildingId) => {
-    navigate("/LeaseList", { state: { office: { buildingId } } });
+    navigate("/BuildingInfo", { state: { office: { buildingId } } });
   };
 
   const filteredBuildings = BuildingList.filter((building) => {
@@ -215,7 +215,7 @@ export const ListBuilding = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h2 className="fw-bold text-dark">🏢 Building List</h2>
+        <h2 className="fw-bold text-dark">🏢 Building Info List</h2>
         <p className="text-muted mb-3">
           Here’s a summary of all the submitted buildings.
         </p>

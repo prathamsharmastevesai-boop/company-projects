@@ -4,9 +4,9 @@ import { Card, Accordion, Row, Col, Modal, Button } from "react-bootstrap";
 import {
   DeleteToursSubmit,
   GeToursList,
-} from "../../../Networking/User/APIs/Tours/toursApi";
+} from "../../../../Networking/User/APIs/Tours/toursApi";
 import { toast } from "react-toastify";
-import RAGLoader from "../../../Component/Loader";
+import RAGLoader from "../../../../Component/Loader";
 
 export const ToursDetails = () => {
   const dispatch = useDispatch();
@@ -57,8 +57,6 @@ export const ToursDetails = () => {
 
   return (
     <div className="m-3">
-      <h4 className="mb-3">Tours List</h4>
-
       {loading && (
         <div className="text-center my-5">
           <RAGLoader />
