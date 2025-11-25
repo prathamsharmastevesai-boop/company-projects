@@ -72,6 +72,11 @@ import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/co
 import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
 import { Calc } from "./Pages/User/Calc/calculator";
 import { InformationCollaborationPage } from "./Pages/User/Feedback/feedBackpages";
+import { TenentInfoUserBuildinglist } from "./Pages/User/TenantInformation/tenentInformationList";
+import { TenentInfoBuildingList } from "./Pages/Admin/GeneralInfo/tenentInformationList";
+import { Benchmark } from "./Pages/User/DistilledExpenseTracker/benchmark";
+import { DistilledExpenseTracker } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTracker";
+import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTrackerpage";
 
 function App() {
   useEffect(() => {
@@ -141,6 +146,10 @@ function App() {
               path="/TenantInformation"
               element={<TenantInformationUpload />}
             />
+            <Route
+              path="/TenentInfoBuildingList"
+              element={<TenentInfoBuildingList />}
+            />
             <Route path="/toursDetails" element={<ToursDetails />} />
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
@@ -177,6 +186,16 @@ function App() {
             <Route
               path="/adminInformationCollaboration"
               element={<AdminFeedback />}
+            />
+
+            <Route
+              path="/distilledExpenseTracker"
+              element={<DistilledExpenseTracker />}
+            />
+
+            <Route
+              path="/distilledExpenseTrackerPage"
+              element={<DistilledExpenseTrackerPage />}
             />
           </Route>
 
@@ -241,8 +260,15 @@ function App() {
               path="/TenantInformationChat"
               element={<TenantInformation />}
             />
+            <Route
+              path="/tenentInfoUserBuildinglist"
+              element={<TenentInfoUserBuildinglist />}
+            />
 
             <Route path="/geminichat" element={<GeminiChat />} />
+
+            <Route path="/benchmark" element={<Benchmark />} />
+
             <Route path="/tours" element={<ToursPage />} />
 
             <Route path="/toursform" element={<Tours />} />

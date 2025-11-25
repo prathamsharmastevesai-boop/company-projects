@@ -74,7 +74,12 @@ export const ToursDetails = () => {
               <Card className="mb-3 shadow-sm small-card">
                 <Card.Body className="p-2">
                   <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h6 className="fw-bold mb-0 text-dark">{item.building}</h6>
+                    <div>
+                      <h6 className="fw-bold mb-0 text-dark">
+                        {item.building}
+                      </h6>
+                      <h6>{item.user_email}</h6>
+                    </div>
 
                     <button
                       className="btn btn-sm btn-outline-danger p-1"

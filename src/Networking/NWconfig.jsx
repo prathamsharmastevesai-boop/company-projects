@@ -126,3 +126,7 @@ export const listAdmin = "/invite_user/list";
 //Tours
 export const createTours = "/tours/";
 export const getTours = "/tours/";
+
+//DistilledExpenseTracker
+export const distilledExpenseTrackerEndpoint = "/det_expense/submit";
+export const distilledExpenseTrackerlistEndPoint = "/det_expense/submissions";
