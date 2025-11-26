@@ -413,6 +413,7 @@
   .main-wrapper .chat-modify-btn {
     display: none;
     position: fixed;
+    z-index: 1000;
     top: 5px;
     left: 5px;
     background-color: #000;
@@ -555,4 +556,9 @@
 }
 .small-card:hover {
   transform: scale(0.98);
+}
+
+.calc-height {
+  height: 100vh;
+  overflow-y: scroll;
 }

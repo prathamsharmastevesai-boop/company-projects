@@ -4,18 +4,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { distilledExpenseTracker } from "../../../Networking/Admin/APIs/distilledExpenseTrackerApi";
 import { useDispatch } from "react-redux";
 
-const SUBMARKET_OPTIONS = ["Downtown", "Uptown", "Suburb"];
+const SUBMARKET_OPTIONS = [
+  "Midtown",
+  "Plaza District",
+  "Midtown South",
+  "Flatiron",
+  "Downtown",
+  "Financial District",
+  "Northern New Jersey",
+  " Westchester, Miami",
+  " Palm Beach County",
+  " Central New Jersey",
+  "New Jersey Waterfront",
+  "Brooklyn",
+  "Downtown Brooklyn",
+];
 const SF_BAND_OPTIONS = [
-  ">25,000 SF",
-  ">50,000 SF",
-  ">100,000 SF",
-  ">200,000 SF",
-  ">400,000 SF",
-  ">600,000 SF",
-  ">800,000 SF",
-  ">1,000,000 SF",
-  ">1,200,000 SF",
-  "ABOVE 1,200,000 SF",
+  "50,000 SF",
+  "100,000 SF",
+  "250,000 SF",
+  "500,000 SF 1",
+  "000,000 SF+",
 ];
 const CLASS_OPTIONS = ["A", "B", "C", "D"];
 
@@ -25,17 +34,21 @@ export const DistilledExpenseTracker = () => {
     building_sf_band: "",
     submarket_geo: "",
     building_class: "",
-    building_sf: "",
+
     realestate_taxes_psf: "",
     property_insurance_psf: "",
-    utilities_psf: "",
-    janitorial_psf: "",
-    prop_mgmt_fees_psf: "",
-    security_psf: "",
-    admin_charges_psf: "",
-    ti_buildout_psf: "",
-    capex_major_psf: "",
-    commission_advert_psf: "",
+    electric_psf: "",
+    gas_psf: "",
+    water_psf: "",
+    janitorial_cleaning_psf: "",
+    property_mgmt_fees_psf: "",
+    lobby_security_psf: "",
+    security_monitoring_psf: "",
+    accounting_psf: "",
+    legal_psf: "",
+    ti_allowances_psf: "",
+    commissions_psf: "",
+    interest_rates_psf: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -75,18 +88,6 @@ export const DistilledExpenseTracker = () => {
         toast.error(`Field "${field}" is required`);
         return false;
       }
-
-      if (field.includes("_psf") || field === "building_sf") {
-        const numberValue = Number(value);
-        if (isNaN(numberValue)) {
-          toast.error(`Field "${field}" must be a number`);
-          return false;
-        }
-        if (numberValue < 0) {
-          toast.error(`Field "${field}" cannot be negative`);
-          return false;
-        }
-      }
     }
     return true;
   };
@@ -98,18 +99,24 @@ export const DistilledExpenseTracker = () => {
     setLoading(true);
 
     const payload = {
-      ...formData,
-      building_sf: String(formData.building_sf),
+      building_sf_band: formData.building_sf_band,
+      submarket_geo: formData.submarket_geo,
+      building_class: formData.building_class,
+
       realestate_taxes_psf: Number(formData.realestate_taxes_psf),
       property_insurance_psf: Number(formData.property_insurance_psf),
-      utilities_psf: Number(formData.utilities_psf),
-      janitorial_psf: Number(formData.janitorial_psf),
-      prop_mgmt_fees_psf: Number(formData.prop_mgmt_fees_psf),
-      security_psf: Number(formData.security_psf),
-      admin_charges_psf: Number(formData.admin_charges_psf),
-      ti_buildout_psf: Number(formData.ti_buildout_psf),
-      capex_major_psf: Number(formData.capex_major_psf),
-      commission_advert_psf: Number(formData.commission_advert_psf),
+      electric_psf: Number(formData.electric_psf),
+      gas_psf: Number(formData.gas_psf),
+      water_psf: Number(formData.water_psf),
+      janitorial_cleaning_psf: Number(formData.janitorial_cleaning_psf),
+      property_mgmt_fees_psf: Number(formData.property_mgmt_fees_psf),
+      lobby_security_psf: Number(formData.lobby_security_psf),
+      security_monitoring_psf: Number(formData.security_monitoring_psf),
+      accounting_psf: Number(formData.accounting_psf),
+      legal_psf: Number(formData.legal_psf),
+      ti_allowances_psf: Number(formData.ti_allowances_psf),
+      commissions_psf: Number(formData.commissions_psf),
+      interest_rates_psf: Number(formData.interest_rates_psf),
     };
 
     try {
@@ -152,7 +159,7 @@ export const DistilledExpenseTracker = () => {
           <div className="card-body">
             <div className="row mb-3">
               <div className="col-md-4">
-                <label className="form-label">SF Band</label>
+                <label className="form-label">Building SF</label>
                 <select
                   className="form-select"
                   name="building_sf_band"
@@ -160,7 +167,7 @@ export const DistilledExpenseTracker = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select SF Band</option>
+                  <option value="">Select Building SF</option>
                   {SF_BAND_OPTIONS.map((b) => (
                     <option key={b} value={b}>
                       {b}
@@ -205,20 +212,6 @@ export const DistilledExpenseTracker = () => {
                 </select>
               </div>
             </div>
-
-            <div className="row mb-3">
-              <div className="col-md-4">
-                <label className="form-label">Building SF</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="building_sf"
-                  value={formData.building_sf}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -231,14 +224,24 @@ export const DistilledExpenseTracker = () => {
               {[
                 { label: "Real Estate Taxes", key: "realestate_taxes_psf" },
                 { label: "Property Insurance", key: "property_insurance_psf" },
-                { label: "Utilities", key: "utilities_psf" },
-                { label: "Janitorial", key: "janitorial_psf" },
-                { label: "Property Mgmt Fees", key: "prop_mgmt_fees_psf" },
-                { label: "Security", key: "security_psf" },
-                { label: "Admin Charges", key: "admin_charges_psf" },
-                { label: "TI Buildout", key: "ti_buildout_psf" },
-                { label: "CapEx Major", key: "capex_major_psf" },
-                { label: "Commission & Advert", key: "commission_advert_psf" },
+                { label: "Electric", key: "electric_psf" },
+                { label: "Gas", key: "gas_psf" },
+                { label: "Water", key: "water_psf" },
+                {
+                  label: "Janitorial Cleaning",
+                  key: "janitorial_cleaning_psf",
+                },
+                { label: "Property Mgmt Fees", key: "property_mgmt_fees_psf" },
+                { label: "Lobby Security", key: "lobby_security_psf" },
+                {
+                  label: "Security Monitoring",
+                  key: "security_monitoring_psf",
+                },
+                { label: "Accounting", key: "accounting_psf" },
+                { label: "Legal", key: "legal_psf" },
+                { label: "TI Allowances", key: "ti_allowances_psf" },
+                { label: "Commissions", key: "commissions_psf" },
+                { label: "Interest Rates", key: "interest_rates_psf" },
               ].map((item) => (
                 <div className="col-md-6 mb-3" key={item.key}>
                   <label className="form-label">{item.label}</label>

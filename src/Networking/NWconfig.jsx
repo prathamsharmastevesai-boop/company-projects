@@ -130,3 +130,12 @@ export const getTours = "/tours/";
 //DistilledExpenseTracker
 export const distilledExpenseTrackerEndpoint = "/det_expense/submit";
 export const distilledExpenseTrackerlistEndPoint = "/det_expense/submissions";
+
+//Calc
+export const calcEndpoint = "/calc/lease_finance";
+
+//Forum
+export const threadData = "/forum/threads";
+export const createThreadEndpoint = "/forum/threads";
+export const createThoughtEndpoint = "/forum/threads/";
+export const ThreadhistoryEndpoint = "/forum/threads/";

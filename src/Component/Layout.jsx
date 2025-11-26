@@ -20,6 +20,7 @@ export const DashboardLayout = () => {
       "/TenantMarket",
       "/geminichat",
       "/ReportChat",
+      "/portfolio-forum",
     ];
 
     const isChat = chatRoutes.some((path) =>

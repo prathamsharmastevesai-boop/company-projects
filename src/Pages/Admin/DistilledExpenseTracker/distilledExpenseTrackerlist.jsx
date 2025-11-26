@@ -48,13 +48,12 @@ export const DistilledExpenseTrackerlist = () => {
             <tr>
               <th>#</th>
               <th>Submarket</th>
-              <th>SF Band</th>
               <th>Building SF</th>
               <th>Class</th>
               <th>Property Insurance</th>
               <th>Janitorial</th>
               <th>Security</th>
-              <th>TI Buildout</th>
+              <th>TI Allowances</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -64,12 +63,12 @@ export const DistilledExpenseTrackerlist = () => {
                 <td>{index + 1}</td>
                 <td>{item.submarket_geo}</td>
                 <td>{item.building_sf_band}</td>
-                <td>{item.building_sf}</td>
+
                 <td>{item.building_class}</td>
                 <td>{item.property_insurance_psf}</td>
-                <td>{item.janitorial_psf}</td>
-                <td>{item.security_psf}</td>
-                <td>{item.ti_buildout_psf}</td>
+                <td>{item.janitorial_cleaning_psf}</td>
+                <td>{item.security_monitoring_psf}</td>
+                <td>{item.ti_allowances_psf}</td>
                 <td>{new Date(item.created_at).toLocaleDateString()}</td>
               </tr>
             ))}

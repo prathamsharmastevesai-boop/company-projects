@@ -64,19 +64,21 @@ import { ReportChat } from "./Pages/User/ReportSummery/ReportChat";
 import { Tours } from "./Pages/User/TourPage/Tours/tours";
 import { ToursDetails } from "./Pages/User/TourPage/ToursDetails/toursDetails";
 import { ToursPage } from "./Pages/User/TourPage/toursPage";
-import { Forum } from "./Pages/User/Forum/forum";
+import { PortfolioForum } from "./Pages/User/Forum/forum";
 import { CreateThread } from "./Pages/User/Forum/createThread";
 import { ComparativeBuildingList } from "./Pages/Admin/ComparativeBuilding/comparativeBuildinglist";
 import { BuildingInfoList } from "./Pages/Admin/GeneralInfo/BuildingInfoList";
 import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/comparativeUserBuildinglist";
 import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
-import { Calc } from "./Pages/User/Calc/calculator";
+import { LeaseFinanceCalculator } from "./Pages/User/Calc/calculator";
 import { InformationCollaborationPage } from "./Pages/User/Feedback/feedBackpages";
 import { TenentInfoUserBuildinglist } from "./Pages/User/TenantInformation/tenentInformationList";
 import { TenentInfoBuildingList } from "./Pages/Admin/GeneralInfo/tenentInformationList";
 import { Benchmark } from "./Pages/User/DistilledExpenseTracker/benchmark";
 import { DistilledExpenseTracker } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTracker";
 import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTrackerpage";
+import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrackerList";
+import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
 
 function App() {
   useEffect(() => {
@@ -102,7 +104,6 @@ function App() {
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/ForgotPassword" element={<ForgotPassword />} />
           <Route path="/ResetPassword" element={<ResetPassword />} />
-
           <Route
             element={
               <ProtectedRoute allowedRoles={["superuser"]}>
@@ -112,7 +113,6 @@ function App() {
           >
             <Route path="/AdminManagement" element={<AdminManagement />} />
           </Route>
-
           <Route
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
@@ -197,6 +197,12 @@ function App() {
               path="/distilledExpenseTrackerPage"
               element={<DistilledExpenseTrackerPage />}
             />
+
+            <Route path="/subleaseTracker" element={<SubleaseTracker />} />
+            <Route
+              path="/subleaseTrackerList"
+              element={<SubleaseTrackerList />}
+            />
           </Route>
 
           <Route
@@ -273,11 +279,14 @@ function App() {
 
             <Route path="/toursform" element={<Tours />} />
             <Route path="/toursDetails" element={<ToursDetails />} />
-            <Route path="/forum" element={<CreateThread />} />
+
+            <Route path="/create-forum" element={<CreateThread />} />
+
+            <Route path="/portfolio-forum" element={<PortfolioForum />} />
 
             <Route path="/history" element={<SessionList />} />
 
-            <Route path="/calculator" element={<Calc />} />
+            <Route path="/calculator" element={<LeaseFinanceCalculator />} />
           </Route>
         </Routes>
         <ToastContainer />
