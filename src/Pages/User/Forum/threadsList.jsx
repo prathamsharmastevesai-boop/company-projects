@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { getThreads } from "../services/forumService";
 
-export default function ThreadsList({ clientId }) {
+export default function () {
   const [threads, setThreads] = useState([]);
 
   useEffect(() => {

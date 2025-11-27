@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AskQuestionAPI, ListDocSubmit } from "../APIs/UploadDocApi";
-import { get_Threads_Api } from "../APIs/forumApi";
+import { get_Threads_Api, getBenchmark } from "../APIs/forumApi";
 
 const ForumSlice = createSlice({
   name: "ForumSlice",
@@ -8,9 +7,10 @@ const ForumSlice = createSlice({
     loading: false,
     Buliding: "",
     ThreadList: [],
-    Data: "",
+    Data: {},
     error: null,
   },
+
   extraReducers: (builder) => {
     builder.addCase(get_Threads_Api.pending, (state) => {
       state.loading = true;
@@ -24,6 +24,20 @@ const ForumSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     });
+    builder
+      .addCase(getBenchmark.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBenchmark.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload;
+        console.log(state.Data, " state.Data ");
+      })
+      .addCase(getBenchmark.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

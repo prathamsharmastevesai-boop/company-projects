@@ -12,14 +12,18 @@ import {
 import TypingIndicator from "../../../Component/TypingIndicator";
 import {
   AskQuestionGeminiAPI,
+  DeleteGeneralDocSubmit,
   UploadGeneralDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
+import { Modal } from "react-bootstrap";
+import { ListAbstractLeaseDoc } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
 
 export const GeminiChat = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
   const chatRef = useRef(null);
+  const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -36,6 +40,10 @@ export const GeminiChat = () => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [deletingDocId, setDeletingDocId] = useState(null);
+  const [showDocsModal, setShowDocsModal] = useState(false);
+  const [docs, setDocs] = useState([]);
+  const [isDocsLoading, setIsDocsLoading] = useState(false);
 
   const isLoading = isLoadingSession;
 
@@ -94,7 +102,6 @@ export const GeminiChat = () => {
         }
       } catch (error) {
         console.error("Failed to fetch chat history:", error);
-
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
@@ -105,10 +112,31 @@ export const GeminiChat = () => {
   }, [sessionReady, sessionId, dispatch]);
 
   const scrollToBottom = () => {
-    if (chatRef.current)
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      } else if (chatRef.current) {
+        chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      }
+    }, 500);
   };
-  useEffect(() => scrollToBottom(), [messages]);
+
+  useEffect(() => {
+    if (!isLoadingHistory) {
+      scrollToBottom();
+    }
+  }, [messages, isReplyLoading, isLoadingHistory]);
+
+  useEffect(() => {
+    if (!isLoadingHistory && messages.length > 0) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 200);
+    }
+  }, [isLoadingHistory, messages.length]);
 
   const startRecording = async () => {
     if (
@@ -224,7 +252,6 @@ export const GeminiChat = () => {
     const userMessage = { message, sender: "User", timestamp: new Date() };
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
-    scrollToBottom();
 
     try {
       setIsSending(true);
@@ -248,8 +275,6 @@ export const GeminiChat = () => {
       } else {
         toast.warning("No response from assistant.");
       }
-
-      scrollToBottom();
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Message failed to send.");
@@ -265,7 +290,48 @@ export const GeminiChat = () => {
     setSessionId(newId);
     setMessages([]);
     setIsChatStarted(false);
-    // toast.info(`Started a new chat session for Gemini`);
+  };
+
+  const fetchDocs = async () => {
+    if (!sessionId) return;
+
+    try {
+      setIsDocsLoading(true);
+      const res = await dispatch(
+        ListAbstractLeaseDoc({ category: "Gemini" })
+      ).unwrap();
+      console.log("dgsjdhgj");
+      setDocs(res || []);
+    } catch {
+      toast.error("Failed to fetch documents.");
+    } finally {
+      setIsDocsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showDocsModal) fetchDocs();
+  }, [showDocsModal]);
+
+  const handleDeleteDoc = async (docId) => {
+    if (!window.confirm("Delete this document?")) return;
+
+    try {
+      setDeletingDocId(docId);
+      await dispatch(
+        DeleteGeneralDocSubmit({
+          file_id: docId,
+          category: "Gemini",
+        })
+      ).unwrap();
+
+      toast.success("Document deleted.");
+      fetchDocs();
+    } catch {
+      toast.error("Failed to delete document.");
+    } finally {
+      setDeletingDocId(null);
+    }
   };
 
   const LoadingSpinner = () => (
@@ -384,13 +450,19 @@ export const GeminiChat = () => {
                       </button>
                     )}
                   </div>
-                  <div className="mt-3">
+                  <div className="mt-3 d-flex gap-2">
                     <button
                       className="btn btn-outline-secondary btn-sm"
                       onClick={handleNewSession}
                       disabled={isLoading}
                     >
                       <i className="bi bi-plus-circle me-1"></i> New Session
+                    </button>
+                    <button
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={() => setShowDocsModal(true)}
+                    >
+                      <i className="bi bi-folder2-open me-1"></i> Documents
                     </button>
                   </div>
                 </>
@@ -413,12 +485,22 @@ export const GeminiChat = () => {
                     Gemini
                   </h5>
 
-                  <div className="d-flex align-items-center gap-2">
+                  <div className="mt-3 d-flex gap-2">
                     <button
-                      className="btn btn-outline-secondary btn-sm"
+                      className="btn btn-outline-secondary btn-sm d-flex align-items-center"
                       onClick={handleNewSession}
+                      disabled={isLoading}
                     >
-                      <i className="bi bi-plus-circle me-1"></i> New Session
+                      <i className="bi bi-plus-circle me-1"></i>
+                      <span className="d-none d-sm-inline">New Session</span>
+                    </button>
+
+                    <button
+                      className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                      onClick={() => setShowDocsModal(true)}
+                    >
+                      <i className="bi bi-folder2-open me-1"></i>
+                      <span className="d-none d-sm-inline">Documents</span>
                     </button>
                   </div>
                 </div>
@@ -430,10 +512,7 @@ export const GeminiChat = () => {
                   {isLoadingHistory ? (
                     <LoadingSpinner />
                   ) : (
-                    <div
-                      className="message-container1 hide-scrollbar"
-                      ref={chatRef}
-                    >
+                    <div className="message-container1 hide-scrollbar">
                       {messages.length > 0 ? (
                         <>
                           {messages.map((msg, i) => (
@@ -487,6 +566,9 @@ export const GeminiChat = () => {
                           ))}
 
                           {isReplyLoading && <TypingIndicator />}
+
+                          {/* Invisible element at the end for scrolling */}
+                          <div ref={messagesEndRef} />
                         </>
                       ) : (
                         <div
@@ -530,15 +612,6 @@ export const GeminiChat = () => {
                       </>
                     )}
 
-                    <input
-                      id="chatFileUpload"
-                      type="file"
-                      className="d-none"
-                      accept=".pdf,.docx,.xlsx,.csv"
-                      onChange={handleFileChange}
-                    />
-
-                    {/* Text Area */}
                     <textarea
                       ref={textareaRef}
                       rows={1}
@@ -555,7 +628,6 @@ export const GeminiChat = () => {
                       disabled={isSending || isReplyLoading}
                     />
 
-                    {/* Send / Mic Button */}
                     {message.length > 0 ? (
                       <button
                         className="btn btn-secondary rounded-circle"
@@ -592,6 +664,52 @@ export const GeminiChat = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Modal
+        show={showDocsModal}
+        onHide={() => setShowDocsModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Uploaded Documents</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          {isDocsLoading ? (
+            <LoadingSpinner />
+          ) : !docs || !docs.files || docs.files.length === 0 ? (
+            <p className="text-muted text-center">No documents uploaded yet.</p>
+          ) : (
+            <ul className="list-group">
+              {docs.files.map((doc) => (
+                <li
+                  key={doc.file_id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span>
+                    <i className="bi bi-file-earmark-text me-2"></i>
+                    {doc.original_file_name}
+                  </span>
+
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleDeleteDoc(doc.file_id)}
+                      disabled={deletingDocId === doc.file_id}
+                    >
+                      {deletingDocId === doc.file_id ? (
+                        <div className="spinner-border spinner-border-sm text-danger" />
+                      ) : (
+                        <i className="bi bi-trash"></i>
+                      )}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

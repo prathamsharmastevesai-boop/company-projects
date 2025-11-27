@@ -25,6 +25,10 @@ export const ListBuildingSubmit = createAsyncThunk(
   "auth/ListBuildingSubmit",
   async (category, { rejectWithValue }) => {
     try {
+      if (!category || category.trim() === "") {
+        return rejectWithValue("Category is required");
+      }
+
       const response = await axiosInstance.get(ListBuilding, {
         params: { category: category },
       });

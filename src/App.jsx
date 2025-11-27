@@ -203,6 +203,9 @@ function App() {
               path="/subleaseTrackerList"
               element={<SubleaseTrackerList />}
             />
+
+            <Route path="/admin-portfolio-forum" element={<PortfolioForum />} />
+            <Route path="/create-forum" element={<CreateThread />} />
           </Route>
 
           <Route

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Form, Modal, Accordion } from "react-bootstrap";
+import { Card, Button, Form, Modal, Accordion, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createThoughtApi,
+  deleteThoughtApi,
+  deleteThreadsApi,
   get_Threads_Api,
   getThreadhistory,
+  updateThoughtApi,
 } from "../../../Networking/Admin/APIs/forumApi";
 import { CreateThread } from "./createThread";
 import { toast } from "react-toastify";
@@ -12,19 +15,36 @@ import { toast } from "react-toastify";
 export const PortfolioForum = () => {
   const dispatch = useDispatch();
   const { ThreadList } = useSelector((state) => state.ForumSlice);
+  const { Role } = useSelector((state) => state.loginSlice);
+
+  const messagesEndRef = React.useRef(null);
 
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [threadMessages, setThreadMessages] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
-
+  const [loadingThreads, setLoadingThreads] = useState(true);
+  const [editingThoughtId, setEditingThoughtId] = useState(null);
+  const [loadingId, setLoadingId] = useState(null);
   const [sending, setSending] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  };
 
   useEffect(() => {
-    dispatch(get_Threads_Api());
-  }, [dispatch]);
+    scrollToBottom();
+  }, [threadMessages]);
+
+  useEffect(() => {
+    setLoadingThreads(true);
+    dispatch(get_Threads_Api())
+      .unwrap()
+      .finally(() => setLoadingThreads(false));
+  }, []);
 
   useEffect(() => {
     setThreads(ThreadList);
@@ -32,6 +52,22 @@ export const PortfolioForum = () => {
 
   const handleCreatethread = () => {
     setShowCreateModal(true);
+  };
+
+  const handleDeleteThread = async (threadId) => {
+    if (!window.confirm("Delete this thread?")) return;
+
+    try {
+      setDeletingId(threadId);
+
+      await dispatch(deleteThreadsApi({ thread_id: threadId }));
+
+      toast.success("Thread deleted");
+    } catch (err) {
+      toast.error("Failed to delete thread");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const handlethreadhistory = async (thread) => {
@@ -48,6 +84,36 @@ export const PortfolioForum = () => {
     }
   };
 
+  const handleEdit = (thoughtId, content) => {
+    setEditingThoughtId(thoughtId);
+
+    setNewMessage(content);
+  };
+
+  const handleDelete = async (threadId, thoughtId) => {
+    if (!thoughtId) {
+      toast.error("Thought ID is missing!");
+      return;
+    }
+
+    try {
+      setLoadingId(thoughtId);
+      await dispatch(
+        deleteThoughtApi({ thread_id: threadId, thought_id: thoughtId })
+      ).unwrap();
+
+      toast.success("Thought deleted successfully");
+
+      setThreadMessages((prev) => prev.filter((msg) => msg.id !== thoughtId));
+
+      await dispatch(get_Threads_Api()).unwrap();
+    } catch (err) {
+      toast.error(err || "Failed to delete thought");
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
   const handleSend = async () => {
     if (!newMessage.trim()) return;
 
@@ -59,22 +125,34 @@ export const PortfolioForum = () => {
     try {
       setSending(true);
 
-      // Add message
-      await dispatch(
-        createThoughtApi({
-          thread_id: selectedThread.id,
-          content: newMessage,
-        })
-      ).unwrap();
+      if (editingThoughtId) {
+        await dispatch(
+          updateThoughtApi({
+            thread_id: selectedThread.id,
+            thought_id: editingThoughtId,
+            content: newMessage,
+          })
+        ).unwrap();
+        setEditingThoughtId(null);
+
+        toast.success("Thought updated!");
+      } else {
+        await dispatch(
+          createThoughtApi({
+            thread_id: selectedThread.id,
+            content: newMessage,
+          })
+        ).unwrap();
+      }
 
       setNewMessage("");
-
-      // 🔥 Re-fetch updated messages instantly
       const data = await dispatch(getThreadhistory(selectedThread.id)).unwrap();
       setThreadMessages(data.thoughts || []);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add thought");
+      toast.error(
+        editingThoughtId ? "Failed to update thought" : "Failed to add thought"
+      );
     } finally {
       setSending(false);
     }
@@ -92,14 +170,17 @@ export const PortfolioForum = () => {
               <Accordion.Body style={{ maxHeight: "40vh", overflowY: "auto" }}>
                 <Button
                   className="w-100 mb-3"
-                  style={{ background: "#00B159", border: 0 }}
+                  style={{ background: "#6c757d", border: 0 }}
                   onClick={handleCreatethread}
                 >
                   + New Portfolio Thread
                 </Button>
 
-                {threads.length === 0 ? (
-                  <p className="text-muted">Loading threads...</p>
+                {loadingThreads ? (
+                  <div className="text-center py-3">
+                    <div className="spinner-border text-secondary" />
+                    <p className="text-muted mt-2">Loading threads...</p>
+                  </div>
                 ) : (
                   threads.map((t) => (
                     <Card
@@ -110,11 +191,35 @@ export const PortfolioForum = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => handlethreadhistory(t)}
                     >
-                      <h6 className="fw-bold mb-1">
-                        {t.title?.length > 28
-                          ? t.title.slice(0, 28) + "..."
-                          : t.title}
-                      </h6>
+                      <div className="d-flex justify-content-between align-items-start">
+                        <h6 className="fw-bold mb-1">
+                          {t.title?.length > 28
+                            ? t.title.slice(0, 28) + "..."
+                            : t.title}
+                        </h6>
+
+                        <button
+                          className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                          style={{ width: 32, height: 30, padding: 0 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteThread(t.id);
+                          }}
+                        >
+                          {deletingId === t.id ? (
+                            <Spinner
+                              animation="border"
+                              size="sm"
+                              style={{ width: "14px", height: "14px" }}
+                            />
+                          ) : (
+                            <i
+                              className="bi bi-trash"
+                              style={{ fontSize: 14 }}
+                            ></i>
+                          )}
+                        </button>
+                      </div>
                     </Card>
                   ))
                 )}
@@ -124,7 +229,7 @@ export const PortfolioForum = () => {
         </div>
 
         <div
-          className="d-none d-lg-block col-lg-3 border-end"
+          className="d-none d-lg-block col-lg-3 border-end hide-scrollbar"
           style={{ overflowY: "auto", height: "100%" }}
         >
           <div className="p-3">
@@ -132,82 +237,173 @@ export const PortfolioForum = () => {
 
             <Button
               className="w-100 my-3"
-              style={{ background: "#00B159", border: 0 }}
+              style={{ background: "#6c757d", border: 0 }}
               onClick={handleCreatethread}
             >
               + New Portfolio Thread
             </Button>
 
-            {threads.map((t) => (
-              <Card
-                key={t.id}
-                className={`p-3 mb-2 shadow-sm border ${
-                  selectedThread?.id === t.id ? "border-primary" : ""
-                }`}
-                style={{ cursor: "pointer" }}
-                onClick={() => handlethreadhistory(t)}
-              >
-                <h6 className="fw-bold mb-1">
-                  {t.title?.length > 28
-                    ? t.title.slice(0, 28) + "..."
-                    : t.title}
-                </h6>
-              </Card>
-            ))}
+            {loadingThreads ? (
+              <div className="text-center py-4">
+                <div className="spinner-border text-secondary" />
+                <p className="text-muted mt-2">Loading threads...</p>
+              </div>
+            ) : (
+              threads.map((t) => (
+                <Card
+                  key={t.id}
+                  className={`p-3 mb-2 shadow-sm border ${
+                    selectedThread?.id === t.id ? "border-primary" : ""
+                  }`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handlethreadhistory(t)}
+                >
+                  <div className="d-flex justify-content-between align-items-start">
+                    <h6 className="fw-bold mb-1">
+                      {t.title?.length > 28
+                        ? t.title.slice(0, 28) + "..."
+                        : t.title}
+                    </h6>
+
+                    <button
+                      className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                      style={{ width: 32, height: 30, padding: 0 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteThread(t.id);
+                      }}
+                    >
+                      {deletingId === t.id ? (
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          style={{ width: "14px", height: "14px" }}
+                        />
+                      ) : (
+                        <i className="bi bi-trash" style={{ fontSize: 14 }}></i>
+                      )}
+                    </button>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </div>
 
         <div
-          className="col-lg-9 col-12 d-flex flex-column p-3"
+          className="col-lg-9 col-12 d-flex flex-column p-3 "
           style={{
             overflow: "hidden",
             height: "100%",
           }}
         >
           {!selectedThread ? (
-            <h5 className="text-muted">Select a thread to view details</h5>
+            <div
+              className="d-flex justify-content-center align-items-start"
+              style={{ height: "100%", width: "100%" }}
+            >
+              <h5 className="text-muted m-0">
+                Select a thread to view details
+              </h5>
+            </div>
           ) : (
             <>
               <h3 className="fw-bold px-4">{selectedThread.title}</h3>
-
+              <hr />
               <div
                 style={{
                   flexGrow: 1,
                   overflowY: "auto",
-                  paddingBottom: "120px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "start",
                 }}
+                className="hide-scrollbar"
               >
                 {loadingHistory ? (
-                  <p className="text-muted">Loading thread history...</p>
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <p className="text-muted m-0">Loading Thoughts...</p>
+                  </div>
                 ) : threadMessages.length === 0 ? (
-                  <p className="text-muted">No thoughts yet...</p>
+                  <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ height: "100%", width: "100%" }}
+                  >
+                    <p className="text-muted m-0">No thoughts yet...</p>
+                  </div>
                 ) : (
-                  threadMessages.map((msg) => (
-                    <Card
-                      key={msg.id}
-                      className={`p-3 mb-3 shadow-sm ${
-                        msg.deleted ? "border-danger bg-light" : ""
-                      }`}
-                    >
-                      <h6 className="fw-bold">
-                        {msg.author_name || "Unknown User"}
-                      </h6>
+                  <div className="d-flex flex-column w-100 ">
+                    {threadMessages.map((msg) => (
+                      <Card
+                        key={msg.id}
+                        className={`p-3 mb-3 shadow-sm ${
+                          msg.deleted ? "border-danger bg-light" : ""
+                        }`}
+                      >
+                        <h6 className="fw-bold">
+                          {msg.author_name || "Unknown User"}
+                        </h6>
 
-                      {msg.deleted ? (
-                        <p className="text-danger fst-italic mb-2">
-                          This message was deleted.
-                        </p>
-                      ) : (
-                        <p className="mb-2" style={{ whiteSpace: "pre-line" }}>
-                          {msg.content}
-                        </p>
-                      )}
+                        {msg.deleted ? (
+                          <p className="text-danger fst-italic mb-2">
+                            This message was deleted.
+                          </p>
+                        ) : (
+                          <p
+                            className="mb-2"
+                            style={{ whiteSpace: "pre-line" }}
+                          >
+                            {msg.content}
+                          </p>
+                        )}
 
-                      <div className="text-muted small d-flex justify-content-between">
-                        <span>{new Date(msg.created_at).toLocaleString()}</span>
-                      </div>
-                    </Card>
-                  ))
+                        <div className="text-muted small d-flex justify-content-between">
+                          <span>
+                            {new Date(msg.created_at).toLocaleString()}
+                          </span>
+                          {Role === "admin" && (
+                            <div className="d-flex gap-2">
+                              <button
+                                className="btn btn-sm p-2  d-flex align-items-center justify-content-center"
+                                onClick={() => handleEdit(msg.id, msg.content)}
+                                title="Edit"
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#0d6efd",
+                                }}
+                              >
+                                <i className="bi bi-pencil-square fs-6"></i>
+                              </button>
+
+                              <button
+                                className="btn btn-sm p-2 d-flex align-items-center justify-content-center"
+                                onClick={() =>
+                                  handleDelete(selectedThread.id, msg.id)
+                                }
+                                disabled={loadingId === msg.id}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#dc3545",
+                                }}
+                              >
+                                {loadingId === msg.id ? (
+                                  <Spinner animation="border" size="sm" />
+                                ) : (
+                                  <i className="bi bi-trash3-fill fs-6"></i>
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
                 )}
               </div>
 
@@ -222,15 +418,34 @@ export const PortfolioForum = () => {
               >
                 <Form.Control
                   type="text"
-                  placeholder="Add a new Forum Thought..."
+                  placeholder={
+                    editingThoughtId
+                      ? "Editing thought..."
+                      : "Add a new Forum Thought..."
+                  }
                   className="me-2"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
                 />
 
-                <Button onClick={handleSend} disabled={sending}>
-                  {sending ? "Sending..." : "Send"}
-                </Button>
+                <button
+                  className="btn btn-secondary rounded-circle d-flex justify-content-center align-items-center"
+                  onClick={handleSend}
+                  disabled={sending}
+                  style={{ width: "38px", height: "38px" }}
+                >
+                  {sending ? (
+                    <div className="spinner-border spinner-border-sm text-light"></div>
+                  ) : (
+                    <i className="bi bi-send-fill"></i>
+                  )}
+                </button>
               </div>
             </>
           )}

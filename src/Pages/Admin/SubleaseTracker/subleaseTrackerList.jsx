@@ -78,7 +78,7 @@ export const SubleaseTrackerList = () => {
     try {
       setDeleteLoading(true);
       await dispatch(DeleteBuilding(buildingId));
-      await dispatch(ListBuildingSubmit());
+      await dispatch(ListBuildingSubmit("SubleaseTracker"));
     } catch (error) {
       console.error("Delete failed:", error);
     } finally {

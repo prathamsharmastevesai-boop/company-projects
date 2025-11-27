@@ -21,7 +21,7 @@ export const UploadReportGenerator = createAsyncThunk(
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("category", category.toLowerCase());
+      formData.append("category", category);
 
       const response = await axiosInstance.post(
         upload_Report_Generator,

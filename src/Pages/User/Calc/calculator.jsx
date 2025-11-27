@@ -15,6 +15,7 @@ export const LeaseFinanceCalculator = () => {
   const [discountRate, setDiscountRate] = useState("");
   const [commissionTotal, setCommissionTotal] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [input, setInput] = useState("");
 
@@ -28,8 +29,9 @@ export const LeaseFinanceCalculator = () => {
       setInput("Error");
     }
   };
-
   const handleSubmit = async () => {
+    setLoading(true);
+
     const payload = {
       gross_area_sf: Number(grossArea),
       total_term_years: Number(termYears),
@@ -46,7 +48,19 @@ export const LeaseFinanceCalculator = () => {
 
     if (response.meta.requestStatus === "fulfilled") {
       setResult(response.payload);
+
+      setGrossArea("");
+      setTermYears("");
+      setFaceRent("");
+      setAnnualEscalation("");
+      setFreeRentMonths("");
+      setTiAllowance("");
+      setCommissionPerYear("");
+      setDiscountRate("");
+      setCommissionTotal("");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -172,8 +186,13 @@ export const LeaseFinanceCalculator = () => {
             <button
               className="btn btn-primary w-100 mt-3"
               onClick={handleSubmit}
+              disabled={loading}
             >
-              Calculate Final Metrics
+              {loading ? (
+                <span className="spinner-border spinner-border-sm me-2"></span>
+              ) : (
+                "Calculate Final Metrics"
+              )}
             </button>
           </div>
         </div>

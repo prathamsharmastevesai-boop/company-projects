@@ -216,6 +216,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
+                    isActive("/admin-portfolio-forum") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/admin-portfolio-forum")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-chat-square-dots me-2" />
+                    {!collapsed && "Portfolio Forum"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
                     isActive("/LeaseDraftingUpload") ? "active" : ""
                   }`}
                 >
@@ -549,7 +564,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li> */}
 
-                <li
+                {/* <li
                   className={`nav-item ${
                     isActive("/SummeryUpload") ? "active" : ""
                   }`}
@@ -562,9 +577,9 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <i className="bi bi-graph-up me-2" />
                     {!collapsed && "Report Summarizer"}
                   </span>
-                </li>
+                </li> */}
 
-                {/* <li
+                <li
                   className={`nav-item ${
                     isActive("/portfolio-forum") ? "active" : ""
                   }`}
@@ -578,7 +593,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     {!collapsed && "Portfolio Forum"}
                   </span>
-                </li> */}
+                </li>
 
                 <li
                   className={`nav-item ${
@@ -624,6 +639,23 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     {!collapsed && "Information Collaboration"}
                   </span>
                 </li>
+
+                <li
+                  className={`nav-item ${
+                    isActive("/benchmark") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/benchmark")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-bar-chart-line me-2"></i>
+
+                    {!collapsed && "Benchmark"}
+                  </span>
+                </li>
+
                 <li
                   className={`nav-item ${
                     isActive("/calculator") ? "active" : ""

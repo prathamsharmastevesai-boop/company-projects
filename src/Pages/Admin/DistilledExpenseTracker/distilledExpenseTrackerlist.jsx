@@ -6,7 +6,6 @@ import { getdistilledExpenseTrackerlistApi } from "../../../Networking/Admin/API
 export const DistilledExpenseTrackerlist = () => {
   const dispatch = useDispatch();
 
-  // Local state
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -23,8 +23,8 @@ const SF_BAND_OPTIONS = [
   "50,000 SF",
   "100,000 SF",
   "250,000 SF",
-  "500,000 SF 1",
-  "000,000 SF+",
+  "500,000 SF",
+  "1000,000 SF+",
 ];
 const CLASS_OPTIONS = ["A", "B", "C", "D"];
 
@@ -151,14 +151,17 @@ export const DistilledExpenseTracker = () => {
       <h2 className="mb-4 text-center">
         Distilled Expense Tracker (DET) Submission
       </h2>
+
       <form onSubmit={handleSubmit}>
+        {/* ===== Building Metadata ===== */}
         <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-primary text-white">
+          <div className="card-header bg-primary text-white text-center text-md-start">
             Building Metadata
           </div>
+
           <div className="card-body">
-            <div className="row mb-3">
-              <div className="col-md-4">
+            <div className="row g-3">
+              <div className="col-12 col-md-4">
                 <label className="form-label">Building SF</label>
                 <select
                   className="form-select"
@@ -176,7 +179,7 @@ export const DistilledExpenseTracker = () => {
                 </select>
               </div>
 
-              <div className="col-md-4">
+              <div className="col-12 col-md-4">
                 <label className="form-label">Submarket</label>
                 <select
                   className="form-select"
@@ -194,7 +197,7 @@ export const DistilledExpenseTracker = () => {
                 </select>
               </div>
 
-              <div className="col-md-4">
+              <div className="col-12 col-md-4">
                 <label className="form-label">Building Class</label>
                 <select
                   className="form-select"
@@ -215,12 +218,14 @@ export const DistilledExpenseTracker = () => {
           </div>
         </div>
 
+        {/* ===== Expense Data ===== */}
         <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-success text-white">
+          <div className="card-header bg-success text-white text-center text-md-start">
             Expense Data ($/SF)
           </div>
+
           <div className="card-body">
-            <div className="row">
+            <div className="row g-3">
               {[
                 { label: "Real Estate Taxes", key: "realestate_taxes_psf" },
                 { label: "Property Insurance", key: "property_insurance_psf" },
@@ -243,7 +248,7 @@ export const DistilledExpenseTracker = () => {
                 { label: "Commissions", key: "commissions_psf" },
                 { label: "Interest Rates", key: "interest_rates_psf" },
               ].map((item) => (
-                <div className="col-md-6 mb-3" key={item.key}>
+                <div className="col-12 col-sm-6 col-lg-4" key={item.key}>
                   <label className="form-label">{item.label}</label>
                   <input
                     type="number"
@@ -260,10 +265,11 @@ export const DistilledExpenseTracker = () => {
           </div>
         </div>
 
+        {/* ===== Submit Button ===== */}
         <div className="d-flex justify-content-center">
           <button
             type="submit"
-            className="btn btn-success btn-md"
+            className="btn btn-success btn-lg px-4"
             disabled={loading}
           >
             {loading ? (

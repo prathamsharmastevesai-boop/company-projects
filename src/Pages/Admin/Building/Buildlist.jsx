@@ -78,7 +78,7 @@ export const ListBuilding = () => {
     try {
       setDeleteLoading(true);
       await dispatch(DeleteBuilding(buildingId));
-      await dispatch(ListBuildingSubmit());
+      await dispatch(ListBuildingSubmit("Lease&Loi"));
     } catch (error) {
       console.error("Delete failed:", error);
     } finally {

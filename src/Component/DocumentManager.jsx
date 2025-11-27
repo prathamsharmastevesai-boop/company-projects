@@ -8,6 +8,7 @@ import {
 } from "../Networking/Admin/APIs/GeneralinfoApi";
 import { toast } from "react-toastify";
 import RAGLoader from "./Loader";
+import { ListDocSubmit } from "../Networking/Admin/APIs/UploadDocApi";
 
 const DocumentManager = ({ category, title, description }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,11 @@ const DocumentManager = ({ category, title, description }) => {
   const fetchData = async () => {
     setListLoading(true);
     try {
-      const res = await dispatch(GeneralInfoSubmit()).unwrap();
+      const res = await dispatch(
+        ListDocSubmit({
+          building_id: buildingId,
+        })
+      ).unwrap();
       if (Array.isArray(res)) {
         const filteredDocs = res.filter((f) => f.category === category);
         setDocs(
