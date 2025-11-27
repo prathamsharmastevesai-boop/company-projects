@@ -62,6 +62,8 @@ export const PortfolioForum = () => {
 
       await dispatch(deleteThreadsApi({ thread_id: threadId }));
 
+      await dispatch(get_Threads_Api()).unwrap();
+
       toast.success("Thread deleted");
     } catch (err) {
       toast.error("Failed to delete thread");
