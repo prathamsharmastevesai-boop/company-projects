@@ -52,6 +52,20 @@ export const PortfolioForum = () => {
     setThreads(ThreadList);
   }, [ThreadList]);
 
+  const formatRelativeDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+
+    const diffTime = now - date; // in ms
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Today";
+
+    if (diffDays === 1) return "Yesterday";
+
+    return `${diffDays}d ago`;
+  };
+
   const handleCreatethread = () => {
     setShowCreateModal(true);
   };
@@ -199,13 +213,34 @@ export const PortfolioForum = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => handlethreadhistory(t)}
                     >
-                      <div className="d-flex justify-content-between align-items-start">
-                        <h6 className="fw-bold mb-1">
-                          {t.title?.length > 28
-                            ? t.title.slice(0, 28) + "..."
-                            : t.title}
-                        </h6>
+                      {/* Title */}
+                      <h6
+                        className="fw-bold mb-1 text-truncate"
+                        style={{ maxWidth: "100%" }}
+                      >
+                        {t.title?.length > 28
+                          ? t.title.slice(0, 28) + "..."
+                          : t.title}
+                      </h6>
 
+                      {/* Row: Left (Author + Date) ---- Right (Delete Icon) */}
+                      <div className="d-flex justify-content-between align-items-center mt-1">
+                        {/* LEFT SIDE */}
+                        <div
+                          className="d-flex align-items-center gap-2"
+                          style={{ fontSize: 14 }}
+                        >
+                          <span>{t.author_name}</span>
+                          <span>|</span>
+                          <span>
+                            last thought at{" "}
+                            {t.last_thought_at
+                              ? formatRelativeDate(t.last_thought_at)
+                              : "-"}
+                          </span>
+                        </div>
+
+                        {/* RIGHT SIDE DELETE BUTTON */}
                         <button
                           className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
                           style={{ width: 32, height: 30, padding: 0 }}
@@ -266,31 +301,53 @@ export const PortfolioForum = () => {
                   style={{ cursor: "pointer" }}
                   onClick={() => handlethreadhistory(t)}
                 >
-                  <div className="d-flex justify-content-between align-items-start">
-                    <h6 className="fw-bold mb-1">
-                      {t.title?.length > 28
-                        ? t.title.slice(0, 28) + "..."
-                        : t.title}
-                    </h6>
+                  <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2">
+                    <div className="flex-grow-1">
+                      <h6
+                        className="fw-bold mb-1 text-truncate"
+                        style={{ maxWidth: "100%" }}
+                      >
+                        {t.title?.length > 28
+                          ? t.title.slice(0, 28) + "..."
+                          : t.title}
+                      </h6>
+                    </div>
 
-                    <button
-                      className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                      style={{ width: 32, height: 30, padding: 0 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteThread(t.id);
-                      }}
-                    >
-                      {deletingId === t.id ? (
-                        <Spinner
-                          animation="border"
-                          size="sm"
-                          style={{ width: "14px", height: "14px" }}
-                        />
-                      ) : (
-                        <i className="bi bi-trash" style={{ fontSize: 14 }}></i>
-                      )}
-                    </button>
+                    <div className="d-flex flex-row flex-md-column align-items-center text-end gap-2">
+                      <button
+                        className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                        style={{ width: 32, height: 30, padding: 0 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteThread(t.id);
+                        }}
+                      >
+                        {deletingId === t.id ? (
+                          <Spinner
+                            animation="border"
+                            size="sm"
+                            style={{ width: "14px", height: "14px" }}
+                          />
+                        ) : (
+                          <i
+                            className="bi bi-trash"
+                            style={{ fontSize: 14 }}
+                          ></i>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-between align-content-center">
+                    <span className="text-center" style={{ fontSize: 14 }}>
+                      {t.author_name}
+                    </span>
+                    <span>|</span>
+                    <span className="text-center " style={{ fontSize: 14 }}>
+                      last thought at{" "}
+                      {t.last_thought_at
+                        ? formatRelativeDate(t.last_thought_at)
+                        : "-"}
+                    </span>
                   </div>
                 </Card>
               ))
