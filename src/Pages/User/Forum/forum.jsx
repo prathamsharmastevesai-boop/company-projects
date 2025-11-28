@@ -56,7 +56,7 @@ export const PortfolioForum = () => {
     const date = new Date(dateString);
     const now = new Date();
 
-    const diffTime = now - date; // in ms
+    const diffTime = now - date;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) return "Today";
@@ -213,7 +213,6 @@ export const PortfolioForum = () => {
                       style={{ cursor: "pointer" }}
                       onClick={() => handlethreadhistory(t)}
                     >
-                      {/* Title */}
                       <h6
                         className="fw-bold mb-1 text-truncate"
                         style={{ maxWidth: "100%" }}
@@ -223,9 +222,7 @@ export const PortfolioForum = () => {
                           : t.title}
                       </h6>
 
-                      {/* Row: Left (Author + Date) ---- Right (Delete Icon) */}
                       <div className="d-flex justify-content-between align-items-center mt-1">
-                        {/* LEFT SIDE */}
                         <div
                           className="d-flex align-items-center gap-2"
                           style={{ fontSize: 14 }}
@@ -240,7 +237,6 @@ export const PortfolioForum = () => {
                           </span>
                         </div>
 
-                        {/* RIGHT SIDE DELETE BUTTON */}
                         <button
                           className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
                           style={{ width: 32, height: 30, padding: 0 }}

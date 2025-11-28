@@ -8,8 +8,6 @@ import {
 export const distilledExpenseTracker = createAsyncThunk(
   "distilledExpenseTracker",
   async (payload, { rejectWithValue }) => {
-    console.log(payload, "payload in api");
-
     try {
       const response = await axiosInstance.post(
         distilledExpenseTrackerEndpoint,

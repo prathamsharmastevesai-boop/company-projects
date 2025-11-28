@@ -300,7 +300,7 @@ export const GeminiChat = () => {
       const res = await dispatch(
         ListAbstractLeaseDoc({ category: "Gemini" })
       ).unwrap();
-      console.log("dgsjdhgj");
+
       setDocs(res || []);
     } catch {
       toast.error("Failed to fetch documents.");
@@ -567,7 +567,6 @@ export const GeminiChat = () => {
 
                           {isReplyLoading && <TypingIndicator />}
 
-                          {/* Invisible element at the end for scrolling */}
                           <div ref={messagesEndRef} />
                         </>
                       ) : (

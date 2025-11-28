@@ -376,7 +376,6 @@ export const EmailDrafting = () => {
           </Modal.Footer>
         </Modal>
 
-        {/* Edit Template Modal */}
         <Modal
           show={showEditModal}
           onHide={() => setShowEditModal(false)}

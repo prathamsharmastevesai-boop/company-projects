@@ -93,7 +93,7 @@ export const Benchmark = () => {
       );
     }
 
-    if (benchmarkData.data_points < 10) {
+    if (benchmarkData.data_points <= 0) {
       return <Alert variant="warning">Insufficient Data for Benchmark</Alert>;
     }
 

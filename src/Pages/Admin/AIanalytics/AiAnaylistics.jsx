@@ -24,7 +24,6 @@ export const Aianalytics = () => {
   const [activeTab, setActiveTab] = useState("AI Insights");
   const [days, setDays] = useState(7);
   const [dashboardData, setDashboardData] = useState(null);
-  console.log(dashboardData, "dashboardData");
 
   const [recentQuestions, setRecentQuestions] = useState(null);
   const [usageData, setUsageData] = useState(null);
@@ -67,7 +66,6 @@ export const Aianalytics = () => {
   const AIInslights = async () => {
     try {
       const res = await dispatch(getInslightApi()).unwrap();
-      console.log(res, "resresres");
 
       let insights = [];
       if (res?.insight) {

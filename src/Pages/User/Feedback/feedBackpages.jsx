@@ -10,7 +10,6 @@ export const InformationCollaborationPage = () => {
 
   return (
     <>
-      {/* Header */}
       <div
         className="d-flex justify-content-between align-items-center px-3 py-3 sticky-top flex-wrap"
         style={{

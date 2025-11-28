@@ -276,7 +276,7 @@ export const UserManagement = () => {
           </div>
         </Card.Body>
       </Card>
-      {/* Delete Confirmation Modal */}
+
       <div
         className={`modal fade ${showConfirm ? "show d-block" : ""}`}
         tabIndex="-1"

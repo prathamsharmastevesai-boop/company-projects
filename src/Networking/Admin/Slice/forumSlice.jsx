@@ -32,7 +32,6 @@ const ForumSlice = createSlice({
       .addCase(getBenchmark.fulfilled, (state, action) => {
         state.loading = false;
         state.Data = action.payload;
-        console.log(state.Data, " state.Data ");
       })
       .addCase(getBenchmark.rejected, (state, action) => {
         state.loading = false;

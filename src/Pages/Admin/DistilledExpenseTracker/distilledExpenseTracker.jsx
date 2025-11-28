@@ -120,7 +120,6 @@ export const DistilledExpenseTracker = () => {
     };
 
     try {
-      console.log(payload, "payload");
       const resultAction = await dispatch(distilledExpenseTracker(payload));
       toast.success("Expense submitted successfully!");
       setFormData({
@@ -153,7 +152,6 @@ export const DistilledExpenseTracker = () => {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        {/* ===== Building Metadata ===== */}
         <div className="card mb-4 shadow-sm">
           <div className="card-header bg-primary text-white text-center text-md-start">
             Building Metadata
@@ -218,7 +216,6 @@ export const DistilledExpenseTracker = () => {
           </div>
         </div>
 
-        {/* ===== Expense Data ===== */}
         <div className="card mb-4 shadow-sm">
           <div className="card-header bg-success text-white text-center text-md-start">
             Expense Data ($/SF)
@@ -265,7 +262,6 @@ export const DistilledExpenseTracker = () => {
           </div>
         </div>
 
-        {/* ===== Submit Button ===== */}
         <div className="d-flex justify-content-center">
           <button
             type="submit"
