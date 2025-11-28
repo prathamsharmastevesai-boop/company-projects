@@ -8,6 +8,7 @@ import {
 } from "../../../Networking/Admin/APIs/UserManagement";
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
+import { toggleForumApi } from "../../../Networking/Admin/APIs/forumApi";
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,9 @@ export const UserManagement = () => {
   const [loading, setLoading] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState(null);
+  const [geminiLoading, setGeminiLoading] = useState(null);
+  const [forumLoading, setForumLoading] = useState(null);
+
   const [deleteLoading, setDeleteLoading] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
@@ -56,16 +60,28 @@ export const UserManagement = () => {
   };
 
   const handleToggleGemini = async (email, enable) => {
-    setToggleLoading(email);
+    setGeminiLoading(email);
     try {
       await dispatch(toggleGeminiApi({ email, enable })).unwrap();
       toast.success(`Gemini ${enable ? "enabled" : "disabled"} for ${email}`);
       fetchUsers();
     } catch (error) {
-      //   toast.error("Failed to toggle Gemini");
       console.error(error);
     } finally {
-      setToggleLoading(null);
+      setGeminiLoading(null);
+    }
+  };
+
+  const handleToggleForum = async (email, enable) => {
+    setForumLoading(email);
+    try {
+      await dispatch(toggleForumApi({ email, enable })).unwrap();
+      toast.success(`Forum ${enable ? "enabled" : "disabled"} for ${email}`);
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setForumLoading(null);
     }
   };
 
@@ -161,6 +177,7 @@ export const UserManagement = () => {
                   <th>Created</th>
                   <th>Actions</th>
                   <th>Gemini</th>
+                  <th>Forum</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,19 +219,43 @@ export const UserManagement = () => {
                         )}
                       </td>
                       <td>
-                        {toggleLoading === user.email ? (
+                        {geminiLoading === user.email ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
                           <Form.Check
                             type="switch"
                             id={`gemini-switch-${user.email}`}
                             checked={user.gemini_status}
-                            disabled={toggleLoading !== null}
+                            disabled={
+                              geminiLoading !== null || forumLoading !== null
+                            }
                             onChange={(e) =>
                               handleToggleGemini(user.email, e.target.checked)
                             }
                             className={
                               user.gemini_status
+                                ? "text-success"
+                                : "text-secondary"
+                            }
+                          />
+                        )}
+                      </td>
+                      <td>
+                        {forumLoading === user.email ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          <Form.Check
+                            type="switch"
+                            id={`forum-switch-${user.email}`}
+                            checked={user.forum_status}
+                            disabled={
+                              geminiLoading !== null || forumLoading !== null
+                            }
+                            onChange={(e) =>
+                              handleToggleForum(user.email, e.target.checked)
+                            }
+                            className={
+                              user.forum_status
                                 ? "text-success"
                                 : "text-secondary"
                             }

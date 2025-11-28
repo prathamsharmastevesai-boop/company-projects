@@ -30,6 +30,8 @@ export const PortfolioForum = () => {
   const [sending, setSending] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [threadToDelete, setThreadToDelete] = useState(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
@@ -55,20 +57,24 @@ export const PortfolioForum = () => {
   };
 
   const handleDeleteThread = async (threadId) => {
-    if (!window.confirm("Delete this thread?")) return;
+    setThreadToDelete(threadId);
+    setShowDeleteModal(true);
+  };
 
+  const confirmDeleteThread = async () => {
     try {
-      setDeletingId(threadId);
+      setDeletingId(threadToDelete);
 
-      await dispatch(deleteThreadsApi({ thread_id: threadId }));
-
+      await dispatch(deleteThreadsApi({ thread_id: threadToDelete })).unwrap();
       await dispatch(get_Threads_Api()).unwrap();
 
-      toast.success("Thread deleted");
+      toast.success("Thread deleted successfully");
     } catch (err) {
-      toast.error("Failed to delete thread");
+      // toast.error("Failed to delete thread");
     } finally {
       setDeletingId(null);
+      setShowDeleteModal(false);
+      setThreadToDelete(null);
     }
   };
 
@@ -453,6 +459,35 @@ export const PortfolioForum = () => {
           )}
         </div>
       </div>
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>Are you sure you want to delete this thread?</Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+
+          <Button
+            variant="danger"
+            onClick={confirmDeleteThread}
+            disabled={deletingId === threadToDelete}
+          >
+            {deletingId === threadToDelete ? (
+              <Spinner size="sm" animation="border" />
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal
         show={showCreateModal}

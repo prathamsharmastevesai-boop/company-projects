@@ -15,6 +15,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [Gemini, setGemimiStatus] = useState();
+  const [Forum, setForumStatus] = useState();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -47,6 +48,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
       try {
         const response = await dispatch(getProfileDetail()).unwrap();
         setGemimiStatus(response?.gemini_status);
+        setForumStatus(response?.forum_status);
       } catch (error) {
         console.error("Failed to load profile:", error);
       } finally {
@@ -549,20 +551,18 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </li>
                 )}
 
-                {Gemini == true && (
-                  <li
-                    className={`nav-item ${isActive("/notes") ? "active" : ""}`}
+                <li
+                  className={`nav-item ${isActive("/notes") ? "active" : ""}`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/notes")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <span
-                      onClick={() => handleLinkClick("/notes")}
-                      className="nav-link text-white"
-                      style={{ cursor: "pointer", fontSize: 12 }}
-                    >
-                      <i className="bi-journal me-2" />
-                      {!collapsed && "Notes"}
-                    </span>
-                  </li>
-                )}
+                    <i className="bi-journal me-2" />
+                    {!collapsed && "Notes"}
+                  </span>
+                </li>
 
                 {/* <li
                   className={`nav-item ${
@@ -594,21 +594,23 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li> */}
 
-                <li
-                  className={`nav-item ${
-                    isActive("/portfolio-forum") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/portfolio-forum")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
+                {Forum == true && (
+                  <li
+                    className={`nav-item ${
+                      isActive("/portfolio-forum") ? "active" : ""
+                    }`}
                   >
-                    <i className="bi bi-chat-square-dots me-2" />
+                    <span
+                      onClick={() => handleLinkClick("/portfolio-forum")}
+                      className="nav-link text-white"
+                      style={{ cursor: "pointer", fontSize: 12 }}
+                    >
+                      <i className="bi bi-chat-square-dots me-2" />
 
-                    {!collapsed && "Portfolio Forum"}
-                  </span>
-                </li>
+                      {!collapsed && "Portfolio Forum"}
+                    </span>
+                  </li>
+                )}
 
                 <li
                   className={`nav-item ${

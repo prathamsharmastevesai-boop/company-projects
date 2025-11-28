@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "./AxiosInstance";
-import { createThreadEndpoint, threadData } from "../../NWconfig";
+import { createThreadEndpoint, threadData, ToggleForum } from "../../NWconfig";
 import { toast } from "react-toastify";
 
 export const get_Threads_Api = createAsyncThunk(
@@ -115,6 +115,22 @@ export const getBenchmark = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to fetch benchmark"
+      );
+    }
+  }
+);
+
+export const toggleForumApi = createAsyncThunk(
+  "toggleForumApi",
+  async ({ email, enable }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        ToggleForum + `?email=${email}&enable=${enable}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle Gemini"
       );
     }
   }

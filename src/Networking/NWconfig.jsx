@@ -139,6 +139,7 @@ export const threadData = "/forum/threads";
 export const createThreadEndpoint = "/forum/threads";
 export const createThoughtEndpoint = "/forum/threads/";
 export const ThreadhistoryEndpoint = "/forum/threads/";
+export const ToggleForum = "/forum/forum-toggle";
 
 //Notes
 export const notes = "/notes/";
