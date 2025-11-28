@@ -37,7 +37,7 @@ export const DistilledExpenseTrackerlist = () => {
   }
 
   return (
-    <div className="container mt-4">
+    <div className="container-fuild p-3">
       <h2 className="mb-4 text-center">
         Distilled Expense Tracker Submissions
       </h2>

@@ -273,7 +273,7 @@ export const LeaseAbstractUpload = () => {
       >
         <h5 className="mb-0 text-light"> AI Lease Abstract</h5>
       </div>
-      <div className="container p-4">
+      <div className="container-fuild p-3">
         <p className="text-muted">
           Upload an LOI, review extracted terms, and generate a draft lease
           automatically.

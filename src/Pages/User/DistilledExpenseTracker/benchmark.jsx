@@ -150,7 +150,7 @@ export const Benchmark = () => {
       >
         <h5 className="mb-0 text-light">DET Benchmarking</h5>
       </div>
-      <div className="container mt-4">
+      <div className="container-fuild p-3">
         <Card className="p-4 shadow-sm">
           <div className="row g-3">
             <div className="col-12 col-sm-6 col-md-4">

@@ -12,7 +12,14 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export const RagSystem = () => {
   const dispatch = useDispatch();
@@ -31,7 +38,12 @@ export const RagSystem = () => {
   const totalQueries = data?.total_queries || 0;
 
   const chartData = {
-    labels: ["Avg Response Time (ms)", "Avg Confidence (%)", "Positive Feedback (%)", "Total Queries"],
+    labels: [
+      "Avg Response Time (ms)",
+      "Avg Confidence (%)",
+      "Positive Feedback (%)",
+      "Total Queries",
+    ],
     datasets: [
       {
         label: "Metrics",
@@ -59,7 +71,7 @@ export const RagSystem = () => {
   };
 
   return (
-    <div className="container p-4 ">
+    <div className="container-fuild p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <h5 className="fw-bold">RAG System Tracing</h5>
@@ -120,7 +132,9 @@ export const RagSystem = () => {
               <i className="bi bi-activity fs-3 mb-2 d-block"></i>
               <p className="mb-0">
                 No query traces available <br />
-                <small>Traces will appear here once users start making queries</small>
+                <small>
+                  Traces will appear here once users start making queries
+                </small>
               </p>
             </div>
           )}

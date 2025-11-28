@@ -38,7 +38,7 @@ export const Feedback = () => {
 
   return (
     <>
-      <div className="container py-5 d-flex flex-column align-items-center">
+      <div className="container-fuild p- d-flex flex-column align-items-center">
         <Card
           className="p-4 shadow-lg border-0 rounded-4 mb-5"
           style={{ width: "100%", maxWidth: 500, background: "#f8f9fa" }}

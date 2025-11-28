@@ -196,7 +196,7 @@ export const ListBuilding = () => {
   );
 
   return (
-    <div className="container py-4" style={{ position: "relative" }}>
+    <div className="container-fuild p-3" style={{ position: "relative" }}>
       {deleteLoading && (
         <div className="upload-overlay">
           <div className="text-center">

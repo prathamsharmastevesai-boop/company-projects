@@ -84,7 +84,7 @@ export const UserManagement = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container-fuild p-3">
       <h4 className="fw-bold">User Management</h4>
       <p className="text-muted">
         Control user access to Portfolio Pulse documents and features

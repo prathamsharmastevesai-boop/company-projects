@@ -4,9 +4,10 @@ import {
   Button,
   Card,
   Modal,
-  Alert,
   Dropdown,
   Spinner,
+  Row,
+  Col,
 } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import {
@@ -67,16 +68,6 @@ export const EmailDrafting = () => {
 
     if (service === "gmail") {
       url = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(
-        subject
-      )}&body=${body}`;
-    }
-    if (service === "outlook") {
-      url = `https://outlook.live.com/mail/deeplink/compose?subject=${encodeURIComponent(
-        subject
-      )}&body=${body}`;
-    }
-    if (service === "yahoo") {
-      url = `https://compose.mail.yahoo.com/?subject=${encodeURIComponent(
         subject
       )}&body=${body}`;
     }
@@ -188,10 +179,7 @@ export const EmailDrafting = () => {
         <h5 className="mb-0 text-light">Email Drafting</h5>
       </div>
 
-      <Card
-        className="p-4 shadow-sm"
-        style={{ maxWidth: "700px", margin: "20px auto" }}
-      >
+      <Card className="p-3 p-md-4 shadow-sm mx-auto" style={{ maxWidth: 900 }}>
         {loading && (
           <div className="text-center my-3">
             <RAGLoader />
@@ -201,64 +189,80 @@ export const EmailDrafting = () => {
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Select Email Template</Form.Label>
-            <div className="d-flex align-items-center gap-2">
-              <Dropdown className="w-100">
-                <Dropdown.Toggle className="w-100 text-start" variant="light">
-                  {selectedTemplateId
-                    ? templates.find((t) => t.id === selectedTemplateId)?.title
-                    : "-- Select Email Template --"}
-                </Dropdown.Toggle>
+            <Row className="g-2 align-items-center">
+              <Col sm={10}>
+                <Dropdown className="w-100">
+                  <Dropdown.Toggle className="w-100 text-start" variant="light">
+                    {selectedTemplateId
+                      ? templates.find((t) => t.id === selectedTemplateId)
+                          ?.title
+                      : "-- Select Email Template --"}
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu className="w-100 mt-1 p-0">
-                  {templates.map((template) => (
-                    <div
-                      key={template.id}
-                      className="d-flex justify-content-between align-items-center px-3 py-2 dropdown-item"
-                      onClick={() => setSelectedTemplateId(template.id)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <span>{template.title}</span>
+                  <Dropdown.Menu className="w-100 mt-1 p-0">
+                    {templates.map((template) => (
+                      <div
+                        key={template.id}
+                        className="d-flex justify-content-between align-items-center px-3 py-2 dropdown-item"
+                        onClick={() => setSelectedTemplateId(template.id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <span
+                          className="text-truncate"
+                          style={{ maxWidth: "70%" }}
+                        >
+                          {template.title}
+                        </span>
 
-                      <div className="d-flex gap-2">
-                        <i
-                          className="bi bi-pencil-square text-primary"
-                          style={{ cursor: "pointer" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openEditModal(template.id);
-                          }}
-                        ></i>
+                        <div className="d-flex gap-2">
+                          <i
+                            className="bi bi-pencil-square text-primary"
+                            style={{ cursor: "pointer" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditModal(template.id);
+                            }}
+                          ></i>
 
-                        <i
-                          className={`bi bi-trash text-danger ${
-                            deleteLoading ? "disabled" : ""
-                          }`}
-                          style={{
-                            cursor: deleteLoading ? "not-allowed" : "pointer",
-                          }}
-                          onClick={(e) => {
-                            if (deleteLoading) return;
-                            e.stopPropagation();
-                            handleDeleteTemplate(template.id);
-                          }}
-                        ></i>
+                          <i
+                            className={`bi bi-trash text-danger ${
+                              deleteLoading ? "disabled" : ""
+                            }`}
+                            style={{
+                              cursor: deleteLoading ? "not-allowed" : "pointer",
+                            }}
+                            onClick={(e) => {
+                              if (deleteLoading) return;
+                              e.stopPropagation();
+                              handleDeleteTemplate(template.id);
+                            }}
+                          ></i>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Col>
 
-              <Button variant="outline-success" onClick={handleAddInfoModal}>
-                <i className="bi bi-plus-lg"></i>
-              </Button>
-            </div>
+              <Col sm={2}>
+                <Button
+                  variant="outline-success"
+                  className="w-100 mt-2 mt-sm-0"
+                  onClick={handleAddInfoModal}
+                >
+                  <i className="bi bi-plus-lg"></i>
+                </Button>
+              </Col>
+            </Row>
           </Form.Group>
 
           <Form.Group className="my-3">
-            <div className="d-flex justify-content-between my-2">
-              <h5>Detail</h5>
+            <Row className="d-flex align-items-center justify-content-between mb-2">
+              <Col xs={12} md="auto">
+                <h5>Detail</h5>
+              </Col>
 
-              <div className="d-flex gap-2 justify-content-end">
+              <Col xs={12} md="auto" className="d-flex gap-2 mt-2 mt-md-0">
                 <Button
                   variant="success"
                   size="sm"
@@ -272,17 +276,16 @@ export const EmailDrafting = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="ms-2"
                   onClick={() => openIn("gmail")}
                 >
                   Open in Gmail
                 </Button>
-              </div>
-            </div>
+              </Col>
+            </Row>
 
             <Form.Control
               as="textarea"
-              rows={4}
+              rows={6}
               value={detail}
               placeholder="Details will appear here..."
               readOnly={!isEditable}
@@ -373,7 +376,7 @@ export const EmailDrafting = () => {
           </Modal.Footer>
         </Modal>
 
-        {/* Edit Template Modal - Added this missing modal */}
+        {/* Edit Template Modal */}
         <Modal
           show={showEditModal}
           onHide={() => setShowEditModal(false)}
@@ -422,7 +425,7 @@ export const EmailDrafting = () => {
             </Button>
             <Button
               variant="primary"
-              onClick={() => handleUpdateTemplate()}
+              onClick={handleUpdateTemplate}
               disabled={loading}
             >
               {loading ? "Updating..." : "Update Template"}

@@ -131,7 +131,7 @@ export const UserProfile = () => {
         <p className="text-light mb-0">Here's a summary of your profile.</p>
       </div>
 
-      <div className="container mt-2 px-4">
+      <div className="container-fuild p-3">
         {loadingProfile ? (
           <div className="text-center ">
             <RAGLoader />

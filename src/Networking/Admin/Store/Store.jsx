@@ -5,6 +5,7 @@ import OfficeReducer from "../Slice/LeaseSlice";
 import DocReducer from "../Slice/DocSlice";
 import ProfileReducer from "../../User/Slice/ProfileSlice";
 import ForumReducer from "../Slice/forumSlice";
+import notesReducer from "../../User/Slice/notesSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     DocSlice: DocReducer,
     ProfileSlice: ProfileReducer,
     ForumSlice: ForumReducer,
+    notesSlice: notesReducer,
   },
 });
 

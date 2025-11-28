@@ -154,7 +154,7 @@ export const ComparativeBuildingData = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container-fuild p-3">
       <h5 className="fw-bold">Comparative Building Data</h5>
       <p className="text-muted">
         Upload and manage documents for Building Information

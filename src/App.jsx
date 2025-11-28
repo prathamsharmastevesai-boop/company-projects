@@ -79,6 +79,7 @@ import { DistilledExpenseTracker } from "./Pages/Admin/DistilledExpenseTracker/d
 import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTrackerpage";
 import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrackerList";
 import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
+import { Notes } from "./Pages/User/Notes/notes";
 
 function App() {
   useEffect(() => {
@@ -275,6 +276,8 @@ function App() {
             />
 
             <Route path="/geminichat" element={<GeminiChat />} />
+
+            <Route path="/notes" element={<Notes />} />
 
             <Route path="/benchmark" element={<Benchmark />} />
 

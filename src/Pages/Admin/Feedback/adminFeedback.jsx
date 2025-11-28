@@ -126,7 +126,7 @@ export const AdminFeedback = () => {
                       className="border-0 shadow-sm"
                       style={{ borderRadius: "12px" }}
                     >
-                      <Accordion.Header>View Feedback</Accordion.Header>
+                      <Accordion.Header>view collaboration</Accordion.Header>
 
                       <Accordion.Body
                         className="text-secondary"

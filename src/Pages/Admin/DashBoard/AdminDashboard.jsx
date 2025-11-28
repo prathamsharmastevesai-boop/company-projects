@@ -27,7 +27,7 @@ export const AdminDashboard = () => {
   const handleBuilding = () => navigate("/Building_list");
 
   return (
-    <div className="container p-3 p-md-4">
+    <div className="container-fuild p-3">
       <div className="mb-4 text-center text-md-start">
         <h2 className="fw-bold">Dashboard Overview</h2>
         <p className="text-muted">

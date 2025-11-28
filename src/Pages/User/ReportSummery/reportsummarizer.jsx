@@ -168,7 +168,7 @@ export const SummeryUpload = () => {
       >
         <h5 className="mb-0 text-light">Report Summarizer</h5>
       </div>
-      <div className="container pt-3">
+      <div className="container-fuild p-3">
         <p className="text-muted">Upload a PDF report to summarize</p>
 
         <div className="border border-2 rounded-3 py-5 text-center mb-4 bg-light">

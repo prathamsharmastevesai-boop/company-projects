@@ -98,7 +98,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         </div>
 
         <div
-          className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 hide-scrollbar"
+          className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 " //scroll enabled --> hide-scrollbar
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
@@ -549,6 +549,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </li>
                 )}
 
+                {Gemini == true && (
+                  <li
+                    className={`nav-item ${isActive("/notes") ? "active" : ""}`}
+                  >
+                    <span
+                      onClick={() => handleLinkClick("/notes")}
+                      className="nav-link text-white"
+                      style={{ cursor: "pointer", fontSize: 12 }}
+                    >
+                      <i className="bi-journal me-2" />
+                      {!collapsed && "Notes"}
+                    </span>
+                  </li>
+                )}
+
                 {/* <li
                   className={`nav-item ${
                     isActive("/distilledExpenseTracker") ? "active" : ""
@@ -607,19 +622,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <i className="bi bi-file-earmark-text me-2" />{" "}
                     {!collapsed && "AI Lease Abstract"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${isActive("/history") ? "active" : ""}`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/history")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-clock-history me-2" />
-                    {!collapsed && "Chat History"}
                   </span>
                 </li>
 
@@ -683,6 +685,19 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <i className="bi bi-person-circle me-2" />
                     {!collapsed && "Profile"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${isActive("/history") ? "active" : ""}`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/history")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-clock-history me-2" />
+                    {!collapsed && "Chat History"}
                   </span>
                 </li>
 

@@ -562,3 +562,29 @@
   height: 100vh;
   overflow-y: scroll;
 }
+
+/* Make drag-drop box responsive */
+.doc-drop-box {
+  min-height: 180px;
+}
+
+/* Mobile-friendly card & list */
+@media (max-width: 768px) {
+  .doc-container {
+    padding: 10px !important;
+  }
+
+  .doc-drop-box {
+    padding: 20px !important;
+  }
+
+  .doc-list-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+
+  .doc-actions {
+    align-self: flex-end !important;
+  }
+}

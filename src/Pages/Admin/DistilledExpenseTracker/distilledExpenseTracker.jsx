@@ -147,7 +147,7 @@ export const DistilledExpenseTracker = () => {
   };
 
   return (
-    <div className="container py-3">
+    <div className="container-fuild p-3">
       <h2 className="mb-4 text-center">
         Distilled Expense Tracker (DET) Submission
       </h2>

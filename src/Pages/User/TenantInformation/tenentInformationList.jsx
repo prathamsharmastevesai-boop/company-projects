@@ -78,7 +78,7 @@ export const TenentInfoUserBuildinglist = () => {
         </div>
       )}
 
-      <div className="container mb-3 mt-3">
+      <div className="container-fuild p-3">
         <input
           type="search"
           className="form-control"

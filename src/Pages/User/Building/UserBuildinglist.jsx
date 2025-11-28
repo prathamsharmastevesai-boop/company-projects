@@ -78,7 +78,7 @@ export const UserBuildinglist = () => {
         </div>
       )}
 
-      <div className="container mb-3 mt-3">
+      <div className="container-fuild p-3">
         <input
           type="search"
           className="form-control"
@@ -90,7 +90,7 @@ export const UserBuildinglist = () => {
         />
       </div>
 
-      <div className="container py-2">
+      <div className="container-fuild p-2">
         {loading ? (
           <div className="text-center py-5">
             <RAGLoader />

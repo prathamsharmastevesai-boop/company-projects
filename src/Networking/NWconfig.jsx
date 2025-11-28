@@ -139,3 +139,10 @@ export const threadData = "/forum/threads";
 export const createThreadEndpoint = "/forum/threads";
 export const createThoughtEndpoint = "/forum/threads/";
 export const ThreadhistoryEndpoint = "/forum/threads/";
+
+//Notes
+export const notes = "/notes/";
+export const notesdata = "/notes/";
+export const notedata = "/notes/";
+export const noteUpdate = "/notes/";
+export const notedelete = "/notes/";

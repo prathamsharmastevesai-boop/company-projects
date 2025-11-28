@@ -264,7 +264,7 @@ export const LeaseDraftingUpload = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container-fuild p-3">
       <h5 className="fw-bold">📑 AI Lease Drafting</h5>
       <p className="text-muted">
         Upload an LOI, review extracted terms, and generate a draft lease
