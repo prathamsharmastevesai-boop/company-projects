@@ -13,12 +13,15 @@ export const Notes = () => {
   const dispatch = useDispatch();
 
   const { notes, loading } = useSelector((state) => state.notesSlice);
-  console.log(notes, "notes");
 
   const [error, setError] = useState(null);
-
+  const [deleteLoading, setDeleteLoading] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState({
+    show: false,
+    noteId: null,
+  });
 
   const [currentNote, setCurrentNote] = useState({
     id: null,
@@ -40,13 +43,13 @@ export const Notes = () => {
     return bTime - aTime;
   });
 
-  function openNewNote() {
+  const openNewNote = () => {
     setIsEditing(false);
     setCurrentNote({ id: null, title: "", content: "" });
     setShowModal(true);
-  }
+  };
 
-  function openEditNote(note) {
+  const openEditNote = async (note) => {
     setIsEditing(true);
     setCurrentNote({
       id: note.id,
@@ -54,14 +57,14 @@ export const Notes = () => {
       content: note.content,
     });
     setShowModal(true);
-  }
+  };
 
-  function closeModal() {
+  const closeModal = () => {
     if (saving) return;
     setIsEditing(false);
     setCurrentNote({ id: null, title: "", content: "" });
     setShowModal(false);
-  }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -90,15 +93,16 @@ export const Notes = () => {
     setSaving(false);
   };
 
-  async function handleDelete(noteId) {
-    if (!window.confirm("Delete this note?")) return;
-
+  const handleDelete = async (noteId) => {
     try {
+      setDeleteLoading(noteId);
       await dispatch(deleteNoteApi(noteId)).unwrap();
     } catch (err) {
       alert("Failed to delete note");
+    } finally {
+      setDeleteLoading(null);
     }
-  }
+  };
 
   function formatDate(date) {
     if (!date) return "";
@@ -161,20 +165,28 @@ export const Notes = () => {
                   {note.content}
                 </p>
 
-                <div className="d-flex gap-2 justify-content-end">
+                <div className="d-flex gap-2 justify-content-end align-items-center mt-2">
                   <button
-                    className="btn btn-sm btn-outline-secondary"
+                    className="btn btn-sm btn-outline-secondary d-flex align-items-center"
                     onClick={() => openEditNote(note)}
+                    style={{ border: 0, cursor: "pointer", fontSize: 18 }}
                   >
-                    Edit
+                    <i className="bi bi-pencil-square me-1"></i>
                   </button>
 
-                  <button
-                    className="btn btn-sm btn-outline-danger"
-                    onClick={() => handleDelete(note.id)}
-                  >
-                    Delete
-                  </button>
+                  <div style={{ width: 22, textAlign: "center" }}>
+                    {deleteLoading === note.id ? (
+                      <div className="spinner-border spinner-border-sm text-danger"></div>
+                    ) : (
+                      <i
+                        className="bi bi-trash text-danger"
+                        style={{ cursor: "pointer", fontSize: 18 }}
+                        onClick={() =>
+                          setConfirmDelete({ show: true, noteId: note.id })
+                        }
+                      ></i>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -237,6 +249,44 @@ export const Notes = () => {
               </Button>
             </Modal.Footer>
           </Form>
+        </Modal>
+        <Modal
+          show={confirmDelete.show}
+          onHide={() => setConfirmDelete({ show: false, noteId: null })}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Delete</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>Are you sure you want to delete this note?</Modal.Body>
+
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setConfirmDelete({ show: false, noteId: null })}
+              disabled={deleteLoading === confirmDelete.noteId}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="danger"
+              onClick={async () => {
+                await handleDelete(confirmDelete.noteId);
+                setConfirmDelete({ show: false, noteId: null });
+              }}
+              disabled={deleteLoading === confirmDelete.noteId}
+            >
+              {deleteLoading === confirmDelete.noteId ? (
+                <>
+                  <Spinner size="sm" /> Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </Button>
+          </Modal.Footer>
         </Modal>
       </div>
     </div>
