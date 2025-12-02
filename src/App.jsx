@@ -80,6 +80,12 @@ import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTrack
 import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrackerList";
 import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
 import { Notes } from "./Pages/User/Notes/notes";
+import { SubleaseTrackerChat } from "./Pages/User/SubleaseTracker/subleaseTrackerchat";
+import { SubleaseTrackerUserBuildinglist } from "./Pages/User/SubleaseTracker/subleaseTrackerList";
+import { SpaceInquiry } from "./Pages/Admin/SpaceInquiry/spaceInquiry";
+import DealList from "./Pages/User/TourPage/DealTracker/dealList";
+import DealDetailView from "./Pages/User/TourPage/DealTracker/dealDetailView";
+import DealForm from "./Pages/User/TourPage/DealTracker/dealForm";
 
 function App() {
   useEffect(() => {
@@ -207,6 +213,8 @@ function App() {
 
             <Route path="/admin-portfolio-forum" element={<PortfolioForum />} />
             <Route path="/create-forum" element={<CreateThread />} />
+
+            <Route path="/space-inquiry" element={<SpaceInquiry />} />
           </Route>
 
           <Route
@@ -275,6 +283,15 @@ function App() {
               element={<TenentInfoUserBuildinglist />}
             />
 
+            <Route
+              path="/SubleaseTrackerChat"
+              element={<SubleaseTrackerChat />}
+            />
+            <Route
+              path="/SubleaseTrackerBuildinglist"
+              element={<SubleaseTrackerUserBuildinglist />}
+            />
+
             <Route path="/geminichat" element={<GeminiChat />} />
 
             <Route path="/notes" element={<Notes />} />
@@ -293,6 +310,12 @@ function App() {
             <Route path="/history" element={<SessionList />} />
 
             <Route path="/calculator" element={<LeaseFinanceCalculator />} />
+
+            <Route path="/dealList" element={<DealList />} />
+
+            <Route path="/deals/:dealId" element={<DealDetailView />} />
+
+            <Route path="/deals/new" element={<DealForm />} />
           </Route>
         </Routes>
         <ToastContainer />

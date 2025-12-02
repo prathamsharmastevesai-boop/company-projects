@@ -97,11 +97,9 @@ export const AdminFeedback = () => {
                   <div className="d-flex justify-content-between align-items-start mb-3">
                     <div>
                       <h6 className="fw-semibold mb-1 text-dark">
-                        {fb.user_email}
+                        {fb.user_name}
                       </h6>
-                      <small className="text-muted">
-                        User Feedback Received
-                      </small>
+                      <small className="text-muted">{fb.category}</small>
                     </div>
 
                     <button

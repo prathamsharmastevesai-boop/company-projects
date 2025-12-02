@@ -147,7 +147,6 @@ export const ComparativeBuildingData = () => {
       await fetchData();
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Delete failed!");
     } finally {
       setLoading(false);
     }

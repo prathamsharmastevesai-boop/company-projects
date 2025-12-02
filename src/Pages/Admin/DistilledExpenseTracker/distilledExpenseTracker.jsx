@@ -265,7 +265,7 @@ export const DistilledExpenseTracker = () => {
         <div className="d-flex justify-content-center">
           <button
             type="submit"
-            className="btn btn-success btn-lg px-4"
+            className="btn btn-success btn-md px-4"
             disabled={loading}
           >
             {loading ? (

@@ -280,20 +280,20 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                <li
+                {/* <li
                   className={`nav-item ${
-                    isActive("/subleaseTrackerList") ? "active" : ""
+                    isActive("/space-inquiry") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/subleaseTrackerList")}
+                    onClick={() => handleLinkClick("/space-inquiry")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
-                    <i className="bi-journal-text me-2" />
-                    {!collapsed && "Sublease Tracker"}
+                    <i className="bi-journal-text me-1" />
+                    {!collapsed && "Space Inquiry"}
                   </span>
-                </li>
+                </li> */}
 
                 {!collapsed && (
                   <li
@@ -417,7 +417,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
-                        <i className="bi bi-building me-2" />{" "}
+                        <i className="bi bi-building-check me-2" />
+
                         {!collapsed && "Tenants in the Market"}
                       </span>
                     </li>
@@ -434,6 +435,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       >
                         <i className="bi bi-building me-2" />
                         {!collapsed && "Building Info Data "}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/subleaseTrackerList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/subleaseTrackerList")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi-journal-text me-2" />
+                        {!collapsed && "Sublease Tracker"}
                       </span>
                     </li>
                   </>
@@ -656,7 +672,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <i className="bi bi-bar-chart-line me-2"></i>
 
-                    {!collapsed && "Benchmark"}
+                    {!collapsed && "DET"}
                   </span>
                 </li>
 
@@ -673,33 +689,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <i className="bi-calculator me-2" />
 
                     {!collapsed && "Calculator"}
-                  </span>
-                </li>
-                <li
-                  className={`nav-item ${
-                    isActive("/UserProfile") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/UserProfile")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-person-circle me-2" />
-                    {!collapsed && "Profile"}
-                  </span>
-                </li>
-
-                <li
-                  className={`nav-item ${isActive("/history") ? "active" : ""}`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/history")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-clock-history me-2" />
-                    {!collapsed && "Chat History"}
                   </span>
                 </li>
 
@@ -734,6 +723,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       >
                         <i className="bi bi-geo-alt me-2" />
                         {!collapsed && "Tours"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/dealList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/dealList")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-kanban me-2"></i>
+
+                        {!collapsed && "Deal Tracker"}
                       </span>
                     </li>
 
@@ -846,6 +851,23 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
+                        isActive("/SubleaseTrackerBuildinglist") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() =>
+                          handleLinkClick("/SubleaseTrackerBuildinglist")
+                        }
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi-journal-text me-2" />
+                        {!collapsed && "SubleaseTracker"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
                         isActive("/UserBuildinglist") ? "active" : ""
                       }`}
                     >
@@ -859,6 +881,57 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                   </ul>
+                )}
+
+                {!collapsed && (
+                  <li
+                    className="nav-header text-light small mt-3 d-flex justify-content-between align-items-center"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleAccordion("Setting")}
+                  >
+                    <span>Setting</span>
+                    <i
+                      className={`bi ms-2 ${
+                        openMenu === "Setting"
+                          ? "bi-chevron-down"
+                          : "bi-chevron-right"
+                      }`}
+                    />
+                  </li>
+                )}
+
+                {openMenu === "Setting" && (
+                  <>
+                    <li
+                      className={`nav-item ${
+                        isActive("/UserProfile") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/UserProfile")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-person-circle me-2" />
+                        {!collapsed && "Profile"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/history") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/history")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-clock-history me-2" />
+                        {!collapsed && "Chat History"}
+                      </span>
+                    </li>
+                  </>
                 )}
 
                 {isMobile && showSessionModal && (

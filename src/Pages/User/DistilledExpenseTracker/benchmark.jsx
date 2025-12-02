@@ -93,9 +93,9 @@ export const Benchmark = () => {
       );
     }
 
-    if (benchmarkData.data_points <= 0) {
-      return <Alert variant="warning">Insufficient Data for Benchmark</Alert>;
-    }
+    // if (benchmarkData.data_points <= 0) {
+    //   return <Alert variant="warning">Insufficient Data for Benchmark</Alert>;
+    // }
 
     const keys = Object.keys(benchmarkData.benchmark);
 

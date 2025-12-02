@@ -40,7 +40,7 @@ export const DistilledExpenseTrackerPage = () => {
       </Row>
 
       <Row className="justify-content-center ">
-        <Col xs={12} md={10} lg={8}>
+        <Col md={12}>
           <Card className="shadow-sm border-0">
             {activeTab === "form" && <DistilledExpenseTracker />}
             {activeTab === "list" && <DistilledExpenseTrackerlist />}

@@ -1,24 +1,29 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { calcSubmitApi } from "../../../Networking/User/APIs/Calculator/calcApi";
+import { Accordion } from "react-bootstrap";
 
 export const LeaseFinanceCalculator = () => {
   const dispatch = useDispatch();
 
+  // MAIN INPUTS
   const [grossArea, setGrossArea] = useState("");
   const [termYears, setTermYears] = useState("");
-  const [faceRent, setFaceRent] = useState("");
-  const [annualEscalation, setAnnualEscalation] = useState("");
   const [freeRentMonths, setFreeRentMonths] = useState("");
-  const [tiAllowance, setTiAllowance] = useState("");
-  const [commissionPerYear, setCommissionPerYear] = useState("");
-  const [discountRate, setDiscountRate] = useState("");
-  const [commissionTotal, setCommissionTotal] = useState("");
+
+  // API-required fields
+  const [baseRentYear1, setBaseRentYear1] = useState("");
+  const [annualEscalation, setAnnualEscalation] = useState("");
+
+  // Commission Rates
+  const [commissionList, setCommissionList] = useState([]);
+
+  // Results
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Calculator mini-widget
   const [input, setInput] = useState("");
-
   const handleClick = (value) => setInput(input + value);
   const clearInput = () => setInput("");
   const calculate = () => {
@@ -29,35 +34,63 @@ export const LeaseFinanceCalculator = () => {
       setInput("Error");
     }
   };
+
+  // Auto-generate commission years
+  const generateCommissionYears = () => {
+    const years = Number(termYears);
+    if (!years) return;
+
+    const arr = [];
+    for (let i = 1; i <= years; i++) {
+      arr.push({ year: i, rate: "" });
+    }
+    setCommissionList(arr);
+  };
+
+  const updateCommissionRate = (index, value) => {
+    const copy = [...commissionList];
+    copy[index].rate = value;
+    setCommissionList(copy);
+  };
+
+  // --------------------------
+  // SUBMIT API
+  // --------------------------
   const handleSubmit = async () => {
+    if (
+      !grossArea ||
+      !termYears ||
+      !baseRentYear1 ||
+      !annualEscalation ||
+      !freeRentMonths
+    ) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    if (commissionList.length !== Number(termYears)) {
+      alert("Please generate commission years first.");
+      return;
+    }
+
     setLoading(true);
 
     const payload = {
       gross_area_sf: Number(grossArea),
       total_term_years: Number(termYears),
-      face_rent_psf: Number(faceRent),
+      base_rent_psf_year1: Number(baseRentYear1),
       annual_escalation_rate: Number(annualEscalation),
       free_rent_months: Number(freeRentMonths),
-      ti_allowance_psf: Number(tiAllowance),
-      commission_rate_per_year: Number(commissionPerYear),
-      discount_rate: Number(discountRate),
-      commission_rate_total: Number(commissionTotal),
+      commission_rates: commissionList.map((item) => ({
+        year: Number(item.year),
+        rate: Number(item.rate),
+      })),
     };
 
     const response = await dispatch(calcSubmitApi(payload));
 
     if (response.meta.requestStatus === "fulfilled") {
       setResult(response.payload);
-
-      setGrossArea("");
-      setTermYears("");
-      setFaceRent("");
-      setAnnualEscalation("");
-      setFreeRentMonths("");
-      setTiAllowance("");
-      setCommissionPerYear("");
-      setDiscountRate("");
-      setCommissionTotal("");
     }
 
     setLoading(false);
@@ -71,118 +104,91 @@ export const LeaseFinanceCalculator = () => {
 
       <div className="container-fuild p-3">
         <div className="row g-3">
-          <div className="col-md-8 calc-height">
+          {/* ---------------- INPUT PANEL ---------------- */}
+          <div className="col-md-8">
             <div className="card p-3 shadow-sm">
               <h4 className="fw-bold">Deal Parameters (Required Inputs)</h4>
               <hr />
 
               <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">Gross Area (SF)</label>
+                  <label>Gross Area (SF)</label>
                   <input
-                    type="number"
                     className="form-control"
+                    type="number"
                     value={grossArea}
                     onChange={(e) => setGrossArea(e.target.value)}
                   />
                 </div>
 
                 <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">Total Term (Years)</label>
+                  <label>Total Term (Years)</label>
                   <input
-                    type="number"
                     className="form-control"
+                    type="number"
                     value={termYears}
-                    onChange={(e) => setTermYears(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <h5 className="fw-bold">Net Effective Rent (NER Inputs)</h5>
-              <hr />
-
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">Face Rent PSF</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={faceRent}
-                    onChange={(e) => setFaceRent(e.target.value)}
+                    onChange={(e) => {
+                      setTermYears(e.target.value);
+                      setCommissionList([]); // reset on change
+                    }}
                   />
                 </div>
 
                 <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">
-                    Annual Escalation Rate (%)
-                  </label>
+                  <label>Base Rent PSF – Year 1</label>
                   <input
-                    type="number"
                     className="form-control"
+                    type="number"
+                    value={baseRentYear1}
+                    onChange={(e) => setBaseRentYear1(e.target.value)}
+                  />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label>Annual Escalation Rate (%)</label>
+                  <input
+                    className="form-control"
+                    type="number"
                     value={annualEscalation}
                     onChange={(e) => setAnnualEscalation(e.target.value)}
                   />
                 </div>
-              </div>
 
-              <div className="row">
                 <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">Free Rent (Months)</label>
+                  <label>Free Rent (Months)</label>
                   <input
-                    type="number"
                     className="form-control"
+                    type="number"
                     value={freeRentMonths}
                     onChange={(e) => setFreeRentMonths(e.target.value)}
                   />
                 </div>
-
-                <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">TI Allowance PSF</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={tiAllowance}
-                    onChange={(e) => setTiAllowance(e.target.value)}
-                  />
-                </div>
               </div>
 
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">
-                    Commission Rate / Year (%)
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={commissionPerYear}
-                    onChange={(e) => setCommissionPerYear(e.target.value)}
-                  />
-                </div>
-
-                <div className="col-md-6 mb-3">
-                  <label className="fw-semibold">Discount Rate (%)</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    value={discountRate}
-                    onChange={(e) => setDiscountRate(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <h5 className="fw-bold">Commission Calculator (Inputs)</h5>
+              {/* COMMISSION RATES */}
+              <h5 className="fw-bold mt-3">Commission Rates</h5>
               <hr />
 
-              <div className="col-md-12 mb-3">
-                <label className="fw-semibold">Commission Rate Total (%)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={commissionTotal}
-                  onChange={(e) => setCommissionTotal(e.target.value)}
-                />
-              </div>
+              <button
+                className="btn btn-outline-primary w-100 mb-3"
+                onClick={generateCommissionYears}
+              >
+                Generate Commission Rows
+              </button>
+
+              {commissionList.map((item, index) => (
+                <div className="mb-2" key={index}>
+                  <label>Year {item.year} Rate (%)</label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    value={item.rate}
+                    onChange={(e) =>
+                      updateCommissionRate(index, e.target.value)
+                    }
+                  />
+                </div>
+              ))}
 
               <button
                 className="btn btn-primary w-100 mt-3"
@@ -190,45 +196,75 @@ export const LeaseFinanceCalculator = () => {
                 disabled={loading}
               >
                 {loading ? (
-                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  <span className="spinner-border spinner-border-sm"></span>
                 ) : (
-                  "Calculate Final Metrics"
+                  "Calculate"
                 )}
               </button>
             </div>
           </div>
 
-          <div className="col-md-4 calc-height">
-            <div className="card p-3 shadow-sm mb-2">
+          {/* ---------------- RESULTS PANEL ---------------- */}
+          <div className="col-md-4">
+            <div className="card p-3 shadow-sm">
               <h5 className="fw-bold mb-3">Calculated Results</h5>
-              {!result && (
-                <p className="text-muted">Submit to get calculated results.</p>
-              )}
+
+              {!result && <p className="text-muted">Submit to see result.</p>}
 
               {result && (
                 <>
-                  <div className="p-3 bg-light mb-2 rounded">
-                    <h6 className="text-primary fw-bold">NER PSF (Annual)</h6>
-                    <h3 className="fw-bold">${result?.ner_psf_annual}</h3>
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Commission Due:</strong>
+                    <h4>${result.total_commission_due}</h4>
                   </div>
 
-                  <div className="p-3 bg-light mb-2 rounded">
-                    <h6 className="text-primary fw-bold">
-                      Total Commission Due
-                    </h6>
-                    <h3 className="fw-bold">${result?.total_commission_due}</h3>
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Commissionable Rent:</strong>
+                    <h4>${result.total_commissionable_rent}</h4>
                   </div>
 
-                  <div className="p-3 bg-light mb-2 rounded">
-                    <h6 className="text-primary fw-bold">Total Cash Outflow</h6>
-                    <h3 className="fw-bold">
-                      ${result?.total_cash_outflow_concessions}
-                    </h3>
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Free Rent Value:</strong>
+                    <h4>${result.total_free_rent_value}</h4>
                   </div>
+
+                  <Accordion defaultActiveKey="0" className="mt-3">
+                    {result.annual_breakdown?.map((year, idx) => (
+                      <Accordion.Item eventKey={String(idx)} key={idx}>
+                        <Accordion.Header>
+                          Year {year.year} — Rent ${year.face_rent_psf}
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          <p>
+                            <strong>Gross Annual Rent:</strong> $
+                            {year.gross_annual_rent}
+                          </p>
+                          <p>
+                            <strong>Free Rent This Year:</strong> $
+                            {year.free_rent_this_year}
+                          </p>
+                          <p>
+                            <strong>Commissionable Rent:</strong> $
+                            {year.commissionable_rent}
+                          </p>
+                          <p>
+                            <strong>Commission Rate (%):</strong>{" "}
+                            {year.commission_rate_pct}%
+                          </p>
+                          <p>
+                            <strong>Commission Amount:</strong> $
+                            {year.commission_amount}
+                          </p>
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    ))}
+                  </Accordion>
                 </>
               )}
             </div>
-            <div className="card p-3 shadow-sm mb-3">
+
+            {/* ---------------- MINI CALCULATOR ---------------- */}
+            <div className="card p-3 shadow-sm mt-3 mb-3">
               <h5 className="fw-bold mb-3 text-center">Calculator</h5>
 
               <input

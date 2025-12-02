@@ -12,7 +12,6 @@ export const createNoteApi = createAsyncThunk(
       toast.success(response.data?.message || "Note created!");
       return response.data;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to create note");
       return rejectWithValue(error.response?.data?.message);
     }
   }
@@ -25,7 +24,6 @@ export const getNotesApi = createAsyncThunk(
       const response = await axiosInstance.get(notes);
       return response.data;
     } catch (error) {
-      toast.error("Failed to load notes");
       return rejectWithValue(error.response?.data?.message);
     }
   }
@@ -38,7 +36,6 @@ export const getNoteByIdApi = createAsyncThunk(
       const response = await axiosInstance.get(`${notes}${noteId}`);
       return response.data;
     } catch (error) {
-      toast.error("Failed to load note");
       return rejectWithValue(error.response?.data?.message);
     }
   }
@@ -52,7 +49,6 @@ export const updateNoteApi = createAsyncThunk(
       toast.success("Note updated!");
       return response.data;
     } catch (error) {
-      toast.error("Failed to update note");
       return rejectWithValue(error.response?.data?.message);
     }
   }
@@ -66,7 +62,6 @@ export const deleteNoteApi = createAsyncThunk(
       toast.success("Note deleted!");
       return { noteId };
     } catch (error) {
-      toast.error("Failed to delete note");
       return rejectWithValue(error.response?.data?.message);
     }
   }

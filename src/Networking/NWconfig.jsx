@@ -147,3 +147,13 @@ export const notesdata = "/notes/";
 export const notedata = "/notes/";
 export const noteUpdate = "/notes/";
 export const notedelete = "/notes/";
+
+//SpaceInquiry
+export const ingestionconfigs = "/api/client-ingestion-configs/";
+
+//Deal Tracker
+
+export const dealformEndpoint = "/deals/";
+export const dealList = "/deals/";
+export const getFormEndpoint = "/deals/deal_id/";
+export const deleteDeal = "/deals/";

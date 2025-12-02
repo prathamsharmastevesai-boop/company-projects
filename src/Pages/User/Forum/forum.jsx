@@ -15,7 +15,9 @@ import { toast } from "react-toastify";
 export const PortfolioForum = () => {
   const dispatch = useDispatch();
   const { ThreadList } = useSelector((state) => state.ForumSlice);
-  const { Role } = useSelector((state) => state.loginSlice);
+  // const { Role } = useSelector((state) => state.loginSlice);
+  const { userdata } = useSelector((state) => state.ProfileSlice);
+  console.log(userdata, "userdata");
 
   const messagesEndRef = React.useRef(null);
 
@@ -23,6 +25,11 @@ export const PortfolioForum = () => {
   const [selectedThread, setSelectedThread] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [threadMessages, setThreadMessages] = useState([]);
+  console.log(threadMessages, "threadMessages");
+
+  const [userdetail, setUserdetail] = useState({});
+  console.log(userdetail, "userdetail");
+
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [loadingThreads, setLoadingThreads] = useState(true);
   const [editingThoughtId, setEditingThoughtId] = useState(null);
@@ -95,7 +102,7 @@ export const PortfolioForum = () => {
   const handlethreadhistory = async (thread) => {
     setSelectedThread(thread);
     setLoadingHistory(true);
-
+    setUserdetail(userdata?.id);
     try {
       const data = await dispatch(getThreadhistory(thread.id)).unwrap();
       setThreadMessages(data.thoughts || []);
@@ -420,12 +427,12 @@ export const PortfolioForum = () => {
                             {msg.content}
                           </p>
                         )}
-
+                        {console.log("conditionuserdetail", userdetail)}
                         <div className="text-muted small d-flex justify-content-between">
                           <span>
                             {new Date(msg.created_at).toLocaleString()}
                           </span>
-                          {Role === "admin" && (
+                          {userdata.role == "admin" ? (
                             <div className="d-flex gap-2">
                               <button
                                 className="btn btn-sm p-2  d-flex align-items-center justify-content-center"
@@ -459,7 +466,41 @@ export const PortfolioForum = () => {
                                 )}
                               </button>
                             </div>
-                          )}
+                          ) : Number(msg.author_uid) === userdetail ? (
+                            <div className="d-flex gap-2">
+                              <button
+                                className="btn btn-sm p-2  d-flex align-items-center justify-content-center"
+                                onClick={() => handleEdit(msg.id, msg.content)}
+                                title="Edit"
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#0d6efd",
+                                }}
+                              >
+                                <i className="bi bi-pencil-square fs-6"></i>
+                              </button>
+
+                              <button
+                                className="btn btn-sm p-2 d-flex align-items-center justify-content-center"
+                                onClick={() =>
+                                  handleDelete(selectedThread.id, msg.id)
+                                }
+                                disabled={loadingId === msg.id}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  color: "#dc3545",
+                                }}
+                              >
+                                {loadingId === msg.id ? (
+                                  <Spinner animation="border" size="sm" />
+                                ) : (
+                                  <i className="bi bi-trash3-fill fs-6"></i>
+                                )}
+                              </button>
+                            </div>
+                          ) : null}
                         </div>
                       </Card>
                     ))}
