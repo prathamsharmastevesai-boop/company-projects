@@ -116,7 +116,7 @@ const DealList = () => {
     return (
       <div
         className="container p-4 shadow-sm"
-        style={{ background: "#f5f7fa", borderRadius: "8px" }}
+        style={{ background: "#f5f7fa", borderRadius: "8px", height: "100vh" }}
       >
         <div
           className="d-flex justify-content-center align-items-center"
@@ -168,187 +168,192 @@ const DealList = () => {
   }
 
   return (
-    <div
-      className="container p-4 shadow-sm"
-      style={{ background: "#f5f7fa", borderRadius: "8px" }}
-    >
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h4 className="fw-bold mb-0">View Deal Tracker</h4>
-          <small className="text-muted">(Main List View)</small>
-          <div className="mt-1">
+    <div>
+      <div className="header-bg sticky-header px-3 py-2">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center gap-3">
+            <h5 className="mb-0 text-light">View Deal Tracker</h5>
+            <small className="text-light">(Main List View)</small>
+
             <span className="badge bg-secondary">
               {filteredDeals.length} deal{filteredDeals.length !== 1 ? "s" : ""}
             </span>
           </div>
-        </div>
 
-        <button
-          className="btn text-white px-3"
-          style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
-          onClick={handleCreateForm}
-        >
-          Create New Deal
-        </button>
-      </div>
-
-      <div className="input-group mb-3">
-        <span className="input-group-text bg-white border-end-0">
-          <i className="bi bi-search"></i>
-        </span>
-        <input
-          type="text"
-          className="form-control border-start-0"
-          placeholder="Search deals by tenant name, address, broker, or status..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        {searchTerm && (
           <button
-            className="btn btn-outline-secondary"
-            type="button"
-            onClick={() => setSearchTerm("")}
+            className="btn text-white px-3"
+            style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
+            onClick={handleCreateForm}
           >
-            Clear
+            Create New Deal
           </button>
-        )}
+        </div>
       </div>
 
-      {filteredDeals.length === 0 ? (
-        <div className="text-center py-5">
-          <div className="mb-3">
-            <i
-              className="bi bi-inbox"
-              style={{ fontSize: "3rem", color: "#6c757d" }}
-            ></i>
-          </div>
-          <h5>No deals found</h5>
-          <p className="text-muted">
-            {searchTerm
-              ? "No deals match your search criteria."
-              : "Get started by creating your first deal."}
-          </p>
-          {!searchTerm && (
+      <div
+        className="container p-4 shadow-sm"
+        style={{ background: "#f5f7fa", borderRadius: "8px", height: "100vh" }}
+      >
+        <div className="input-group mb-3">
+          <span className="input-group-text bg-white border-end-0">
+            <i className="bi bi-search"></i>
+          </span>
+          <input
+            type="text"
+            className="form-control border-start-0"
+            placeholder="Search deals by tenant name, address, broker, or status..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
             <button
-              className="btn text-white px-4"
-              style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
-              onClick={handleCreateForm}
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={() => setSearchTerm("")}
             >
-              Create Your First Deal
+              Clear
             </button>
           )}
         </div>
-      ) : (
-        <div className="table-responsive">
-          <table className="table mt-3 align-middle">
-            <thead className="table-light">
-              <tr>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>
-                  Tenant Name
-                </th>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>
-                  Building of Interest
-                </th>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>
-                  Broker (Individual)
-                </th>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>
-                  Status / Last Action
-                </th>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>
-                  Last Updated
-                </th>
-                <th style={{ fontWeight: "600", fontSize: "14px" }}>Actions</th>
-              </tr>
-            </thead>
 
-            <tbody>
-              {filteredDeals.map((item) => (
-                <tr key={item.id || item._id} style={{ fontSize: "14px" }}>
-                  <td>
-                    <div className="fw-semibold">
-                      {item.tenant_name || "N/A"}
-                    </div>
-                    {item.floor_suite_interest && (
-                      <small className="text-muted">
-                        {item.floor_suite_interest}
-                      </small>
-                    )}
-                  </td>
-                  <td>
-                    <div>{item.building_address_interest || "N/A"}</div>
-                    {item.current_building_address && (
-                      <small className="text-muted">
-                        Current: {item.current_building_address}
-                      </small>
-                    )}
-                  </td>
-                  <td>
-                    <div>{item.broker_of_record || "N/A"}</div>
-                    {item.landlord_lead_of_record && (
-                      <small className="text-muted">
-                        Landlord: {item.landlord_lead_of_record}
-                      </small>
-                    )}
-                  </td>
-                  <td>
-                    <span
-                      className="badge"
-                      style={{
-                        backgroundColor: "#e1ebfd",
-                        color: "#217ae6",
-                        padding: "6px 10px",
-                        fontSize: "12px",
-                        borderRadius: "6px",
-                      }}
-                    >
-                      {getCurrentStatus(item)}
-                    </span>
-                    {item.current_lease_expiration && (
-                      <div className="mt-1 small">
-                        <i className="bi bi-calendar me-1"></i>
-                        Expires: {formatDate(item.current_lease_expiration)}
-                      </div>
-                    )}
-                  </td>
-                  <td className="text-muted">
-                    {formatDate(getLastUpdated(item))}
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-sm text-white me-2"
-                      style={{
-                        backgroundColor: "#217ae6",
-                        borderColor: "#217ae6",
-                        padding: "4px 12px",
-                        fontSize: "13px",
-                      }}
-                      onClick={() => handleViewEdit(item.id || item._id)}
-                    >
-                      View/Edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      style={{
-                        padding: "4px 12px",
-                        fontSize: "13px",
-                      }}
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deleteLoadingId === item.id}
-                    >
-                      {deleteLoadingId === item.id ? (
-                        <span className="spinner-border spinner-border-sm"></span>
-                      ) : (
-                        <i className="bi bi-trash"></i>
-                      )}
-                    </button>
-                  </td>
+        {filteredDeals.length === 0 ? (
+          <div className="text-center py-5">
+            <div className="mb-3">
+              <i
+                className="bi bi-inbox"
+                style={{ fontSize: "3rem", color: "#6c757d" }}
+              ></i>
+            </div>
+            <h5>No deals found</h5>
+            <p className="text-muted">
+              {searchTerm
+                ? "No deals match your search criteria."
+                : "Get started by creating your first deal."}
+            </p>
+            {!searchTerm && (
+              <button
+                className="btn text-white px-4"
+                style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
+                onClick={handleCreateForm}
+              >
+                Create Your First Deal
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table mt-3 align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Tenant Name
+                  </th>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Building of Interest
+                  </th>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Broker (Individual)
+                  </th>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Status / Last Action
+                  </th>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Last Updated
+                  </th>
+                  <th style={{ fontWeight: "600", fontSize: "14px" }}>
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+
+              <tbody>
+                {filteredDeals.map((item) => (
+                  <tr key={item.id || item._id} style={{ fontSize: "14px" }}>
+                    <td>
+                      <div className="fw-semibold">
+                        {item.tenant_name || "N/A"}
+                      </div>
+                      {item.floor_suite_interest && (
+                        <small className="text-muted">
+                          {item.floor_suite_interest}
+                        </small>
+                      )}
+                    </td>
+                    <td>
+                      <div>{item.building_address_interest || "N/A"}</div>
+                      {item.current_building_address && (
+                        <small className="text-muted">
+                          Current: {item.current_building_address}
+                        </small>
+                      )}
+                    </td>
+                    <td>
+                      <div>{item.broker_of_record || "N/A"}</div>
+                      {item.landlord_lead_of_record && (
+                        <small className="text-muted">
+                          Landlord: {item.landlord_lead_of_record}
+                        </small>
+                      )}
+                    </td>
+                    <td>
+                      <span
+                        className="badge"
+                        style={{
+                          backgroundColor: "#e1ebfd",
+                          color: "#217ae6",
+                          padding: "6px 10px",
+                          fontSize: "12px",
+                          borderRadius: "6px",
+                        }}
+                      >
+                        {getCurrentStatus(item)}
+                      </span>
+                      {item.current_lease_expiration && (
+                        <div className="mt-1 small">
+                          <i className="bi bi-calendar me-1"></i>
+                          Expires: {formatDate(item.current_lease_expiration)}
+                        </div>
+                      )}
+                    </td>
+                    <td className="text-muted">
+                      {formatDate(getLastUpdated(item))}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm text-white me-2"
+                        style={{
+                          backgroundColor: "#217ae6",
+                          borderColor: "#217ae6",
+                          padding: "4px 12px",
+                          fontSize: "13px",
+                        }}
+                        onClick={() => handleViewEdit(item.id || item._id)}
+                      >
+                        View/Edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{
+                          padding: "4px 12px",
+                          fontSize: "13px",
+                        }}
+                        onClick={() => handleDelete(item.id)}
+                        disabled={deleteLoadingId === item.id}
+                      >
+                        {deleteLoadingId === item.id ? (
+                          <span className="spinner-border spinner-border-sm"></span>
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -210,271 +210,275 @@ const DealDetailView = () => {
   }
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h3 className="fw-bold mb-0">
-            {isEditMode ? "Edit Lease Deal" : "View Lease Deal"} – Deal Tracker
-          </h3>
-          <p className="text-muted mb-0">Deal ID: {dealId}</p>
-        </div>
+    <div>
+      <div className="header-bg sticky-header px-3 py-2">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center gap-3">
+            <h5 className="text-light">
+              {isEditMode ? "Edit Lease Deal" : "View Lease Deal"} – Deal
+              Tracker
+            </h5>
+          </div>
 
-        <div className="d-flex gap-2">
-          {isEditMode ? (
-            <>
-              <button
-                className="btn btn-outline-secondary"
-                onClick={handleEditToggle}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-              <button
-                className="text-light"
-                style={{
-                  borderColor: "#217ae6",
-                  backgroundColor: "#217ae6",
-                  borderRadius: 5,
-                }}
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? (
-                  <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                    ></span>
-                    Saving...
-                  </>
-                ) : (
-                  "Save"
-                )}
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="text-light border-0 p-2"
-                style={{
-                  backgroundColor: "#217ae6",
-                  borderColor: "#217ae6",
-                  borderRadius: 5,
-                }}
-                onClick={handleEditToggle}
-              >
-                Edit Deal
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="card p-4 mb-4">
-        <h5 className="fw-bold border-bottom pb-2 mb-4">Deal Identification</h5>
-
-        <div className="row g-3">
-          {[
-            {
-              label: "Tenant Name",
-              name: "tenant_name",
-              type: "text",
-              required: true,
-            },
-            {
-              label: "Building of Interest",
-              name: "building_address_interest",
-              type: "text",
-              required: true,
-            },
-            {
-              label: "Current Building Address",
-              name: "current_building_address",
-              type: "text",
-            },
-            {
-              label: "Floor/Suite (Interest)",
-              name: "floor_suite_interest",
-              type: "text",
-            },
-            {
-              label: "Floor/Suite (Current)",
-              name: "floor_suite_current",
-              type: "text",
-            },
-            {
-              label: "Broker of Record",
-              name: "broker_of_record",
-              type: "text",
-            },
-            {
-              label: "Landlord Lead of Record",
-              name: "landlord_lead_of_record",
-              type: "text",
-            },
-            {
-              label: "Current Lease Expiration Date",
-              name: "current_lease_expiration",
-              type: "date",
-            },
-          ].map((field) => (
-            <div className="col-md-6 col-12" key={field.name}>
-              <label className="fw-semibold">
-                {field.label}
-                {field.required && <span className="text-danger ms-1">*</span>}
-              </label>
-              {isEditMode ? (
-                <input
-                  type={field.type}
-                  className="form-control"
-                  name={field.name}
-                  value={form[field.name] || ""}
-                  onChange={handleInputChange}
-                  required={field.required}
+          <div className="d-flex gap-2">
+            {isEditMode ? (
+              <>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={handleEditToggle}
                   disabled={saving}
-                />
-              ) : (
-                <div className="form-control-plaintext">
-                  {form[field.name] || (
-                    <span className="text-muted">Not specified</span>
+                >
+                  Cancel
+                </button>
+                <button
+                  className="text-light"
+                  style={{
+                    borderColor: "#217ae6",
+                    backgroundColor: "#217ae6",
+                    borderRadius: 5,
+                  }}
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
+                      Saving...
+                    </>
+                  ) : (
+                    "Save"
                   )}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <div className="col-md-6 col-12">
-            <label className="fw-semibold">Last Updated</label>
-            <div className="form-control-plaintext">
-              {formatDate(deal.last_updated) || "N/A"}
-            </div>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="text-light border-0 p-2"
+                  style={{
+                    backgroundColor: "#217ae6",
+                    borderColor: "#217ae6",
+                    borderRadius: 5,
+                  }}
+                  onClick={handleEditToggle}
+                >
+                  Edit Deal
+                </button>
+              </>
+            )}
           </div>
-          <div className="col-md-6 col-12">
-            <label className="fw-semibold">Last Edited By</label>
-            <div className="form-control-plaintext">
-              {deal.last_edited_by || "N/A"}
-            </div>
-          </div>
-          {deal.created_at && (
-            <div className="col-md-6 col-12">
-              <label className="fw-semibold">Created</label>
-              <div className="form-control-plaintext">
-                {formatDate(deal.created_at)}
-              </div>
-            </div>
-          )}
         </div>
       </div>
+      <div className="container mt-4">
+        <div className="card p-4 mb-4">
+          <h5 className="fw-bold border-bottom pb-2 mb-4">
+            Deal Identification
+          </h5>
 
-      <div className="card p-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h5 className="fw-bold mb-0">Deal Process Tracking</h5>
-          {isEditMode && (
-            <div className="text-muted">
-              {stages.filter((s) => s.is_completed).length} of {stages.length}{" "}
-              stages completed
-            </div>
-          )}
-        </div>
-
-        {stages.length === 0 ? (
-          <div className="text-center py-4 text-muted">
-            No stages found for this deal
-          </div>
-        ) : (
-          <div className="stages-list">
-            {stages.map((stage, index) => (
-              <div
-                key={stage.id || index}
-                className={`stage-item border rounded p-3 mb-3 ${
-                  stage.is_completed ? "bg-light" : ""
-                }`}
-              >
-                <div className="row align-items-center">
-                  <div className="col-md-1 col-2 text-center">
-                    {isEditMode ? (
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        checked={stage.is_completed || false}
-                        onChange={(e) =>
-                          handleStageChange(
-                            index,
-                            "is_completed",
-                            e.target.checked
-                          )
-                        }
-                        disabled={saving}
-                      />
-                    ) : (
-                      <span
-                        className={
-                          stage.is_completed ? "text-success" : "text-secondary"
-                        }
-                      >
-                        {stage.is_completed ? "✓" : "○"}
-                      </span>
+          <div className="row g-3">
+            {[
+              {
+                label: "Tenant Name",
+                name: "tenant_name",
+                type: "text",
+                required: true,
+              },
+              {
+                label: "Building of Interest",
+                name: "building_address_interest",
+                type: "text",
+                required: true,
+              },
+              {
+                label: "Current Building Address",
+                name: "current_building_address",
+                type: "text",
+              },
+              {
+                label: "Floor/Suite (Interest)",
+                name: "floor_suite_interest",
+                type: "text",
+              },
+              {
+                label: "Floor/Suite (Current)",
+                name: "floor_suite_current",
+                type: "text",
+              },
+              {
+                label: "Broker of Record",
+                name: "broker_of_record",
+                type: "text",
+              },
+              {
+                label: "Landlord Lead of Record",
+                name: "landlord_lead_of_record",
+                type: "text",
+              },
+              {
+                label: "Current Lease Expiration Date",
+                name: "current_lease_expiration",
+                type: "date",
+              },
+            ].map((field) => (
+              <div className="col-md-6 col-12" key={field.name}>
+                <label className="fw-semibold">
+                  {field.label}
+                  {field.required && (
+                    <span className="text-danger ms-1">*</span>
+                  )}
+                </label>
+                {isEditMode ? (
+                  <input
+                    type={field.type}
+                    className="form-control"
+                    name={field.name}
+                    value={form[field.name] || ""}
+                    onChange={handleInputChange}
+                    required={field.required}
+                    disabled={saving}
+                  />
+                ) : (
+                  <div className="form-control-plaintext">
+                    {form[field.name] || (
+                      <span className="text-muted">Not specified</span>
                     )}
                   </div>
-
-                  <div className="col-md-3 col-10">
-                    <strong>{stage.stage_name}</strong>
-                    {isEditMode && stage.order_index !== undefined && (
-                      <div className="small text-muted">
-                        Order: {stage.order_index}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="col-md-2 col-12 mt-2 mt-md-0">
-                    {isEditMode ? (
-                      <input
-                        type="date"
-                        className="form-control"
-                        value={stage.completed_at || ""}
-                        onChange={(e) =>
-                          handleStageChange(
-                            index,
-                            "completed_at",
-                            e.target.value
-                          )
-                        }
-                        disabled={saving || !stage.is_completed}
-                      />
-                    ) : (
-                      <div className="form-control-plaintext">
-                        {stage.completed_at
-                          ? formatDate(stage.completed_at)
-                          : "Not completed"}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="col-md-6 col-12 mt-2 mt-md-0">
-                    {isEditMode ? (
-                      <textarea
-                        className="form-control"
-                        rows="2"
-                        placeholder="Notes..."
-                        value={stage.notes || ""}
-                        onChange={(e) =>
-                          handleStageChange(index, "notes", e.target.value)
-                        }
-                        disabled={saving}
-                      />
-                    ) : (
-                      <div className="form-control-plaintext">
-                        {stage.notes || (
-                          <span className="text-muted">No notes</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
             ))}
+
+            <div className="col-md-6 col-12">
+              <label className="fw-semibold">Last Updated</label>
+              <div className="form-control-plaintext">
+                {formatDate(deal.last_updated) || "N/A"}
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <label className="fw-semibold">Last Edited By</label>
+              <div className="form-control-plaintext">
+                {deal.last_edited_by || "N/A"}
+              </div>
+            </div>
+            {deal.created_at && (
+              <div className="col-md-6 col-12">
+                <label className="fw-semibold">Created</label>
+                <div className="form-control-plaintext">
+                  {formatDate(deal.created_at)}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
+
+        <div className="card p-4">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h5 className="fw-bold mb-0">Deal Process Tracking</h5>
+            {isEditMode && (
+              <div className="text-muted">
+                {stages.filter((s) => s.is_completed).length} of {stages.length}{" "}
+                stages completed
+              </div>
+            )}
+          </div>
+
+          {stages.length === 0 ? (
+            <div className="text-center py-4 text-muted">
+              No stages found for this deal
+            </div>
+          ) : (
+            <div className="stages-list">
+              {stages.map((stage, index) => (
+                <div
+                  key={stage.id || index}
+                  className={`stage-item border rounded p-3 mb-3 ${
+                    stage.is_completed ? "bg-light" : ""
+                  }`}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-md-1 col-2 text-center">
+                      {isEditMode ? (
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={stage.is_completed || false}
+                          onChange={(e) =>
+                            handleStageChange(
+                              index,
+                              "is_completed",
+                              e.target.checked
+                            )
+                          }
+                          disabled={saving}
+                        />
+                      ) : (
+                        <span
+                          className={
+                            stage.is_completed
+                              ? "text-success"
+                              : "text-secondary"
+                          }
+                        >
+                          {stage.is_completed ? "✓" : "○"}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="col-md-3 col-10">
+                      <strong>{stage.stage_name}</strong>
+                    </div>
+
+                    <div className="col-md-2 col-12 mt-2 mt-md-0">
+                      {isEditMode ? (
+                        <input
+                          type="date"
+                          className="form-control"
+                          value={stage.completed_at || ""}
+                          onChange={(e) =>
+                            handleStageChange(
+                              index,
+                              "completed_at",
+                              e.target.value
+                            )
+                          }
+                          disabled={saving || !stage.is_completed}
+                        />
+                      ) : (
+                        <div className="form-control-plaintext">
+                          {stage.completed_at
+                            ? formatDate(stage.completed_at)
+                            : "Not completed"}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="col-md-6 col-12 mt-2 mt-md-0">
+                      {isEditMode ? (
+                        <textarea
+                          className="form-control"
+                          rows="2"
+                          placeholder="Notes..."
+                          value={stage.notes || ""}
+                          onChange={(e) =>
+                            handleStageChange(index, "notes", e.target.value)
+                          }
+                          disabled={saving}
+                        />
+                      ) : (
+                        <div className="form-control-plaintext">
+                          {stage.notes || (
+                            <span className="text-muted">No notes</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

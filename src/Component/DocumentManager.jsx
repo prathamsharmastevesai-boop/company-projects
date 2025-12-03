@@ -81,6 +81,7 @@ const DocumentManager = ({ category, title, description }) => {
     e.preventDefault();
     setIsDragging(true);
   };
+
   const handleDragLeave = () => setIsDragging(false);
 
   const handleDrop = async (e) => {
@@ -92,7 +93,7 @@ const DocumentManager = ({ category, title, description }) => {
 
   const handleEditClick = (file) => {
     setEditingFile(file);
-    if (editFileRef.current) editFileRef.current.click();
+    editFileRef.current?.click();
   };
 
   const handleEditChange = async (e) => {
@@ -134,94 +135,98 @@ const DocumentManager = ({ category, title, description }) => {
   };
 
   return (
-    <div className="container py-4 px-2 px-md-4">
-      <div className="container doc-container py-4">
-        <h5 className="fw-bold">{title}</h5>
-        <p className="text-muted">{description}</p>
-
-        <div
-          className={`border border-2 rounded-3 p-4 text-center mb-4 doc-drop-box ${
-            isDragging ? "border-primary bg-light" : "border-dashed bg-light"
-          }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <i className="bi bi-upload fs-1 text-primary"></i>
-          <h6 className="fw-semibold mt-3">Upload Documents</h6>
-          <p className="text-muted small mb-3">
-            Drag & drop files here or click to select
-          </p>
-
-          <label className="btn btn-primary px-4">
-            <i className="bi bi-file-earmark-arrow-up me-1"></i> Select File
-            <input
-              type="file"
-              hidden
-              accept=".pdf,.csv,.docx,.xlsx"
-              onChange={handleFileChange}
-            />
-          </label>
-
-          {loading && <RAGLoader />}
-        </div>
-      </div>
-
-      <div className="card shadow-sm">
-        <div className="card-header fw-semibold">Uploaded Documents</div>
-
-        {listLoading ? (
-          <div className="p-3 text-center">
+    <>
+      {loading && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center">
+          <div className="mx-5 ">
             <RAGLoader />
           </div>
-        ) : (
-          <ul className="list-group list-group-flush">
-            {docs.length === 0 && (
-              <li className="list-group-item text-muted text-center">
-                No documents uploaded yet.
-              </li>
-            )}
+        </div>
+      )}
 
-            {docs.map((file) => (
-              <li
-                key={file.file_id}
-                className="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center"
-                style={{ overflow: "hidden" }}
-              >
-                <span
-                  className="mb-2 mb-md-0 text-truncate w-100"
-                  style={{ overflow: "hidden" }}
+      <div className="container py-4 px-2 px-md-4">
+        <div className="container doc-container py-4">
+          <h5 className="fw-bold">{title}</h5>
+          <p className="text-muted">{description}</p>
+
+          <div
+            className={`border border-2 rounded-3 p-4 text-center mb-4 doc-drop-box ${
+              isDragging ? "border-primary bg-light" : "border-dashed bg-light"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <i className="bi bi-upload fs-1 text-primary"></i>
+            <h6 className="fw-semibold mt-3">Upload Documents</h6>
+            <p className="text-muted small mb-3">
+              Drag & drop files here or click to select
+            </p>
+
+            <label className="btn btn-primary px-4">
+              <i className="bi bi-file-earmark-arrow-up me-1"></i> Select File
+              <input
+                type="file"
+                hidden
+                accept=".pdf,.csv,.docx,.xlsx"
+                onChange={handleFileChange}
+              />
+            </label>
+          </div>
+        </div>
+
+        <div className="card shadow-sm">
+          <div className="card-header fw-semibold">Uploaded Documents</div>
+
+          {listLoading ? (
+            <div className="p-3 text-center">
+              <RAGLoader />
+            </div>
+          ) : (
+            <ul className="list-group list-group-flush">
+              {docs.length === 0 && (
+                <li className="list-group-item text-muted text-center">
+                  No documents uploaded yet.
+                </li>
+              )}
+
+              {docs.map((file) => (
+                <li
+                  key={file.file_id}
+                  className="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center"
                 >
-                  <i className="bi bi-file-earmark-text text-primary me-2"></i>
-                  {file.name}
-                </span>
+                  <span className="mb-2 mb-md-0 text-truncate">
+                    <i className="bi bi-file-earmark-text text-primary me-2"></i>
+                    {file.name}
+                  </span>
 
-                <div className="d-flex gap-3 flex-shrink-0">
-                  <i
-                    className="bi bi-pencil-square text-primary"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleEditClick(file)}
-                  ></i>
-                  <i
-                    className="bi bi-trash text-danger"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleDelete(file)}
-                  ></i>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                  <div className="d-flex gap-3">
+                    <i
+                      className="bi bi-pencil-square text-primary"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleEditClick(file)}
+                    ></i>
+                    <i
+                      className="bi bi-trash text-danger"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleDelete(file)}
+                    ></i>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <input
+          type="file"
+          accept=".pdf,.csv,.docx,.xlsx"
+          ref={editFileRef}
+          style={{ display: "none" }}
+          onChange={handleEditChange}
+        />
       </div>
-
-      <input
-        type="file"
-        accept=".pdf,.csv,.docx,.xlsx"
-        ref={editFileRef}
-        style={{ display: "none" }}
-        onChange={handleEditChange}
-      />
-    </div>
+    </>
   );
 };
 

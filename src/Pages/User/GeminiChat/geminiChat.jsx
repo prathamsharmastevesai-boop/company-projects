@@ -48,31 +48,33 @@ export const GeminiChat = () => {
   const isLoading = isLoadingSession;
 
   useEffect(() => {
+    if (location.state?.sessionId) {
+      setSessionId(location.state.sessionId);
+      setSessionReady(true);
+      return;
+    }
+
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {
         const res = await dispatch(get_Session_List_Specific()).unwrap();
 
-        if (Array.isArray(res) && res.length > 0) {
-          const filtered = res.filter(
-            (s) => s.category?.toLowerCase() === "gemini"
-          );
+        const filtered = res.filter(
+          (s) => s.category?.toLowerCase() === "gemini"
+        );
 
-          if (filtered.length > 0) {
-            const lastSession = filtered[filtered.length - 1];
-            setSessionId(lastSession.session_id);
-          } else {
-            setSessionId(null);
-            setMessages([]);
-            toast.info(`Start a new Gemini session.`);
-          }
+        if (filtered.length > 0) {
+          filtered.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          const latestSession = filtered[0];
+
+          setSessionId(latestSession.session_id);
         } else {
           setSessionId(null);
           setMessages([]);
-          toast.info("No sessions found. Start a new one.");
         }
       } catch (err) {
-        console.error("Failed to fetch session list:", err);
         setSessionId(null);
         setMessages([]);
       } finally {
@@ -82,7 +84,7 @@ export const GeminiChat = () => {
     };
 
     fetchLastSession();
-  }, [dispatch]);
+  }, [dispatch, location.state]);
 
   useEffect(() => {
     if (!sessionReady || !sessionId) return;

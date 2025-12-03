@@ -34,20 +34,20 @@ export const LeaseAbstractUpload = () => {
   // const [showModal, setShowModal] = useState(false);
   // const [previewData, setPreviewData] = useState("");
 
-  const [metadata, setMetadata] = useState({
-    tenant_name: "",
-    landlord_name: "",
-    property_address: "",
-    lease_term: "",
-    rent_amount: "",
-    square_footage: "",
-    commencement_date: "",
-    expiration_date: "",
-    security_deposit: "",
-    use_clause: "",
-    tenant_improvements: "",
-    additional_terms: "",
-  });
+  // const [metadata, setMetadata] = useState({
+  //   tenant_name: "",
+  //   landlord_name: "",
+  //   property_address: "",
+  //   lease_term: "",
+  //   rent_amount: "",
+  //   square_footage: "",
+  //   commencement_date: "",
+  //   expiration_date: "",
+  //   security_deposit: "",
+  //   use_clause: "",
+  //   tenant_improvements: "",
+  //   additional_terms: "",
+  // });
 
   useEffect(() => {
     if (bottomRef.current) {

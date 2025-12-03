@@ -176,172 +176,189 @@ const DealForm = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
-        <h4 className="fw-bold m-0" style={{ color: "#217ae6" }}>
-          PORTFOLIO PULSE |
-        </h4>
-        <h4 className="fw-bold m-0">New Lease Deal - Deal Tracker</h4>
-      </div>
+    <div>
+      <div className="header-bg sticky-header px-3 py-2">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center gap-3">
+            <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
+              <h4
+                className="fw-bold m-0 portfolio-title"
+                style={{ color: "#217ae6" }}
+              >
+                PORTFOLIO PULSE |
+              </h4>
 
-      {loading && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 z-3">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+              <h4 className="fw-bold text-light m-0">
+                New Lease Deal - Deal Tracker
+              </h4>
+            </div>
           </div>
         </div>
-      )}
-
-      <div className="p-4 shadow-sm bg-white rounded border position-relative">
-        {saving && (
-          <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75 z-2">
-            <div className="text-center">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Saving...</span>
-              </div>
-              <p className="mt-2">Saving deal...</p>
+      </div>
+      <div className="container mt-4">
+        {loading && (
+          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 z-3">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div>
         )}
 
-        <h5 className="fw-bold pb-2 border-bottom mb-3">Deal Identification</h5>
-
-        <div className="row g-3">
-          {[
-            ["Tenant Name", "tenant_name", "text", true],
-            [
-              "Building Address of Interest",
-              "building_address_interest",
-              "text",
-              true,
-            ],
-            [
-              "Current Building Address",
-              "current_building_address",
-              "text",
-              false,
-            ],
-            ["Floor/Suite (Interest)", "floor_suite_interest", "text", false],
-            ["Floor/Suite (Current)", "floor_suite_current", "text", false],
-            ["Broker of Record", "broker_of_record", "text", false],
-            [
-              "Landlord Lead of Record",
-              "landlord_lead_of_record",
-              "text",
-              false,
-            ],
-            [
-              "Current Lease Expiration Date",
-              "current_lease_expiration",
-              "date",
-              false,
-            ],
-          ].map(([label, key, type, required], idx) => (
-            <div className="col-md-6 col-12" key={idx}>
-              <label className="fw-semibold">
-                {label} {required && <span className="text-danger">*</span>}
-              </label>
-              <input
-                type={type}
-                className="form-control"
-                value={
-                  type === "date" ? formatDateForInput(form[key]) : form[key]
-                }
-                onChange={(e) => {
-                  if (type === "date") {
-                    handleDateChange(key, e.target.value);
-                  } else {
-                    setForm({ ...form, [key]: e.target.value });
-                  }
-                }}
-                required={required}
-                disabled={saving}
-              />
-            </div>
-          ))}
-        </div>
-
-        <h5 className="fw-bold mt-4 pb-2 border-bottom">
-          Deal Process Tracking
-        </h5>
-
-        {stages.map((item, i) => (
-          <div key={i} className="p-1 px-2 mb-1 bg-light">
-            <div className="row g-3 align-items-center">
-              <div className="col-md-1 col-2 text-center">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  checked={item.is_completed}
-                  onChange={(e) =>
-                    handleStageChange(i, "is_completed", e.target.checked)
-                  }
-                  disabled={saving}
-                />
-              </div>
-              <div className="col-md-3 col-12">
-                <strong>{item.stage_name}</strong>
-                <div className="text-muted small">
-                  Order: {item.order_index}
+        <div className="p-4 shadow-sm bg-white rounded border position-relative">
+          {saving && (
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75 z-2">
+              <div className="text-center">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Saving...</span>
                 </div>
+                <p className="mt-2">Saving deal...</p>
               </div>
-              <div className="col-md-2 col-12">
+            </div>
+          )}
+
+          <h5 className="fw-bold pb-2 border-bottom mb-3">
+            Deal Identification
+          </h5>
+
+          <div className="row g-3">
+            {[
+              ["Tenant Name", "tenant_name", "text", true],
+              [
+                "Building Address of Interest",
+                "building_address_interest",
+                "text",
+                true,
+              ],
+              [
+                "Current Building Address",
+                "current_building_address",
+                "text",
+                false,
+              ],
+              ["Floor/Suite (Interest)", "floor_suite_interest", "text", false],
+              ["Floor/Suite (Current)", "floor_suite_current", "text", false],
+              ["Broker of Record", "broker_of_record", "text", false],
+              [
+                "Landlord Lead of Record",
+                "landlord_lead_of_record",
+                "text",
+                false,
+              ],
+              [
+                "Current Lease Expiration Date",
+                "current_lease_expiration",
+                "date",
+                false,
+              ],
+            ].map(([label, key, type, required], idx) => (
+              <div className="col-md-6 col-12" key={idx}>
+                <label className="fw-semibold">
+                  {label} {required && <span className="text-danger">*</span>}
+                </label>
                 <input
-                  type="date"
+                  type={type}
                   className="form-control"
                   value={
-                    item.completed_at ? item.completed_at.substring(0, 10) : ""
+                    type === "date" ? formatDateForInput(form[key]) : form[key]
                   }
-                  onChange={(e) =>
-                    handleStageChange(
-                      i,
-                      "completed_at",
-                      e.target.value
-                        ? new Date(e.target.value).toISOString()
-                        : null
-                    )
-                  }
-                  disabled={saving || !item.is_completed}
-                />
-              </div>
-              <div className="col-md-5 col-12">
-                <input
-                  className="form-control"
-                  placeholder="Notes..."
-                  value={item.notes}
-                  onChange={(e) =>
-                    handleStageChange(i, "notes", e.target.value)
-                  }
-                  rows="2"
+                  onChange={(e) => {
+                    if (type === "date") {
+                      handleDateChange(key, e.target.value);
+                    } else {
+                      setForm({ ...form, [key]: e.target.value });
+                    }
+                  }}
+                  required={required}
                   disabled={saving}
                 />
               </div>
-              <div className="col-md-1 text-primary text-end">Notes</div>
-            </div>
+            ))}
           </div>
-        ))}
 
-        <button
-          className="btn btn-outline-primary mt-3"
-          onClick={addLOIRound}
-          disabled={saving}
-        >
-          + Add Another LOI Round
-        </button>
+          <h5 className="fw-bold mt-4 pb-2 border-bottom">
+            Deal Process Tracking
+          </h5>
 
-        <div className="d-flex flex-wrap justify-content-end gap-3 mt-4 pt-3">
+          {stages.map((item, i) => (
+            <div key={i} className="p-1 px-2 mb-1 bg-light">
+              <div className="row g-3 align-items-center">
+                <div className="col-md-1 col-2 text-center">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={item.is_completed}
+                    onChange={(e) =>
+                      handleStageChange(i, "is_completed", e.target.checked)
+                    }
+                    disabled={saving}
+                  />
+                </div>
+                <div className="col-md-3 col-12">
+                  <strong>{item.stage_name}</strong>
+                  {/* <div className="text-muted small">
+                    Order: {item.order_index}
+                  </div> */}
+                </div>
+                <div className="col-md-2 col-12">
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={
+                      item.completed_at
+                        ? item.completed_at.substring(0, 10)
+                        : ""
+                    }
+                    onChange={(e) =>
+                      handleStageChange(
+                        i,
+                        "completed_at",
+                        e.target.value
+                          ? new Date(e.target.value).toISOString()
+                          : null
+                      )
+                    }
+                    disabled={saving || !item.is_completed}
+                  />
+                </div>
+                <div className="col-md-5 col-12">
+                  <input
+                    className="form-control"
+                    placeholder="Notes..."
+                    value={item.notes}
+                    onChange={(e) =>
+                      handleStageChange(i, "notes", e.target.value)
+                    }
+                    rows="2"
+                    disabled={saving}
+                  />
+                </div>
+                <div className="col-md-1 text-primary text-end">Notes</div>
+              </div>
+            </div>
+          ))}
+
           <button
-            className="btn text-light px-4"
-            style={{
-              backgroundColor: "#217ae6",
-              borderRadius: 5,
-              borderColor: "#217ae6",
-            }}
-            onClick={handleSubmit}
-            disabled={saving || loading}
+            className="btn btn-outline-primary mt-3"
+            onClick={addLOIRound}
+            disabled={saving}
           >
-            {saving ? "Saving..." : "Save Deal"}
+            + Add Another LOI Round
           </button>
+
+          <div className="d-flex flex-wrap justify-content-end gap-3 mt-4 pt-3">
+            <button
+              className="btn text-light px-4"
+              style={{
+                backgroundColor: "#217ae6",
+                borderRadius: 5,
+                borderColor: "#217ae6",
+              }}
+              onClick={handleSubmit}
+              disabled={saving || loading}
+            >
+              {saving ? "Saving..." : "Save Deal"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

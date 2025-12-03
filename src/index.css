@@ -588,3 +588,8 @@
     align-self: flex-end !important;
   }
 }
+
+.portfolio-title {
+  -webkit-text-stroke: 0.5px white;
+  color: #217ae6;
+}

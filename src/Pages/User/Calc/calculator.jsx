@@ -15,6 +15,10 @@ export const LeaseFinanceCalculator = () => {
   const [baseRentYear1, setBaseRentYear1] = useState("");
   const [annualEscalation, setAnnualEscalation] = useState("");
 
+  // Newly added fields
+  const [tiAllowance, setTiAllowance] = useState("");
+  const [discountRate, setDiscountRate] = useState("");
+
   // Commission Rates
   const [commissionList, setCommissionList] = useState([]);
 
@@ -62,7 +66,9 @@ export const LeaseFinanceCalculator = () => {
       !termYears ||
       !baseRentYear1 ||
       !annualEscalation ||
-      !freeRentMonths
+      !freeRentMonths ||
+      !tiAllowance ||
+      !discountRate
     ) {
       alert("Please fill all required fields!");
       return;
@@ -76,11 +82,16 @@ export const LeaseFinanceCalculator = () => {
     setLoading(true);
 
     const payload = {
-      gross_area_sf: Number(grossArea),
+      square_footage: Number(grossArea),
       total_term_years: Number(termYears),
-      base_rent_psf_year1: Number(baseRentYear1),
+      base_rent_psf: Number(baseRentYear1),
       annual_escalation_rate: Number(annualEscalation),
       free_rent_months: Number(freeRentMonths),
+
+      // USER INPUT NOW ADDED
+      ti_allowance_psf: Number(tiAllowance),
+      discount_rate: Number(discountRate),
+
       commission_rates: commissionList.map((item) => ({
         year: Number(item.year),
         rate: Number(item.rate),
@@ -129,7 +140,7 @@ export const LeaseFinanceCalculator = () => {
                     value={termYears}
                     onChange={(e) => {
                       setTermYears(e.target.value);
-                      setCommissionList([]); // reset on change
+                      setCommissionList([]);
                     }}
                   />
                 </div>
@@ -161,6 +172,27 @@ export const LeaseFinanceCalculator = () => {
                     type="number"
                     value={freeRentMonths}
                     onChange={(e) => setFreeRentMonths(e.target.value)}
+                  />
+                </div>
+
+                {/* NEW FIELDS */}
+                <div className="col-md-6 mb-3">
+                  <label>TI Allowance (PSF)</label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    value={tiAllowance}
+                    onChange={(e) => setTiAllowance(e.target.value)}
+                  />
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label>Discount Rate (%)</label>
+                  <input
+                    className="form-control"
+                    type="number"
+                    value={discountRate}
+                    onChange={(e) => setDiscountRate(e.target.value)}
                   />
                 </div>
               </div>
@@ -214,30 +246,55 @@ export const LeaseFinanceCalculator = () => {
               {result && (
                 <>
                   <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Commission Due:</strong>
-                    <h4>${result.total_commission_due}</h4>
+                    <strong>Net Effective Rent (PSF Annual):</strong>
+                    <h4>${result.net_effective_rent_psf_annual}</h4>
                   </div>
 
                   <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Commissionable Rent:</strong>
-                    <h4>${result.total_commissionable_rent}</h4>
+                    <strong>Total Commission Advanced:</strong>
+                    <h4>${result.total_commission_advanced}</h4>
                   </div>
 
                   <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Free Rent Value:</strong>
-                    <h4>${result.total_free_rent_value}</h4>
+                    <strong>Total Commission Simple:</strong>
+                    <h4>${result.total_commission_simple}</h4>
+                  </div>
+
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total TI Cost:</strong>
+                    <h4>${result.total_ti_cost}</h4>
+                  </div>
+
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Free Rent Cost (Nominal):</strong>
+                    <h4>${result.total_free_rent_cost_nominal}</h4>
+                  </div>
+
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Gross Rent PV:</strong>
+                    <h4>${result.summary.total_gross_rent_pv}</h4>
+                  </div>
+
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Total Concessions PV:</strong>
+                    <h4>${result.summary.total_concessions_pv}</h4>
+                  </div>
+
+                  <div className="p-2 bg-light rounded mb-2">
+                    <strong>Net Present Value:</strong>
+                    <h4>${result.summary.net_present_value}</h4>
                   </div>
 
                   <Accordion defaultActiveKey="0" className="mt-3">
-                    {result.annual_breakdown?.map((year, idx) => (
+                    {result.yearly_breakdown?.map((year, idx) => (
                       <Accordion.Item eventKey={String(idx)} key={idx}>
                         <Accordion.Header>
-                          Year {year.year} — Rent ${year.face_rent_psf}
+                          Year {year.year} — Rent ${year.rent_psf}
                         </Accordion.Header>
+
                         <Accordion.Body>
                           <p>
-                            <strong>Gross Annual Rent:</strong> $
-                            {year.gross_annual_rent}
+                            <strong>Gross Rent:</strong> ${year.gross_rent}
                           </p>
                           <p>
                             <strong>Free Rent This Year:</strong> $
