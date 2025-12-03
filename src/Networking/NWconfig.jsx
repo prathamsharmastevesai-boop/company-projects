@@ -116,6 +116,8 @@ export const AddnewEmailTemplate = "/mail_draft/templates/create";
 export const TenentName = "/mail_draft/tenants/list";
 export const EmailDraftingTemlate = "/mail_draft/templates/list";
 export const GenerateTemplate = "/mail_draft/generate";
+export const updateMailTemplate = "/mail_draft/templates/";
+export const Deletetemplatemplate = "/mail_draft/templates/";
 
 //SUPER ADMIN
 export const inviteAdmin = "/auth/invite-admin";
@@ -124,3 +126,34 @@ export const listAdmin = "/invite_user/list";
 //Tours
 export const createTours = "/tours/";
 export const getTours = "/tours/";
+
+//DistilledExpenseTracker
+export const distilledExpenseTrackerEndpoint = "/det_expense/submit";
+export const distilledExpenseTrackerlistEndPoint = "/det_expense/submissions";
+
+//Calc
+export const calcEndpoint = "/calc/lease_finance";
+
+//Forum
+export const threadData = "/forum/threads";
+export const createThreadEndpoint = "/forum/threads";
+export const createThoughtEndpoint = "/forum/threads/";
+export const ThreadhistoryEndpoint = "/forum/threads/";
+export const ToggleForum = "/forum/forum-toggle";
+
+//Notes
+export const notes = "/notes/";
+export const notesdata = "/notes/";
+export const notedata = "/notes/";
+export const noteUpdate = "/notes/";
+export const notedelete = "/notes/";
+
+//SpaceInquiry
+export const ingestionconfigs = "/api/client-ingestion-configs/";
+
+//Deal Tracker
+
+export const dealformEndpoint = "/deals/";
+export const dealList = "/deals/";
+export const getFormEndpoint = "/deals/deal_id/";
+export const deleteDeal = "/deals/";

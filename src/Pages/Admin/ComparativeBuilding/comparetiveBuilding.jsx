@@ -8,8 +8,13 @@ import {
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
+import { useLocation } from "react-router-dom";
 
 export const ComparativeBuildingData = () => {
+  const location = useLocation();
+
+  const buildingId = location?.state?.office?.buildingId;
+
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -142,14 +147,13 @@ export const ComparativeBuildingData = () => {
       await fetchData();
     } catch (err) {
       console.error("Delete failed:", err);
-      toast.error("Delete failed!");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container p-4">
+    <div className="container-fuild p-3">
       <h5 className="fw-bold">Comparative Building Data</h5>
       <p className="text-muted">
         Upload and manage documents for Building Information

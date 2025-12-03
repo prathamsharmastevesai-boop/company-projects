@@ -35,7 +35,6 @@ export const UserChat = () => {
 
   const isLoading = isLoadingSession || isLoadingHistory;
 
-  // ✅ AUTO-CREATE SESSION IF NONE EXISTS
   useEffect(() => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
@@ -50,7 +49,6 @@ export const UserChat = () => {
           const lastSession = categorySessions[categorySessions.length - 1];
           setSessionId(lastSession.session_id);
         } else {
-          // ⭐ Auto-create new session
           const newId = uuidv4();
           setSessionId(newId);
           setMessages([]);
@@ -58,7 +56,6 @@ export const UserChat = () => {
       } catch (err) {
         console.error("Failed to fetch session list:", err);
 
-        // ⭐ Auto-create session even on error
         const fallbackSession = uuidv4();
         setSessionId(fallbackSession);
         setMessages([]);
@@ -74,7 +71,6 @@ export const UserChat = () => {
     }
   }, [type, sessionId, dispatch]);
 
-  // FETCH CHAT HISTORY
   useEffect(() => {
     const fetchChatHistory = async () => {
       if (!sessionId) {
@@ -107,13 +103,11 @@ export const UserChat = () => {
     if (sessionId) fetchChatHistory();
   }, [sessionId, dispatch]);
 
-  // AUTO SCROLL
   useEffect(() => {
     if (chatRef.current)
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [messages]);
 
-  // SPEECH RECORDING
   const startRecording = async () => {
     if (
       !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
@@ -158,7 +152,6 @@ export const UserChat = () => {
     }
   };
 
-  // TEXT-TO-SPEECH
   const toggleSpeak = (index, text) => {
     if (speakingIndex === index) {
       window.speechSynthesis.cancel();
@@ -173,7 +166,6 @@ export const UserChat = () => {
     }
   };
 
-  // SEND MESSAGE
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
 
@@ -219,7 +211,6 @@ export const UserChat = () => {
     }
   };
 
-  // NEW SESSION BUTTON
   const handleNewSession = () => {
     const newId = uuidv4();
     setSessionId(newId);

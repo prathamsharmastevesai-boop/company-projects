@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
 
 export const LeaseInfomation = () => {
-
   const dispatch = useDispatch();
   const location = useLocation();
   const editFileRef = useRef(null);
@@ -35,7 +34,9 @@ export const LeaseInfomation = () => {
 
       if (Array.isArray(res?.files)) {
         const filtered = res.files.filter((f) => {
-          return f.category?.toLowerCase().includes(initialBuildings.type.toLowerCase());
+          return f.category
+            ?.toLowerCase()
+            .includes(initialBuildings.type.toLowerCase());
         });
 
         setDocs(
@@ -65,7 +66,7 @@ export const LeaseInfomation = () => {
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-           "text/csv",
+        "text/csv",
       ].includes(file.type)
     ) {
       toast.error("Only PDF, DOC,CSV, DOCX, XLS, XLSX files are allowed");
@@ -83,7 +84,7 @@ export const LeaseInfomation = () => {
         UploadDocSubmit({
           files: [file],
           buildingId: initialBuildings.Building_id,
-          category: initialBuildings.type
+          category: initialBuildings.type,
         })
       ).unwrap();
 
@@ -129,7 +130,7 @@ export const LeaseInfomation = () => {
           file_id: editingFile.file_id,
           new_file: newFile,
           building_id: initialBuildings.Building_id,
-          category: initialBuildings.type
+          category: initialBuildings.type,
         })
       ).unwrap();
 
@@ -151,7 +152,7 @@ export const LeaseInfomation = () => {
         DeleteDocSubmit({
           building_id: initialBuildings.Building_id,
           file_id: file.file_id,
-          category: initialBuildings.type
+          category: initialBuildings.type,
         })
       ).unwrap();
 
@@ -164,23 +165,28 @@ export const LeaseInfomation = () => {
   };
 
   return (
-    <div className="container p-4">
+    <div className="container-fuild p-3">
       {initialBuildings.type === "Lease" && (
         <>
           <h5 className="fw-bold">📂 Lease Documents</h5>
-          <p className="text-muted">Upload and manage lease-related documents</p>
+          <p className="text-muted">
+            Upload and manage lease-related documents
+          </p>
         </>
       )}
       {initialBuildings.type === "LOI" && (
         <>
           <h5 className="fw-bold">📂 Letter of Intent Documents</h5>
-          <p className="text-muted">Upload and manage Letter of Intent-related documents</p>
+          <p className="text-muted">
+            Upload and manage Letter of Intent-related documents
+          </p>
         </>
       )}
 
       <div
-        className={`border border-2 rounded-3 p-5 text-center mb-4 ${isDragging ? "border-primary bg-light" : "border-dashed bg-light"
-          }`}
+        className={`border border-2 rounded-3 p-5 text-center mb-4 ${
+          isDragging ? "border-primary bg-light" : "border-dashed bg-light"
+        }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -194,7 +200,7 @@ export const LeaseInfomation = () => {
           <i className="bi bi-file-earmark-arrow-up me-1"></i> Choose Files
           <input
             type="file"
-           accept=".pdf,.csv,.docx,.xlsx"
+            accept=".pdf,.csv,.docx,.xlsx"
             onChange={handleFileChange}
             hidden
           />

@@ -140,7 +140,7 @@ export const PortfolioVoice = () => {
   }, 0);
 
   return (
-    <div className="container p-3 p-md-4">
+    <div className="container-fuild p-3 ">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <div>
           <h4 className="fw-bold mb-1">Portfolio Voice</h4>

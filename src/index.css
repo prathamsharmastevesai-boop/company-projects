@@ -413,6 +413,7 @@
   .main-wrapper .chat-modify-btn {
     display: none;
     position: fixed;
+    z-index: 1000;
     top: 5px;
     left: 5px;
     background-color: #000;
@@ -555,4 +556,35 @@
 }
 .small-card:hover {
   transform: scale(0.98);
+}
+
+.calc-height {
+  height: 100vh;
+  overflow-y: scroll;
+}
+
+/* Make drag-drop box responsive */
+.doc-drop-box {
+  min-height: 180px;
+}
+
+/* Mobile-friendly card & list */
+@media (max-width: 768px) {
+  .doc-container {
+    padding: 10px !important;
+  }
+
+  .doc-drop-box {
+    padding: 20px !important;
+  }
+
+  .doc-list-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+
+  .doc-actions {
+    align-self: flex-end !important;
+  }
 }

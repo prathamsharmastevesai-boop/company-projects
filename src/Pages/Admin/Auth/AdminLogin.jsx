@@ -62,7 +62,7 @@ export const AdminLogin = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "admin" })
       ).unwrap();
-      console.log(res, "resres admin login");
+      // console.log(res, "resres admin login");
 
       const { role, access_token } = res;
 
@@ -73,14 +73,14 @@ export const AdminLogin = () => {
         );
 
         if (access_token) {
-          console.log("got token");
+          // console.log("got token");
           sessionStorage.setItem("access_token", access_token);
         }
 
         if (role === "admin") {
           toast.success("Admin login successful");
           navigate("/AdminDashboard");
-          console.log("admin login page");
+          // console.log("admin login page");
         } else if (role === "superuser") {
           toast.success("Superuser login successful");
           navigate("/AdminManagement");

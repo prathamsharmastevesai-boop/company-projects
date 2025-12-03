@@ -98,7 +98,6 @@ export const UserProfile = () => {
     formData.append("number", number);
     if (photoFile) formData.append("photo", photoFile);
     if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
-    console.log(formData, "formData in comp");
 
     try {
       await dispatch(ProfileUpdateApi(formData));
@@ -132,7 +131,7 @@ export const UserProfile = () => {
         <p className="text-light mb-0">Here's a summary of your profile.</p>
       </div>
 
-      <div className="container mt-2 px-4">
+      <div className="container-fuild p-3">
         {loadingProfile ? (
           <div className="text-center ">
             <RAGLoader />

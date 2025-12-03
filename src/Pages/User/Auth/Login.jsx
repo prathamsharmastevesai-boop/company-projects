@@ -73,7 +73,7 @@ export const Login = () => {
         );
 
         if (access_token) {
-          console.log("got token");
+          // console.log("got token");
           sessionStorage.setItem("access_token", access_token);
         }
 

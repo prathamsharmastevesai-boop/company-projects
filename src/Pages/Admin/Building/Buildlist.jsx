@@ -27,7 +27,8 @@ export const ListBuilding = () => {
   useEffect(() => {
     const fetchBuildings = async () => {
       setLoading(true);
-      await dispatch(ListBuildingSubmit());
+      const category = "Lease&Loi";
+      await dispatch(ListBuildingSubmit(category));
       setLoading(false);
     };
     fetchBuildings();
@@ -54,13 +55,17 @@ export const ListBuilding = () => {
   const saveEdit = async (buildingId) => {
     if (!editFieldValue.trim()) return;
     setLoading(true);
+
     try {
       const payload = {
         building_id: buildingId,
         address: editFieldValue,
       };
+
       await dispatch(UpdateBuildingSubmit(payload)).unwrap();
-      await dispatch(ListBuildingSubmit());
+
+      await dispatch(ListBuildingSubmit("Lease&Loi"));
+
       setEditBuildingId(null);
     } catch (error) {
       console.error("Error updating building:", error);
@@ -73,7 +78,7 @@ export const ListBuilding = () => {
     try {
       setDeleteLoading(true);
       await dispatch(DeleteBuilding(buildingId));
-      await dispatch(ListBuildingSubmit());
+      await dispatch(ListBuildingSubmit("Lease&Loi"));
     } catch (error) {
       console.error("Delete failed:", error);
     } finally {
@@ -84,11 +89,20 @@ export const ListBuilding = () => {
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     if (!address.trim()) return;
+
     setLoading(true);
     try {
-      const buildingData = [{ building_name: "", address, year: "" }];
-      await dispatch(CreateBuildingSubmit(buildingData)).unwrap();
-      await dispatch(ListBuildingSubmit());
+      const payload = [
+        {
+          category: "Lease&Loi",
+          address: address,
+        },
+      ];
+
+      await dispatch(CreateBuildingSubmit(payload)).unwrap();
+
+      await dispatch(ListBuildingSubmit("Lease&Loi"));
+
       setAddress("");
     } catch (error) {
       console.error("Error submitting building:", error);
@@ -182,7 +196,7 @@ export const ListBuilding = () => {
   );
 
   return (
-    <div className="container py-4" style={{ position: "relative" }}>
+    <div className="container-fuild p-3" style={{ position: "relative" }}>
       {deleteLoading && (
         <div className="upload-overlay">
           <div className="text-center">

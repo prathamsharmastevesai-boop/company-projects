@@ -18,7 +18,8 @@ export const Dashboard = () => {
   const { BuildingList, loading } = useSelector((state) => state.BuildingSlice);
 
   useEffect(() => {
-    dispatch(ListBuildingSubmit());
+    const category = "Lease&Loi";
+    dispatch(ListBuildingSubmit(category));
   }, [dispatch]);
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export const Dashboard = () => {
         </div>
       </section>
 
-      <div className="container p-4">
+      <div className="container-fuild p-3">
         <div className="row align-items-center my-4">
           <div className="col-md-8">
             <div className="d-flex align-items-center mb-2">
