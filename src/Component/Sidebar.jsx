@@ -280,7 +280,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                <li
+                {/* <li
                   className={`nav-item ${
                     isActive("/space-inquiry") ? "active" : ""
                   }`}
@@ -293,7 +293,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     <i className="bi-journal-text me-1" />
                     {!collapsed && "Space Inquiry"}
                   </span>
-                </li>
+                </li> */}
 
                 {!collapsed && (
                   <li
