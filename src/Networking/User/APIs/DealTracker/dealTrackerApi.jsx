@@ -32,7 +32,7 @@ export const getDealTracker = createAsyncThunk(
   "getDealTracker",
   async ({ dealId }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/deals/${dealId}/`);
+      const response = await axiosInstance.get(`/deals/${dealId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
