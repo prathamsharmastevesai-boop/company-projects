@@ -77,9 +77,9 @@ export const AdminFeedback = () => {
       >
         {feedbacks.length === 0 ? (
           <div className="text-center py-5">
-            <h5>No feedback found</h5>
+            <h5>Not found</h5>
             <p className="text-muted">
-              Users have not submitted any feedback yet.
+              Users have not submitted any Collaboration yet.
             </p>
           </div>
         ) : (
@@ -174,14 +174,13 @@ export const AdminFeedback = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* ---------- DELETE MODAL ---------- */}
       <Modal
         show={!!deleteId}
         centered
         onHide={() => !deleteLoading && setDeleteId(null)}
       >
         <Modal.Header closeButton={!deleteLoading}>
-          <Modal.Title>Delete Feedback?</Modal.Title>
+          <Modal.Title>Delete Collaboration?</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -191,7 +190,7 @@ export const AdminFeedback = () => {
               <p className="mt-2">Deleting...</p>
             </div>
           ) : (
-            "Are you sure you want to permanently delete this feedback?"
+            "Are you sure you want to permanently delete this Collaboration?"
           )}
         </Modal.Body>
 
