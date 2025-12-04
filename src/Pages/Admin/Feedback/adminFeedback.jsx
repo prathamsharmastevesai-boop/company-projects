@@ -17,7 +17,6 @@ export const AdminFeedback = () => {
   const [viewModal, setViewModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
 
-  // Fetch Data
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
@@ -91,7 +90,7 @@ export const AdminFeedback = () => {
                   <th>User Name</th>
                   <th>User Email</th>
                   <th>Category</th>
-                  <th>Feedback</th>
+
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
@@ -103,11 +102,7 @@ export const AdminFeedback = () => {
                     <td>{fb.user_name || "N/A"}</td>
                     <td>{fb.user_email || "N/A"}</td>
                     <td>{fb.category || "N/A"}</td>
-                    <td>
-                      {fb.feedback?.length > 40
-                        ? fb.feedback.substring(0, 40) + "..."
-                        : fb.feedback}
-                    </td>
+
                     <td>
                       {new Date(fb.created_at).toLocaleDateString("en-US", {
                         month: "2-digit",
@@ -149,7 +144,6 @@ export const AdminFeedback = () => {
         )}
       </Container>
 
-      {/* ---------- VIEW MODAL ---------- */}
       <Modal
         show={viewModal}
         onHide={() => setViewModal(false)}
@@ -157,14 +151,16 @@ export const AdminFeedback = () => {
         size="md"
       >
         <Modal.Header closeButton>
-          <Modal.Title className="fw-semibold">Feedback Details</Modal.Title>
+          <Modal.Title className="fw-semibold">
+            Collaboration Details
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           {selectedFeedback && (
             <>
               <p>
-                <strong>Feedback:</strong>
+                <strong>Collaboration:</strong>
               </p>
               <p className="text-muted">{selectedFeedback.feedback}</p>
             </>

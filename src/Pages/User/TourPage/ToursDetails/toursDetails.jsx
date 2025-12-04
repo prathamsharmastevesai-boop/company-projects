@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Card, Accordion, Row, Col, Modal, Button } from "react-bootstrap";
+import { Container, Modal, Button, Table } from "react-bootstrap";
 import {
   DeleteToursSubmit,
   GeToursList,
@@ -10,16 +10,19 @@ import RAGLoader from "../../../../Component/Loader";
 
 export const ToursDetails = () => {
   const dispatch = useDispatch();
+
   const [toursList, setToursList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedTourId, setSelectedTourId] = useState(null);
+  const [viewModal, setViewModal] = useState(false);
+  const [selectedTour, setSelectedTour] = useState(null);
 
+  // Fetch tours
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
       try {
         const result = await dispatch(GeToursList()).unwrap();
         setToursList(result || []);
@@ -29,138 +32,198 @@ export const ToursDetails = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [dispatch]);
 
+  // Open modal to view notes
+  const openViewModal = (tour) => {
+    setSelectedTour(tour);
+    setViewModal(true);
+  };
+
+  // Delete modal
   const openDeleteModal = (id) => {
-    setSelectedTourId(id);
-    setShowModal(true);
+    setDeleteId(id);
   };
 
   const handleDelete = async () => {
     setDeleteLoading(true);
 
     try {
-      await dispatch(DeleteToursSubmit(selectedTourId)).unwrap();
-
-      setToursList((prev) => prev.filter((item) => item.id !== selectedTourId));
+      await dispatch(DeleteToursSubmit(deleteId)).unwrap();
+      setToursList((prev) => prev.filter((item) => item.id !== deleteId));
       toast.success("Tour deleted successfully");
     } catch (err) {
       toast.error("Error deleting tour");
     } finally {
       setDeleteLoading(false);
-      setShowModal(false);
-      setSelectedTourId(null);
+      setDeleteId(null);
     }
   };
 
+  // Loader
+  if (loading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "50vh" }}
+      >
+        <RAGLoader />
+      </div>
+    );
+  }
+
   return (
-    <div className="m-3">
-      {loading && (
-        <div className="text-center my-5">
-          <RAGLoader />
-        </div>
-      )}
+    <div>
+      <Container
+        fluid
+        className="p-4 shadow-sm"
+        style={{
+          background: "#f5f7fa",
+          borderRadius: "8px",
+          minHeight: "100vh",
+        }}
+      >
+        {toursList.length === 0 ? (
+          <div className="text-center py-5">
+            <h5>No tours found</h5>
+            <p className="text-muted">No tour activity available.</p>
+          </div>
+        ) : (
+          <div className="table-responsive mt-3">
+            <Table className="align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>Building</th>
+                  <th>User Email</th>
+                  <th>Date</th>
+                  <th>Floor</th>
+                  <th>Tenant</th>
+                  <th>Broker</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-      {!loading && toursList.length === 0 && (
-        <p className="text-center mt-4">No tours found</p>
-      )}
+              <tbody>
+                {toursList.map((tour) => (
+                  <tr key={tour.id}>
+                    <td>{tour.building || "N/A"}</td>
+                    <td>{tour.user_email || "N/A"}</td>
+                    <td>{tour.date?.split("T")[0] || "N/A"}</td>
+                    <td>{tour.floor_suite || "N/A"}</td>
+                    <td>{tour.tenant || "N/A"}</td>
+                    <td>{tour.broker || "N/A"}</td>
 
-      {!loading && (
-        <Row>
-          {toursList.map((item) => (
-            <Col md={4} sm={6} xs={12} key={item.id}>
-              <Card className="mb-3 shadow-sm small-card">
-                <Card.Body className="p-2">
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div>
-                      <h6 className="fw-bold mb-0 text-dark">
-                        {item.building}
-                      </h6>
-                      <h6>{item.user_email}</h6>
-                    </div>
+                    <td>
+                      <button
+                        className="btn btn-sm text-white me-2"
+                        style={{
+                          backgroundColor: "#217ae6",
+                          borderColor: "#217ae6",
+                          padding: "4px 12px",
+                        }}
+                        onClick={() => openViewModal(tour)}
+                      >
+                        View Notes
+                      </button>
 
-                    <button
-                      className="btn btn-sm btn-outline-danger p-1"
-                      onClick={() => openDeleteModal(item.id)}
-                      style={{ borderRadius: "50%" }}
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
+                      <button
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{ padding: "4px 12px" }}
+                        onClick={() => openDeleteModal(tour.id)}
+                        disabled={deleteLoading && deleteId === tour.id}
+                      >
+                        {deleteLoading && deleteId === tour.id ? (
+                          <span className="spinner-border spinner-border-sm"></span>
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </Container>
 
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <div className="mb-1">
-                        <small>
-                          <strong>Date:</strong> {item.date?.split("T")[0]}
-                        </small>
-                      </div>
-                      <div className="mb-1">
-                        <small>
-                          <strong>Floor:</strong> {item.floor_suite}
-                        </small>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="mb-1">
-                        <small>
-                          <strong>Tenant:</strong> {item.tenant}
-                        </small>
-                      </div>
-                      <div className="mb-1">
-                        <small>
-                          <strong>Broker:</strong> {item.broker}
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Accordion className="mt-2">
-                    <Accordion.Item eventKey="0">
-                      <Accordion.Header>
-                        <small>Notes</small>
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        <small>
-                          {item.notes ? item.notes : "No notes available"}
-                        </small>
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
-
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      {/* ---------- VIEW DETAILS MODAL ---------- */}
+      <Modal
+        show={viewModal}
+        onHide={() => setViewModal(false)}
+        centered
+        size="md"
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete</Modal.Title>
+          <Modal.Title className="fw-semibold">Tour Notes</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this tour?</Modal.Body>
-        <Modal.Footer>
-          {deleteLoading ? (
-            <Button variant="danger" disabled>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-              ></span>
-              Deleting...
-            </Button>
-          ) : (
+
+        <Modal.Body>
+          {selectedTour && (
             <>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Cancel
-              </Button>
-              <Button variant="danger" onClick={handleDelete}>
-                Yes, Delete
-              </Button>
+              <p>
+                <strong>Building:</strong> {selectedTour.building}
+              </p>
+              <p>
+                <strong>Date:</strong> {selectedTour?.date?.split("T")[0]}
+              </p>
+
+              <hr />
+
+              <p>
+                <strong>Notes:</strong>
+              </p>
+              <p className="text-muted">
+                {selectedTour.notes || "No notes available"}
+              </p>
             </>
           )}
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setViewModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* ---------- DELETE CONFIRM MODAL ---------- */}
+      <Modal
+        show={!!deleteId}
+        centered
+        onHide={() => !deleteLoading && setDeleteId(null)}
+      >
+        <Modal.Header closeButton={!deleteLoading}>
+          <Modal.Title>Delete Tour?</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          {deleteLoading ? (
+            <div className="text-center py-2">
+              <div className="spinner-border text-danger"></div>
+              <p className="mt-2">Deleting...</p>
+            </div>
+          ) : (
+            "Are you sure you want to permanently delete this tour?"
+          )}
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setDeleteId(null)}
+            disabled={deleteLoading}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            disabled={deleteLoading}
+          >
+            {deleteLoading ? "Deleting..." : "Yes, Delete"}
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
