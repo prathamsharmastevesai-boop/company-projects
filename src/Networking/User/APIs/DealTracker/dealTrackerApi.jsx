@@ -44,7 +44,7 @@ export const updateDealTracker = createAsyncThunk(
   "updateDealTracker",
   async ({ dealId, data }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`/deals/${dealId}/`, data);
+      const response = await axiosInstance.put(`/deals/${dealId}`, data);
       toast.success(response.data?.message || "Deal updated successfully!");
       return response.data;
     } catch (error) {
