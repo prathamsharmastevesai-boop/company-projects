@@ -139,19 +139,24 @@ const DealList = () => {
         className="container p-4 shadow-sm"
         style={{ background: "#f5f7fa", borderRadius: "8px" }}
       >
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
+        <div className="mb-4">
+          {/* Top Section (Title + Subtitle) */}
+          <div className="text-start mb-3">
             <h4 className="fw-bold mb-0">View Deal Tracker</h4>
-            <small className="text-muted">(Main List View)</small>
+            <small className="text-muted d-block">(Main List View)</small>
           </div>
-          <button
-            className="btn text-white px-3"
-            style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
-            onClick={handleCreateForm}
-          >
-            Create New Deal
-          </button>
+
+          <div className="text-start">
+            <button
+              className="btn text-white w-100 px-3 py-2"
+              style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
+              onClick={handleCreateForm}
+            >
+              Create New Deal
+            </button>
+          </div>
         </div>
+
         <div className="alert alert-danger" role="alert">
           <strong>Error:</strong> {error}
           <div className="mt-2">

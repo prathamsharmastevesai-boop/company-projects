@@ -24,6 +24,8 @@ export const Aianalytics = () => {
   const [activeTab, setActiveTab] = useState("AI Insights");
   const [days, setDays] = useState(7);
   const [dashboardData, setDashboardData] = useState(null);
+  const [Inslight, setInslights] = useState([]);
+  console.log(Inslight, "Inslight");
 
   const [recentQuestions, setRecentQuestions] = useState(null);
   const [usageData, setUsageData] = useState(null);
@@ -35,25 +37,11 @@ export const Aianalytics = () => {
     try {
       const res = await dispatch(getAnalyticApi({ days })).unwrap();
 
-      let insights = [];
-      if (res?.ai_insights?.length > 0) {
-        try {
-          const raw = res.ai_insights[0].insight
-            .replace(/```json|```/g, "")
-            .trim();
-          insights = JSON.parse(raw);
-        } catch (err) {
-          console.error("Failed to parse AI insights:", err);
-          insights = [res.ai_insights[0].insight];
-        }
-      }
-
       const formattedData = {
         chatSessions: res?.chat_sessions,
         activeUsers: res?.active_users,
         totalLogins: res?.total_logins,
         platformUsers: res?.platform_users,
-        aiInsights: insights,
       };
 
       setDashboardData(formattedData);
@@ -66,28 +54,9 @@ export const Aianalytics = () => {
   const AIInslights = async () => {
     try {
       const res = await dispatch(getInslightApi()).unwrap();
+      console.log(res, "res");
 
-      let insights = [];
-      if (res?.insight) {
-        const rawInsight = res.insight.replace(/```(json)?/g, "").trim();
-
-        try {
-          if (rawInsight.startsWith("{") || rawInsight.startsWith("[")) {
-            const parsed = JSON.parse(rawInsight);
-            insights = Array.isArray(parsed) ? parsed : [parsed];
-          } else {
-            insights = [rawInsight];
-          }
-        } catch (err) {
-          console.error("Failed to parse AI insights:", err);
-          insights = [rawInsight];
-        }
-      }
-
-      setDashboardData((prev) => ({
-        ...prev,
-        aiInsights: insights,
-      }));
+      setInslights(res);
     } catch (error) {
       console.error("Failed to fetch AI insights:", error);
     }
@@ -282,17 +251,22 @@ export const Aianalytics = () => {
         {activeTab === "AI Insights" && (
           <>
             <h6 className="fw-bold mb-3">AI-Generated Insights</h6>
-            {dashboardData?.aiInsights?.length > 0 ? (
+            {Inslight.length > 0 ? (
               <div className="list-group">
-                {dashboardData?.aiInsights.map((insight, idx) => (
-                  <div key={idx} className="list-group-item">
-                    <ReactMarkdown>
-                      {typeof insight === "string"
-                        ? insight
-                        : JSON.stringify(insight, null, 2)}
-                    </ReactMarkdown>
-                  </div>
-                ))}
+                <div className="list-group">
+                  {Inslight.map((insight, idx) => (
+                    <div key={idx} className="list-group-item">
+                      <ReactMarkdown>
+                        {typeof insight === "string"
+                          ? insight.replace(/"/g, "")
+                          : JSON.stringify(insight.insight, null, 2).replace(
+                              /"/g,
+                              ""
+                            )}
+                      </ReactMarkdown>
+                    </div>
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="text-center text-muted">

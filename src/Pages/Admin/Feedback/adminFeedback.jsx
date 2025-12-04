@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getadminfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
-import {
-  Card,
-  Row,
-  Col,
-  Container,
-  Modal,
-  Button,
-  Accordion,
-} from "react-bootstrap";
+import { Container, Modal, Button, Table } from "react-bootstrap";
 import RAGLoader from "../../../Component/Loader";
 import { DeleteFeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
 
 export const AdminFeedback = () => {
   const dispatch = useDispatch();
+
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
+  const [viewModal, setViewModal] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
 
+  // Fetch Data
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
@@ -36,22 +32,25 @@ export const AdminFeedback = () => {
     fetchFeedback();
   }, [dispatch]);
 
+  const openViewModal = (feedback) => {
+    setSelectedFeedback(feedback);
+    setViewModal(true);
+  };
+
   const openDeleteModal = (id) => {
-    setSelectedId(id);
-    setShowModal(true);
+    setDeleteId(id);
   };
 
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await dispatch(DeleteFeedbackSubmit(selectedId)).unwrap();
-      setFeedbacks((prev) => prev.filter((item) => item.id !== selectedId));
+      await dispatch(DeleteFeedbackSubmit(deleteId)).unwrap();
+      setFeedbacks((prev) => prev.filter((item) => item.id !== deleteId));
     } catch (err) {
-      console.error("Error deleting:", err);
+      console.error("Delete error:", err);
     } finally {
       setDeleteLoading(false);
-      setShowModal(false);
-      setSelectedId(null);
+      setDeleteId(null);
     }
   };
 
@@ -67,109 +66,147 @@ export const AdminFeedback = () => {
   }
 
   return (
-    <Container fluid className="py-4 px-3">
-      <h2 className="mb-4 text-start fw-bold" style={{ color: "#333" }}>
-        Information Collaboration
-      </h2>
-
-      {feedbacks.length === 0 ? (
-        <p className="text-center text-muted fs-5">No feedback available.</p>
-      ) : (
-        <Row className="g-4">
-          {feedbacks.map((fb) => (
-            <Col key={fb.id} xs={12} sm={12} md={6} lg={4} xl={3}>
-              <Card
-                className="border-0 shadow-sm"
-                style={{
-                  borderRadius: "18px",
-                  background: "rgba(255,255,255,0.85)",
-                  backdropFilter: "blur(8px)",
-                  transition: "transform .25s ease, box-shadow .25s ease",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "translateY(-6px)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "translateY(0px)")
-                }
-              >
-                <Card.Body className="p-3">
-                  <div className="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                      <h6 className="fw-semibold mb-1 text-dark">
-                        {fb.user_name}
-                      </h6>
-                      <small className="text-muted">{fb.category}</small>
-                    </div>
-
-                    <button
-                      className="btn btn-light border-0 p-1 shadow-sm"
-                      style={{
-                        borderRadius: "50%",
-                        width: 32,
-                        height: 32,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      onClick={() => openDeleteModal(fb.id)}
-                    >
-                      <i className="bi bi-trash text-danger"></i>
-                    </button>
-                  </div>
-
-                  <Accordion>
-                    <Accordion.Item
-                      eventKey="0"
-                      className="border-0 shadow-sm"
-                      style={{ borderRadius: "12px" }}
-                    >
-                      <Accordion.Header>view collaboration</Accordion.Header>
-
-                      <Accordion.Body
-                        className="text-secondary"
-                        style={{ lineHeight: 1.5 }}
-                      >
-                        {fb.feedback}
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
-
-      <Modal
-        show={showModal}
-        onHide={() => !deleteLoading && setShowModal(false)}
-        centered
+    <div>
+      <Container
+        fluid
+        className="p-4 shadow-sm"
+        style={{
+          background: "#f5f7fa",
+          borderRadius: "8px",
+          minHeight: "100vh",
+        }}
       >
-        <Modal.Header closeButton={!deleteLoading}>
-          <Modal.Title className="fw-semibold">Delete Feedback</Modal.Title>
+        {feedbacks.length === 0 ? (
+          <div className="text-center py-5">
+            <h5>No feedback found</h5>
+            <p className="text-muted">
+              Users have not submitted any feedback yet.
+            </p>
+          </div>
+        ) : (
+          <div className="table-responsive mt-3">
+            <Table className="align-middle">
+              <thead className="table-light">
+                <tr>
+                  <th>User Name</th>
+                  <th>User Email</th>
+                  <th>Category</th>
+                  <th>Feedback</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {feedbacks.map((fb) => (
+                  <tr key={fb.id}>
+                    <td>{fb.user_name || "N/A"}</td>
+                    <td>{fb.user_email || "N/A"}</td>
+                    <td>{fb.category || "N/A"}</td>
+                    <td>
+                      {fb.feedback?.length > 40
+                        ? fb.feedback.substring(0, 40) + "..."
+                        : fb.feedback}
+                    </td>
+                    <td>
+                      {new Date(fb.created_at).toLocaleDateString("en-US", {
+                        month: "2-digit",
+                        day: "2-digit",
+                        year: "2-digit",
+                      })}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm text-white me-2"
+                        style={{
+                          backgroundColor: "#217ae6",
+                          borderColor: "#217ae6",
+                          padding: "4px 12px",
+                        }}
+                        onClick={() => openViewModal(fb)}
+                      >
+                        View
+                      </button>
+
+                      <button
+                        className="btn btn-sm btn-outline-secondary"
+                        style={{ padding: "4px 12px" }}
+                        onClick={() => openDeleteModal(fb.id)}
+                        disabled={deleteLoading && deleteId === fb.id}
+                      >
+                        {deleteLoading && deleteId === fb.id ? (
+                          <span className="spinner-border spinner-border-sm"></span>
+                        ) : (
+                          <i className="bi bi-trash"></i>
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </Container>
+
+      {/* ---------- VIEW MODAL ---------- */}
+      <Modal
+        show={viewModal}
+        onHide={() => setViewModal(false)}
+        centered
+        size="md"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="fw-semibold">Feedback Details</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body className="fs-6">
+        <Modal.Body>
+          {selectedFeedback && (
+            <>
+              <p>
+                <strong>Feedback:</strong>
+              </p>
+              <p className="text-muted">{selectedFeedback.feedback}</p>
+            </>
+          )}
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setViewModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* ---------- DELETE MODAL ---------- */}
+      <Modal
+        show={!!deleteId}
+        centered
+        onHide={() => !deleteLoading && setDeleteId(null)}
+      >
+        <Modal.Header closeButton={!deleteLoading}>
+          <Modal.Title>Delete Feedback?</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
           {deleteLoading ? (
             <div className="text-center py-2">
-              <div className="spinner-border text-danger" role="status"></div>
-              <p className="mt-2">Deleting, please wait...</p>
+              <div className="spinner-border text-danger"></div>
+              <p className="mt-2">Deleting...</p>
             </div>
           ) : (
-            "Are you sure you want to delete this feedback permanently?"
+            "Are you sure you want to permanently delete this feedback?"
           )}
         </Modal.Body>
 
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={() => setShowModal(false)}
+            onClick={() => setDeleteId(null)}
             disabled={deleteLoading}
           >
             Cancel
           </Button>
-
           <Button
             variant="danger"
             onClick={handleDelete}
@@ -179,6 +216,6 @@ export const AdminFeedback = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };

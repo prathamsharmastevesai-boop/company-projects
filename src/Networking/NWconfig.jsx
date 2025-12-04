@@ -149,7 +149,12 @@ export const noteUpdate = "/notes/";
 export const notedelete = "/notes/";
 
 //SpaceInquiry
-export const ingestionconfigs = "/api/client-ingestion-configs/";
+export const ingestionconfigs = "/space_inquiry/client-config";
+export const updateingestionconfigs = "/space_inquiry/client-config";
+export const getspaceinqurylist = "/space_inquiry/list";
+export const getspaceinquryView = "/space_inquiry/details/";
+export const togglebutton = "/space_inquiry/client-config/switch";
+export const Deleteconfig = "/space_inquiry/client-config";
 
 //Deal Tracker
 

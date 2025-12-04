@@ -199,12 +199,7 @@ const DealDetailView = () => {
   if (!deal) {
     return (
       <div className="container mt-4">
-        <div className="alert alert-danger">
-          Deal not found
-          <button className="btn btn-link" onClick={() => navigate("/deals")}>
-            Back to Deal List
-          </button>
-        </div>
+        <div className="alert alert-danger">Deal not found</div>
       </div>
     );
   }
