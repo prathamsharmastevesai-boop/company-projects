@@ -452,6 +452,23 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         {!collapsed && "Sublease Tracker"}
                       </span>
                     </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/renewalTrackerbuildingList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() =>
+                          handleLinkClick("/renewalTrackerbuildingList")
+                        }
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-arrow-repeat me-1" />
+                        {!collapsed && "Renewal Tracker"}
+                      </span>
+                    </li>
                   </>
                 )}
                 {!collapsed && (
@@ -862,7 +879,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
                         <i className="bi-journal-text me-1" />
-                        {!collapsed && "SubleaseTracker"}
+                        {!collapsed && "Sublease Tracker"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/renewalTrackerList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/renewalTrackerList")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-arrow-repeat me-1" />
+                        {!collapsed && "Renewal Tracker"}
                       </span>
                     </li>
 

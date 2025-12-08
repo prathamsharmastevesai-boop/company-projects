@@ -11,30 +11,29 @@ export const InformationCollaborationPage = () => {
   return (
     <>
       <div
-        className="d-flex justify-content-between align-items-center px-3 py-3 sticky-top flex-wrap"
-        style={{
-          backgroundColor: "#212529",
-          zIndex: 10,
-        }}
+        className="px-3 py-3 sticky-top"
+        style={{ backgroundColor: "#212529", zIndex: 10 }}
       >
-        <h5 className="text-white m-0 flex-grow-1">{headerTitle}</h5>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+          <h5 className="text-white m-0">{headerTitle}</h5>
 
-        <div className="d-flex gap-2 mt-2 mt-md-0 w-100 w-md-auto">
-          <Button
-            className="w-100 w-md-auto"
-            variant={activeTab === "form" ? "light" : "outline-light"}
-            onClick={() => setActiveTab("form")}
-          >
-            Information Collaboration
-          </Button>
+          <div className="d-flex gap-2 flex-wrap">
+            <Button
+              size="sm"
+              variant={activeTab === "form" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("form")}
+            >
+              Information Collaboration
+            </Button>
 
-          <Button
-            className="w-100 w-md-auto"
-            variant={activeTab === "list" ? "light" : "outline-light"}
-            onClick={() => setActiveTab("list")}
-          >
-            Collaboration List
-          </Button>
+            <Button
+              size="sm"
+              variant={activeTab === "list" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("list")}
+            >
+              Collaboration List
+            </Button>
+          </div>
         </div>
       </div>
 

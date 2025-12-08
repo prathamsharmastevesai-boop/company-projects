@@ -109,6 +109,7 @@ export const updatetextdata = "/gen_lease/files/text";
 export const feedbacksubmit = "/feedback/submit";
 export const getfeedback = "/feedback/my-feedback";
 export const getadminfeedback = "/feedback/company-feedback";
+export const updatefeedback = "/feedback/update/";
 
 //Email Drafting
 export const AddnewTenent = "/mail_draft/tenants/create";
@@ -157,8 +158,11 @@ export const togglebutton = "/space_inquiry/client-config/switch";
 export const Deleteconfig = "/space_inquiry/client-config";
 
 //Deal Tracker
-
 export const dealformEndpoint = "/deals/";
 export const dealList = "/deals/";
 export const getFormEndpoint = "/deals/deal_id/";
 export const deleteDeal = "/deals/";
+
+//Sublease Tracker
+export const subleasetrackerendpoint = "/sublease/create";
+export const renewaltrackerendpoint = "/renewal/create";

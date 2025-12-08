@@ -3,19 +3,31 @@ import { useDispatch } from "react-redux";
 import { getadminfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import RAGLoader from "../../../Component/Loader";
-import { DeleteFeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
+import {
+  DeleteFeedbackSubmit,
+  UpdateFeedback,
+} from "../../../Networking/User/APIs/Feedback/feedbackApi";
+import { toast } from "react-toastify";
 
 export const AdminFeedback = () => {
   const dispatch = useDispatch();
 
   const [feedbacks, setFeedbacks] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
+  const [editModal, setEditModal] = useState(false);
+  const [editText, setEditText] = useState("");
+  const [editId, setEditId] = useState(null);
+
+  const [editLoading, setEditLoading] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
   const [viewModal, setViewModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
+  console.log(editId, editText, selectedFeedback, "editId");
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -30,6 +42,43 @@ export const AdminFeedback = () => {
     };
     fetchFeedback();
   }, [dispatch]);
+
+  const openEditModal = (feedback) => {
+    setEditId(feedback.id);
+    setEditText(feedback.feedback);
+    setEditModal(true);
+  };
+
+  const handleEdit = async () => {
+    if (!editText.trim()) {
+      toast.error("Collaboration cannot be empty");
+      return;
+    }
+
+    setEditLoading(true);
+
+    try {
+      await dispatch(
+        UpdateFeedback({
+          feedback_id: editId,
+          feedback: editText,
+        })
+      ).unwrap();
+      console.log("gsgsdf");
+      setFeedbacks((prev) =>
+        prev.map((item) =>
+          item.id === editId ? { ...item, feedback: editText } : item
+        )
+      );
+
+      toast.success("Updated successfully!");
+      setEditModal(false);
+    } catch (err) {
+      toast.error(err || "Update failed");
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
   const openViewModal = (feedback) => {
     setSelectedFeedback(feedback);
@@ -90,7 +139,7 @@ export const AdminFeedback = () => {
                   <th>User Name</th>
                   <th>User Email</th>
                   <th>Category</th>
-
+                  <th>Collaboration</th>
                   <th>Date</th>
                   <th>Actions</th>
                 </tr>
@@ -102,6 +151,11 @@ export const AdminFeedback = () => {
                     <td>{fb.user_name || "N/A"}</td>
                     <td>{fb.user_email || "N/A"}</td>
                     <td>{fb.category || "N/A"}</td>
+                    <td>
+                      {fb.feedback.length > 15
+                        ? fb.feedback.substring(0, 15) + "..."
+                        : fb.feedback}
+                    </td>
 
                     <td>
                       {new Date(fb.created_at).toLocaleDateString("en-US", {
@@ -110,9 +164,9 @@ export const AdminFeedback = () => {
                         year: "2-digit",
                       })}
                     </td>
-                    <td>
+                    <td className="d-flex">
                       <button
-                        className="btn btn-sm text-white me-2"
+                        className="btn btn-sm text-white me-2 d-flex align-items-center gap-1"
                         style={{
                           backgroundColor: "#217ae6",
                           borderColor: "#217ae6",
@@ -120,11 +174,19 @@ export const AdminFeedback = () => {
                         }}
                         onClick={() => openViewModal(fb)}
                       >
-                        View
+                        <i className="bi bi-eye"></i>
                       </button>
 
                       <button
-                        className="btn btn-sm btn-outline-secondary"
+                        className="btn btn-sm btn-warning text-white me-2 d-flex align-items-center gap-1"
+                        style={{ padding: "4px 12px" }}
+                        onClick={() => openEditModal(fb)}
+                      >
+                        <i className="bi bi-pencil-square"></i>
+                      </button>
+
+                      <button
+                        className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
                         style={{ padding: "4px 12px" }}
                         onClick={() => openDeleteModal(fb.id)}
                         disabled={deleteLoading && deleteId === fb.id}
@@ -143,6 +205,39 @@ export const AdminFeedback = () => {
           </div>
         )}
       </Container>
+
+      <Modal
+        show={editModal}
+        onHide={() => !editLoading && setEditModal(false)}
+        centered
+      >
+        <Modal.Header closeButton={!editLoading}>
+          <Modal.Title>Edit Collaboration</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <textarea
+            className="form-control"
+            rows="5"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+          />
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            disabled={editLoading}
+            onClick={() => setEditModal(false)}
+          >
+            Cancel
+          </Button>
+
+          <Button variant="primary" disabled={editLoading} onClick={handleEdit}>
+            {editLoading ? "Updating..." : "Save Changes"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal
         show={viewModal}

@@ -148,7 +148,6 @@ export const ToursDetails = () => {
         )}
       </Container>
 
-      {/* ---------- VIEW DETAILS MODAL ---------- */}
       <Modal
         show={viewModal}
         onHide={() => setViewModal(false)}
@@ -188,7 +187,6 @@ export const ToursDetails = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* ---------- DELETE CONFIRM MODAL ---------- */}
       <Modal
         show={!!deleteId}
         centered

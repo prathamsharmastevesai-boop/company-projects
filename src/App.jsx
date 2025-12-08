@@ -86,6 +86,8 @@ import { SpaceInquiry } from "./Pages/Admin/SpaceInquiry/spaceInquiry";
 import DealList from "./Pages/User/TourPage/DealTracker/dealList";
 import DealDetailView from "./Pages/User/TourPage/DealTracker/dealDetailView";
 import DealForm from "./Pages/User/TourPage/DealTracker/dealForm";
+import { RenewalTrackerList } from "./Pages/User/RenewalTracker/renewalTrackerList";
+import { RenewalTracker } from "./Pages/User/RenewalTracker/renewalTracker";
 
 function App() {
   useEffect(() => {
@@ -210,6 +212,12 @@ function App() {
               path="/subleaseTrackerList"
               element={<SubleaseTrackerList />}
             />
+            <Route path="/renewalTracker" element={<RenewalTracker />} />
+
+            <Route
+              path="/renewalTrackerbuildingList"
+              element={<RenewalTrackerList />}
+            />
 
             <Route path="/admin-portfolio-forum" element={<PortfolioForum />} />
             <Route path="/create-forum" element={<CreateThread />} />
@@ -289,8 +297,25 @@ function App() {
             />
             <Route
               path="/SubleaseTrackerBuildinglist"
-              element={<SubleaseTrackerUserBuildinglist />}
+              element={<SubleaseTrackerList />}
             />
+
+            <Route
+              path="/RenewalTrackerList"
+              element={<RenewalTrackerList />}
+            />
+
+            <Route path="/renewalTracker" element={<RenewalTracker />} />
+
+            <Route
+              path="/renewalTrackerList"
+              element={<RenewalTrackerList />}
+            />
+
+            {/* <Route
+              path="/SubleaseTrackerBuildinglist"
+              element={<SubleaseTrackerUserBuildinglist />}
+            /> */}
 
             <Route path="/geminichat" element={<GeminiChat />} />
 

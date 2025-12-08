@@ -11,9 +11,15 @@ export const calcSubmitApi = createAsyncThunk(
       toast.success(response.data?.message || "Calculation successful!");
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to calculate"
-      );
+      const backendError =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        "Failed to calculate";
+
+      toast.error(backendError);
+
+      return rejectWithValue(backendError);
     }
   }
 );

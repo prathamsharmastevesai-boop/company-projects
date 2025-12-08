@@ -1,34 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  GetSubleaseTrackerList,
-  GetSubleaseById,
-  DeleteSubleaseById,
-  UpdateSubleaseById,
-} from "../../../Networking/Admin/APIs/subleaseTrackerApi";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { BsPlusLg } from "react-icons/bs";
 import RAGLoader from "../../../Component/Loader";
+import {
+  DeleteRenewalById,
+  GetRenewalById,
+  GetRenewalTrackerList,
+  UpdateRenewalById,
+} from "../../../Networking/Admin/APIs/RenewalTrackeApi";
 
-export const SubleaseTrackerList = () => {
+export const RenewalTrackerList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, list, error } = useSelector((state) => state.subleaseSlice);
+  const { loading, list, error } = useSelector((state) => state.RenewalSlice);
   const { Role } = useSelector((state) => state.loginSlice);
+
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [detail, setDetail] = useState(null);
-
   const [deleteModal, setDeleteModal] = useState({
     show: false,
     id: null,
     name: "",
     loading: false,
   });
-
   const [detailLoading, setDetailLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -42,7 +41,7 @@ export const SubleaseTrackerList = () => {
   };
 
   useEffect(() => {
-    dispatch(GetSubleaseTrackerList());
+    dispatch(GetRenewalTrackerList());
   }, [dispatch]);
 
   const openDetailModal = async (id, edit = false) => {
@@ -51,10 +50,14 @@ export const SubleaseTrackerList = () => {
     setDetailLoading(true);
 
     try {
-      const data = await dispatch(GetSubleaseById(id)).unwrap();
+      const data = await dispatch(GetRenewalById(id)).unwrap();
 
       const initializedData = {
         ...data?.data,
+        lease_commencement_date: data?.data?.lease_commencement_date || "",
+        lease_expiration_date: data?.data?.lease_expiration_date || "",
+        notice_of_renewal_date: data?.data?.notice_of_renewal_date || "",
+        renewal_clause: data?.data?.renewal_clause || false,
         q1: data?.data?.q1 || {
           check_in: false,
           headcount_confirmation: false,
@@ -82,20 +85,16 @@ export const SubleaseTrackerList = () => {
       };
 
       setDetail({ ...data, data: initializedData });
-
-      console.log(
-        { ...data, data: initializedData },
-        "detail after initialization"
-      );
     } catch (error) {
       console.error("Error fetching details:", error);
+      toast.error("Failed to load renewal details");
     } finally {
       setDetailLoading(false);
     }
   };
 
   const handleNavigate = () => {
-    navigate("/subleaseTracker");
+    navigate("/renewalTracker");
   };
 
   const handleDelete = async () => {
@@ -104,13 +103,13 @@ export const SubleaseTrackerList = () => {
     setDeleteModal((prev) => ({ ...prev, loading: true }));
 
     try {
-      await dispatch(DeleteSubleaseById(deleteModal.id)).unwrap();
-      dispatch(GetSubleaseTrackerList());
-      toast.success("Sublease deleted successfully!");
+      await dispatch(DeleteRenewalById(deleteModal.id)).unwrap();
+      dispatch(GetRenewalTrackerList());
+      toast.success("Renewal deleted successfully!");
       setDeleteModal({ show: false, id: null, name: "", loading: false });
     } catch (error) {
-      console.error("Error deleting sublease:", error);
-      toast.error("Failed to delete sublease. Please try again.");
+      console.error("Error deleting Renewal:", error);
+      toast.error("Failed to delete Renewal. Please try again.");
       setDeleteModal((prev) => ({ ...prev, loading: false }));
     }
   };
@@ -147,21 +146,22 @@ export const SubleaseTrackerList = () => {
     setIsSaving(true);
     try {
       await dispatch(
-        UpdateSubleaseById({
+        UpdateRenewalById({
           tracker_id: detail.id,
           data: {
-            sub_tenant_name: detail.data.sub_tenant_name,
+            tenant_name: detail.data.tenant_name,
             building_address: detail.data.building_address,
             floor_suite: detail.data.floor_suite,
-            sublease_commencement_date: detail.data.sublease_commencement_date,
-            sublease_expiration_date: detail.data.sublease_expiration_date,
-            subtenant_headcount: detail.data.subtenant_headcount,
-            direct_tenant_notice_of_renewal_date:
-              detail.data.direct_tenant_notice_of_renewal_date,
-            subtenant_current_rent: detail.data.subtenant_current_rent,
-            direct_tenant_current_rent: detail.data.direct_tenant_current_rent,
-            subtenant_contact_info: detail.data.subtenant_contact_info,
-            direct_tenant_contact_info: detail.data.direct_tenant_contact_info,
+            lease_commencement_date: detail.data.lease_commencement_date,
+            lease_expiration_date: detail.data.lease_expiration_date,
+            tenant_headcount: detail.data.tenant_headcount
+              ? parseInt(detail.data.tenant_headcount)
+              : 0,
+            notice_of_renewal_date: detail.data.notice_of_renewal_date,
+            renewal_clause: detail.data.renewal_clause || false,
+            tenant_current_rent: detail.data.tenant_current_rent,
+            most_recent_building_comp: detail.data.most_recent_building_comp,
+            tenant_contact_info: detail.data.tenant_contact_info,
             q1: detail.data.q1,
             q2: detail.data.q2,
             q3: detail.data.q3,
@@ -170,13 +170,13 @@ export const SubleaseTrackerList = () => {
         })
       ).unwrap();
 
-      dispatch(GetSubleaseTrackerList());
+      dispatch(GetRenewalTrackerList());
       setShowModal(false);
       setIsEdit(false);
-      toast.success("Sublease updated successfully!");
+      toast.success("Renewal updated successfully!");
     } catch (error) {
-      console.error("Error updating sublease:", error);
-      alert("Failed to update sublease. Please try again.");
+      console.error("Error updating Renewal:", error);
+      toast.error("Failed to update Renewal. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -184,8 +184,13 @@ export const SubleaseTrackerList = () => {
 
   const formatDateForInput = (dateString) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "";
+      return date.toISOString().split("T")[0];
+    } catch (error) {
+      return "";
+    }
   };
 
   const renderQuarterSection = (quarter, quarterName) => (
@@ -310,25 +315,25 @@ export const SubleaseTrackerList = () => {
 
   return (
     <>
-      {Role == "user" && (
+      {Role === "user" && (
         <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-          <h5 className="mb-0 text-light">Sublease Tracker List</h5>
+          <h5 className="mb-0 text-light">Renewal Tracker List</h5>
         </div>
       )}
       <div className="container py-4">
-        {Role == "admin" && (
+        {Role === "admin" && (
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="fw-bold">Sublease Tracker List</h2>
-
+            <h2 className="fw-bold">Renewal Tracker List</h2>
             <button
               className="btn btn-secondary d-flex align-items-center gap-2"
               onClick={handleNavigate}
               style={{ fontWeight: "600", padding: "0.5rem 1rem" }}
             >
-              <BsPlusLg /> Add Sublease
+              <BsPlusLg /> Add Renewal
             </button>
           </div>
         )}
+
         {loading && (
           <div
             style={{
@@ -344,7 +349,7 @@ export const SubleaseTrackerList = () => {
 
         {!loading && list?.length === 0 && (
           <div className="text-center my-5">
-            <p className="text-muted fs-5">No entries found.</p>
+            <p className="text-muted fs-5">No renewal entries found.</p>
           </div>
         )}
 
@@ -353,7 +358,7 @@ export const SubleaseTrackerList = () => {
             <table className="table align-middle">
               <thead>
                 <tr className="table-light text-uppercase small fw-bold">
-                  <th>Sub-Tenant Name</th>
+                  <th>Tenant Name</th>
                   <th>Floor / Suite</th>
                   <th>Commencement Date</th>
                   <th>Expiration Date</th>
@@ -367,17 +372,16 @@ export const SubleaseTrackerList = () => {
               <tbody className="text-center">
                 {list.map((item) => (
                   <tr key={item.id} className="border-bottom">
-                    <td>{item?.data?.sub_tenant_name || "N/A"}</td>
+                    <td>{item?.data?.tenant_name || "N/A"}</td>
                     <td>{item?.data?.floor_suite || "N/A"}</td>
                     <td>
-                      {item?.data?.sublease_commencement_date?.slice(0, 10) ||
+                      {item?.data?.lease_commencement_date?.slice(0, 10) ||
                         "N/A"}
                     </td>
                     <td>
-                      {item?.data?.sublease_expiration_date?.slice(0, 10) ||
-                        "N/A"}
+                      {item?.data?.lease_expiration_date?.slice(0, 10) || "N/A"}
                     </td>
-                    <td>{item?.data?.subtenant_headcount}</td>
+                    <td>{item?.data?.tenant_headcount || 0}</td>
                     <td
                       style={{
                         maxWidth: "200px",
@@ -393,7 +397,7 @@ export const SubleaseTrackerList = () => {
                         className="text-truncate"
                         style={{ maxWidth: "100px" }}
                       >
-                        {item?.updated_by_email}
+                        {item?.updated_by_email || "N/A"}
                       </div>
                     </td>
 
@@ -412,11 +416,11 @@ export const SubleaseTrackerList = () => {
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
-                      {Role == "admin" && (
+                      {Role === "admin" && (
                         <button
                           className="btn btn-outline-danger btn-sm rounded-circle"
                           onClick={() =>
-                            confirmDelete(item.id, item?.data?.sub_tenant_name)
+                            confirmDelete(item.id, item?.data?.tenant_name)
                           }
                           title="Delete"
                         >
@@ -455,7 +459,7 @@ export const SubleaseTrackerList = () => {
                 </div>
                 <div className="modal-body">
                   Are you sure you want to delete{" "}
-                  <strong>{deleteModal.name || "this sublease"}</strong>?
+                  <strong>{deleteModal.name || "this renewal"}</strong>?
                 </div>
                 <div className="modal-footer">
                   <button
@@ -505,7 +509,7 @@ export const SubleaseTrackerList = () => {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title fw-bold">
-                    {isEdit ? "Edit Sublease" : "Sublease Details"}
+                    {isEdit ? "Edit Renewal" : "Renewal Details"}
                   </h5>
                   <button
                     className="btn-close"
@@ -536,22 +540,21 @@ export const SubleaseTrackerList = () => {
                           Basic Information
                         </h5>
                       </div>
+
                       <div className="col-md-6">
                         <label className="form-label fw-bold">
-                          Sub-Tenant Name:
+                          Tenant Name:
                         </label>
                         {isEdit ? (
                           <input
                             type="text"
                             className="form-control"
-                            name="sub_tenant_name"
-                            value={detail?.data?.sub_tenant_name || ""}
+                            name="tenant_name"
+                            value={detail?.data?.tenant_name || ""}
                             onChange={handleChange}
                           />
                         ) : (
-                          <p className="mb-0">
-                            {detail?.data?.sub_tenant_name}
-                          </p>
+                          <p className="mb-0">{detail?.data?.tenant_name}</p>
                         )}
                       </div>
 
@@ -597,13 +600,13 @@ export const SubleaseTrackerList = () => {
                           <input
                             type="number"
                             className="form-control"
-                            name="subtenant_headcount"
-                            value={detail?.data?.subtenant_headcount || 0}
+                            name="tenant_headcount"
+                            value={detail?.data?.tenant_headcount || 0}
                             onChange={handleChange}
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.subtenant_headcount}
+                            {detail?.data?.tenant_headcount}
                           </p>
                         )}
                       </div>
@@ -616,118 +619,146 @@ export const SubleaseTrackerList = () => {
 
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
-                          Commencement Date:
+                          Lease Commencement Date:
                         </label>
                         {isEdit ? (
                           <input
                             type="date"
                             className="form-control"
-                            name="sublease_commencement_date"
+                            name="lease_commencement_date"
                             value={formatDateForInput(
-                              detail?.data?.sublease_commencement_date
+                              detail?.data?.lease_commencement_date
                             )}
                             onChange={handleChange}
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.sublease_commencement_date?.slice(
+                            {detail?.data?.lease_commencement_date?.slice(
                               0,
                               10
-                            )}
+                            ) || "N/A"}
                           </p>
                         )}
                       </div>
 
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
-                          Expiration Date:
+                          Lease Expiration Date:
                         </label>
                         {isEdit ? (
                           <input
                             type="date"
                             className="form-control"
-                            name="sublease_expiration_date"
+                            name="lease_expiration_date"
                             value={formatDateForInput(
-                              detail?.data?.sublease_expiration_date
+                              detail?.data?.lease_expiration_date
                             )}
                             onChange={handleChange}
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.sublease_expiration_date?.slice(
+                            {detail?.data?.lease_expiration_date?.slice(
                               0,
                               10
-                            )}
+                            ) || "N/A"}
                           </p>
                         )}
                       </div>
 
                       <div className="col-md-4">
                         <label className="form-label fw-bold">
-                          Direct Tenant Notice Date:
+                          Notice of Renewal Date:
                         </label>
                         {isEdit ? (
                           <input
                             type="date"
                             className="form-control"
-                            name="direct_tenant_notice_of_renewal_date"
+                            name="notice_of_renewal_date"
                             value={formatDateForInput(
-                              detail?.data?.direct_tenant_notice_of_renewal_date
+                              detail?.data?.notice_of_renewal_date
                             )}
                             onChange={handleChange}
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.direct_tenant_notice_of_renewal_date?.slice(
+                            {detail?.data?.notice_of_renewal_date?.slice(
                               0,
                               10
-                            )}
+                            ) || "N/A"}
                           </p>
                         )}
                       </div>
 
                       <div className="col-12 mt-4">
                         <h5 className="fw-bold border-bottom pb-2 mb-3">
-                          Rent Information
+                          Renewal Information
                         </h5>
                       </div>
 
                       <div className="col-md-6">
-                        <label className="form-label fw-bold">
-                          Subtenant Current Rent:
-                        </label>
-                        {isEdit ? (
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="subtenant_current_rent"
-                            value={detail?.data?.subtenant_current_rent || ""}
-                            onChange={handleChange}
-                          />
-                        ) : (
-                          <p className="mb-0">
-                            {detail?.data?.subtenant_current_rent}
-                          </p>
-                        )}
+                        <div className="form-check">
+                          {isEdit ? (
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              name="renewal_clause"
+                              checked={detail?.data?.renewal_clause || false}
+                              onChange={handleChange}
+                              id="renewal-clause"
+                            />
+                          ) : (
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              checked={detail?.data?.renewal_clause || false}
+                              disabled
+                            />
+                          )}
+                          <label
+                            className="form-check-label"
+                            htmlFor="renewal-clause"
+                          >
+                            Renewal Clause
+                          </label>
+                        </div>
                       </div>
 
                       <div className="col-md-6">
                         <label className="form-label fw-bold">
-                          Direct Tenant Current Rent:
+                          Tenant Current Rent:
                         </label>
                         {isEdit ? (
                           <input
                             type="text"
                             className="form-control"
-                            name="direct_tenant_current_rent"
+                            name="tenant_current_rent"
+                            value={detail?.data?.tenant_current_rent || ""}
+                            onChange={handleChange}
+                          />
+                        ) : (
+                          <p className="mb-0">
+                            {detail?.data?.tenant_current_rent || "N/A"}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="col-md-12 mt-2">
+                        <label className="form-label fw-bold">
+                          Most Recent Building Comp:
+                        </label>
+                        {isEdit ? (
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="most_recent_building_comp"
                             value={
-                              detail?.data?.direct_tenant_current_rent || ""
+                              detail?.data?.most_recent_building_comp || ""
                             }
                             onChange={handleChange}
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.direct_tenant_current_rent}
+                            {detail?.data?.most_recent_building_comp || "N/A"}
                           </p>
                         )}
                       </div>
@@ -738,42 +769,21 @@ export const SubleaseTrackerList = () => {
                         </h5>
                       </div>
 
-                      <div className="col-md-6">
+                      <div className="col-12">
                         <label className="form-label fw-bold">
-                          Subtenant Contact Info:
+                          Tenant Contact Info:
                         </label>
                         {isEdit ? (
-                          <input
-                            type="text"
+                          <textarea
                             className="form-control"
-                            name="subtenant_contact_info"
-                            value={detail?.data?.subtenant_contact_info || ""}
+                            name="tenant_contact_info"
+                            value={detail?.data?.tenant_contact_info || ""}
                             onChange={handleChange}
+                            rows="3"
                           />
                         ) : (
                           <p className="mb-0">
-                            {detail?.data?.subtenant_contact_info}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="col-md-6">
-                        <label className="form-label fw-bold">
-                          Direct Tenant Contact Info:
-                        </label>
-                        {isEdit ? (
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="direct_tenant_contact_info"
-                            value={
-                              detail?.data?.direct_tenant_contact_info || ""
-                            }
-                            onChange={handleChange}
-                          />
-                        ) : (
-                          <p className="mb-0">
-                            {detail?.data?.direct_tenant_contact_info}
+                            {detail?.data?.tenant_contact_info || "N/A"}
                           </p>
                         )}
                       </div>
@@ -818,7 +828,7 @@ export const SubleaseTrackerList = () => {
                           Saving...
                         </>
                       ) : (
-                        "Save"
+                        "Save Changes"
                       )}
                     </button>
                   )}
@@ -831,295 +841,3 @@ export const SubleaseTrackerList = () => {
     </>
   );
 };
-
-// import React, { useEffect, useRef, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import "bootstrap-icons/font/bootstrap-icons.css";
-// import {
-//   DeleteBuilding,
-//   ListBuildingSubmit,
-//   CreateBuildingSubmit,
-//   UpdateBuildingSubmit,
-// } from "../../../Networking/Admin/APIs/BuildingApi";
-// import { useDispatch, useSelector } from "react-redux";
-// import RAGLoader from "../../../Component/Loader";
-
-// export const SubleaseTrackerList = () => {
-//   const { BuildingList } = useSelector((state) => state.BuildingSlice);
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const cardsRef = useRef([]);
-
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [loading, setLoading] = useState(true);
-//   const [address, setAddress] = useState("");
-//   const [deleteLoading, setDeleteLoading] = useState(false);
-
-//   const [editBuildingId, setEditBuildingId] = useState(null);
-//   const [editFieldValue, setEditFieldValue] = useState("");
-
-//   useEffect(() => {
-//     const fetchBuildings = async () => {
-//       setLoading(true);
-//       const category = "SubleaseTracker";
-//       await dispatch(ListBuildingSubmit(category));
-//       setLoading(false);
-//     };
-//     fetchBuildings();
-//   }, [dispatch]);
-
-//   useEffect(() => {
-//     if (!loading) {
-//       cardsRef.current.forEach((card, i) => {
-//         if (card) {
-//           card.classList.remove("visible");
-//           setTimeout(() => {
-//             card.classList.add("visible");
-//           }, i * 150);
-//         }
-//       });
-//     }
-//   }, [BuildingList, searchTerm, loading]);
-
-//   const startEdit = (building) => {
-//     setEditBuildingId(building.id);
-//     setEditFieldValue(building.address || "");
-//   };
-
-//   const saveEdit = async (buildingId) => {
-//     if (!editFieldValue.trim()) return;
-//     setLoading(true);
-
-//     try {
-//       const payload = {
-//         building_id: buildingId,
-//         address: editFieldValue,
-//       };
-
-//       await dispatch(UpdateBuildingSubmit(payload)).unwrap();
-
-//       await dispatch(ListBuildingSubmit("SubleaseTracker"));
-
-//       setEditBuildingId(null);
-//     } catch (error) {
-//       console.error("Error updating building:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleDelete = async (buildingId) => {
-//     try {
-//       setDeleteLoading(true);
-//       await dispatch(DeleteBuilding(buildingId));
-//       await dispatch(ListBuildingSubmit("SubleaseTracker"));
-//     } catch (error) {
-//       console.error("Delete failed:", error);
-//     } finally {
-//       setDeleteLoading(false);
-//     }
-//   };
-
-//   const handleAddSubmit = async (e) => {
-//     e.preventDefault();
-//     if (!address.trim()) return;
-
-//     setLoading(true);
-//     try {
-//       const payload = [
-//         {
-//           category: "SubleaseTracker",
-//           address: address,
-//         },
-//       ];
-
-//       await dispatch(CreateBuildingSubmit(payload)).unwrap();
-
-//       await dispatch(ListBuildingSubmit("SubleaseTracker"));
-
-//       setAddress("");
-//     } catch (error) {
-//       console.error("Error submitting building:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleSubmit = (buildingId) => {
-//     navigate("/subleaseTracker", { state: { office: { buildingId } } });
-//   };
-
-//   const filteredBuildings = BuildingList.filter((building) => {
-//     const name = building.building_name?.toLowerCase() || "";
-//     const addr = building.address?.toLowerCase() || "";
-//     const term = searchTerm.toLowerCase();
-//     return name.includes(term) || addr.includes(term);
-//   });
-
-//   const BuildingCard = ({ building, index }) => (
-//     <div
-//       ref={(el) => (cardsRef.current[index] = el)}
-//       className="card border-0 shadow-sm hover-shadow w-100"
-//       style={{
-//         backgroundColor: "#fff",
-//         borderWidth: "0.1px",
-//         borderColor: "#cacacaff",
-//         borderRadius: "16px",
-//       }}
-//     >
-//       <div className="position-absolute top-0 end-0 p-2">
-//         {editBuildingId === building.id ? (
-//           <>
-//             <i
-//               className="bi bi-check-circle-fill text-success me-3"
-//               style={{ cursor: "pointer", fontSize: "1.2rem" }}
-//               onClick={() => saveEdit(building.id)}
-//               title="Save"
-//             ></i>
-//             <i
-//               className="bi bi-x-circle-fill text-secondary"
-//               style={{ cursor: "pointer", fontSize: "1.2rem" }}
-//               onClick={() => setEditBuildingId(null)}
-//               title="Cancel"
-//             ></i>
-//           </>
-//         ) : (
-//           <>
-//             <i
-//               className="bi bi-pencil-square text-primary me-3"
-//               style={{ cursor: "pointer", fontSize: "1.2rem" }}
-//               onClick={() => startEdit(building)}
-//               title="Edit"
-//             ></i>
-//             <i
-//               className="bi bi-trash text-danger"
-//               style={{ cursor: "pointer", fontSize: "1.2rem" }}
-//               onClick={() => handleDelete(building.id)}
-//               title="Delete"
-//             ></i>
-//           </>
-//         )}
-//       </div>
-
-//       <div className="card-body d-flex flex-column justify-content-center">
-//         {editBuildingId === building.id ? (
-//           <input
-//             type="text"
-//             className="form-control"
-//             value={editFieldValue}
-//             onChange={(e) => setEditFieldValue(e.target.value)}
-//             autoFocus
-//           />
-//         ) : (
-//           <p
-//             className="mb-2 text-secondary"
-//             onClick={() => handleSubmit(building.id)}
-//             style={{ cursor: "pointer" }}
-//           >
-//             <div className="col-md-12 py-2">
-//               <div className="d-flex mx-1">
-//                 <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-//                 <div className="mx-2 check">{building.address || "N/A"}</div>
-//                 {/* <strong>Curated Intelligence:</strong> */}
-//               </div>
-//             </div>
-//           </p>
-//         )}
-//       </div>
-//     </div>
-//   );
-
-//   return (
-//     <div className="container-fuild p-3" style={{ position: "relative" }}>
-//       {deleteLoading && (
-//         <div className="upload-overlay">
-//           <div className="text-center">
-//             <div className="spinner-border text-primary" role="status"></div>
-//             <div className="upload-text mt-2">Deleting building...</div>
-//           </div>
-//         </div>
-//       )}
-
-//       <div
-//         className="text-center bg-white rounded shadow-sm py-3 mb-4"
-//         style={{
-//           position: "sticky",
-//           top: 0,
-//           zIndex: 10,
-//           borderBottom: "1px solid #dee2e6",
-//         }}
-//       >
-//         <h2 className="fw-bold text-dark">🏢 Sublease Tracker Building List</h2>
-//         <p className="text-muted mb-3">
-//           Here’s a summary of all the submitted buildings.
-//         </p>
-//         <input
-//           type="search"
-//           placeholder="Search by building name or address"
-//           className="form-control bg-white text-dark mx-auto text-center dark-placeholder"
-//           style={{ maxWidth: "420px" }}
-//           value={searchTerm}
-//           onChange={(e) => setSearchTerm(e.target.value)}
-//           disabled={loading || deleteLoading}
-//         />
-//       </div>
-
-//       {loading ? (
-//         <div
-//           className="d-flex justify-content-center align-items-center"
-//           style={{ height: "60vh" }}
-//         >
-//           <RAGLoader />
-//         </div>
-//       ) : (
-//         <div className="d-flex flex-column gap-3">
-//           <form onSubmit={handleAddSubmit}>
-//             <div className="row g-2 align-items-center justify-content-between">
-//               <div className="col-md-9">
-//                 <div className="input-group">
-//                   <span className="input-group-text">
-//                     <i className="bi bi-geo-alt-fill"></i>
-//                   </span>
-//                   <input
-//                     type="text"
-//                     className="form-control"
-//                     placeholder="Enter building address"
-//                     value={address}
-//                     onChange={(e) => setAddress(e.target.value)}
-//                     disabled={loading}
-//                     required
-//                   />
-//                 </div>
-//               </div>
-//               <div className="col-md-3 col-12">
-//                 <button
-//                   type="submit"
-//                   className="btn btn-success w-100"
-//                   disabled={loading}
-//                 >
-//                   <i className="bi bi-plus-circle me-2"></i> Add Building
-//                 </button>
-//               </div>
-//             </div>
-//           </form>
-
-//           {filteredBuildings.length === 0 ? (
-//             <p className="text-center text-muted mt-3">
-//               No buildings found. Add a new one above
-//             </p>
-//           ) : (
-//             [...filteredBuildings]
-//               .reverse()
-//               .map((building, index) => (
-//                 <BuildingCard
-//                   key={building.id || index}
-//                   building={building}
-//                   index={index}
-//                 />
-//               ))
-//           )}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };

@@ -5,6 +5,7 @@ import {
   DealTrackerList,
   DeleteDealTracker,
 } from "../../../../Networking/User/APIs/DealTracker/dealTrackerApi";
+import { FaArrowLeft } from "react-icons/fa";
 
 const DealList = () => {
   const navigate = useNavigate();
@@ -114,19 +115,68 @@ const DealList = () => {
 
   if (loading) {
     return (
-      <div
-        className="container p-4 shadow-sm"
-        style={{ background: "#f5f7fa", borderRadius: "8px", height: "100vh" }}
-      >
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ minHeight: "400px" }}
-        >
-          <div className="text-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
+      <div>
+        <div className="header-bg sticky-header px-3 py-2">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div className="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+              <div
+                className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
+                onClick={() => navigate(-1)}
+                style={{
+                  cursor: "pointer",
+                  width: "110px",
+                  borderRadius: 10,
+                }}
+              >
+                <FaArrowLeft size={16} />
+                <span>Back</span>
+              </div>
+
+              <div className="d-flex flex-column">
+                <h5 className="mb-0 text-light text-wrap text-sm-start text-center">
+                  View Deal Tracker
+                </h5>
+                <small className="text-light text-sm-start text-center">
+                  (Main List View)
+                </small>
+              </div>
+
+              <span className="badge bg-secondary">
+                {filteredDeals.length} deal
+                {filteredDeals.length !== 1 ? "s" : ""}
+              </span>
             </div>
-            <p className="mt-3">Loading deals...</p>
+
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn text-white px-3 w-100 w-sm-auto"
+                style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
+                onClick={handleCreateForm}
+              >
+                Create New Deal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="container p-4 shadow-sm"
+          style={{
+            background: "#f5f7fa",
+            borderRadius: "8px",
+            height: "100vh",
+          }}
+        >
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ minHeight: "400px" }}
+          >
+            <div className="text-center">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <p className="mt-3">Loading deals...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -140,7 +190,6 @@ const DealList = () => {
         style={{ background: "#f5f7fa", borderRadius: "8px" }}
       >
         <div className="mb-4">
-          {/* Top Section (Title + Subtitle) */}
           <div className="text-start mb-3">
             <h4 className="fw-bold mb-0">View Deal Tracker</h4>
             <small className="text-muted d-block">(Main List View)</small>
@@ -175,23 +224,44 @@ const DealList = () => {
   return (
     <div>
       <div className="header-bg sticky-header px-3 py-2">
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="d-flex align-items-center gap-3">
-            <h5 className="mb-0 text-light">View Deal Tracker</h5>
-            <small className="text-light">(Main List View)</small>
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div className="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
+            <div
+              className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
+              onClick={() => navigate(-1)}
+              style={{
+                cursor: "pointer",
+                width: "110px",
+                borderRadius: 10,
+              }}
+            >
+              <FaArrowLeft size={16} />
+              <span>Back</span>
+            </div>
+
+            <div className="d-flex flex-column">
+              <h5 className="mb-0 text-light text-wrap text-sm-start text-center">
+                View Deal Tracker
+              </h5>
+              <small className="text-light text-sm-start text-center">
+                (Main List View)
+              </small>
+            </div>
 
             <span className="badge bg-secondary">
               {filteredDeals.length} deal{filteredDeals.length !== 1 ? "s" : ""}
             </span>
           </div>
 
-          <button
-            className="btn text-white px-3"
-            style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
-            onClick={handleCreateForm}
-          >
-            Create New Deal
-          </button>
+          <div className="d-flex justify-content-end">
+            <button
+              className="btn text-white px-3 w-100 w-sm-auto"
+              style={{ backgroundColor: "#217ae6", borderColor: "#217ae6" }}
+              onClick={handleCreateForm}
+            >
+              Create New Deal
+            </button>
+          </div>
         </div>
       </div>
 

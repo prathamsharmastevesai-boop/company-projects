@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../Admin/APIs/AxiosInstance";
-import { feedbacksubmit, getfeedback } from "../../../NWconfig";
+import { feedbacksubmit, getfeedback, updatefeedback } from "../../../NWconfig";
 
 const getErrorMsg = (error, fallback = "Something went wrong") =>
   error?.response?.data?.message || error?.response?.data?.detail || fallback;
@@ -27,6 +27,24 @@ export const GetFeedbackList = createAsyncThunk(
       return response.data;
     } catch (error) {
       toast.error(getErrorMsg(error));
+      return rejectWithValue(getErrorMsg(error));
+    }
+  }
+);
+
+export const UpdateFeedback = createAsyncThunk(
+  "UpdateFeedback",
+  async ({ feedback_id, feedback }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        `${updatefeedback}${feedback_id}`,
+        {
+          feedback,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
       return rejectWithValue(getErrorMsg(error));
     }
   }

@@ -9,7 +9,7 @@ import {
 import { toast } from "react-toastify";
 import RAGLoader from "./Loader";
 
-const DocumentManager = ({ category, title, description }) => {
+const DocumentManager = ({ category, title, description, building_Id }) => {
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,10 @@ const DocumentManager = ({ category, title, description }) => {
   const fetchData = async () => {
     setListLoading(true);
     try {
-      const res = await dispatch(GeneralInfoSubmit()).unwrap();
+      const res = await dispatch(
+        GeneralInfoSubmit({ buildingId: building_Id, category })
+      ).unwrap();
+
       if (Array.isArray(res)) {
         const filteredDocs = res.filter((f) => f.category === category);
         setDocs(
@@ -62,7 +65,9 @@ const DocumentManager = ({ category, title, description }) => {
 
     setLoading(true);
     try {
-      await dispatch(UploadGeneralDocSubmit({ file, category })).unwrap();
+      await dispatch(
+        UploadGeneralDocSubmit({ file, category, building_Id })
+      ).unwrap();
       await fetchData();
     } catch (err) {
       console.error("Upload failed:", err);

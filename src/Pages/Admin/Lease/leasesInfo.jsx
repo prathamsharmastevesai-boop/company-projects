@@ -32,8 +32,8 @@ export const LeaseInfomation = () => {
         })
       ).unwrap();
 
-      if (Array.isArray(res?.files)) {
-        const filtered = res.files.filter((f) => {
+      if (Array.isArray(res)) {
+        const filtered = res.filter((f) => {
           return f.category
             ?.toLowerCase()
             .includes(initialBuildings.type.toLowerCase());
@@ -168,7 +168,7 @@ export const LeaseInfomation = () => {
     <div className="container-fuild p-3">
       {initialBuildings.type === "Lease" && (
         <>
-          <h5 className="fw-bold">📂 Lease Documents</h5>
+          <h5 className="fw-bold"> Lease Documents</h5>
           <p className="text-muted">
             Upload and manage lease-related documents
           </p>
@@ -176,7 +176,7 @@ export const LeaseInfomation = () => {
       )}
       {initialBuildings.type === "LOI" && (
         <>
-          <h5 className="fw-bold">📂 Letter of Intent Documents</h5>
+          <h5 className="fw-bold">Letter of Intent Documents</h5>
           <p className="text-muted">
             Upload and manage Letter of Intent-related documents
           </p>

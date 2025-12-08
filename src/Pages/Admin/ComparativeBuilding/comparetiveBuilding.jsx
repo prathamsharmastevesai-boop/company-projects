@@ -14,6 +14,7 @@ export const ComparativeBuildingData = () => {
   const location = useLocation();
 
   const buildingId = location?.state?.office?.buildingId;
+  console.log(buildingId, "buildingId");
 
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
@@ -26,20 +27,26 @@ export const ComparativeBuildingData = () => {
   const fetchData = async () => {
     setListLoading(true);
     try {
-      const res = await dispatch(GeneralInfoSubmit()).unwrap();
+      const res = await dispatch(
+        GeneralInfoSubmit({
+          buildingId: buildingId,
+          category: "ComparativeBuilding",
+        })
+      ).unwrap();
+
       if (Array.isArray(res)) {
-        const buildingDocs = res.filter(
+        const filteredDocs = res.filter(
           (f) => f.category === "ComparativeBuilding"
         );
         setDocs(
-          buildingDocs.map((f) => ({
+          filteredDocs.map((f) => ({
             file_id: f.file_id,
             name: f.original_file_name,
           }))
         );
       }
     } catch (err) {
-      console.error("Error fetching Building docs:", err);
+      console.error(`Error fetching ${category} docs:`, err);
     } finally {
       setListLoading(false);
     }
@@ -70,7 +77,11 @@ export const ComparativeBuildingData = () => {
     setLoading(true);
     try {
       await dispatch(
-        UploadGeneralDocSubmit({ file, category: "ComparativeBuilding" })
+        UploadGeneralDocSubmit({
+          file,
+          category: "ComparativeBuilding",
+          building_Id: buildingId,
+        })
       ).unwrap();
 
       await fetchData();
@@ -120,6 +131,7 @@ export const ComparativeBuildingData = () => {
           file_id: editingFile.file_id,
           new_file: newFile,
           category: "ComparativeBuilding",
+          building_Id: buildingId,
         })
       ).unwrap();
 

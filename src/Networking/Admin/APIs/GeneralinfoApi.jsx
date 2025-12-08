@@ -10,20 +10,30 @@ import {
 
 export const UploadGeneralDocSubmit = createAsyncThunk(
   "general/UploadGeneralDocSubmit",
-  async ({ file, category }, { rejectWithValue }) => {
+  async ({ file, category, building_Id }, { rejectWithValue }) => {
+    console.log(building_Id, file, "building_Idsdgsdgdfsg");
+
     try {
       const formData = new FormData();
       formData.append("files", file);
 
-      const response = await axiosInstance.post(
-        `/admin_user_chat/upload?category=${encodeURIComponent(category)}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      // Create URL dynamically
+      let url = `/admin_user_chat/upload?category=${encodeURIComponent(
+        category
+      )}`;
+
+      // If building_Id exists, append it
+      if (building_Id) {
+        url += `&building_id=${building_Id}`;
+      }
+
+      const response = await axiosInstance.post(url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message);
+      return rejectWithValue(error.response?.data?.message || "Upload failed");
     }
   }
 );
@@ -68,9 +78,20 @@ export const DeleteGeneralDocSubmit = createAsyncThunk(
 
 export const GeneralInfoSubmit = createAsyncThunk(
   "general/GeneralInfoSubmit",
-  async (_, { rejectWithValue }) => {
+  async ({ buildingId, category }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(listGeneralInfoDoc);
+      let response;
+
+      if (buildingId) {
+        response = await axiosInstance.get(
+          `/chatbot/files/?building_id=${buildingId}&category=${category}`
+        );
+      } else {
+        response = await axiosInstance.get(
+          `/chatbot/files/?category=${category}`
+        );
+      }
+
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

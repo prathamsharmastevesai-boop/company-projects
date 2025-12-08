@@ -6,6 +6,8 @@ import DocReducer from "../Slice/DocSlice";
 import ProfileReducer from "../../User/Slice/ProfileSlice";
 import ForumReducer from "../Slice/forumSlice";
 import notesReducer from "../../User/Slice/notesSlice";
+import subleaseReducer from "../Slice/subleaseTrackerSlice";
+import RenewalReducer from "../Slice/RenewalTrackerSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ const store = configureStore({
     ProfileSlice: ProfileReducer,
     ForumSlice: ForumReducer,
     notesSlice: notesReducer,
+    subleaseSlice: subleaseReducer,
+    RenewalSlice: RenewalReducer,
   },
 });
 

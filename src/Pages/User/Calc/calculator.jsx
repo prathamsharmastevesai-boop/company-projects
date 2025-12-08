@@ -57,9 +57,6 @@ export const LeaseFinanceCalculator = () => {
     setCommissionList(copy);
   };
 
-  // --------------------------
-  // SUBMIT API
-  // --------------------------
   const handleSubmit = async () => {
     if (
       !grossArea ||
@@ -88,7 +85,6 @@ export const LeaseFinanceCalculator = () => {
       annual_escalation_rate: Number(annualEscalation),
       free_rent_months: Number(freeRentMonths),
 
-      // USER INPUT NOW ADDED
       ti_allowance_psf: Number(tiAllowance),
       discount_rate: Number(discountRate),
 
@@ -115,7 +111,6 @@ export const LeaseFinanceCalculator = () => {
 
       <div className="container-fuild p-3">
         <div className="row g-3">
-          {/* ---------------- INPUT PANEL ---------------- */}
           <div className="col-md-8">
             <div className="card p-3 shadow-sm">
               <h4 className="fw-bold">Deal Parameters (Required Inputs)</h4>
@@ -175,7 +170,6 @@ export const LeaseFinanceCalculator = () => {
                   />
                 </div>
 
-                {/* NEW FIELDS */}
                 <div className="col-md-6 mb-3">
                   <label>TI Allowance (PSF)</label>
                   <input
@@ -197,7 +191,6 @@ export const LeaseFinanceCalculator = () => {
                 </div>
               </div>
 
-              {/* COMMISSION RATES */}
               <h5 className="fw-bold mt-3">Commission Rates</h5>
               <hr />
 
@@ -236,7 +229,6 @@ export const LeaseFinanceCalculator = () => {
             </div>
           </div>
 
-          {/* ---------------- RESULTS PANEL ---------------- */}
           <div className="col-md-4">
             <div className="card p-3 shadow-sm">
               <h5 className="fw-bold mb-3">Calculated Results</h5>
@@ -250,25 +242,25 @@ export const LeaseFinanceCalculator = () => {
                     <h4>${result.net_effective_rent_psf_annual}</h4>
                   </div>
 
-                  <div className="p-2 bg-light rounded mb-2">
+                  {/* <div className="p-2 bg-light rounded mb-2">
                     <strong>Total Commission Advanced:</strong>
                     <h4>${result.total_commission_advanced}</h4>
-                  </div>
+                  </div> */}
 
-                  <div className="p-2 bg-light rounded mb-2">
+                  {/* <div className="p-2 bg-light rounded mb-2">
                     <strong>Total Commission Simple:</strong>
                     <h4>${result.total_commission_simple}</h4>
-                  </div>
+                  </div> */}
 
                   <div className="p-2 bg-light rounded mb-2">
                     <strong>Total TI Cost:</strong>
                     <h4>${result.total_ti_cost}</h4>
                   </div>
 
-                  <div className="p-2 bg-light rounded mb-2">
+                  {/* <div className="p-2 bg-light rounded mb-2">
                     <strong>Total Free Rent Cost (Nominal):</strong>
                     <h4>${result.total_free_rent_cost_nominal}</h4>
-                  </div>
+                  </div> */}
 
                   <div className="p-2 bg-light rounded mb-2">
                     <strong>Total Gross Rent PV:</strong>
@@ -320,7 +312,6 @@ export const LeaseFinanceCalculator = () => {
               )}
             </div>
 
-            {/* ---------------- MINI CALCULATOR ---------------- */}
             <div className="card p-3 shadow-sm mt-3 mb-3">
               <h5 className="fw-bold mb-3 text-center">Calculator</h5>
 
