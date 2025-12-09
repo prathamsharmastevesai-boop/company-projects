@@ -55,7 +55,6 @@ export const ChatWindow = ({
       return;
     }
 
-    // No sessionId passed → fetch last session normally
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {

@@ -60,7 +60,7 @@ export const DeleteSubleaseById = createAsyncThunk(
   "DeleteSubleaseById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/sublease/${id}`);
+      const response = await axiosInstance.delete(`/sublease/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error.message);

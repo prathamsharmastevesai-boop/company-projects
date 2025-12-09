@@ -60,7 +60,7 @@ export const DeleteRenewalById = createAsyncThunk(
   "DeleteRenewalById",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/renewal/${id}`);
+      const response = await axiosInstance.delete(`/renewal/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error.message);
