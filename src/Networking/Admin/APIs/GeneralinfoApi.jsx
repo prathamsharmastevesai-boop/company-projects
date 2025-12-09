@@ -17,12 +17,10 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
       const formData = new FormData();
       formData.append("files", file);
 
-      // Create URL dynamically
       let url = `/admin_user_chat/upload?category=${encodeURIComponent(
         category
       )}`;
 
-      // If building_Id exists, append it
       if (building_Id) {
         url += `&building_id=${building_Id}`;
       }

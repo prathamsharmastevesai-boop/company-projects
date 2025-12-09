@@ -133,7 +133,7 @@ export const distilledExpenseTrackerEndpoint = "/det_expense/submit";
 export const distilledExpenseTrackerlistEndPoint = "/det_expense/submissions";
 
 //Calc
-export const calcEndpoint = "/calc/lease_finance";
+export const calcEndpoint = "calc/lease-finance";
 
 //Forum
 export const threadData = "/forum/threads";

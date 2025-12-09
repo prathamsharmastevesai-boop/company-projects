@@ -18,7 +18,7 @@ export const Dashboard = () => {
   const { BuildingList, loading } = useSelector((state) => state.BuildingSlice);
 
   useEffect(() => {
-    const category = "Lease&Loi";
+    const category = "BuildingInfo";
     dispatch(ListBuildingSubmit(category));
   }, [dispatch]);
 

@@ -88,6 +88,7 @@ import DealDetailView from "./Pages/User/TourPage/DealTracker/dealDetailView";
 import DealForm from "./Pages/User/TourPage/DealTracker/dealForm";
 import { RenewalTrackerList } from "./Pages/User/RenewalTracker/renewalTrackerList";
 import { RenewalTracker } from "./Pages/User/RenewalTracker/renewalTracker";
+import { CalulatorPage } from "./Pages/User/Calc/calculatorPage";
 
 function App() {
   useEffect(() => {
@@ -334,7 +335,7 @@ function App() {
 
             <Route path="/history" element={<SessionList />} />
 
-            <Route path="/calculator" element={<LeaseFinanceCalculator />} />
+            <Route path="/calculator" element={<CalulatorPage />} />
 
             <Route path="/dealList" element={<DealList />} />
 

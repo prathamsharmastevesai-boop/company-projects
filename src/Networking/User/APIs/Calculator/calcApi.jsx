@@ -8,7 +8,7 @@ export const calcSubmitApi = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(calcEndpoint, data);
-      toast.success(response.data?.message || "Calculation successful!");
+      toast.success(response.data?.message);
       return response.data;
     } catch (error) {
       const backendError =
@@ -20,6 +20,21 @@ export const calcSubmitApi = createAsyncThunk(
       toast.error(backendError);
 
       return rejectWithValue(backendError);
+    }
+  }
+);
+
+export const commissionSimpleApi = createAsyncThunk(
+  "calculator/commissionSimple",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        "/calc/commission_simple",
+        payload
+      );
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );

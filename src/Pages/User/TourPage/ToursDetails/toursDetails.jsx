@@ -20,7 +20,6 @@ export const ToursDetails = () => {
   const [viewModal, setViewModal] = useState(false);
   const [selectedTour, setSelectedTour] = useState(null);
 
-  // Fetch tours
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,13 +34,11 @@ export const ToursDetails = () => {
     fetchData();
   }, [dispatch]);
 
-  // Open modal to view notes
   const openViewModal = (tour) => {
     setSelectedTour(tour);
     setViewModal(true);
   };
 
-  // Delete modal
   const openDeleteModal = (id) => {
     setDeleteId(id);
   };
@@ -61,7 +58,6 @@ export const ToursDetails = () => {
     }
   };
 
-  // Loader
   if (loading) {
     return (
       <div

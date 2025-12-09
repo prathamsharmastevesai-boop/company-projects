@@ -33,7 +33,9 @@ export const ChatWindow = ({
     location.state?.type || propCategory
   );
 
-  const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
+  const [sessionId, setSessionId] = useState(null);
+
+  console.log(sessionId, "sessionId");
 
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
@@ -47,46 +49,33 @@ export const ChatWindow = ({
   const isLoading = isLoadingSession || isLoadingHistory;
 
   useEffect(() => {
+    if (location.state?.sessionId) {
+      setSessionId(location.state.sessionId);
+      setIsLoadingSession(false);
+      return;
+    }
+
+    // No sessionId passed → fetch last session normally
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
-      setIsLoadingHistory(true);
-
       try {
         const res = await dispatch(get_Session_List_Specific()).unwrap();
 
-        let sessionToUse = null;
+        const filtered = res.filter((s) => s.category === category);
 
-        if (Array.isArray(res) && res.length > 0) {
-          const filtered = res.filter(
-            (s) => s.category?.toLowerCase() === category?.toLowerCase()
-          );
-
-          if (filtered.length > 0) {
-            sessionToUse = filtered[filtered.length - 1].session_id;
-          }
-        }
-
-        if (!sessionToUse) {
-          const newAutoId = uuidv4();
-          setSessionId(newAutoId);
+        if (filtered.length > 0) {
+          setSessionId(filtered[filtered.length - 1].session_id);
+        } else {
+          setSessionId(uuidv4());
           setMessages([]);
-          return;
         }
-
-        setSessionId(sessionToUse);
-      } catch (err) {
-        console.error("Failed to fetch session list:", err);
-
-        const fallbackId = uuidv4();
-        setSessionId(fallbackId);
-        setMessages([]);
       } finally {
         setIsLoadingSession(false);
       }
     };
 
     fetchLastSession();
-  }, [category, dispatch]);
+  }, [category]);
 
   useEffect(() => {
     const fetchChatHistory = async () => {

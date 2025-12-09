@@ -6,27 +6,21 @@ import { Accordion } from "react-bootstrap";
 export const LeaseFinanceCalculator = () => {
   const dispatch = useDispatch();
 
-  // MAIN INPUTS
   const [grossArea, setGrossArea] = useState("");
   const [termYears, setTermYears] = useState("");
   const [freeRentMonths, setFreeRentMonths] = useState("");
 
-  // API-required fields
   const [baseRentYear1, setBaseRentYear1] = useState("");
   const [annualEscalation, setAnnualEscalation] = useState("");
 
-  // Newly added fields
   const [tiAllowance, setTiAllowance] = useState("");
   const [discountRate, setDiscountRate] = useState("");
 
-  // Commission Rates
   const [commissionList, setCommissionList] = useState([]);
 
-  // Results
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Calculator mini-widget
   const [input, setInput] = useState("");
   const handleClick = (value) => setInput(input + value);
   const clearInput = () => setInput("");
@@ -39,7 +33,6 @@ export const LeaseFinanceCalculator = () => {
     }
   };
 
-  // Auto-generate commission years
   const generateCommissionYears = () => {
     const years = Number(termYears);
     if (!years) return;
@@ -79,18 +72,18 @@ export const LeaseFinanceCalculator = () => {
     setLoading(true);
 
     const payload = {
-      square_footage: Number(grossArea),
-      total_term_years: Number(termYears),
-      base_rent_psf: Number(baseRentYear1),
-      annual_escalation_rate: Number(annualEscalation),
-      free_rent_months: Number(freeRentMonths),
+      Gross_Area_SF: Number(grossArea),
+      Total_Term_Years: Number(termYears),
+      Face_Rent_PSF: Number(baseRentYear1),
+      Annual_Escalation_Rate: Number(annualEscalation),
+      Free_Rent_Months: Number(freeRentMonths),
 
-      ti_allowance_psf: Number(tiAllowance),
-      discount_rate: Number(discountRate),
+      TI_Allowance_PSF: Number(tiAllowance),
+      Discount_Rate: Number(discountRate),
 
-      commission_rates: commissionList.map((item) => ({
+      Commission_Rate_per_Year: commissionList.map((item) => ({
         year: Number(item.year),
-        rate: Number(item.rate),
+        rate_pct: Number(item.rate),
       })),
     };
 
@@ -105,9 +98,9 @@ export const LeaseFinanceCalculator = () => {
 
   return (
     <>
-      <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
+      {/* <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
         <h5 className="mb-0 text-light">Lease Finance Calculator</h5>
-      </div>
+      </div> */}
 
       <div className="container-fuild p-3">
         <div className="row g-3">
@@ -239,75 +232,18 @@ export const LeaseFinanceCalculator = () => {
                 <>
                   <div className="p-2 bg-light rounded mb-2">
                     <strong>Net Effective Rent (PSF Annual):</strong>
-                    <h4>${result.net_effective_rent_psf_annual}</h4>
-                  </div>
-
-                  {/* <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Commission Advanced:</strong>
-                    <h4>${result.total_commission_advanced}</h4>
-                  </div> */}
-
-                  {/* <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Commission Simple:</strong>
-                    <h4>${result.total_commission_simple}</h4>
-                  </div> */}
-
-                  <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total TI Cost:</strong>
-                    <h4>${result.total_ti_cost}</h4>
-                  </div>
-
-                  {/* <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Free Rent Cost (Nominal):</strong>
-                    <h4>${result.total_free_rent_cost_nominal}</h4>
-                  </div> */}
-
-                  <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Gross Rent PV:</strong>
-                    <h4>${result.summary.total_gross_rent_pv}</h4>
+                    <h4>${result.NER_PSF_Annual}</h4>
                   </div>
 
                   <div className="p-2 bg-light rounded mb-2">
-                    <strong>Total Concessions PV:</strong>
-                    <h4>${result.summary.total_concessions_pv}</h4>
+                    <strong>Total Cash Outflow (Concessions):</strong>
+                    <h4>${result.Total_Cash_Outflow_Concessions}</h4>
                   </div>
 
                   <div className="p-2 bg-light rounded mb-2">
-                    <strong>Net Present Value:</strong>
-                    <h4>${result.summary.net_present_value}</h4>
+                    <strong>NPV Rent:</strong>
+                    <h4>${result.NPV_Rent}</h4>
                   </div>
-
-                  <Accordion defaultActiveKey="0" className="mt-3">
-                    {result.yearly_breakdown?.map((year, idx) => (
-                      <Accordion.Item eventKey={String(idx)} key={idx}>
-                        <Accordion.Header>
-                          Year {year.year} — Rent ${year.rent_psf}
-                        </Accordion.Header>
-
-                        <Accordion.Body>
-                          <p>
-                            <strong>Gross Rent:</strong> ${year.gross_rent}
-                          </p>
-                          <p>
-                            <strong>Free Rent This Year:</strong> $
-                            {year.free_rent_this_year}
-                          </p>
-                          <p>
-                            <strong>Commissionable Rent:</strong> $
-                            {year.commissionable_rent}
-                          </p>
-                          <p>
-                            <strong>Commission Rate (%):</strong>{" "}
-                            {year.commission_rate_pct}%
-                          </p>
-                          <p>
-                            <strong>Commission Amount:</strong> $
-                            {year.commission_amount}
-                          </p>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    ))}
-                  </Accordion>
                 </>
               )}
             </div>
