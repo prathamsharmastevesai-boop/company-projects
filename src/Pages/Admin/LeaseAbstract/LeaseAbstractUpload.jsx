@@ -120,7 +120,7 @@ export const LeaseAbstractUpload = () => {
       const res = await dispatch(DownloadGeneratedLease(file_id)).unwrap();
 
       if (!res || !res.download_url) {
-        toast.error("Download URL not found");
+        toast.error("Download Url not found");
       } else {
         window.open(res.download_url, "_blank");
       }
