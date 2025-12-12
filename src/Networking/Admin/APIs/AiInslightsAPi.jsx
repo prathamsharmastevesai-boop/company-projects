@@ -77,3 +77,20 @@ export const getActivitySummaryApi = createAsyncThunk(
     }
   }
 );
+
+export const DownloadGeneratedLease1 = createAsyncThunk(
+  "lease/DownloadGeneratedLease",
+  async (fileId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/generate_lease/files/${fileId}`
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch lease download link"
+      );
+    }
+  }
+);

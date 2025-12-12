@@ -7,7 +7,7 @@ import {
   ListAbstractLeaseDoc,
   UploadAbstractLeaseDoc,
 } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
-import { DownloadGeneratedLease } from "../../../Networking/Admin/APIs/LeaseApi";
+import { DownloadGeneratedLease1 } from "../../../Networking/Admin/APIs/AiInslightsAPi";
 
 export const LeaseAbstractUpload = () => {
   const dispatch = useDispatch();
@@ -117,7 +117,7 @@ export const LeaseAbstractUpload = () => {
 
     setItemLoadingState(file_id, true);
     try {
-      const res = await dispatch(DownloadGeneratedLease(file_id)).unwrap();
+      const res = await dispatch(DownloadGeneratedLease1(file_id)).unwrap();
 
       if (!res || !res.download_url) {
         toast.error("Download Url not found");
