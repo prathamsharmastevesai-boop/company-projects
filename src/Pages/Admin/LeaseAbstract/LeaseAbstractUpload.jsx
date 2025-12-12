@@ -13,6 +13,7 @@ import {
   UploadAbstractLeaseDoc,
 } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
 import { baseURL } from "../../../Networking/NWconfig";
+import { DownloadGeneratedLease } from "../../../Networking/Admin/APIs/LeaseApi";
 
 export const LeaseAbstractUpload = () => {
   const dispatch = useDispatch();
@@ -210,18 +211,27 @@ export const LeaseAbstractUpload = () => {
   //   toast.success("Feedback submitted. Thank you!");
   // };
 
-  // const handleDownloadDraft = () => {
-  //   const textToDownload = isEditing ? editedDraft : aiDraft;
-  //   const blob = new Blob([textToDownload], { type: "text/plain" });
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.download = selectedDoc
-  //     ? `${selectedDoc.original_file_name.replace(/\.[^/.]+$/, "")}_draft.txt`
-  //     : "lease_draft.txt";
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
+  const handleDownloadDraft = async (file_id) => {
+    console.log(file_id, "file_id");
+
+    if (!file_id) {
+      toast.error("Please select a document first");
+      return;
+    }
+
+    try {
+      const res = await dispatch(DownloadGeneratedLease(file_id)).unwrap();
+
+      if (!file_id) {
+        toast.error("Download URL not found");
+        return;
+      }
+
+      window.open(res.download_url, "_blank");
+    } catch (err) {
+      toast.error(err || "Download failed");
+    }
+  };
 
   // const renderDiff = () => {
   //   const diff = diffWords(aiDraft, editedDraft);
@@ -317,17 +327,13 @@ export const LeaseAbstractUpload = () => {
                 >
                   <div>{doc.original_file_name}</div>
                   <div className="d-flex gap-3 align-items-center">
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
                       className="btn btn-sm btn-outline-info"
-                      onClick={() =>
-                        window.open(baseURL + doc.file_url, "_blank")
-                      }
+                      onClick={() => handleDownloadDraft(doc.file_id)}
                     >
                       Download
-                    </a>
+                    </button>
+
                     <i
                       className="bi bi-trash text-danger"
                       style={{ cursor: "pointer" }}
