@@ -143,7 +143,7 @@ export const LeaseAbstractUpload = () => {
 
       <div className="container-fuild p-3">
         <p className="text-muted">
-          Upload an LOI, review extracted terms, and generate a draft lease
+          Upload a Lease, review extracted terms, and generate a draft lease
           automatically.
         </p>
 
@@ -166,7 +166,9 @@ export const LeaseAbstractUpload = () => {
         </div>
 
         <div className="card shadow-sm mb-4">
-          <div className="card-header fw-semibold">Uploaded LOI Documents</div>
+          <div className="card-header fw-semibold">
+            Uploaded Lease Documents
+          </div>
 
           {loader ? (
             <div className="text-center p-3">
