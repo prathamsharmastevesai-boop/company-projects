@@ -29,9 +29,7 @@ export const SelectUserBuildingCategory = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h5 className="fw-bold text-dark px-3">
-          Select Category to Upload Documents
-        </h5>
+        <h5 className="fw-bold text-dark px-3">Select Category</h5>
       </div>
 
       <div className="px-3 mb-4 d-flex justify-content-center justify-content-md-start">
@@ -56,7 +54,7 @@ export const SelectUserBuildingCategory = () => {
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Floor Plan</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to <strong>Floor Plan</strong>.
+                  documents related to <strong>Floor Plan</strong>.
                 </Card.Text>
                 <Button
                   variant="dark"
@@ -64,7 +62,7 @@ export const SelectUserBuildingCategory = () => {
                   className="w-100"
                   onClick={() => handleCategory("floor_plan")}
                 >
-                  Upload Floor Plan
+                  Floor Plan
                 </Button>
               </Card.Body>
             </Card>
@@ -75,7 +73,7 @@ export const SelectUserBuildingCategory = () => {
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
                 <Card.Title className="fs-4 mb-3">Building Stack</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to <strong>Building Stack</strong>.
+                  documents related to <strong>Building Stack</strong>.
                 </Card.Text>
                 <Button
                   variant="dark"
@@ -83,7 +81,7 @@ export const SelectUserBuildingCategory = () => {
                   className="w-100"
                   onClick={() => handleCategory("building_stack")}
                 >
-                  Upload Building Stack
+                  Building Stack
                 </Button>
               </Card.Body>
             </Card>

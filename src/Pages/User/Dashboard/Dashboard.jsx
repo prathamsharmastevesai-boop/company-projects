@@ -55,7 +55,9 @@ export const Dashboard = () => {
 
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    navigate("/BuildingChat", { state: { office: { buildingId } } });
+    navigate("/SelectUserBuildingCategory", {
+      state: { office: { buildingId } },
+    });
   };
 
   return (

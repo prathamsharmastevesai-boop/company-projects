@@ -23,6 +23,7 @@ export const ChatWindow = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
+  console.log(building_id, "building_id");
 
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
