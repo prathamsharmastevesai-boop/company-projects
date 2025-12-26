@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
-import { InformationCollaboration } from "./InformationCollaboration";
 import { AdminInformationCollaboration } from "../../Admin/InformationCollaboration/adminInformationCollaboration";
+import { InformationCollaboration } from "../UserInfoCollab/informationCollaboration";
 
 export const InformationCollaborationPage = () => {
   const [activeTab, setActiveTab] = useState("form");
