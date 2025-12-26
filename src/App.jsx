@@ -89,7 +89,7 @@ import { RenewalTrackerList } from "./Pages/User/RenewalTracker/renewalTrackerLi
 import { RenewalTracker } from "./Pages/User/RenewalTracker/renewalTracker";
 import { CalulatorPage } from "./Pages/User/Calc/calculatorPage";
 import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollaboration/adminInformationCollaboration";
-import { InformationCollaboration } from "./Pages/User/InformationCollaboration/InformationCollaboration";
+
 import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
 import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
