@@ -80,7 +80,7 @@ import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrack
 import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
 import { Notes } from "./Pages/User/Notes/notes";
 import { SubleaseTrackerChat } from "./Pages/User/SubleaseTracker/subleaseTrackerChat";
-import { SubleaseTrackerUserBuildinglist } from "./Pages/User/SubleaseTracker/subleaseTrackerList";
+
 import { SpaceInquiry } from "./Pages/Admin/SpaceInquiry/spaceInquiry";
 import DealList from "./Pages/User/DealTracker/dealList";
 import DealDetailView from "./Pages/User/DealTracker/dealDetailView";
