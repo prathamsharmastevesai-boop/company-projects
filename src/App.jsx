@@ -49,8 +49,7 @@ import { LeaseAbstractUpload } from "./Pages/Admin/LeaseAbstract/LeaseAbstractUp
 import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
 import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/comparetiveBuilding";
 import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
-import { Feedback } from "./Pages/User/Feedback/feedback";
-import { AdminFeedback } from "./Pages/Admin/Feedback/adminFeedback";
+
 import { TenantMarket } from "./Pages/User/TenantMarket/tenantMarket";
 import { TenantMarketUpload } from "./Pages/Admin/GeneralInfo/TenantMarket";
 import { TenantInformation } from "./Pages/User/TenantInformation/tenantInformationChat";
@@ -71,7 +70,7 @@ import { BuildingInfoList } from "./Pages/Admin/GeneralInfo/BuildingInfoList";
 import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/comparativeUserBuildinglist";
 import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
 import { LeaseFinanceCalculator } from "./Pages/User/Calc/calculator";
-import { InformationCollaborationPage } from "./Pages/User/Feedback/feedBackpages";
+import { InformationCollaborationPage } from "./Pages/User/InformationCollaboration/informationCollaborationpages";
 import { TenentInfoUserBuildinglist } from "./Pages/User/TenantInformation/tenentInformationList";
 import { TenentInfoBuildingList } from "./Pages/Admin/GeneralInfo/tenentInformationList";
 import { Benchmark } from "./Pages/User/DistilledExpenseTracker/benchmark";
@@ -83,12 +82,17 @@ import { Notes } from "./Pages/User/Notes/notes";
 import { SubleaseTrackerChat } from "./Pages/User/SubleaseTracker/subleaseTrackerChat";
 import { SubleaseTrackerUserBuildinglist } from "./Pages/User/SubleaseTracker/subleaseTrackerList";
 import { SpaceInquiry } from "./Pages/Admin/SpaceInquiry/spaceInquiry";
-import DealList from "./Pages/User/TourPage/DealTracker/dealList";
-import DealDetailView from "./Pages/User/TourPage/DealTracker/dealDetailView";
-import DealForm from "./Pages/User/TourPage/DealTracker/dealForm";
+import DealList from "./Pages/User/DealTracker/dealList";
+import DealDetailView from "./Pages/User/DealTracker/dealDetailView";
+import DealForm from "./Pages/User/DealTracker/dealForm";
 import { RenewalTrackerList } from "./Pages/User/RenewalTracker/renewalTrackerList";
 import { RenewalTracker } from "./Pages/User/RenewalTracker/renewalTracker";
 import { CalulatorPage } from "./Pages/User/Calc/calculatorPage";
+import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollaboration/adminInformationCollaboration";
+import { InformationCollaboration } from "./Pages/User/InformationCollaboration/InformationCollaboration";
+import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
+import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
+import { CreNews } from "./Pages/User/CreNews/creNews";
 
 function App() {
   useEffect(() => {
@@ -163,6 +167,11 @@ function App() {
             <Route path="/toursDetails" element={<ToursDetails />} />
             <Route path="/CreateBuilding" element={<CreateBuilding />} />
             <Route path="/Building_list" element={<ListBuilding />} />
+            <Route
+              path="/Select_Building_Category"
+              element={<SelectBuildingCategory />}
+            />
+
             <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
             <Route
               path="/BuildingPdfUploader"
@@ -195,7 +204,7 @@ function App() {
 
             <Route
               path="/adminInformationCollaboration"
-              element={<AdminFeedback />}
+              element={<AdminInformationCollaboration />}
             />
 
             <Route
@@ -242,7 +251,7 @@ function App() {
             />
 
             <Route path="/UserLease" element={<UserLeaseList />} />
-
+            <Route path="/CreNews" element={<CreNews />} />
             <Route path="/UserChat" element={<UserChat />} />
 
             <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
@@ -253,10 +262,13 @@ function App() {
               path="/ComparativeBuildingChat"
               element={<ComparativeBuildingChat />}
             />
-            <Route path="/InformationCollaboration" element={<Feedback />} />
+            <Route
+              path="/InformationCollaboration"
+              element={<InformationCollaboration />}
+            />
             <Route
               path="/InformationCollaborationList"
-              element={<AdminFeedback />}
+              element={<AdminInformationCollaboration />}
             />
             <Route
               path="/InformationCollaborationPage"
@@ -276,6 +288,10 @@ function App() {
             <Route path="/ThirdPartychat" element={<BrokerChat />} />
             <Route path="/ColleagueChat" element={<ColleagueChat />} />
             <Route path="/BuildingChat" element={<BuildingChat />} />
+            <Route
+              path="/SelectUserBuildingCategory"
+              element={<SelectUserBuildingCategory />}
+            />
             <Route
               path="/UserBuildingInfolist"
               element={<UserBuildingInfolist />}

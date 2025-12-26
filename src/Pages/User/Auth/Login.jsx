@@ -20,17 +20,17 @@ export const Login = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const auth = JSON.parse(sessionStorage.getItem("auth"));
+    const token = sessionStorage.getItem("access_token");
+    const role = sessionStorage.getItem("role");
 
-    if (token && auth?.isAuthenticated) {
-      if (auth.role === "user") {
-        navigate("/dashboard");
-      } else if (auth.role === "admin") {
-        navigate("/CreateBuilding");
-      } else if (auth.role === "superuser") {
-        navigate("/AdminManagement");
-      }
+    if (!token || !role) return;
+
+    if (role === "user") {
+      navigate("/dashboard");
+    } else if (role === "admin") {
+      navigate("/CreateBuilding");
+    } else if (role === "superuser") {
+      navigate("/AdminManagement");
     }
   }, []);
 
@@ -66,23 +66,19 @@ export const Login = () => {
 
       const { role, access_token } = res;
 
-      if (role === "user") {
-        sessionStorage.setItem(
-          "auth",
-          JSON.stringify({ isAuthenticated: true, role })
-        );
-
-        if (access_token) {
-          // console.log("got token");
-          sessionStorage.setItem("access_token", access_token);
-        }
-
-        toast.success("User login successful");
-        navigate("/dashboard", { state: { email } });
-      } else {
-        toast.error("Invalid Credentials");
+      if (role !== "user") {
+        toast.error("Invalid credentials");
+        return;
       }
+
+      // ✅ Store only what is needed
+      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("access_token", access_token);
+
+      toast.success("User login successful");
+      navigate("/dashboard", { state: { email } });
     } catch (err) {
+      // toast.error("Login failed");
     } finally {
       setLoading(false);
     }

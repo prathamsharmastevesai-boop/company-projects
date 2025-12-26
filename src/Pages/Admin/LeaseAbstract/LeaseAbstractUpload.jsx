@@ -39,7 +39,7 @@ export const LeaseAbstractUpload = () => {
       })
       .catch((err) => {
         console.error("Failed to fetch lease docs:", err);
-        toast.error("Failed to fetch documents");
+        // toast.error("Failed to fetch documents");
       })
       .finally(() => setLoader(false));
   };
@@ -75,7 +75,7 @@ export const LeaseAbstractUpload = () => {
       })
       .catch((err) => {
         console.error("Upload failed:", err);
-        toast.error("Upload failed");
+        // toast.error("Upload failed");
       })
       .finally(() => setLoader(false));
   };
@@ -138,7 +138,7 @@ export const LeaseAbstractUpload = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light"> AI Lease Abstract</h5>
+        <h5 className="mb-0 text-light mx-4"> AI Lease Abstract</h5>
       </div>
 
       <div className="container-fuild p-3">

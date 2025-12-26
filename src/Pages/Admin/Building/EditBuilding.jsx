@@ -77,7 +77,7 @@ export const UpdateBuilding = () => {
           <div key={index} className="card shadow-sm mb-4 border-0">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="card-title mb-0">🏢 Building No. {index + 1}</h5>
+                <h5 className="card-title mb-0">Building No. {index + 1}</h5>
                 {buildings.length > 1 && (
                   <button
                     type="button"

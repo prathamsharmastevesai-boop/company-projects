@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 export const VerifyOtp = () => {
-
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -16,7 +15,6 @@ export const VerifyOtp = () => {
   const navigate = useNavigate();
 
   const data = location.state;
-
 
   const handleChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
@@ -48,9 +46,11 @@ export const VerifyOtp = () => {
       setLoading(true);
       const result = await dispatch(VerifyOtpSubmit(payload)).unwrap();
       {
-        data.screen == "SignUp" ?
-
-          navigate("/") : navigate("/ResetPassword", { state: { email: data.email } });
+        data.screen == "SignUp"
+          ? toast.success(result.message || "OTP verified successfully!") &&
+            navigate("/")
+          : toast.success(result.message || "OTP verified successfully!") &&
+            navigate("/ResetPassword", { state: { email: data.email } });
       }
     } catch (error) {
     } finally {
@@ -63,7 +63,10 @@ export const VerifyOtp = () => {
       <h2 className="mb-4">🔐 Verify OTP</h2>
       <p className="text-muted mb-4">We've sent a code to {data.email}</p>
       {error && (
-        <div className="alert alert-danger mb-4 w-100 text-center" style={{ maxWidth: "400px" }}>
+        <div
+          className="alert alert-danger mb-4 w-100 text-center"
+          style={{ maxWidth: "400px" }}
+        >
           {error}
         </div>
       )}
@@ -88,11 +91,15 @@ export const VerifyOtp = () => {
       <button
         onClick={handleVerify}
         className="btn btn-dark w-25 mb-3"
-        disabled={loading || otp.some(digit => digit === "")}
+        disabled={loading || otp.some((digit) => digit === "")}
       >
         {loading ? (
           <>
-            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <span
+              className="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
             Verifying...
           </>
         ) : (
@@ -108,8 +115,7 @@ export const VerifyOtp = () => {
           >
             Back to Login
           </button>
-        ) : null
-        }
+        ) : null}
       </div>
     </div>
   );

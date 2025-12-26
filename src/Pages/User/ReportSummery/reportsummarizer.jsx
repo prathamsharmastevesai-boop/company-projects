@@ -166,7 +166,7 @@ export const SummeryUpload = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light">Report Summarizer</h5>
+        <h5 className="mb-0 text-light mx-4">Report Summarizer</h5>
       </div>
       <div className="container-fuild p-3">
         <p className="text-muted">Upload a PDF report to summarize</p>

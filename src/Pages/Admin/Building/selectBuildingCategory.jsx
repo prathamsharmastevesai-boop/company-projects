@@ -1,27 +1,19 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 
-export const LeaseList = () => {
-  const location = useLocation();
+export const SelectBuildingCategory = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const initialBuildings = location?.state?.office;
-  const id = initialBuildings?.buildingId;
+  const buildingId = location?.state?.office?.buildingId;
 
-  const handleLease = (Building_id) => {
-    navigate("/LeaseInfo", {
+  const handleCategory = (category) => {
+    navigate("/BuildingInfo", {
       state: {
-        office: { Building_id, type: "Lease" },
-      },
-    });
-  };
-
-  const handleLOI = (Building_id) => {
-    navigate("/LeaseInfo", {
-      state: {
-        office: { Building_id, type: "LOI" },
+        buildingId,
+        category,
       },
     });
   };
@@ -37,8 +29,8 @@ export const LeaseList = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h5 className="fw-bold text-dark px-3 mt-4">
-          Select Section to Upload Lease Agreement or Letter of Intent
+        <h5 className="fw-bold text-dark px-3">
+          Select Category to Upload Documents
         </h5>
       </div>
 
@@ -62,18 +54,17 @@ export const LeaseList = () => {
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
-                <Card.Title className="fs-4 mb-3">Lease Agreement</Card.Title>
+                <Card.Title className="fs-4 mb-3">Floor Plan</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to <strong>Lease Agreement</strong>{" "}
-                  here.
+                  Upload documents related to <strong>Floor Plan</strong>.
                 </Card.Text>
                 <Button
                   variant="dark"
                   size="lg"
                   className="w-100"
-                  onClick={() => handleLease(id)}
+                  onClick={() => handleCategory("floor_plan")}
                 >
-                  Upload Lease Agreement
+                  Upload Floor Plan
                 </Button>
               </Card.Body>
             </Card>
@@ -82,18 +73,17 @@ export const LeaseList = () => {
           <Col xs={12} sm={10} md={6} lg={5}>
             <Card className="shadow-lg border-0 h-100">
               <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
-                <Card.Title className="fs-4 mb-3">Letter of Intent</Card.Title>
+                <Card.Title className="fs-4 mb-3">Building Stack</Card.Title>
                 <Card.Text className="fs-6 mb-4">
-                  Upload documents related to <strong>Letter of Intent</strong>{" "}
-                  here.
+                  Upload documents related to <strong>Building Stack</strong>.
                 </Card.Text>
                 <Button
                   variant="dark"
                   size="lg"
                   className="w-100"
-                  onClick={() => handleLOI(id)}
+                  onClick={() => handleCategory("building_stack")}
                 >
-                  Upload Letter of Intent
+                  Upload Building Stack
                 </Button>
               </Card.Body>
             </Card>

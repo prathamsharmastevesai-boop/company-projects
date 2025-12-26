@@ -185,7 +185,9 @@ export const ListBuilding = () => {
             <div className="col-md-12 py-2">
               <div className="d-flex mx-1">
                 <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                <div className="mx-2 check">{building.address || "N/A"}</div>
+                <div className="mx-2 check w-75">
+                  {building.address || "N/A"}
+                </div>
                 {/* <strong>Curated Intelligence:</strong> */}
               </div>
             </div>
@@ -215,7 +217,7 @@ export const ListBuilding = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h2 className="fw-bold text-dark">🏢 Building List</h2>
+        <h2 className="fw-bold text-dark">Building List</h2>
         <p className="text-muted mb-3">
           Here’s a summary of all the submitted buildings.
         </p>

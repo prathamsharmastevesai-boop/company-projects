@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { FeedbackSubmit } from "../../../Networking/User/APIs/Feedback/feedbackApi";
 
-export const Feedback = () => {
+export const InformationCollaboration = () => {
   const dispatch = useDispatch();
 
   const [feedback, setFeedback] = useState("");

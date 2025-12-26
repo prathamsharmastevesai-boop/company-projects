@@ -74,8 +74,6 @@ export const CommissionCalculator = () => {
       })),
     };
 
-    console.log("FINAL PAYLOAD:", JSON.stringify(payload, null, 2));
-
     try {
       const response = await dispatch(commissionSimpleApi(payload));
 

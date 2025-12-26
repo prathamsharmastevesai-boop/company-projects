@@ -201,7 +201,7 @@ export const LeaseDraftingUpload = () => {
 
   const handleSubmitFeedback = () => {
     if (!feedback) {
-      toast.error("Please select 👍 or 👎 before submitting feedback.");
+      toast.error("Please select thumb before submitting feedback.");
       return;
     }
     setSubmittedFeedback(true);
@@ -265,7 +265,7 @@ export const LeaseDraftingUpload = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h5 className="fw-bold">📑 AI Lease Drafting</h5>
+      <h5 className="fw-bold mt-4">📑 AI Lease Drafting</h5>
       <p className="text-muted">
         Upload an LOI, review extracted terms, and generate a draft lease
         automatically.
@@ -458,19 +458,18 @@ export const LeaseDraftingUpload = () => {
               <div style={{ whiteSpace: "pre-wrap" }}>{aiDraft}</div>
             )}
           </div>
+          <div className="d-flex justify-content-end m-3">
+            <button
+              className="btn btn-outline-success"
+              onClick={handleDownloadDraft}
+            >
+              <i className="bi bi-download me-2"></i>
+              Download Draft
+            </button>
+          </div>
 
           {!isEditing && !submittedFeedback && (
             <div className="card-footer">
-              <div className="d-flex justify-content-end mb-3">
-                <button
-                  className="btn btn-outline-success"
-                  onClick={handleDownloadDraft}
-                >
-                  <i className="bi bi-download me-2"></i>
-                  Download Draft
-                </button>
-              </div>
-
               <h6 className="fw-semibold mb-2">Provide Feedback</h6>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <i

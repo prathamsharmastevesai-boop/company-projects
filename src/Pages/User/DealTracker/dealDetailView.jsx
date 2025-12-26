@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import {
   getDealTracker,
   updateDealTracker,
-} from "../../../../Networking/User/APIs/DealTracker/dealTrackerApi";
+} from "../../../Networking/User/APIs/DealTracker/dealTrackerApi";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

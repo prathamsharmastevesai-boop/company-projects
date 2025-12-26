@@ -9,7 +9,7 @@ import {
 } from "../../../Networking/User/APIs/Feedback/feedbackApi";
 import { toast } from "react-toastify";
 
-export const AdminFeedback = () => {
+export const AdminInformationCollaboration = () => {
   const dispatch = useDispatch();
 
   const [feedbacks, setFeedbacks] = useState([]);
@@ -27,7 +27,6 @@ export const AdminFeedback = () => {
 
   const [viewModal, setViewModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
-  console.log(editId, editText, selectedFeedback, "editId");
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -64,7 +63,7 @@ export const AdminFeedback = () => {
           feedback: editText,
         })
       ).unwrap();
-      console.log("gsgsdf");
+
       setFeedbacks((prev) =>
         prev.map((item) =>
           item.id === editId ? { ...item, feedback: editText } : item

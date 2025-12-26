@@ -24,14 +24,20 @@ export const ForgotPassword = () => {
     try {
       const data = {
         email,
+      };
+      const res = await dispatch(Forget_passwordSubmit(data));
+
+      if (res?.error?.message === "Rejected") {
+        return;
       }
-      await dispatch(Forget_passwordSubmit(data))
+
       navigate("/VerifyOtp", { state: { email } });
-      toast.success(response.data.message || "Password reset link sent to your email.");
+      toast.success(
+        response.data.message || "Password reset link sent to your email."
+      );
       setEmail("");
     } catch (error) {
       console.log(error);
-
     } finally {
       setLoading(false);
     }
@@ -39,9 +45,14 @@ export const ForgotPassword = () => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
+      <div
+        className="card p-4 shadow"
+        style={{ maxWidth: "400px", width: "100%" }}
+      >
         <h4 className="text-center mb-3">Forgot Password</h4>
-        <p className="text-muted text-center mb-4">Enter your registered email address</p>
+        <p className="text-muted text-center mb-4">
+          Enter your registered email address
+        </p>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -57,7 +68,11 @@ export const ForgotPassword = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-dark w-100 mb-3" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-dark w-100 mb-3"
+            disabled={loading}
+          >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>

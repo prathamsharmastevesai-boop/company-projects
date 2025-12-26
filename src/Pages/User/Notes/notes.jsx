@@ -112,7 +112,7 @@ export const Notes = () => {
   return (
     <div>
       <div className="header-bg d-flex justify-content-between px-3 align-items-center sticky-header">
-        <h5 className="mb-0 text-light">Notes</h5>
+        <h5 className="mb-0 text-light mx-4">Notes</h5>
         <button className="btn btn-secondary btn-sm" onClick={openNewNote}>
           + New Note
         </button>

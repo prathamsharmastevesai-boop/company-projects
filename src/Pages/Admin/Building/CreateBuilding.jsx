@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { CreateBuildingSubmit, ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
+import {
+  CreateBuildingSubmit,
+  ListBuildingSubmit,
+} from "../../../Networking/Admin/APIs/BuildingApi";
 import RAGLoader from "../../../Component/Loader";
 
 export const CreateBuilding = () => {
@@ -47,7 +50,7 @@ export const CreateBuilding = () => {
       )}
 
       <div className="text-center mb-4">
-        <h2 className="fw-bold text-dark">🏢 Add a Building</h2>
+        <h2 className="fw-bold text-dark">Add a Building</h2>
         <p className="text-muted">Enter the building address and click Add.</p>
       </div>
 

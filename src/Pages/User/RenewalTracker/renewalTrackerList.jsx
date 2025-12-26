@@ -317,7 +317,7 @@ export const RenewalTrackerList = () => {
     <>
       {Role === "user" && (
         <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-          <h5 className="mb-0 text-light">Renewal Tracker List</h5>
+          <h5 className="mb-0 text-light mx-4">Renewal Tracker List</h5>
         </div>
       )}
       <div className="container py-4">

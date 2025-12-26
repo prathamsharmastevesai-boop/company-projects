@@ -5,8 +5,6 @@ export const ComparativeBuildingChat = () => {
   const location = useLocation();
   const buildingId = location?.state?.office?.buildingId;
 
-  console.log(buildingId, "buildingIdbuildingId");
-
   return (
     <ChatWindow
       category="ComparativeBuilding"

@@ -143,7 +143,7 @@ export const PortfolioVoice = () => {
     <div className="container-fuild p-3 ">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <div>
-          <h4 className="fw-bold mb-1">Portfolio Voice</h4>
+          <h4 className="fw-bold mt-4">Portfolio Voice</h4>
           <p className="text-muted mb-0">
             Upload and manage documents for data retrieval
           </p>
@@ -226,13 +226,7 @@ export const PortfolioVoice = () => {
                   {sortedDocs.map((doc) => (
                     <tr key={doc.file_id}>
                       <td>
-                        <a
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {doc.original_file_name}
-                        </a>
+                        <a>{doc.original_file_name}</a>
                       </td>
                       <td>
                         {parseFloat(doc.size)

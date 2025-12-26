@@ -1,10 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaUserShield } from "react-icons/fa";
 import bgImage from "../../src/assets/side_photo.jpg";
+import { useDispatch } from "react-redux";
+import { getHealth } from "../Networking/User/APIs/Health/health";
 
 export const Home = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    const fetchHealth = async () => {
+      try {
+        const res = await dispatch(getHealth()).unwrap();
+        setStatus(res.status);
+        console.log(res, "res");
+      } catch (error) {
+        console.error("Health API error:", error);
+      }
+    };
+
+    fetchHealth();
+  }, [dispatch]);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -40,6 +59,9 @@ export const Home = () => {
           border: "1px solid rgba(255, 255, 255, 0.3)",
         }}
       >
+        <h2 className="mb-4 text-danger fw-bold">
+          {!status == "ok" ? "website down!!" : ""}
+        </h2>
         <h2 className="mb-4 text-dark fw-bold">
           Welcome to CRE Portfolio Pulse
         </h2>

@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { getUserlistApi, inviteUserApi } from "../../../Networking/Admin/APIs/UserManagement";
+import {
+  getUserlistApi,
+  inviteUserApi,
+} from "../../../Networking/Admin/APIs/UserManagement";
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
-import { getAdminlistApi, inviteAdminApi } from "../../../Networking/SuperAdmin/AdminSuperApi";
+import {
+  getAdminlistApi,
+  inviteAdminApi,
+} from "../../../Networking/SuperAdmin/AdminSuperApi";
 
 export const AdminManagement = () => {
   const dispatch = useDispatch();
@@ -68,7 +74,9 @@ export const AdminManagement = () => {
     setErrors({});
     setInviteLoading(true);
     try {
-      await dispatch(inviteAdminApi({ email, company_name, admin_name })).unwrap();
+      await dispatch(
+        inviteAdminApi({ email, company_name, admin_name })
+      ).unwrap();
       setEmail("");
       setcompany_name("");
       setadmin_name("");
@@ -91,8 +99,9 @@ export const AdminManagement = () => {
       <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>
           <p className="mb-0">
-            <strong>🔒 Security Model:</strong> Only Super Administrators can create
-            Super Administrators accounts. Admins receive secure credentials via email.
+            <strong>🔒 Security Model:</strong> Only Super Administrators can
+            create Super Administrators accounts. Admins receive secure
+            credentials via email.
           </p>
         </Card.Body>
       </Card>
@@ -184,7 +193,9 @@ export const AdminManagement = () => {
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
             <h5 className="mb-0">Active Admins</h5>
-            <span className="badge bg-dark mt-2 mt-sm-0">{admin.length} Total Admin</span>
+            <span className="badge bg-dark mt-2 mt-sm-0">
+              {admin.length} Total Admin
+            </span>
           </div>
 
           <div className="table-responsive">

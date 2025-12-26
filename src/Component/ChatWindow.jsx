@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
 import {
+  AskQuestionBuildingAPI,
   AskQuestionGeneralAPI,
   AskQuestionReportAPI,
 } from "../Networking/Admin/APIs/GeneralinfoApi";
@@ -34,9 +35,6 @@ export const ChatWindow = ({
   );
 
   const [sessionId, setSessionId] = useState(null);
-
-  console.log(sessionId, "sessionId");
-
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -45,10 +43,36 @@ export const ChatWindow = ({
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [isLoadingSession, setIsLoadingSession] = useState(false);
   const [isReplyLoading, setIsReplyLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [previewPdf, setPreviewPdf] = useState(null);
 
   const isLoading = isLoadingSession || isLoadingHistory;
 
+  const isValidUrl = (text) => {
+    try {
+      new URL(text);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const getContentType = (url) => {
+    if (!url) return "text";
+    const cleanUrl = url.split("?")[0].toLowerCase();
+
+    if (cleanUrl.match(/\.(jpg|jpeg|png|webp)$/)) return "image";
+    if (cleanUrl.endsWith(".pdf")) return "pdf";
+    return "link";
+  };
+
   useEffect(() => {
+    if (category === "floor_plan" || category === "building_stack") {
+      setSessionId("building-chat");
+      setIsLoadingSession(false);
+      return;
+    }
+
     if (location.state?.sessionId) {
       setSessionId(location.state.sessionId);
       setIsLoadingSession(false);
@@ -59,7 +83,6 @@ export const ChatWindow = ({
       setIsLoadingSession(true);
       try {
         const res = await dispatch(get_Session_List_Specific()).unwrap();
-
         const filtered = res.filter((s) => s.category === category);
 
         if (filtered.length > 0) {
@@ -74,16 +97,22 @@ export const ChatWindow = ({
     };
 
     fetchLastSession();
-  }, [category]);
+  }, [category, dispatch]);
 
   useEffect(() => {
-    const fetchChatHistory = async () => {
-      if (!sessionId) {
-        setMessages([]);
-        setIsLoadingHistory(false);
-        return;
-      }
+    if (category === "floor_plan" || category === "building_stack") {
+      setMessages([]);
+      setIsLoadingHistory(false);
+      return;
+    }
 
+    if (!sessionId) {
+      setMessages([]);
+      setIsLoadingHistory(false);
+      return;
+    }
+
+    const fetchChatHistory = async () => {
       setIsLoadingHistory(true);
       try {
         const res = await dispatch(get_Chat_History(sessionId)).unwrap();
@@ -96,17 +125,13 @@ export const ChatWindow = ({
         } else {
           setMessages([]);
         }
-      } catch (error) {
-        console.error("Failed to fetch chat history:", error);
-
-        setMessages([]);
       } finally {
         setIsLoadingHistory(false);
       }
     };
 
     fetchChatHistory();
-  }, [sessionId, dispatch]);
+  }, [sessionId, category, dispatch]);
 
   const scrollToBottom = () => {
     if (chatRef.current)
@@ -175,7 +200,12 @@ export const ChatWindow = ({
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
 
-    const userMessage = { message, sender: "User", timestamp: new Date() };
+    const userMessage = {
+      message,
+      sender: "User",
+      timestamp: new Date(),
+    };
+
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
     scrollToBottom();
@@ -184,28 +214,47 @@ export const ChatWindow = ({
       setIsSending(true);
       setIsReplyLoading(true);
 
-      const payload = {
-        session_id: sessionId,
-        question: userMessage.message,
-        category,
-        file_id: fileId,
-        building_id,
-      };
-
       let response;
 
-      if (category === "report_generation") {
+      if (category === "floor_plan" || category === "building_stack") {
+        const payload = {
+          question: userMessage.message,
+          building_id,
+          category,
+        };
+
+        response = await dispatch(AskQuestionBuildingAPI(payload)).unwrap();
+      } else if (category === "report_generation") {
+        const payload = {
+          session_id: sessionId,
+          question: userMessage.message,
+          category,
+          file_id: fileId,
+        };
+
         response = await dispatch(AskQuestionReportAPI(payload)).unwrap();
       } else {
+        const payload = {
+          session_id: sessionId,
+          question: userMessage.message,
+          category,
+          file_id: fileId,
+        };
+
         response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
       }
 
       if (response?.answer) {
+        const isUrl = isValidUrl(response.answer);
+        const contentType = isUrl ? getContentType(response.answer) : "text";
+
         const adminMessage = {
           message: response.answer,
           sender: "Admin",
           timestamp: new Date(),
+          type: contentType,
         };
+
         setMessages((prev) => [...prev, adminMessage]);
       } else {
         toast.warning("No response from assistant.");
@@ -233,19 +282,22 @@ export const ChatWindow = ({
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
-            {/* <div className="d-flex align-items-center position-relative"> */}
-            <button
-              className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-4  ms-md-0"
-              onClick={handleNewSession}
-              disabled={isLoadingSession}
-            >
-              <i className="bi bi-plus-circle"></i>
-              <span className="d-none d-md-inline ms-1">New Session</span>
-            </button>
-            <h5 className="chat-title text-muted mb-0 text-center">
-              {heading}
-            </h5>
-            {/* </div> */}
+            <div className="d-flex align-items-center position-relative">
+              {category !== "floor_plan" && category !== "building_stack" && (
+                <button
+                  className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-md-0"
+                  onClick={handleNewSession}
+                  disabled={isLoadingSession}
+                >
+                  <i className="bi bi-plus-circle"></i>
+                  <span className="d-none d-md-inline ms-1">New Session</span>
+                </button>
+              )}
+
+              <h5 className="chat-title text-muted mb-0 text-center">
+                {heading}
+              </h5>
+            </div>
           </div>
 
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar">
@@ -296,7 +348,58 @@ export const ChatWindow = ({
                                 onClick={() => toggleSpeak(i, msg.message)}
                               ></i>
                               <div className="py-3">
-                                <ReactMarkdown>{msg.message}</ReactMarkdown>
+                                <div className="py-3">
+                                  {(!msg.type || msg.type === "text") && (
+                                    <ReactMarkdown>{msg.message}</ReactMarkdown>
+                                  )}
+
+                                  {msg.type === "image" && (
+                                    <img
+                                      src={msg.message}
+                                      alt="response"
+                                      className="img-fluid rounded border"
+                                      style={{
+                                        cursor: "pointer",
+                                        maxHeight: "300px",
+                                      }}
+                                      onClick={() =>
+                                        setPreviewImage(msg.message)
+                                      }
+                                    />
+                                  )}
+
+                                  {msg.type === "pdf" && (
+                                    <div
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => setPreviewPdf(msg.message)}
+                                      className="d-inline-block"
+                                    >
+                                      <iframe
+                                        src={msg.message}
+                                        title="PDF Preview"
+                                        className="w-100 rounded border shadow-sm"
+                                        style={{
+                                          height: "auto",
+                                          maxWidth: "400px",
+                                        }}
+                                      />
+                                      <div className="text-center text-primary fw-semibold mt-2 small">
+                                        Click to view full PDF
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {msg.type === "link" && (
+                                    <a
+                                      href={msg.message}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-primary fw-semibold"
+                                    >
+                                      Open File
+                                    </a>
+                                  )}
+                                </div>
                               </div>
                             </>
                           ) : (
@@ -371,6 +474,68 @@ export const ChatWindow = ({
           </div>
         </div>
       </div>
+      {previewImage && (
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered modal-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content border-0 bg-transparent">
+              <div className="modal-header border-0">
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setPreviewImage(null)}
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body text-center p-0">
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="img-fluid rounded"
+                  style={{ maxHeight: "80vh" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {previewPdf && (
+        <div
+          className="modal fade show d-block"
+          style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
+          onClick={() => setPreviewPdf(null)}
+        >
+          <div
+            className="modal-dialog modal-dialog-centered modal-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content border-0 bg-transparent">
+              <div className="modal-header border-0 pb-0">
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={() => setPreviewPdf(null)}
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body p-0">
+                <iframe
+                  src={previewPdf}
+                  title="PDF Full View"
+                  className="w-100 rounded"
+                  style={{ height: "85vh", border: "none" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

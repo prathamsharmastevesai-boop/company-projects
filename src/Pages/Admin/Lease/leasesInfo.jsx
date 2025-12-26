@@ -165,26 +165,26 @@ export const LeaseInfomation = () => {
   };
 
   return (
-    <div className="container-fuild p-3">
+    <div className="container-fluid p-3">
       {initialBuildings.type === "Lease" && (
         <>
-          <h5 className="fw-bold"> Lease Documents</h5>
-          <p className="text-muted">
+          <h5 className="fw-bold text-truncate mt-4">Lease Documents</h5>
+          <p className="text-muted text-truncate">
             Upload and manage lease-related documents
           </p>
         </>
       )}
       {initialBuildings.type === "LOI" && (
         <>
-          <h5 className="fw-bold">Letter of Intent Documents</h5>
-          <p className="text-muted">
+          <h5 className="fw-bold text-truncate">Letter of Intent Documents</h5>
+          <p className="text-muted text-truncate">
             Upload and manage Letter of Intent-related documents
           </p>
         </>
       )}
 
       <div
-        className={`border border-2 rounded-3 p-5 text-center mb-4 ${
+        className={`border border-2 rounded-3 p-4 text-center mb-4 w-100 ${
           isDragging ? "border-primary bg-light" : "border-dashed bg-light"
         }`}
         onDragOver={handleDragOver}
@@ -205,7 +205,7 @@ export const LeaseInfomation = () => {
             hidden
           />
         </label>
-        <p className="small text-muted mt-2">
+        <p className="small text-muted mt-2 text-wrap">
           Supports PDF, DOCX, CSV, XLSX files up to 30MB
         </p>
         {loading && <RAGLoader />}
@@ -215,31 +215,37 @@ export const LeaseInfomation = () => {
         <div className="card-header fw-semibold">Uploaded Documents</div>
         <ul className="list-group list-group-flush">
           {docs?.length === 0 && (
-            <li className="list-group-item text-muted">
-              No lease documents uploaded yet.
+            <li className="list-group-item text-muted text-center">
+              No {initialBuildings.type.toLowerCase()} documents uploaded yet.
             </li>
           )}
           {docs?.map((file) => (
             <li
               key={file?.file_id}
-              className="list-group-item d-flex justify-content-between align-items-center"
+              className="list-group-item d-flex justify-content-between align-items-center flex-wrap"
             >
-              <span>
+              <span
+                className="d-flex align-items-center text-truncate"
+                style={{ maxWidth: "70%" }}
+              >
                 <i className="bi bi-file-earmark-text text-primary me-2"></i>
-                {file?.name}
+                <span className="text-truncate" style={{ maxWidth: "100%" }}>
+                  {file?.name}
+                </span>
               </span>
-              <span>
-                <i
-                  className="bi bi-pencil-square text-primary me-3"
+
+              <div className="d-flex gap-2 mt-2 mt-md-0">
+                {/* <i
+                  className="bi bi-pencil-square text-primary"
                   style={{ cursor: "pointer" }}
                   onClick={() => handleEditClick(file)}
-                />
+                /> */}
                 <i
                   className="bi bi-trash text-danger"
                   style={{ cursor: "pointer" }}
                   onClick={() => handleDelete(file)}
                 />
-              </span>
+              </div>
             </li>
           ))}
         </ul>

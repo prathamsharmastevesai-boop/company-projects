@@ -19,6 +19,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { toast } from "react-toastify";
+import RAGLoader from "../../../Component/Loader";
 
 export const SpaceInquiry = () => {
   const dispatch = useDispatch();
@@ -50,10 +51,10 @@ export const SpaceInquiry = () => {
     imap_port: "",
     imap_username: "",
     imap_password: "",
-    smtp_host: "",
-    smtp_port: "",
-    smtp_username: "",
-    smtp_password: "",
+    // smtp_host: "",
+    // smtp_port: "",
+    // smtp_username: "",
+    // smtp_password: "",
     building_addresses_list: [""],
     trusted_sender_domains: [""],
     is_active: true,
@@ -171,10 +172,10 @@ export const SpaceInquiry = () => {
         imap_port: Number(form.imap_port || 0),
         imap_username: form.imap_username,
         imap_password: form.imap_password,
-        smtp_host: form.smtp_host,
-        smtp_port: Number(form.smtp_port || 0),
-        smtp_username: form.smtp_username,
-        smtp_password: form.smtp_password,
+        // smtp_host: form.smtp_host,
+        // smtp_port: Number(form.smtp_port || 0),
+        // smtp_username: form.smtp_username,
+        // smtp_password: form.smtp_password,
         building_addresses_list: (form.building_addresses_list || []).filter(
           (x) => x.trim() !== ""
         ),
@@ -192,7 +193,6 @@ export const SpaceInquiry = () => {
       await fetchConfig();
     } catch (err) {
       console.error("Submit config error:", err);
-      toast.error("Failed to save configuration");
     } finally {
       setLoadingConfig(false);
     }
@@ -211,13 +211,13 @@ export const SpaceInquiry = () => {
             : "",
         imap_username: res?.imap_username ?? "",
         imap_password: res?.imap_password ?? "",
-        smtp_host: res?.smtp_host ?? "",
-        smtp_port:
-          res?.smtp_port !== undefined && res?.smtp_port !== null
-            ? res.smtp_port
-            : "",
-        smtp_username: res?.smtp_username ?? "",
-        smtp_password: res?.smtp_password ?? "",
+        // smtp_host: res?.smtp_host ?? "",
+        // smtp_port:
+        //   res?.smtp_port !== undefined && res?.smtp_port !== null
+        //     ? res.smtp_port
+        //     : "",
+        // smtp_username: res?.smtp_username ?? "",
+        // smtp_password: res?.smtp_password ?? "",
         building_addresses_list:
           Array.isArray(res?.building_addresses_list) &&
           res.building_addresses_list.length > 0
@@ -284,10 +284,10 @@ export const SpaceInquiry = () => {
           editData.imap_port !== "" && editData.imap_port !== null
             ? Number(editData.imap_port)
             : 0,
-        smtp_port:
-          editData.smtp_port !== "" && editData.smtp_port !== null
-            ? Number(editData.smtp_port)
-            : 0,
+        // smtp_port:
+        //   editData.smtp_port !== "" && editData.smtp_port !== null
+        //     ? Number(editData.smtp_port)
+        //     : 0,
         building_addresses_list: (
           editData.building_addresses_list || []
         ).filter((x) => x?.toString().trim() !== ""),
@@ -341,12 +341,17 @@ export const SpaceInquiry = () => {
 
           <div className="card-body">
             {loadingInquiries ? (
-              <div className="text-center py-5">
-                <Spinner animation="border" variant="success" />
-                <p className="mt-2 text-muted">Loading inquiries...</p>
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "70vh" }}
+              >
+                <RAGLoader />
               </div>
             ) : inquiries.length === 0 ? (
-              <div className="text-center py-5">
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "70vh" }}
+              >
                 <p className="text-muted">No inquiries found.</p>
               </div>
             ) : (
@@ -479,9 +484,9 @@ export const SpaceInquiry = () => {
 
             <hr />
 
-            <h5 className="mb-3">SMTP Settings</h5>
+            {/* <h5 className="mb-3">SMTP Settings</h5> */}
 
-            <div className="row">
+            {/* <div className="row">
               <div className="col-md-6 mb-3">
                 <Form.Label>SMTP Host</Form.Label>
                 <Form.Control
@@ -520,9 +525,9 @@ export const SpaceInquiry = () => {
                   onChange={handleChange}
                 />
               </div>
-            </div>
+            </div> */}
 
-            <hr />
+            {/* <hr /> */}
 
             <h5>Building Addresses</h5>
             {form.building_addresses_list.map((item, index) => (
@@ -736,9 +741,9 @@ export const SpaceInquiry = () => {
 
                     <hr />
 
-                    <h5 className="fw-bold mb-3"> Update SMTP Settings</h5>
+                    {/* <h5 className="fw-bold mb-3"> Update SMTP Settings</h5> */}
 
-                    <div className="row">
+                    {/* <div className="row">
                       <div className="col-md-6 mb-3">
                         <Form.Label>SMTP Host</Form.Label>
                         <Form.Control
@@ -792,7 +797,7 @@ export const SpaceInquiry = () => {
                           }
                         />
                       </div>
-                    </div>
+                    </div> */}
 
                     <hr />
 
@@ -921,7 +926,7 @@ export const SpaceInquiry = () => {
                     </div>
                   </div>
 
-                  <div className="mb-4">
+                  {/* <div className="mb-4">
                     <h5 className="fw-bold mb-3">SMTP Configuration</h5>
                     <div className="card shadow-sm border-0">
                       <div className="card-body">
@@ -947,7 +952,7 @@ export const SpaceInquiry = () => {
                         </table>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="mb-4">
                     <h5 className="fw-bold mb-3"> Status</h5>

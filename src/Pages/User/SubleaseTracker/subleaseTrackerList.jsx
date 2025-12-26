@@ -50,7 +50,7 @@ export const SubleaseTrackerUserBuildinglist = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light">Sublease Tracker list</h5>
+        <h5 className="mb-0 text-light mx-4">Sublease Tracker list</h5>
       </div>
       {requestingPermissionId && (
         <div
@@ -121,7 +121,7 @@ export const SubleaseTrackerUserBuildinglist = () => {
                   >
                     <div className="d-flex mx-1">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check">
+                      <div className="mx-2 check w-75">
                         {building.address || "N/A"}
                       </div>
                     </div>

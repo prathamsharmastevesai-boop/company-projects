@@ -19,17 +19,17 @@ export const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const auth = JSON.parse(sessionStorage.getItem("auth"));
+    const token = sessionStorage.getItem("access_token");
+    const role = sessionStorage.getItem("role");
 
-    if (token && auth?.isAuthenticated) {
-      if (auth.role === "superuser") {
-        navigate("/AdminManagement");
-      } else if (auth.role === "user") {
-        navigate("/dashboard");
-      } else if (auth.role === "admin") {
-        navigate("/AdminDashboard");
-      }
+    if (!token || !role) return;
+
+    if (role === "superuser") {
+      navigate("/AdminManagement");
+    } else if (role === "admin") {
+      navigate("/AdminDashboard");
+    } else if (role === "user") {
+      navigate("/dashboard");
     }
   }, []);
 
@@ -62,33 +62,27 @@ export const AdminLogin = () => {
       const res = await dispatch(
         LoginSubmit({ email, password, role: "admin" })
       ).unwrap();
-      // console.log(res, "resres admin login");
 
       const { role, access_token } = res;
 
-      if (role === "admin" || role === "superuser") {
-        sessionStorage.setItem(
-          "auth",
-          JSON.stringify({ isAuthenticated: true, role })
-        );
+      if (!["admin", "superuser"].includes(role)) {
+        toast.error("You are not authorized to access this panel");
+        return;
+      }
 
-        if (access_token) {
-          // console.log("got token");
-          sessionStorage.setItem("access_token", access_token);
-        }
+      sessionStorage.setItem("access_token", access_token);
+      sessionStorage.setItem("role", role);
 
-        if (role === "admin") {
-          toast.success("Admin login successful");
-          navigate("/AdminDashboard");
-          // console.log("admin login page");
-        } else if (role === "superuser") {
-          toast.success("Superuser login successful");
-          navigate("/AdminManagement");
-        }
-      } else {
-        toast.error("Invalid Credentials");
+      toast.success(`${role} login successful`);
+
+      if (role === "admin") {
+        navigate("/AdminDashboard");
+      } else if (role === "superuser") {
+        navigate("/AdminManagement");
       }
     } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Invalid email or password");
     } finally {
       setLoading(false);
     }

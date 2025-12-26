@@ -74,7 +74,7 @@ export const RagSystem = () => {
     <div className="container-fuild p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
-          <h5 className="fw-bold">RAG System Tracing</h5>
+          <h5 className="fw-bold mt-4">RAG System Tracing</h5>
           <p className="text-muted mb-0">
             Monitor query performance, confidence scores, and user feedback
           </p>

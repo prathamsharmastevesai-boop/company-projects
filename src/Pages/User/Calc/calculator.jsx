@@ -98,10 +98,6 @@ export const LeaseFinanceCalculator = () => {
 
   return (
     <>
-      {/* <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-        <h5 className="mb-0 text-light">Lease Finance Calculator</h5>
-      </div> */}
-
       <div className="container-fuild p-3">
         <div className="row g-3">
           <div className="col-md-8">
@@ -223,7 +219,7 @@ export const LeaseFinanceCalculator = () => {
           </div>
 
           <div className="col-md-4">
-            <div className="card p-3 shadow-sm">
+            <div className="card shadow-sm p-2">
               <h5 className="fw-bold mb-3">Calculated Results</h5>
 
               {!result && <p className="text-muted">Submit to see result.</p>}
@@ -248,7 +244,7 @@ export const LeaseFinanceCalculator = () => {
               )}
             </div>
 
-            <div className="card p-3 shadow-sm mt-3 mb-3">
+            <div className="card p-1 mt-3 mb-3">
               <h5 className="fw-bold mb-3 text-center">Calculator</h5>
 
               <input

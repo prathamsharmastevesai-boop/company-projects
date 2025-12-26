@@ -71,7 +71,7 @@ export const SessionList = ({ setShowSessionModal }) => {
       setSessionList((prev) => prev.filter((s) => s.session_id !== id));
     } catch (error) {
       console.error("Failed to delete session:", error);
-      toast.error("Failed to delete session");
+      // toast.error("Failed to delete session");
     } finally {
       setIsDeleting((prev) => ({ ...prev, [id]: false }));
     }
@@ -164,7 +164,7 @@ export const SessionList = ({ setShowSessionModal }) => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light">Chat History</h5>
+        <h5 className="mb-0 text-light mx-4">Chat History</h5>
       </div>
       <div
         className="p-3 position-relative"

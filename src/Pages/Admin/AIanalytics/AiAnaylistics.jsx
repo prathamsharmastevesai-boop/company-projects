@@ -25,8 +25,6 @@ export const Aianalytics = () => {
   const [days, setDays] = useState(7);
   const [dashboardData, setDashboardData] = useState(null);
   const [Inslight, setInslights] = useState([]);
-  console.log(Inslight, "Inslight");
-
   const [recentQuestions, setRecentQuestions] = useState(null);
   const [usageData, setUsageData] = useState(null);
   const [activitySummary, setActivitySummary] = useState(null);
@@ -54,7 +52,6 @@ export const Aianalytics = () => {
   const AIInslights = async () => {
     try {
       const res = await dispatch(getInslightApi()).unwrap();
-      console.log(res, "res");
 
       setInslights(res);
     } catch (error) {
@@ -171,7 +168,7 @@ export const Aianalytics = () => {
     <div className="container-fluid p-4 p-md-4">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
         <div className="mb-3 mb-md-0">
-          <h4 className="fw-bold">AI Analytics</h4>
+          <h4 className="fw-bold mt-3">AI Analytics</h4>
           <p className="text-muted m-0">
             User behavior insights and system utilization analytics
           </p>
@@ -350,7 +347,7 @@ export const Aianalytics = () => {
                   <ul className="list-group">
                     {recentQuestions.questions.map((q, idx) => (
                       <li key={idx} className="list-group-item">
-                        {q} ?
+                        {q}
                       </li>
                     ))}
                   </ul>

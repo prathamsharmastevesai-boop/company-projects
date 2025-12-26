@@ -50,7 +50,7 @@ export const CreateLease = () => {
   return (
     <div className="container py-5 position-relative">
       <div className="text-center mb-5">
-        <h2 className="fw-bold text-dark">🏢 Create Lease</h2>
+        <h2 className="fw-bold text-dark">Create Lease</h2>
         <p className="text-muted">
           Add one or more lease records to your workspace.
         </p>

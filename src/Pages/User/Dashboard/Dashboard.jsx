@@ -87,7 +87,7 @@ export const Dashboard = () => {
       )}
 
       <section
-        style={{ height: "40vh", backgroundColor: "#1f1f1f" }}
+        style={{ height: "42vh", backgroundColor: "#1f1f1f" }}
         className="hero-section text-white d-flex align-items-center justify-content-center text-center"
       >
         <div>
@@ -107,8 +107,8 @@ export const Dashboard = () => {
         <div className="row align-items-center my-4">
           <div className="col-md-8">
             <div className="d-flex align-items-center mb-2">
-              <h2 className="mb-0 me-2">🏢</h2>
-              <h2 className="text-start mb-0 fw-bold">Featured Buildings</h2>
+              {/* <h2 className="mb-0 me-2">🏢</h2> */}
+              <h2 className="text-start mb-0 fw-bold">Building Info</h2>
             </div>
           </div>
           <div className="col-md-12 py-2">
@@ -161,7 +161,7 @@ export const Dashboard = () => {
                   >
                     <div className="d-flex mx-1">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check">
+                      <div className="mx-2 check w-75">
                         {building.address || "N/A"}
                       </div>
                     </div>

@@ -25,6 +25,10 @@ export const UserManagement = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
 
+  const [emailError, setEmailError] = useState("");
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -86,14 +90,26 @@ export const UserManagement = () => {
   };
 
   const handleInviteUser = async () => {
-    if (!email) return alert("Please enter an email address");
+    if (!email) {
+      setEmailError("Email is required");
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
     setInviteLoading(true);
     try {
       await dispatch(inviteUserApi({ email })).unwrap();
+      toast.success("Invitation sent successfully");
       setEmail("");
+      setEmailError("");
       fetchUsers();
     } catch (err) {
       console.error("Invite failed:", err);
+      toast.error("Failed to invite user");
     } finally {
       setInviteLoading(false);
     }
@@ -101,7 +117,7 @@ export const UserManagement = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h4 className="fw-bold">User Management</h4>
+      <h4 className="fw-bold mt-4">User Management</h4>
       <p className="text-muted">
         Control user access to Portfolio Pulse documents and features
       </p>
@@ -128,15 +144,40 @@ export const UserManagement = () => {
                   type="email"
                   placeholder="Enter user email address..."
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setEmail(value);
+
+                    if (!value) {
+                      setEmailError("Email is required");
+                    } else if (!emailRegex.test(value)) {
+                      setEmailError("Please enter a valid email address");
+                    } else {
+                      setEmailError("");
+                    }
+                  }}
+                  onBlur={() => {
+                    if (!email) {
+                      setEmailError("Email is required");
+                    } else if (!emailRegex.test(email)) {
+                      setEmailError("Please enter a valid email address");
+                    } else {
+                      setEmailError("");
+                    }
+                  }}
                   disabled={inviteLoading}
+                  isInvalid={!!emailError}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {emailError}
+                </Form.Control.Feedback>
               </Col>
+
               <Col xs={12} md={4}>
                 <Button
                   variant="primary"
                   onClick={handleInviteUser}
-                  disabled={inviteLoading}
+                  disabled={inviteLoading || !!emailError || !email}
                   className="w-100"
                 >
                   {inviteLoading ? (

@@ -3,16 +3,16 @@ import "./LoaderCss.css";
 
 const RAGLoader = () => {
   return (
-    <div className="rag-loader">
-      <span className="rag-letter text-dark fs-1">P</span>
-      <span className="rag-letter text-dark fs-2">o</span>
-      <span className="rag-letter text-dark fs-3">r</span>
-      <span className="rag-letter text-dark fs-4">t</span>
-      <span className="rag-letter text-dark fs-5">f</span>
-      <span className="rag-letter text-dark fs-5">o</span>
-      <span className="rag-letter text-dark fs-4">l</span>
-      <span className="rag-letter text-dark fs-3">i</span>
-      <span className="rag-letter text-dark fs-2">o</span>
+    <div className="rag-loader text-dark">
+      <span className="rag-letter fs-1">P</span>
+      <span className="rag-letter fs-2">o</span>
+      <span className="rag-letter fs-3">r</span>
+      <span className="rag-letter fs-4">t</span>
+      <span className="rag-letter fs-5">f</span>
+      <span className="rag-letter fs-4">o</span>
+      <span className="rag-letter fs-3">l</span>
+      <span className="rag-letter fs-2">i</span>
+      <span className="rag-letter fs-1">o</span>
     </div>
   );
 };

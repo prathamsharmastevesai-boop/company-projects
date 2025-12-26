@@ -37,7 +37,7 @@ export const EmailDrafting = () => {
       setTemplates(data);
     } catch (error) {
       console.error("Error fetching templates:", error);
-      toast.error("Failed to load templates");
+      // toast.error("Failed to load templates");
     } finally {
       setLoading(false);
     }
@@ -221,7 +221,7 @@ export const EmailDrafting = () => {
   return (
     <>
       <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-        <h5 className="mb-0 text-light">Email Drafting</h5>
+        <h5 className="mb-0 text-light mx-4">Email Drafting</h5>
       </div>
 
       <Card

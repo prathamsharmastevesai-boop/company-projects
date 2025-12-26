@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { DealFormApi } from "../../../../Networking/User/APIs/DealTracker/dealTrackerApi";
+import { DealFormApi } from "../../../Networking/User/APIs/DealTracker/dealTrackerApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -127,8 +127,6 @@ const DealForm = () => {
         })
         .filter((stage) => stage !== null),
     };
-
-    console.log("Sending payload:", JSON.stringify(payload, null, 2));
 
     try {
       const resultAction = await dispatch(DealFormApi(payload));

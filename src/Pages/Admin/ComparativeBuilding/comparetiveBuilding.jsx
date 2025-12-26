@@ -14,7 +14,6 @@ export const ComparativeBuildingData = () => {
   const location = useLocation();
 
   const buildingId = location?.state?.office?.buildingId;
-  console.log(buildingId, "buildingId");
 
   const dispatch = useDispatch();
   const [docs, setDocs] = useState([]);
@@ -115,10 +114,10 @@ export const ComparativeBuildingData = () => {
     if (file) await uploadFile(file);
   };
 
-  const handleEditClick = (file) => {
-    setEditingFile(file);
-    if (editFileRef.current) editFileRef.current.click();
-  };
+  // const handleEditClick = (file) => {
+  //   setEditingFile(file);
+  //   if (editFileRef.current) editFileRef.current.click();
+  // };
 
   const handleEditChange = async (e) => {
     const newFile = e.target.files[0];
@@ -166,7 +165,7 @@ export const ComparativeBuildingData = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h5 className="fw-bold">Comparative Building Data</h5>
+      <h5 className="fw-bold mt-4">Comparative Building Data</h5>
       <p className="text-muted">
         Upload and manage documents for Building Information
       </p>
@@ -222,11 +221,11 @@ export const ComparativeBuildingData = () => {
                   {file?.name}
                 </span>
                 <span>
-                  <i
+                  {/* <i
                     className="bi bi-pencil-square text-primary me-3"
                     style={{ cursor: "pointer" }}
                     onClick={() => handleEditClick(file)}
-                  />
+                  /> */}
                   <i
                     className="bi bi-trash text-danger"
                     style={{ cursor: "pointer" }}
@@ -239,13 +238,13 @@ export const ComparativeBuildingData = () => {
         )}
       </div>
 
-      <input
+      {/* <input
         type="file"
         accept=".pdf,.docx,.xls,.xlsx"
         ref={editFileRef}
         style={{ display: "none" }}
         onChange={handleEditChange}
-      />
+      /> */}
     </div>
   );
 };

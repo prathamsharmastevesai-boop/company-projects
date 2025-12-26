@@ -41,7 +41,9 @@ export const UserBuildingInfolist = () => {
 
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    navigate("/BuildingChat", { state: { office: { buildingId } } });
+    navigate("/SelectUserBuildingCategory", {
+      state: { office: { buildingId } },
+    });
   };
 
   return (
@@ -50,7 +52,7 @@ export const UserBuildingInfolist = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light">Building Info list</h5>
+        <h5 className="mb-0 text-light mx-4">Building Info list</h5>
       </div>
       {requestingPermissionId && (
         <div
@@ -121,7 +123,7 @@ export const UserBuildingInfolist = () => {
                   >
                     <div className="d-flex mx-1">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check">
+                      <div className="mx-2 check w-75">
                         {building.address || "N/A"}
                       </div>
                     </div>

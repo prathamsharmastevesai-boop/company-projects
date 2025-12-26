@@ -17,7 +17,6 @@ export const PortfolioForum = () => {
   const { ThreadList } = useSelector((state) => state.ForumSlice);
   // const { Role } = useSelector((state) => state.loginSlice);
   const { userdata } = useSelector((state) => state.ProfileSlice);
-  console.log(userdata, "userdata");
 
   const messagesEndRef = React.useRef(null);
 
@@ -28,7 +27,6 @@ export const PortfolioForum = () => {
   console.log(threadMessages, "threadMessages");
 
   const [userdetail, setUserdetail] = useState({});
-  console.log(userdetail, "userdetail");
 
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [loadingThreads, setLoadingThreads] = useState(true);
@@ -107,7 +105,7 @@ export const PortfolioForum = () => {
       const data = await dispatch(getThreadhistory(thread.id)).unwrap();
       setThreadMessages(data.thoughts || []);
     } catch (error) {
-      toast.error("Failed to fetch thread history");
+      // toast.error("Failed to fetch thread history");
     } finally {
       setLoadingHistory(false);
     }
@@ -179,9 +177,9 @@ export const PortfolioForum = () => {
       setThreadMessages(data.thoughts || []);
     } catch (error) {
       console.error(error);
-      toast.error(
-        editingThoughtId ? "Failed to update thought" : "Failed to add thought"
-      );
+      // toast.error(
+      //   editingThoughtId ? "Failed to update thought" : "Failed to add thought"
+      // );
     } finally {
       setSending(false);
     }
@@ -407,12 +405,20 @@ export const PortfolioForum = () => {
                     {threadMessages.map((msg) => (
                       <Card
                         key={msg.id}
-                        className={`p-3 mb-3 shadow-sm ${
-                          msg.deleted ? "border-danger bg-light" : ""
-                        }`}
+                        className={`p-3 mb-3 shadow-sm
+    ${msg.deleted ? "border-danger bg-light" : ""}
+    ${msg.author_role === "admin" ? "admin-thread" : "user-thread"}
+  `}
                       >
-                        <h6 className="fw-bold">
+                        <h6
+                          className={`fw-bold ${
+                            msg.author_role === "admin" ? "text-primary" : ""
+                          }`}
+                        >
                           {msg.author_name || "Unknown User"}
+                          {msg.author_role === "admin" && (
+                            <span className="badge bg-primary ms-2">Admin</span>
+                          )}
                         </h6>
 
                         {msg.deleted ? (
@@ -427,7 +433,7 @@ export const PortfolioForum = () => {
                             {msg.content}
                           </p>
                         )}
-                        {console.log("conditionuserdetail", userdetail)}
+
                         <div className="text-muted small d-flex justify-content-between">
                           <span>
                             {new Date(msg.created_at).toLocaleString()}

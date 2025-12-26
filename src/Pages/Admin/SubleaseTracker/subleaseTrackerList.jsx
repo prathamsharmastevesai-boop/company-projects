@@ -312,7 +312,7 @@ export const SubleaseTrackerList = () => {
     <>
       {Role == "user" && (
         <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-          <h5 className="mb-0 text-light">Sublease Tracker List</h5>
+          <h5 className="mb-0 text-light mx-4">Sublease Tracker List</h5>
         </div>
       )}
       <div className="container py-4">

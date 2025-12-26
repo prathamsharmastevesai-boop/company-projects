@@ -222,19 +222,22 @@ export const UserChat = () => {
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
-          <div className="chat-header d-flex justify-content-between align-items-center mb-2">
-            <h5 className="chat-title text-muted m-0">
-              💬 Chat With{" "}
-              {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
-            </h5>
+          <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
+            <div className="d-flex align-items-center position-relative">
+              <button
+                className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-md-0"
+                onClick={handleNewSession}
+                disabled={isLoadingSession}
+              >
+                <i className="bi bi-plus-circle"></i>
+                <span className="d-none d-md-inline ms-1">New Session</span>
+              </button>
 
-            <button
-              className="btn btn-outline-secondary btn-sm"
-              onClick={handleNewSession}
-              disabled={isLoading}
-            >
-              <i className="bi bi-plus-circle"></i> New Session
-            </button>
+              <h5 className="chat-title text-muted mb-0 text-center">
+                💬 Chat With{" "}
+                {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
+              </h5>
+            </div>
           </div>
 
           <div className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2">

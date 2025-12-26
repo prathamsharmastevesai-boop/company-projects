@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { Reset_password_Submit } from "../../../Networking/User/APIs/Auth/VerifyOtp";
 
 export const ResetPassword = () => {
-
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -24,6 +23,11 @@ export const ResetPassword = () => {
       return;
     }
 
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
@@ -36,7 +40,9 @@ export const ResetPassword = () => {
         new_password: newPassword,
         confirm_password: confirmPassword,
       };
+
       const res = await dispatch(Reset_password_Submit(payload)).unwrap();
+      toast.success(res.message || "Password reset successfully!");
       navigate("/");
     } catch (error) {
     } finally {
@@ -46,7 +52,10 @@ export const ResetPassword = () => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
+      <div
+        className="card p-4 shadow"
+        style={{ maxWidth: "400px", width: "100%" }}
+      >
         <h4 className="text-center mb-3">Reset Password</h4>
         <form onSubmit={handleReset}>
           <div className="mb-3">
@@ -73,7 +82,11 @@ export const ResetPassword = () => {
               required
             />
           </div>
-          <button type="submit" className="btn btn-dark w-100" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-dark w-100"
+            disabled={loading}
+          >
             {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>

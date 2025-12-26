@@ -8,9 +8,11 @@ export const Forget_passwordSubmit = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(ForgetPassword, credentials);
-
+      toast.success(response?.data?.message);
+      console.log("response", response);
       return response.data;
     } catch (error) {
+      console.log(error, "response");
       return rejectWithValue(error.response?.data?.message || "OTP failed");
     }
   }

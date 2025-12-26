@@ -1,19 +1,20 @@
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const authData = JSON.parse(sessionStorage.getItem("auth"));
-  const role = authData?.role;
+  const token = sessionStorage.getItem("access_token");
+  const role = sessionStorage.getItem("role");
 
-  const isAuthenticated = authData?.isAuthenticated;
-
-  if (!isAuthenticated) {
-    return <Navigate to="/" />;
+  // ❌ Not logged in
+  if (!token || !role) {
+    return <Navigate to="/" replace />;
   }
 
-  if (!allowedRoles.includes(role)) {
-    return <Navigate to="/" />;
+  // ❌ Role not allowed
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to="/" replace />;
   }
 
+  // ✅ Authorized
   return children;
 };
 

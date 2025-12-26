@@ -399,7 +399,7 @@
   text-align: left;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .responsive-box {
     max-width: 100%;
     word-wrap: break-word;
@@ -484,7 +484,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .arrow-hint {
     left: -1.5rem;
   }
@@ -511,8 +511,8 @@
   margin-left: 0;
 }
 
-/* Mobile view (≤768px) */
-@media (max-width: 768px) {
+/* Mobile view (≤767px) */
+@media (max-width: 767px) {
   .chat-header {
     width: 80% !important;
     margin-left: auto !important; /* pushes it to the right */
@@ -569,7 +569,7 @@
 }
 
 /* Mobile-friendly card & list */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .doc-container {
     padding: 10px !important;
   }
@@ -592,4 +592,13 @@
 .portfolio-title {
   -webkit-text-stroke: 0.5px white;
   color: #217ae6;
+}
+
+.admin-thread {
+  background-color: #f0f6ff; /* light blue */
+  border-left: 4px solid #0d6efd; /* bootstrap primary */
+}
+
+.user-thread {
+  background-color: #ffffff;
 }

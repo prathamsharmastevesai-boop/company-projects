@@ -100,7 +100,7 @@ export const Delete_Chat_Session = createAsyncThunk(
       const errorMessage =
         message ||
         "An unexpected error occurred while deleting the chat session.";
-      toast.error(errorMessage);
+      // toast.error(errorMessage);
       return rejectWithValue(errorMessage);
     }
   }

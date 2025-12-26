@@ -231,7 +231,7 @@ export const GeminiChat = () => {
       toast.success("File uploaded successfully!");
     } catch (err) {
       console.error("Upload failed:", err);
-      toast.error("Upload failed!");
+      // toast.error("Upload failed!");
     } finally {
       setIsUploading(false);
     }
@@ -248,6 +248,11 @@ export const GeminiChat = () => {
 
     if (!sessionId) {
       toast.info("Please start a new chat session first.");
+      return;
+    }
+
+    if (isLoadingHistory) {
+      toast.info("Please wait until chat history is loaded.");
       return;
     }
 
@@ -295,8 +300,6 @@ export const GeminiChat = () => {
   };
 
   const fetchDocs = async () => {
-    if (!sessionId) return;
-
     try {
       setIsDocsLoading(true);
       const res = await dispatch(
@@ -383,12 +386,7 @@ export const GeminiChat = () => {
                   id="fileUpload"
                   className="d-none"
                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    toast.info(`Selected: ${file.name}`);
-                  }}
+                  onChange={handleFileChange}
                 />
               </h5>
 
@@ -483,10 +481,6 @@ export const GeminiChat = () => {
             <div className="row h-100">
               <div className="col-md-12 d-flex flex-column">
                 <div className="chat-header d-flex justify-content-between align-items-center mb-2">
-                  <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
-                    Gemini
-                  </h5>
-
                   <div className="mt-3 d-flex gap-2">
                     <button
                       className="btn btn-outline-secondary btn-sm d-flex align-items-center"
@@ -505,6 +499,9 @@ export const GeminiChat = () => {
                       <span className="d-none d-sm-inline">Documents</span>
                     </button>
                   </div>
+                  <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
+                    Gemini
+                  </h5>
                 </div>
 
                 <div

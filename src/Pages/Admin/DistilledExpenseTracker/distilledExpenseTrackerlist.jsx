@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Spinner, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getdistilledExpenseTrackerlistApi } from "../../../Networking/Admin/APIs/distilledExpenseTrackerApi";
+import RAGLoader from "../../../Component/Loader";
 
 export const DistilledExpenseTrackerlist = () => {
   const dispatch = useDispatch();
@@ -26,8 +27,11 @@ export const DistilledExpenseTrackerlist = () => {
 
   if (loading) {
     return (
-      <div className="text-center mt-4">
-        <Spinner animation="border" />
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "80vh" }}
+      >
+        <RAGLoader />
       </div>
     );
   }

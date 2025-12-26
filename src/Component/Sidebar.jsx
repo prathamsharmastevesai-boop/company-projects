@@ -9,23 +9,24 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { Role } = useSelector((state) => state.loginSlice);
 
   const [openMenu, setOpenMenu] = useState(null);
   const [showSessionModal, setShowSessionModal] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const [Gemini, setGemimiStatus] = useState();
   const [Forum, setForumStatus] = useState();
 
+  const role = sessionStorage.getItem("role");
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth <= 767);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth <= 767;
 
       setIsMobile(mobile);
 
@@ -74,6 +75,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     setOpenMenu((prev) => (prev === menu ? null : menu));
   };
 
+  const handleLogout = (navigate, setCollapsed) => {
+    sessionStorage.clear();
+    navigate("/");
+  };
+
   return (
     <>
       <aside
@@ -104,7 +110,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
-            {Role === "superuser" && (
+            {role === "superuser" && (
               <>
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
@@ -131,7 +137,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               </>
             )}
 
-            {Role === "admin" && (
+            {role === "admin" && (
               <>
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
@@ -316,21 +322,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   <>
                     <li
                       className={`nav-item ${
-                        isActive("/toursDetails") ? "active" : ""
-                      }`}
-                    >
-                      <span
-                        onClick={() => handleLinkClick("/toursDetails")}
-                        className="nav-link text-white"
-                        style={{ cursor: "pointer", fontSize: 12 }}
-                      >
-                        <i className="bi bi-geo-alt me-1" />
-                        {!collapsed && "Tours"}
-                      </span>
-                    </li>
-
-                    <li
-                      className={`nav-item ${
                         isActive("/Thirdparty") ? "active" : ""
                       }`}
                     >
@@ -469,6 +460,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         {!collapsed && "Renewal Tracker"}
                       </span>
                     </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/toursDetails") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/toursDetails")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-geo-alt me-1" />
+                        {!collapsed && "Tours"}
+                      </span>
+                    </li>
                   </>
                 )}
                 {!collapsed && (
@@ -512,7 +518,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               </>
             )}
 
-            {Role === "user" && (
+            {role === "user" && (
               <div className="mb-2">
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
@@ -549,6 +555,18 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <i className="bi bi-mic me-1" />
                     {!collapsed && "Portfolio Voice"}
+                  </span>
+                </li>
+                <li
+                  className={`nav-item ${isActive("/CreNews") ? "active" : ""}`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/CreNews")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-newspaper me-1" />
+                    {!collapsed && "CRE News"}
                   </span>
                 </li>
 
@@ -730,37 +748,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   <ul className="nav flex-column mt-1">
                     <li
                       className={`nav-item ${
-                        isActive("/Tours") ? "active" : ""
-                      }`}
-                    >
-                      <span
-                        onClick={() => handleLinkClick("/Tours")}
-                        className="nav-link text-white"
-                        style={{ cursor: "pointer", fontSize: 12 }}
-                      >
-                        <i className="bi bi-geo-alt me-1" />
-                        {!collapsed && "Tours"}
-                      </span>
-                    </li>
-
-                    <li
-                      className={`nav-item ${
-                        isActive("/dealList") ? "active" : ""
-                      }`}
-                    >
-                      <span
-                        onClick={() => handleLinkClick("/dealList")}
-                        className="nav-link text-white"
-                        style={{ cursor: "pointer", fontSize: 12 }}
-                      >
-                        <i className="bi bi-kanban me-1"></i>
-
-                        {!collapsed && "Deal Tracker"}
-                      </span>
-                    </li>
-
-                    <li
-                      className={`nav-item ${
                         isActive("/ThirdPartychat") ? "active" : ""
                       }`}
                     >
@@ -912,6 +899,36 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                         {!collapsed && "Leases Agreement Data & LOI Data"}
                       </span>
                     </li>
+                    <li
+                      className={`nav-item ${
+                        isActive("/Tours") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/Tours")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-geo-alt me-1" />
+                        {!collapsed && "Tours"}
+                      </span>
+                    </li>
+
+                    <li
+                      className={`nav-item ${
+                        isActive("/dealList") ? "active" : ""
+                      }`}
+                    >
+                      <span
+                        onClick={() => handleLinkClick("/dealList")}
+                        className="nav-link text-white"
+                        style={{ cursor: "pointer", fontSize: 12 }}
+                      >
+                        <i className="bi bi-kanban me-1"></i>
+
+                        {!collapsed && "Deal Tracker"}
+                      </span>
+                    </li>
                   </ul>
                 )}
 
@@ -980,11 +997,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
         <div className="mt-auto p-3 border-top">
           <button
-            onClick={() => {
-              sessionStorage.removeItem("token");
-              setCollapsed(true);
-              navigate("/");
-            }}
+            onClick={() => handleLogout(navigate, setCollapsed)}
             className="btn btn-outline-danger w-100"
           >
             <i className="bi bi-box-arrow-right me-1" />

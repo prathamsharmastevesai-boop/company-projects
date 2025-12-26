@@ -17,7 +17,7 @@ export const ToursPage = () => {
           zIndex: 10,
         }}
       >
-        <h5 className="text-white m-0">{headerTitle}</h5>
+        <h5 className="text-white m-0 ms-4">{headerTitle}</h5>
 
         <div className="d-flex gap-2">
           <Button

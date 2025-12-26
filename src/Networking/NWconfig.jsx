@@ -36,6 +36,7 @@ export const AskQuestion = "/chatbot/ask_question/";
 
 // chat Ask Question
 export const AskQuestionEndpoint = "/user/ask_simple/";
+export const ASkQuestionbuildingEndpoint = "/building/files/query";
 export const Chat_history = "/chat/history/";
 export const Del_Chat_Session = "/chat/delete/";
 
@@ -166,3 +167,6 @@ export const deleteDeal = "/deals/";
 //Sublease Tracker
 export const subleasetrackerendpoint = "/sublease/create";
 export const renewaltrackerendpoint = "/renewal/create";
+
+//Health
+export const health = "/health";

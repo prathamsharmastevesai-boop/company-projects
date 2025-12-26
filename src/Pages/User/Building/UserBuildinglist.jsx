@@ -50,7 +50,7 @@ export const UserBuildinglist = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light">Address</h5>
+        <h5 className="mb-0 text-light mx-4">Address</h5>
       </div>
       {requestingPermissionId && (
         <div
@@ -121,7 +121,7 @@ export const UserBuildinglist = () => {
                   >
                     <div className="d-flex mx-1">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check">
+                      <div className="mx-2 check w-75">
                         {building.address || "N/A"}
                       </div>
                     </div>

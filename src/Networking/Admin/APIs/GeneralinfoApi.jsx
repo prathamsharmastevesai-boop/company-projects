@@ -2,17 +2,49 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "./AxiosInstance";
 import {
   AskGemini,
+  ASkQuestionbuildingEndpoint,
   AskQuestionEndpoint,
   AskQuestionReportEndpoint,
   listGeneralInfoDoc,
   updateGenralDoc,
 } from "../../NWconfig";
 
+export const UploadfloorStack = createAsyncThunk(
+  "UploadfloorStack",
+  async ({ file, category, building_Id, tag }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+
+      formData.append("files", file);
+
+      formData.append("category", category);
+      formData.append("building_id", building_Id);
+
+      if (tag) {
+        formData.append("tag", tag);
+      }
+
+      const response = await axiosInstance.post(
+        "/building/files/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Upload error:", error);
+      return rejectWithValue(error.response?.data?.message || "Upload failed");
+    }
+  }
+);
+
 export const UploadGeneralDocSubmit = createAsyncThunk(
   "general/UploadGeneralDocSubmit",
   async ({ file, category, building_Id }, { rejectWithValue }) => {
-    console.log(building_Id, file, "building_Idsdgsdgdfsg");
-
     try {
       const formData = new FormData();
       formData.append("files", file);
@@ -22,7 +54,7 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
       )}`;
 
       if (building_Id) {
-        url += `&building_id=${building_Id}`;
+        url += `&building_id=${encodeURIComponent(building_Id)}`;
       }
 
       const response = await axiosInstance.post(url, formData, {
@@ -31,7 +63,7 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Upload failed");
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
@@ -74,6 +106,21 @@ export const DeleteGeneralDocSubmit = createAsyncThunk(
   }
 );
 
+export const FloorPlanStackDeleteSubmit = createAsyncThunk(
+  "general/FloorPlanStackDeleteSubmit",
+  async ({ file_id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/building/files/bs_and_fp_delete?file_id=${file_id}`
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
 export const GeneralInfoSubmit = createAsyncThunk(
   "general/GeneralInfoSubmit",
   async ({ buildingId, category }, { rejectWithValue }) => {
@@ -93,6 +140,46 @@ export const GeneralInfoSubmit = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const FloorPlanStackListSubmit = createAsyncThunk(
+  "general/FloorPlanStackListSubmit",
+  async ({ buildingId, category }, { rejectWithValue }) => {
+    try {
+      let response;
+
+      if (buildingId) {
+        response = await axiosInstance.get(
+          `/building/files/bs_fp_list?building_id=${buildingId}&category=${category}`
+        );
+      } else {
+        response = await axiosInstance.get(
+          `/building/files/bs_fp_list?category=${category}`
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const AskQuestionBuildingAPI = createAsyncThunk(
+  "chat/AskQuestionBuildingAPI",
+  async (Data, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        ASkQuestionbuildingEndpoint,
+        Data
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Question not sent"
+      );
     }
   }
 );

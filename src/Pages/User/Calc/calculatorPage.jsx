@@ -15,9 +15,9 @@ export const CalulatorPage = () => {
         style={{ backgroundColor: "#212529", zIndex: 10 }}
       >
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-          <h5 className="text-white m-0">{headerTitle}</h5>
+          <h5 className="text-white m-0 mx-4">{headerTitle}</h5>
 
-          <div className="d-flex gap-2 flex-wrap">
+          <div className="d-flex gap-2 flex-wrap mx-4">
             <Button
               size="sm"
               variant={activeTab === "form" ? "light" : "outline-light"}
@@ -40,7 +40,7 @@ export const CalulatorPage = () => {
       <Container fluid className="mt-3">
         <Row>
           <Col xs={12}>
-            <Card className="p-3 shadow-sm border-0">
+            <Card className="shadow-sm border-0">
               {activeTab === "form" && <LeaseFinanceCalculator />}
               {activeTab === "list" && <CommissionCalculator />}
             </Card>
