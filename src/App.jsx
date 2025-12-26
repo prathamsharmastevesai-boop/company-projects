@@ -70,7 +70,6 @@ import { BuildingInfoList } from "./Pages/Admin/GeneralInfo/BuildingInfoList";
 import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/comparativeUserBuildinglist";
 import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
 import { LeaseFinanceCalculator } from "./Pages/User/Calc/calculator";
-import { InformationCollaborationPage } from "./Pages/User/InformationCollaboration/informationCollaborationpages";
 import { TenentInfoUserBuildinglist } from "./Pages/User/TenantInformation/tenentInformationList";
 import { TenentInfoBuildingList } from "./Pages/Admin/GeneralInfo/tenentInformationList";
 import { Benchmark } from "./Pages/User/DistilledExpenseTracker/benchmark";
@@ -93,6 +92,7 @@ import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollabor
 import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
 import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
+import { InformationCollaborationPage } from "./Pages/User/InformationCollaboration/informationCollaborationpages";
 
 function App() {
   useEffect(() => {
@@ -262,10 +262,7 @@ function App() {
               path="/ComparativeBuildingChat"
               element={<ComparativeBuildingChat />}
             />
-            <Route
-              path="/InformationCollaboration"
-              element={<InformationCollaboration />}
-            />
+
             <Route
               path="/InformationCollaborationList"
               element={<AdminInformationCollaboration />}
