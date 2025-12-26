@@ -92,7 +92,7 @@ import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollabor
 import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
 import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
-import { InformationCollaborationPage } from "./Pages/User/InformationCollaboration/informationCollaborationpages";
+import { InformationCollaborationPage } from "./Pages/User/UserInformationCollaboration/informationCollaborationpages";
 
 function App() {
   useEffect(() => {
