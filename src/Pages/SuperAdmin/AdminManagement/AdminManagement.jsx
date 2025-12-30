@@ -29,8 +29,8 @@ export const AdminManagement = () => {
     try {
       setDeletingUser((prev) => ({ ...prev, [email]: true }));
 
-      await dispatch(DeleteUserSubmit({ email })).unwrap();
-      // refetch users if needed
+      await dispatch(DeleteUser( email )).unwrap();
+      fetchadmin()
     } catch (error) {
       console.error("Failed to delete user:", error);
     } finally {
