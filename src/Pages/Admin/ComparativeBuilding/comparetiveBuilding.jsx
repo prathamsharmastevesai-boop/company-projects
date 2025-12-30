@@ -4,11 +4,11 @@ import {
   GeneralInfoSubmit,
   UploadGeneralDocSubmit,
   UpdateGeneralDocSubmit,
-  DeleteGeneralDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
 import { useLocation } from "react-router-dom";
+import { DeleteDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
 
 export const ComparativeBuildingData = () => {
   const location = useLocation();
@@ -149,7 +149,7 @@ export const ComparativeBuildingData = () => {
     setLoading(true);
     try {
       await dispatch(
-        DeleteGeneralDocSubmit({
+        DeleteDocSubmit({
           file_id: file.file_id,
           category: "ComparativeBuilding",
         })

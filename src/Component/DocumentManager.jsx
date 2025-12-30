@@ -3,14 +3,13 @@ import { useDispatch } from "react-redux";
 import {
   GeneralInfoSubmit,
   UploadGeneralDocSubmit,
-  UpdateGeneralDocSubmit,
-  DeleteGeneralDocSubmit,
   UploadfloorStack,
   FloorPlanStackListSubmit,
   FloorPlanStackDeleteSubmit,
 } from "../Networking/Admin/APIs/GeneralinfoApi";
 import { toast } from "react-toastify";
 import RAGLoader from "./Loader";
+import { DeleteDocSubmit } from "../Networking/Admin/APIs/UploadDocApi";
 
 const DocumentManager = ({ category, title, description, building_Id }) => {
   const dispatch = useDispatch();
@@ -18,8 +17,8 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const editFileRef = useRef(null);
-  const [editingFile, setEditingFile] = useState(null);
+  // const editFileRef = useRef(null);
+  // const [editingFile, setEditingFile] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
@@ -192,7 +191,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
       await dispatch(
         category === "floor_plan" || category === "building_stack"
           ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
-          : DeleteGeneralDocSubmit({
+          : DeleteDocSubmit({
               file_id: fileToDelete.file_id,
               category,
             })

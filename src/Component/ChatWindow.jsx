@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
 import {
   AskQuestionBuildingAPI,
-  AskQuestionGeneralAPI,
   AskQuestionReportAPI,
 } from "../Networking/Admin/APIs/GeneralinfoApi";
 import {
@@ -14,6 +13,7 @@ import {
   get_Session_List_Specific,
 } from "../Networking/User/APIs/Chat/ChatApi";
 import TypingIndicator from "./TypingIndicator";
+import { AskQuestionAPI } from "../Networking/Admin/APIs/UploadDocApi";
 
 export const ChatWindow = ({
   category: propCategory,
@@ -23,7 +23,6 @@ export const ChatWindow = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  console.log(building_id, "building_id");
 
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
@@ -116,7 +115,9 @@ export const ChatWindow = ({
     const fetchChatHistory = async () => {
       setIsLoadingHistory(true);
       try {
-        const res = await dispatch(get_Chat_History(sessionId)).unwrap();
+        const res = await dispatch(
+          get_Chat_History({ session_id: sessionId, building_id })
+        ).unwrap();
         if (Array.isArray(res) && res.length > 0) {
           const formatted = res.flatMap((item) => [
             { sender: "User", message: item.question },
@@ -240,9 +241,10 @@ export const ChatWindow = ({
           question: userMessage.message,
           category,
           file_id: fileId,
+          building_id,
         };
 
-        response = await dispatch(AskQuestionGeneralAPI(payload)).unwrap();
+        response = await dispatch(AskQuestionAPI(payload)).unwrap();
       }
 
       if (response?.answer) {

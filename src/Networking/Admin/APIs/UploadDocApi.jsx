@@ -16,7 +16,9 @@ export const UploadDocSubmit = createAsyncThunk(
     try {
       const formData = new FormData();
       files.forEach((file) => formData.append("files", file));
-      formData.append("building_id", buildingId);
+      {
+        buildingId && formData.append("building_id", buildingId);
+      }
       formData.append("category", category);
 
       const response = await axiosInstance.post(
@@ -80,7 +82,7 @@ export const DeleteDocSubmit = createAsyncThunk(
       const response = await axiosInstance.delete(`${baseURL}${DeleteDoc}`, {
         params: { building_id, category, file_id },
       });
-
+      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error);

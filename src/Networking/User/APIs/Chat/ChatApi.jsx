@@ -2,10 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../Admin/APIs/AxiosInstance";
 import {
-  Doc_Delete_Specific,
-  List_specific_Docs,
   Session_List_Specific,
-  Upload_specific_file,
   Del_Chat_Session,
   Chat_history,
 } from "../../../NWconfig";
@@ -13,61 +10,11 @@ import {
 const getErrorMsg = (error, fallback = "Something went wrong") =>
   error?.response?.data?.message || error?.response?.data?.detail || fallback;
 
-export const Upload_specific_file_Api = createAsyncThunk(
-  "auth/Upload_specific_file_Api",
-  async ({ files, category }, { rejectWithValue }) => {
-    try {
-      const formData = new FormData();
-      files.forEach((file) => formData.append("files", file));
-      formData.append("category", category);
-
-      const response = await axiosInstance.post(
-        Upload_specific_file,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(getErrorMsg(error));
-    }
-  }
-);
-
-export const get_specific_Doclist_Api = createAsyncThunk(
-  "auth/get_specific_Doclist_Api",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.get(List_specific_Docs);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(getErrorMsg(error));
-    }
-  }
-);
-
 export const get_Session_List_Specific = createAsyncThunk(
   "auth/get_Session_List_Specific",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(Session_List_Specific);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(getErrorMsg(error));
-    }
-  }
-);
-
-export const Delete_Doc_Specific = createAsyncThunk(
-  "auth/Delete_Doc_Specific",
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.delete(
-        `${Doc_Delete_Specific}?file_id=${id}`
-      );
-      toast.success(response.data.message || "Document deleted successfully");
       return response.data;
     } catch (error) {
       return rejectWithValue(getErrorMsg(error));
@@ -100,7 +47,7 @@ export const Delete_Chat_Session = createAsyncThunk(
       const errorMessage =
         message ||
         "An unexpected error occurred while deleting the chat session.";
-      // toast.error(errorMessage);
+
       return rejectWithValue(errorMessage);
     }
   }
@@ -108,13 +55,23 @@ export const Delete_Chat_Session = createAsyncThunk(
 
 export const get_Chat_History = createAsyncThunk(
   "auth/get_Chat_History",
-  async (session_id, { rejectWithValue }) => {
+  async ({ session_id, building_id }, { rejectWithValue }) => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const url = `${Chat_history}?session_id=${session_id}`;
+      const params = new URLSearchParams();
+
+      params.append("session_id", session_id);
+
+      if (building_id) {
+        params.append("building_id", building_id);
+      }
+
+      const url = `${Chat_history}?${params.toString()}`;
+
       const response = await axiosInstance.get(url, {
         headers: {
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "69420",
@@ -127,7 +84,9 @@ export const get_Chat_History = createAsyncThunk(
 
       const status = error.response?.status;
       const message =
-        error.response?.data?.detail || error.response?.data?.message;
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        "Failed to fetch chat history. Please try again.";
 
       if (status === 401) {
         toast.error("Session expired. Please log in again.");
@@ -136,10 +95,8 @@ export const get_Chat_History = createAsyncThunk(
         return rejectWithValue("Session expired");
       }
 
-      const errorMessage =
-        message || "Failed to fetch chat history. Please try again.";
-      toast.error(errorMessage);
-      return rejectWithValue(errorMessage);
+      // toast.error(message);
+      return rejectWithValue(message);
     }
   }
 );

@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  Upload_specific_file_Api,
-  get_specific_Doclist_Api,
-  Delete_Doc_Specific,
-} from "../../../Networking/User/APIs/Chat/ChatApi";
+// import {
+//   get_specific_Doclist_Api,
+//   Delete_Doc_Specific,
+// } from "../../../Networking/User/APIs/Chat/ChatApi";
 import RAGLoader from "../../../Component/Loader";
+import {
+  DeleteDocSubmit,
+  UploadDocSubmit,
+} from "../../../Networking/Admin/APIs/UploadDocApi";
+import { GeneralInfoSubmit } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 
 export const PortfolioVoice = () => {
   const dispatch = useDispatch();
@@ -26,12 +30,14 @@ export const PortfolioVoice = () => {
   const fetchDocuments = async () => {
     try {
       setLoading(true);
-      const res = await dispatch(get_specific_Doclist_Api()).unwrap();
-      const docs = (res.files || []).map((doc) => ({
-        ...doc,
-        category: doc.category?.toLowerCase() || "",
-      }));
-      setDocuments(docs);
+
+      const res = await dispatch(
+        GeneralInfoSubmit({
+          category: "portfolio",
+        })
+      ).unwrap();
+
+      setDocuments(res);
     } catch (error) {
       console.error("Failed to fetch documents:", error);
     } finally {
@@ -78,7 +84,7 @@ export const PortfolioVoice = () => {
     try {
       setIsUploading(true);
       await dispatch(
-        Upload_specific_file_Api({
+        UploadDocSubmit({
           files: selectedFiles,
           category: "portfolio",
         })
@@ -93,14 +99,20 @@ export const PortfolioVoice = () => {
   };
 
   const handleDeleteDoc = async (id) => {
+    const file_id = id;
+
     try {
-      setIsDeleting((prev) => ({ ...prev, [id]: true }));
-      await dispatch(Delete_Doc_Specific(id)).unwrap();
+      setIsDeleting((prev) => ({ ...prev, [file_id]: true }));
+      await dispatch(
+        DeleteDocSubmit({
+          file_id: file_id,
+        })
+      ).unwrap();
       await fetchDocuments();
     } catch (error) {
       console.error("Failed to delete document:", error);
     } finally {
-      setIsDeleting((prev) => ({ ...prev, [id]: false }));
+      setIsDeleting((prev) => ({ ...prev, [file_id]: false }));
     }
   };
 

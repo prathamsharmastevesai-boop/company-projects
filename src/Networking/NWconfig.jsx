@@ -35,7 +35,7 @@ export const DeleteDoc = "/chatbot/delete_files/";
 export const AskQuestion = "/chatbot/ask_question/";
 
 // chat Ask Question
-export const AskQuestionEndpoint = "/user/ask_simple/";
+// export const AskQuestionEndpoint = "/user/ask_simple/";
 export const ASkQuestionbuildingEndpoint = "/building/files/query";
 export const Chat_history = "/chat/history/";
 export const Del_Chat_Session = "/chat/delete/";
@@ -50,12 +50,12 @@ export const AskGemini = "gemini/chat";
 export const ToggleGemini = "/gemini/gemini-toggle";
 
 //SPECIFIC CHAT
-export const Upload_specific_file = "/user/standalone/upload";
-export const List_specific_Docs = "/user/list_simple_files/";
-export const Doc_Delete_Specific = "/user/delete_simple_file/";
+// export const Upload_specific_file = "/user/standalone/upload";
+// export const List_specific_Docs = "/user/list_simple_files/";
+// export const Doc_Delete_Specific = "/user/delete_simple_file/";
 
 //GENERAL INFO
-export const listGeneralInfoDoc = "/admin_user_chat/list";
+// export const listGeneralInfoDoc = "/admin_user_chat/list";
 export const UploadGeneralDoc = "/admin_user_chat/upload";
 export const updateGenralDoc = "/admin_user_chat/update";
 

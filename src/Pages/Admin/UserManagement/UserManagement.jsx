@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Form, Spinner, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import {
-  getUserlistApi,
   inviteUserApi,
   toggleGeminiApi,
 } from "../../../Networking/Admin/APIs/UserManagement";
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
 import { toggleForumApi } from "../../../Networking/Admin/APIs/forumApi";
+import { getAdminlistApi } from "../../../Networking/SuperAdmin/AdminSuperApi";
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ export const UserManagement = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await dispatch(getUserlistApi()).unwrap();
+      const res = await dispatch(getAdminlistApi()).unwrap();
       setUsers(res || []);
     } catch (err) {
       console.error("Failed to fetch users:", err);

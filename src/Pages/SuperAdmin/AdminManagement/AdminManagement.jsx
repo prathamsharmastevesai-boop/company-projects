@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import {
-  getUserlistApi,
-  inviteUserApi,
-} from "../../../Networking/Admin/APIs/UserManagement";
+
 import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
 import {
@@ -22,21 +19,22 @@ export const AdminManagement = () => {
   const [loading, setLoading] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [deletingUser, setDeletingUser] = useState({});
 
   useEffect(() => {
     fetchadmin();
   }, []);
 
   const handleDelete = async (email) => {
-    if (!email) {
-      return toast.error("Email is required");
-    }
-
     try {
-      await dispatch(DeleteUser(email));
-      fetchadmin();
+      setDeletingUser((prev) => ({ ...prev, [email]: true }));
+
+      await dispatch(DeleteUserSubmit({ email })).unwrap();
+      // refetch users if needed
     } catch (error) {
-      console.error(error);
+      console.error("Failed to delete user:", error);
+    } finally {
+      setDeletingUser((prev) => ({ ...prev, [email]: false }));
     }
   };
 
@@ -239,8 +237,11 @@ export const AdminManagement = () => {
                             size="sm"
                             variant="outline-danger"
                             onClick={() => handleDelete(user.email)}
+                            disabled={deletingUser[user.email]}
                           >
-                            Delete
+                            {deletingUser[user.email]
+                              ? "Deleting..."
+                              : "Delete"}
                           </Button>
                         )}
                       </td>

@@ -12,11 +12,11 @@ import {
 import TypingIndicator from "../../../Component/TypingIndicator";
 import {
   AskQuestionGeminiAPI,
-  DeleteGeneralDocSubmit,
   UploadGeneralDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import { Modal } from "react-bootstrap";
 import { ListAbstractLeaseDoc } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
+import { DeleteDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
 
 export const GeminiChat = () => {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const GeminiChat = () => {
   const recognitionRef = useRef(null);
 
   const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
-  const [category, setCategory] = useState(location.state?.type);
+  // const [category, setCategory] = useState(location.state?.type);
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -92,7 +92,9 @@ export const GeminiChat = () => {
     const fetchChatHistory = async () => {
       setIsLoadingHistory(true);
       try {
-        const res = await dispatch(get_Chat_History(sessionId)).unwrap();
+        const res = await dispatch(
+          get_Chat_History({ session_id: sessionId })
+        ).unwrap();
         if (Array.isArray(res) && res.length > 0) {
           const formatted = res.flatMap((item) => [
             { sender: "User", message: item.question },
@@ -324,7 +326,7 @@ export const GeminiChat = () => {
     try {
       setDeletingDocId(docId);
       await dispatch(
-        DeleteGeneralDocSubmit({
+        DeleteDocSubmit({
           file_id: docId,
           category: "Gemini",
         })

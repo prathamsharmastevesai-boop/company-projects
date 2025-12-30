@@ -24,7 +24,11 @@ export const UserChat = () => {
     Building_id,
   } = location.state || {};
 
+  const building_id = Building_id;
+  console.log(building_id, "building_id");
+
   const [sessionId, setSessionId] = useState(incomingSessionId || null);
+  const session_id = sessionId;
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -81,8 +85,12 @@ export const UserChat = () => {
       setIsLoadingHistory(true);
 
       try {
-        const res = await dispatch(get_Chat_History(sessionId)).unwrap();
-
+        const res = await dispatch(
+          get_Chat_History({
+            session_id,
+            building_id,
+          })
+        ).unwrap();
         if (Array.isArray(res) && res.length > 0) {
           const formatted = res.flatMap((item) => [
             { sender: "User", message: item.question },
@@ -100,8 +108,8 @@ export const UserChat = () => {
       }
     };
 
-    if (sessionId) fetchChatHistory();
-  }, [sessionId, dispatch]);
+    fetchChatHistory();
+  }, [sessionId, building_id, dispatch]);
 
   useEffect(() => {
     if (chatRef.current)
