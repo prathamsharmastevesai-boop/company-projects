@@ -41,7 +41,10 @@ export const TenentInfoUserBuildinglist = () => {
 
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    navigate("/TenantInformationChat", { state: { office: { buildingId } } });
+    const address = building.address;
+    navigate("/TenantInformationChat", {
+      state: { office: { buildingId }, address: { address } },
+    });
   };
 
   return (

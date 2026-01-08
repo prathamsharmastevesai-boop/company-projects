@@ -271,6 +271,21 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
+                    isActive("/destilledcomptracker") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/destilledcomptracker")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-file-earmark-bar-graph me-1" />
+                    {!collapsed && "Distilled Comp Tracker"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
                     isActive("/distilledExpenseTrackerPage") ? "active" : ""
                   }`}
                 >
@@ -713,6 +728,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
+                    isActive("/distilledcomptrackerpage") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/distilledcomptrackerpage")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-kanban me-1"></i>
+
+                    {!collapsed && "DCT"}
+                  </span>
+                </li>
+
+                <li
+                  className={`nav-item ${
                     isActive("/calculator") ? "active" : ""
                   }`}
                 >
@@ -855,13 +886,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                     <li
                       className={`nav-item ${
-                        isActive("/SubleaseTrackerBuildinglist") ? "active" : ""
+                        isActive("/SubleaseTrackerlist1") ? "active" : ""
                       }`}
                     >
                       <span
-                        onClick={() =>
-                          handleLinkClick("/SubleaseTrackerBuildinglist")
-                        }
+                        onClick={() => handleLinkClick("/SubleaseTrackerlist1")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >

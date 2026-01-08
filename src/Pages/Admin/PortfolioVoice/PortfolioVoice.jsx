@@ -22,6 +22,9 @@ export const PortfolioVoice = () => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
+  const [showConfirm, setShowConfirm] = useState(false);
+const [selectedFileId, setSelectedFileId] = useState(null);
+
 
   useEffect(() => {
     fetchDocuments();
@@ -98,23 +101,28 @@ export const PortfolioVoice = () => {
     }
   };
 
-  const handleDeleteDoc = async (id) => {
-    const file_id = id;
+  const confirmDeleteDoc = async () => {
+  if (!selectedFileId) return;
 
-    try {
-      setIsDeleting((prev) => ({ ...prev, [file_id]: true }));
-      await dispatch(
-        DeleteDocSubmit({
-          file_id: file_id,
-        })
-      ).unwrap();
-      await fetchDocuments();
-    } catch (error) {
-      console.error("Failed to delete document:", error);
-    } finally {
-      setIsDeleting((prev) => ({ ...prev, [file_id]: false }));
-    }
-  };
+  try {
+    setIsDeleting((prev) => ({ ...prev, [selectedFileId]: true }));
+
+    await dispatch(
+      DeleteDocSubmit({ file_id: selectedFileId })
+    ).unwrap();
+
+    await fetchDocuments();
+  } catch (error) {
+    console.error("Failed to delete document:", error);
+    
+  } finally {
+    setIsDeleting((prev) => ({ ...prev, [selectedFileId]: false }));
+    setShowConfirm(false);
+    setSelectedFileId(null);
+  }
+};
+
+
 
   const filteredDocs = documents.filter(
     (doc) =>
@@ -252,12 +260,15 @@ export const PortfolioVoice = () => {
                       <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
                       <td>
                         <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDeleteDoc(doc.file_id)}
-                          disabled={isDeleting[doc.file_id]}
-                        >
-                          {isDeleting[doc.file_id] ? "Deleting..." : "Delete"}
-                        </button>
+  className="btn btn-sm btn-outline-danger"
+  onClick={() => {
+    setSelectedFileId(doc.file_id);
+    setShowConfirm(true);
+  }}
+>
+  Delete
+</button>
+
                       </td>
                     </tr>
                   ))}
@@ -271,6 +282,47 @@ export const PortfolioVoice = () => {
           )}
         </div>
       </div>
+      {showConfirm && (
+  <div className="modal fade show d-block" tabIndex="-1">
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowConfirm(false)}
+          ></button>
+        </div>
+
+        <div className="modal-body">
+          <p className="mb-0">
+            Are you sure you want to delete this document?  
+           
+          </p>
+        </div>
+
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowConfirm(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="btn btn-danger"
+            onClick={confirmDeleteDoc}
+            disabled={isDeleting[selectedFileId]}
+          >
+            {isDeleting[selectedFileId] ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

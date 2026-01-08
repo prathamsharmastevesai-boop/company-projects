@@ -16,8 +16,12 @@ import RAGLoader from "../../../Component/Loader";
 export const SubleaseTrackerList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, list, error } = useSelector((state) => state.subleaseSlice);
-  const { Role } = useSelector((state) => state.loginSlice);
+  const { loading, list } = useSelector((state) => state.subleaseSlice);
+
+  const role = sessionStorage.getItem("role");
+  const Role = role;
+  console.log(Role, "Role");
+
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -79,6 +83,7 @@ export const SubleaseTrackerList = () => {
           building_update_note_sent: false,
           holiday_gift: true,
         },
+        notes: data?.data?.notes || "",
       };
 
       setDetail({ ...data, data: initializedData });
@@ -95,7 +100,11 @@ export const SubleaseTrackerList = () => {
   };
 
   const handleNavigate = () => {
-    navigate("/subleaseTracker");
+    {
+      Role === "admin"
+        ? navigate("/subleaseTracker")
+        : navigate("/userSubleaseTracker");
+    }
   };
 
   const handleDelete = async () => {
@@ -162,6 +171,7 @@ export const SubleaseTrackerList = () => {
             direct_tenant_current_rent: detail.data.direct_tenant_current_rent,
             subtenant_contact_info: detail.data.subtenant_contact_info,
             direct_tenant_contact_info: detail.data.direct_tenant_contact_info,
+            notes: detail.data.notes || "",
             q1: detail.data.q1,
             q2: detail.data.q2,
             q3: detail.data.q3,
@@ -310,25 +320,18 @@ export const SubleaseTrackerList = () => {
 
   return (
     <>
-      {Role == "user" && (
-        <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-          <h5 className="mb-0 text-light mx-4">Sublease Tracker List</h5>
-        </div>
-      )}
-      <div className="container py-4">
-        {Role == "admin" && (
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="fw-bold">Sublease Tracker List</h2>
+      <div className="header-bg d-flex justify-content-between px-3 align-items-center sticky-header">
+        <h5 className="mb-0 text-light mx-4">Sublease Tracker List</h5>
+        <button
+          className="btn btn-secondary d-flex align-items-center gap-2"
+          onClick={handleNavigate}
+          style={{ fontWeight: "600", padding: "0.5rem 1rem" }}
+        >
+          <BsPlusLg /> Add Sublease
+        </button>
+      </div>
 
-            <button
-              className="btn btn-secondary d-flex align-items-center gap-2"
-              onClick={handleNavigate}
-              style={{ fontWeight: "600", padding: "0.5rem 1rem" }}
-            >
-              <BsPlusLg /> Add Sublease
-            </button>
-          </div>
-        )}
+      <div className="container py-4">
         {loading && (
           <div
             style={{
@@ -412,17 +415,16 @@ export const SubleaseTrackerList = () => {
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
-                      {Role == "admin" && (
-                        <button
-                          className="btn btn-outline-danger btn-sm rounded-circle"
-                          onClick={() =>
-                            confirmDelete(item.id, item?.data?.sub_tenant_name)
-                          }
-                          title="Delete"
-                        >
-                          <i className="bi bi-trash3"></i>
-                        </button>
-                      )}
+
+                      <button
+                        className="btn btn-outline-danger btn-sm rounded-circle"
+                        onClick={() =>
+                          confirmDelete(item.id, item?.data?.sub_tenant_name)
+                        }
+                        title="Delete"
+                      >
+                        <i className="bi bi-trash3"></i>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -756,7 +758,6 @@ export const SubleaseTrackerList = () => {
                           </p>
                         )}
                       </div>
-
                       <div className="col-md-6">
                         <label className="form-label fw-bold">
                           Direct Tenant Contact Info:
@@ -775,6 +776,28 @@ export const SubleaseTrackerList = () => {
                           <p className="mb-0">
                             {detail?.data?.direct_tenant_contact_info}
                           </p>
+                        )}
+                      </div>
+
+                      <div className="col-12">
+                        <label className="form-label fw-bold">Notes:</label>
+                        {isEdit ? (
+                          <textarea
+                            className="form-control"
+                            name="notes"
+                            rows="4"
+                            value={detail?.data?.notes || ""}
+                            onChange={handleChange}
+                            placeholder="Enter any additional notes here..."
+                          />
+                        ) : (
+                          <div className="p-3 bg-light rounded">
+                            {detail?.data?.notes || (
+                              <span className="text-muted">
+                                No notes available
+                              </span>
+                            )}
+                          </div>
                         )}
                       </div>
 

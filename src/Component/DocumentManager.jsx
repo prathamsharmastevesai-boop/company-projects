@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import RAGLoader from "./Loader";
 import { DeleteDocSubmit } from "../Networking/Admin/APIs/UploadDocApi";
+import { BackButton } from "./backButton";
 
 const DocumentManager = ({ category, title, description, building_Id }) => {
   const dispatch = useDispatch();
@@ -198,7 +199,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
       ).unwrap();
 
       await fetchData();
-      toast.success("Document deleted successfully");
+      // toast.success("Document deleted successfully");
     } catch (err) {
       console.error("Delete failed:", err);
       // toast.error("Failed to delete document");
@@ -212,9 +213,16 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
   return (
     <>
       <div className="container px-2 px-md-4">
-        <div className="container doc-container py-4">
-          <h5 className="fw-bold text-truncate mt-3">{title}</h5>
-          <p className="text-muted text-truncate">{description}</p>
+        <div className="container doc-container pb-4">
+          <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+            <BackButton className="flex-shrink-0" />
+
+            <div className="flex-grow-1 min-w-0">
+              <h5 className="fw-bold mb-1">{title}</h5>
+
+              <p className="text-muted mb-0 description">{description}</p>
+            </div>
+          </div>
 
           {category === "floor_plan" && (
             <div className="mb-3">
@@ -234,7 +242,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
           )}
 
           <div
-            className={`border border-2 rounded-3 p-3 text-center mb-4 w-100 ${
+            className={`border border-2 rounded-3 p-3 text-center w-100 ${
               isDragging ? "border-primary bg-light" : "border-dashed bg-light"
             }`}
             onDragOver={handleDragOver}
@@ -273,7 +281,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
           </div>
         </div>
 
-        <div className="card shadow-sm mb-4">
+        <div className="card shadow-sm m-2">
           <div className="card-header fw-semibold">Uploaded Documents</div>
 
           {listLoading ? (
@@ -312,7 +320,6 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
                   </div>
 
                   <div className="d-flex gap-2 mt-2 mt-md-0">
-                    {/* Edit Icon (optional) */}
                     {/* <i
       className="bi bi-pencil-square text-primary"
       style={{ cursor: "pointer" }}

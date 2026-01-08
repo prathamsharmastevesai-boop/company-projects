@@ -93,6 +93,9 @@ import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCat
 import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
 import { InformationCollaborationPage } from "./Pages/User/UserInformationCollaboration/informationCollaborationpages";
+import { DestilledCompTracker } from "./Pages/Admin/DistilledCompTracker/distilledCompTracker";
+import { DistilledCompTrackerPage } from "./Pages/User/DistilledCompTracker/distilledCompTrackerPage";
+import { DCTChat } from "./Pages/User/DistilledCompTracker/distilledCompChat";
 
 function App() {
   useEffect(() => {
@@ -216,6 +219,10 @@ function App() {
               path="/distilledExpenseTrackerPage"
               element={<DistilledExpenseTrackerPage />}
             />
+            <Route
+              path="/destilledcomptracker"
+              element={<DestilledCompTracker />}
+            />
 
             <Route path="/subleaseTracker" element={<SubleaseTracker />} />
             <Route
@@ -304,16 +311,16 @@ function App() {
               path="/tenentInfoUserBuildinglist"
               element={<TenentInfoUserBuildinglist />}
             />
-
+            <Route path="/userSubleaseTracker" element={<SubleaseTracker />} />
             <Route
               path="/SubleaseTrackerChat"
               element={<SubleaseTrackerChat />}
             />
             <Route
-              path="/SubleaseTrackerBuildinglist"
+              path="/SubleaseTrackerlist1"
               element={<SubleaseTrackerList />}
             />
-
+            <Route path="/userRenewalTracker" element={<RenewalTracker />} />
             <Route
               path="/RenewalTrackerList"
               element={<RenewalTrackerList />}
@@ -336,6 +343,12 @@ function App() {
             <Route path="/notes" element={<Notes />} />
 
             <Route path="/benchmark" element={<Benchmark />} />
+            <Route path="/dctchat" element={<DCTChat />} />
+
+            <Route
+              path="/distilledcomptrackerpage"
+              element={<DistilledCompTrackerPage />}
+            />
 
             <Route path="/tours" element={<ToursPage />} />
 

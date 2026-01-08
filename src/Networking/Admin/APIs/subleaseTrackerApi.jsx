@@ -18,8 +18,6 @@ export const SubleaseTrackerSubmit = createAsyncThunk(
 export const UpdateSubleaseById = createAsyncThunk(
   "sublease/update",
   async ({ tracker_id, data }, { rejectWithValue }) => {
-    console.log(tracker_id, data, "id, data");
-
     try {
       const response = await axiosInstance.put("/sublease/" + tracker_id, data);
       return response.data;
@@ -47,8 +45,6 @@ export const GetSubleaseById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/sublease/${id}`);
-      console.log(response.data, "response.data");
-
       return response.data;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error.message);

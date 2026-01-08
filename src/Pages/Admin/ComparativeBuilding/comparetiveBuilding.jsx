@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
 import { useLocation } from "react-router-dom";
 import { DeleteDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
+import { BackButton } from "../../../Component/backButton";
 
 export const ComparativeBuildingData = () => {
   const location = useLocation();
@@ -165,10 +166,18 @@ export const ComparativeBuildingData = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h5 className="fw-bold mt-4">Comparative Building Data</h5>
-      <p className="text-muted">
-        Upload and manage documents for Building Information
-      </p>
+      <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+        <BackButton className="flex-shrink-0" />
+
+        <div className="flex-grow-1 min-w-0">
+          <h5 className="fw-bold mb-1">Comparative Building Data</h5>
+
+          <p className="text-muted mb-0 description">
+            {" "}
+            Upload and manage documents for Building Information
+          </p>
+        </div>
+      </div>
 
       <div
         className={`border border-2 rounded-3 p-2 text-center mb-4 ${

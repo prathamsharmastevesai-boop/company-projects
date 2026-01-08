@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SubleaseTrackerSubmit } from "../../../Networking/Admin/APIs/subleaseTrackerApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { BackButton } from "../../../Component/backButton";
 
 export const SubleaseTracker = ({ data }) => {
   const dispatch = useDispatch();
@@ -14,6 +15,10 @@ export const SubleaseTracker = ({ data }) => {
   const [loading, setLoading] = useState(false);
 
   const quarters = ["Q1", "Q2", "Q3", "Q4"];
+
+  const role = sessionStorage.getItem("role");
+  const Role = role;
+  console.log(Role, "Role");
 
   const resetForm = () => {
     setForm({
@@ -28,6 +33,7 @@ export const SubleaseTracker = ({ data }) => {
       directTenantRent: "",
       subtenantContact: "",
       directTenantContact: "",
+      notes: "",
       statusUpdates: {
         Q1: {
           checkIn: false,
@@ -90,7 +96,7 @@ export const SubleaseTracker = ({ data }) => {
       direct_tenant_current_rent: form.directTenantRent || "",
       subtenant_contact_info: form.subtenantContact || "",
       direct_tenant_contact_info: form.directTenantContact || "",
-
+      notes: form.notes || "",
       q1: {
         check_in: form.statusUpdates?.Q1?.checkIn || false,
         headcount_confirmation: form.statusUpdates?.Q1?.headcount || false,
@@ -120,7 +126,12 @@ export const SubleaseTracker = ({ data }) => {
     try {
       await dispatch(SubleaseTrackerSubmit(payload)).unwrap();
       toast.success("Sublease saved successfully!");
-      navigate("/subleaseTrackerList");
+      {
+        Role === "admin"
+          ? navigate("/subleaseTrackerList")
+          : navigate("/SubleaseTrackerlist1");
+      }
+
       resetForm();
     } catch (error) {
       console.log(error);
@@ -131,7 +142,10 @@ export const SubleaseTracker = ({ data }) => {
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-4">New Sublease Tracker</h2>
+      <div className="d-flex align-items-center mb-2">
+        <BackButton />
+        <h2 className="fw-bold ms-2">New Sublease Tracker</h2>
+      </div>
 
       <div className="card p-4 mb-4">
         <h4 className="mb-5">Sublease Identification</h4>
@@ -189,6 +203,19 @@ export const SubleaseTracker = ({ data }) => {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="card p-4 mb-4">
+        <h4 className="mb-3">Notes</h4>
+
+        <textarea
+          name="notes"
+          rows="4"
+          value={form.notes}
+          onChange={handleChange}
+          className="form-control border-primary"
+          placeholder="Enter any additional notes here..."
+        />
       </div>
 
       <div className="card p-4 mb-5">

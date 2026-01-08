@@ -133,6 +133,12 @@ export const getTours = "/tours/";
 export const distilledExpenseTrackerEndpoint = "/det_expense/submit";
 export const distilledExpenseTrackerlistEndPoint = "/det_expense/submissions";
 
+//DistilledCompTracker
+export const distilledCompTrackerEndpoint = "/dct/submit";
+export const distilledCompTrackerlistEndPoint = "/dct/comps";
+export const AskQuestionDCTEndpoint = "/dct/gemini-query";
+export const distilledBenchmarkEndpoint = "/dct/benchmark";
+
 //Calc
 export const calcEndpoint = "calc/lease-finance";
 

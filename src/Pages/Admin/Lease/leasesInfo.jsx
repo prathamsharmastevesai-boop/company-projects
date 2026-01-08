@@ -9,6 +9,7 @@ import {
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import RAGLoader from "../../../Component/Loader";
+import { BackButton } from "../../../Component/backButton";
 
 export const LeaseInfomation = () => {
   const dispatch = useDispatch();
@@ -167,20 +168,31 @@ export const LeaseInfomation = () => {
   return (
     <div className="container-fluid p-3">
       {initialBuildings.type === "Lease" && (
-        <>
-          <h5 className="fw-bold text-truncate mt-4">Lease Documents</h5>
-          <p className="text-muted text-truncate">
-            Upload and manage lease-related documents
-          </p>
-        </>
+        <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+          <BackButton className="flex-shrink-0" />
+
+          <div className="flex-grow-1 min-w-0">
+            <h5 className="fw-bold mb-1">Lease Documents</h5>
+
+            <p className="text-muted mb-0 description">
+              {" "}
+              Upload and manage lease-related documents
+            </p>
+          </div>
+        </div>
       )}
       {initialBuildings.type === "LOI" && (
-        <>
-          <h5 className="fw-bold text-truncate">Letter of Intent Documents</h5>
-          <p className="text-muted text-truncate">
-            Upload and manage Letter of Intent-related documents
-          </p>
-        </>
+        <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+          <BackButton className="flex-shrink-0" />
+
+          <div className="flex-grow-1 min-w-0">
+            <h5 className="fw-bold mb-1">Letter of Intent Documents</h5>
+
+            <p className="text-muted mb-0 description">
+              Upload and manage Letter of Intent-related documents
+            </p>
+          </div>
+        </div>
       )}
 
       <div

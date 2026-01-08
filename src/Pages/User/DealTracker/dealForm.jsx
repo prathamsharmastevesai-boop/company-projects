@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { DealFormApi } from "../../../Networking/User/APIs/DealTracker/dealTrackerApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const DealForm = () => {
   const dispatch = useDispatch();
@@ -191,6 +192,20 @@ const DealForm = () => {
               </h4>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="px-3 my-4 d-flex justify-content-center justify-content-md-start">
+        <div
+          className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
+          onClick={() => navigate(-1)}
+          style={{
+            cursor: "pointer",
+            width: "110px",
+            borderRadius: 10,
+          }}
+        >
+          <FaArrowLeft size={16} />
+          <span>Back</span>
         </div>
       </div>
       <div className="container mt-4">

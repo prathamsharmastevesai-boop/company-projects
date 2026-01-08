@@ -47,7 +47,6 @@ export const GetRenewalById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/renewal/${id}`);
-      console.log(response.data, "response.data");
 
       return response.data;
     } catch (error) {

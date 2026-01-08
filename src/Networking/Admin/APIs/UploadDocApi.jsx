@@ -79,7 +79,7 @@ export const DeleteDocSubmit = createAsyncThunk(
   "docs/DeleteDocSubmit",
   async ({ building_id, category, file_id }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.delete(`${baseURL}${DeleteDoc}`, {
+      const response = await axiosInstance.delete(`${DeleteDoc}`, {
         params: { building_id, category, file_id },
       });
       toast.success(response.data.message);
