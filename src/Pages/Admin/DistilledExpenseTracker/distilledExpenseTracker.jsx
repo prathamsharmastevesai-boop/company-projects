@@ -149,9 +149,11 @@ export const DistilledExpenseTracker = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h2 className="mb-4 text-center">
-        Distilled Expense Tracker (DET) Submission
-      </h2>
+       <div className="mb-4 text-center text-md-center">
+        <h4 className="fw-bold">
+          Distilled Expense Tracker (DET) Submission
+        </h4>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="card mb-4 shadow-sm">

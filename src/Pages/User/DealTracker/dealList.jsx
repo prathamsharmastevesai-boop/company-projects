@@ -281,7 +281,7 @@ const DealList = () => {
           </div>
         ) : (
           <div className="table-responsive">
-            <table className="table mt-3 align-middle">
+            <table className="table mt-3 align-middle w-800">
               <thead className="table-light">
                 <tr>
                   <th style={{ fontWeight: "600", fontSize: "14px" }}>
@@ -357,34 +357,37 @@ const DealList = () => {
                     <td className="text-muted">
                       {formatDate(getLastUpdated(item))}
                     </td>
-                    <td>
-                      <button
-                        className="btn btn-sm text-white me-2"
-                        style={{
-                          backgroundColor: "#217ae6",
-                          borderColor: "#217ae6",
-                          padding: "4px 12px",
-                          fontSize: "13px",
-                        }}
-                        onClick={() => handleViewEdit(item.id || item._id)}
-                      >
-                        View/Edit
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-secondary"
-                        style={{
-                          padding: "4px 12px",
-                          fontSize: "13px",
-                        }}
-                        onClick={() => handleDelete(item.id)}
-                        disabled={deleteLoadingId === item.id}
-                      >
-                        {deleteLoadingId === item.id ? (
-                          <span className="spinner-border spinner-border-sm"></span>
-                        ) : (
-                          <i className="bi bi-trash"></i>
-                        )}
-                      </button>
+                    <td className="">
+                      <div className="table-icons">
+
+                        <button
+                          className="btn btn-sm text-white me-2"
+                          style={{
+                            backgroundColor: "#217ae6",
+                            borderColor: "#217ae6",
+                            padding: "4px 12px",
+                            fontSize: "13px",
+                          }}
+                          onClick={() => handleViewEdit(item.id || item._id)}
+                        >
+                          View/Edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-secondary"
+                          style={{
+                            padding: "4px 12px",
+                            fontSize: "13px",
+                          }}
+                          onClick={() => handleDelete(item.id)}
+                          disabled={deleteLoadingId === item.id}
+                        >
+                          {deleteLoadingId === item.id ? (
+                            <span className="spinner-border spinner-border-sm"></span>
+                          ) : (
+                            <i className="bi bi-trash"></i>
+                          )}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -195,14 +195,14 @@ export const BuildingInfoList = () => {
         ) : (
           <>
             <div className="col-md-12 py-2">
-              <div className="d-flex align-items-center justify-content-between mx-1">
-                <div className="d-flex col-md-6">
+              <div className="d-flex align-items-center justify-content-between mx-1 flex-wrap">
+                <div className="d-flex col-12 col-md-6 mt-2 mt-md-0">
                   <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
                   <div className="mx-2 check w-75 fw-semibold">
                     {building.address || "N/A"}
                   </div>
                 </div>
-                <div className="d-flex col-md-6 justify-content-end gap-2 flex-wrap mt-2">
+                <div className="d-flex col-12 col-md-6 justify-content-start justify-content-md-end gap-2 flex-wrap mt-3 mt-md-2">
                   <button
                     className="btn btn-dark btn-sm"
                     onClick={() => goToChat(building.id, "floor_plan")}
@@ -252,7 +252,7 @@ export const BuildingInfoList = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h2 className="fw-bold text-dark">Building Info List</h2>
+        <h4 className="fw-bold text-dark">Building Info List</h4>
         <p className="text-muted mb-3">
           Here’s a summary of all the submitted buildings.
         </p>

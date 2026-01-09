@@ -229,7 +229,7 @@ export const SessionList = ({ setShowSessionModal }) => {
                     }}
                     onClick={() => handleSelect(session)}
                   >
-                    <div className="d-flex align-items-center flex-grow-1 col-12 col-sm-5 mb-2 mb-sm-0">
+                    <div className="d-flex align-items-center flex-grow-1 col-12 col-sm-7 mb-2 mb-sm-0">
                       <span
                         className="text-truncate"
                         style={{
@@ -243,8 +243,8 @@ export const SessionList = ({ setShowSessionModal }) => {
                       </span>
                     </div>
 
-                    <div className="col-6 d-flex align-items-center justify-content-around col-sm-3 text-end">
-                      <div className="text-start text-sm-center mb-2 mb-sm-0">
+                    <div className="col-12 col-sm-5 d-flex align-items-center justify-content-between gap-2 align-items-center justify-content-sm-end text-end">
+                      <div className="text-start text-sm-center mb-0 mb-sm-0">
                         <span
                           className={getCategoryStyle(session.category)}
                           style={{

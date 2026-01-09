@@ -117,7 +117,9 @@ export const UserManagement = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h4 className="fw-bold mt-4">User Management</h4>
+      <div className="text-center text-md-start">
+        <h4 className="fw-bold">User Management</h4>
+      </div>
       <p className="text-muted">
         Control user access to Portfolio Pulse documents and features
       </p>

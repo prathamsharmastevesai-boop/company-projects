@@ -10,16 +10,13 @@ export const DistilledExpenseTrackerPage = () => {
     activeTab === "form" ? "Add Submission" : "Submissions List";
 
   return (
-    <Container fluid className="p-0">
-      <Row
-        className="sticky-top"
+    <>
+      <div
+        className="px-3 py-3 sticky-top"
         style={{ backgroundColor: "#212529", zIndex: 10 }}
       >
-        <Col
-          xs={12}
-          className="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 py-3 gap-2 gap-md-0"
-        >
-          <h5 className="text-white m-0">{headerTitle}</h5>
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+          <h5 className="text-white m-0 text-center text-md-start mb-2 mb-md-0">{headerTitle}</h5>
           <div className="d-flex flex-wrap gap-2">
             <Button
               variant={activeTab === "form" ? "light" : "outline-light"}
@@ -36,8 +33,9 @@ export const DistilledExpenseTrackerPage = () => {
               View Submissions
             </Button>
           </div>
-        </Col>
-      </Row>
+        </div>
+        </div>
+        
 
       <Row className="justify-content-center ">
         <Col md={12}>
@@ -47,6 +45,6 @@ export const DistilledExpenseTrackerPage = () => {
           </Card>
         </Col>
       </Row>
-    </Container>
+    </>
   );
 };

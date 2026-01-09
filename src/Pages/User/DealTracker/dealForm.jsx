@@ -177,9 +177,9 @@ const DealForm = () => {
   return (
     <div>
       <div className="header-bg sticky-header px-3 py-2">
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-center align-items-center">
           <div className="d-flex align-items-center gap-3">
-            <div className="d-flex flex-wrap align-items-center gap-3 mb-3">
+            <div className="d-flex flex-wrap align-items-center gap-2 text-center mx-4  justify-content-center py-2">
               <h4
                 className="fw-bold m-0 portfolio-title"
                 style={{ color: "#217ae6" }}
@@ -194,7 +194,9 @@ const DealForm = () => {
           </div>
         </div>
       </div>
-      <div className="px-3 my-4 d-flex justify-content-center justify-content-md-start">
+     
+      <div className="container-fluid m-4">
+         <div className="my-4 d-flex justify-content-md-start">
         <div
           className="bg-dark text-white py-2 d-flex align-items-center justify-content-center gap-2"
           onClick={() => navigate(-1)}
@@ -208,7 +210,6 @@ const DealForm = () => {
           <span>Back</span>
         </div>
       </div>
-      <div className="container mt-4">
         {loading && (
           <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 z-3">
             <div className="spinner-border text-primary" role="status">
@@ -295,7 +296,7 @@ const DealForm = () => {
           {stages.map((item, i) => (
             <div key={i} className="p-1 px-2 mb-1 bg-light">
               <div className="row g-3 align-items-center">
-                <div className="col-md-1 col-2 text-center">
+                <div className="col-md-1 col-lg-1 col-2 text-start text-md-center pt-2 pt-md-0">
                   <input
                     type="checkbox"
                     className="form-check-input"
@@ -306,13 +307,13 @@ const DealForm = () => {
                     disabled={saving}
                   />
                 </div>
-                <div className="col-md-3 col-12">
+                <div className="col-md-3 col-lg-3 col-12">
                   <strong>{item.stage_name}</strong>
                   {/* <div className="text-muted small">
                     Order: {item.order_index}
                   </div> */}
                 </div>
-                <div className="col-md-2 col-12">
+                <div className="col-md-2 col-lg-2 col-12">
                   <input
                     type="date"
                     className="form-control"
@@ -333,7 +334,7 @@ const DealForm = () => {
                     disabled={saving || !item.is_completed}
                   />
                 </div>
-                <div className="col-md-5 col-12">
+                <div className="col-md-4 col-lg-5 col-12">
                   <input
                     className="form-control"
                     placeholder="Notes..."
@@ -345,7 +346,7 @@ const DealForm = () => {
                     disabled={saving}
                   />
                 </div>
-                <div className="col-md-1 text-primary text-end">Notes</div>
+                <div className="col-md-2 col-lg-1 text-primary text-start text-md-end pb-2 pb-md-0">Notes</div>
               </div>
             </div>
           ))}
@@ -358,7 +359,7 @@ const DealForm = () => {
             + Add Another LOI Round
           </button>
 
-          <div className="d-flex flex-wrap justify-content-end gap-3 mt-4 pt-3">
+          <div className="d-flex flex-wrap justify-content-center gap-3 mt-4 pt-3">
             <button
               className="btn text-light px-4"
               style={{

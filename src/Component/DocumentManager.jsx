@@ -212,15 +212,15 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
 
   return (
     <>
-      <div className="container px-2 px-md-4">
-        <div className="container doc-container pb-4">
-          <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+      <div className="container-fuild px-2 px-md-4">
+        <div className="container-fuild doc-container pb-4">
+          <div className="d-flex align-items-start align-items-md-center gap-2 pt-5 pt-md-3 pb-3">
             <BackButton className="flex-shrink-0" />
 
             <div className="flex-grow-1 min-w-0">
-              <h5 className="fw-bold mb-1">{title}</h5>
+              <h5 className="fw-bold mb-0">{title}</h5>
 
-              <p className="text-muted mb-0 description">{description}</p>
+              <p className="text-muted mb-0 description small">{description}</p>
             </div>
           </div>
 

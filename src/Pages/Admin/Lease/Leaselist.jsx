@@ -37,9 +37,9 @@ export const LeaseList = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h5 className="fw-bold text-dark px-3 mt-4">
+        <h4 className="fw-bold px-3 mt-4">
           Select Section to Upload Lease Agreement or Letter of Intent
-        </h5>
+        </h4>
       </div>
 
       <div className="px-3 mb-4 d-flex justify-content-center justify-content-md-start">

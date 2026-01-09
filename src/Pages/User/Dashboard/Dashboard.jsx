@@ -73,15 +73,14 @@ export const Dashboard = () => {
       )}
 
       <section
-        style={{ height: "42vh", backgroundColor: "#1f1f1f" }}
+        style={{ backgroundColor: "#1f1f1f" }}
         className="hero-section text-white d-flex align-items-center justify-content-center text-center"
       >
         <div>
           <img
             src="https://cdn-icons-png.flaticon.com/512/6789/6789463.png"
             alt="Under Construction"
-            style={{ width: "100px" }}
-            className="mb-3 animate__animated animate__fadeInDown"
+            className="dashboard_logo mb-3 animate__animated animate__fadeInDown"
           />
           <h1 className="display-4 fw-bold animate__animated animate__fadeInUp">
             Welcome to Portfolio Pulse
@@ -135,7 +134,7 @@ export const Dashboard = () => {
                   className="card border-0 shadow-sm slide-in-top p-3"
                   style={{ borderRadius: "16px" }}
                 >
-                  <div className="d-flex align-items-center justify-content-between ">
+                  <div className="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center justify-content-between ">
                     <div className="d-flex align-items-center">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
                       <div className="fw-semibold">

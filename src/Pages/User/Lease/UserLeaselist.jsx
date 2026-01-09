@@ -16,17 +16,16 @@ export const UserLeaseList = () => {
   return (
     <>
       <div
-        className="text-center bg-dark pt-5 animate__animated animate__fadeInDown"
+        className="text-center agreement_header bg-dark animate__animated animate__fadeInDown"
         style={{
           position: "sticky",
           top: 0,
           zIndex: 10,
-          height: "20vh",
           marginBottom: "30px",
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h5 className="heading_lease text-center text-light px-3">
+        <h5 className="heading_lease text-center text-light mb-0 px-3">
           Select Section to Chat with Lease Agreement or Letter of Intent
         </h5>
       </div>
