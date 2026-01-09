@@ -61,7 +61,8 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await dispatch(
-        LoginSubmit({ email, password, role: "user" })
+        LoginSubmit({email: email.trim(),
+      password: password.trim()})
       ).unwrap();
 
       const { role, access_token } = res;
@@ -71,7 +72,7 @@ export const Login = () => {
         return;
       }
 
-      // ✅ Store only what is needed
+     
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("access_token", access_token);
 
