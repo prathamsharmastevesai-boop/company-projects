@@ -37,6 +37,8 @@ export const ChatWindow = ({
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
+ 
+  
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
@@ -49,23 +51,30 @@ export const ChatWindow = ({
 
   const isLoading = isLoadingSession || isLoadingHistory;
 
-  const isValidUrl = (text) => {
+const getContentType = (text) => {
+  if (!text || typeof text !== 'string') return "text";
+  
+  const trimmedText = text.trim();
+  
+
+  if (trimmedText.startsWith('http://') || 
+      trimmedText.startsWith('https://') || 
+      trimmedText.startsWith('www.')) {
     try {
-      new URL(text);
-      return true;
+      const url = new URL(trimmedText.startsWith('www.') ? 'https://' + trimmedText : trimmedText);
+      const path = url.pathname.toLowerCase();
+      
+      if (path.match(/\.(jpg|jpeg|png|webp|gif|bmp)$/)) return "image";
+      if (path.endsWith('.pdf')) return "pdf";
+      return "link";
     } catch {
-      return false;
+      return "text";
     }
-  };
-
-  const getContentType = (url) => {
-    if (!url) return "text";
-    const cleanUrl = url.split("?")[0].toLowerCase();
-
-    if (cleanUrl.match(/\.(jpg|jpeg|png|webp)$/)) return "image";
-    if (cleanUrl.endsWith(".pdf")) return "pdf";
-    return "link";
-  };
+  }
+  
+  
+  return "text";
+};
 
   useEffect(() => {
     if (category === "floor_plan" || category === "building_stack") {
@@ -271,8 +280,8 @@ export const ChatWindow = ({
       }
 
       if (response?.answer) {
-        const isUrl = isValidUrl(response.answer);
-        const contentType = isUrl ? getContentType(response.answer) : "text";
+
+      const contentType = getContentType(response.answer);
 
         const adminMessage = {
           message: response.answer,
@@ -308,7 +317,7 @@ export const ChatWindow = ({
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
-            <div className="d-flex align-items-center position-relative w-100">
+            <div className="d-flex align-items-center position-relative w-100 mt-3 mt-md-0">
               <div className="d-flex align-items-center">
                 <BackButton />
               </div>

@@ -80,13 +80,16 @@ export const PortfolioForum = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDeleteThread = async () => {
+    const confirmDeleteThread = async () => {
     try {
       setDeletingId(threadToDelete);
 
       await dispatch(deleteThreadsApi({ thread_id: threadToDelete })).unwrap();
       await dispatch(get_Threads_Api()).unwrap();
-
+    if (selectedThread?.id === threadToDelete) {
+      setSelectedThread(null);
+      setThreadMessages([]);
+    }
       toast.success("Thread deleted successfully");
     } catch (err) {
       // toast.error("Failed to delete thread");
