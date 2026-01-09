@@ -4,10 +4,9 @@ import {
   ProfileUpdateApi,
 } from "../../../Networking/User/APIs/Profile/ProfileApi";
 import { useDispatch, useSelector } from "react-redux";
-import { FaEdit, FaCamera, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import RAGLoader from "../../../Component/Loader";
-import { toast } from "react-toastify";
-import { baseURL } from "../../../Networking/NWconfig";
+
 
 export const UserProfile = () => {
   const { userdata } = useSelector((state) => state.ProfileSlice);
@@ -15,15 +14,13 @@ export const UserProfile = () => {
 
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [photoUrl, setPhotoUrl] = useState(null);
-  const [bgPhotoUrl, setBgPhotoUrl] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [bgPhotoFile, setBgPhotoFile] = useState(null);
-  const [tempPhoto, setTempPhoto] = useState(null);
-  const [tempBgPhoto, setTempBgPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -43,77 +40,72 @@ export const UserProfile = () => {
     if (userdata) {
       setName(userdata.name || "");
       setNumber(userdata.number || "");
-      setPhotoUrl(userdata.photo_base64 || "https://placehold.co/100x100");
-      setBgPhotoUrl(
-        userdata.bg_photo_base64 ||
-          "https://images.unsplash.com/photo-1580587771525-78b9dba3b914"
-      );
+      
+  
     }
   }, [userdata]);
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    const MAX_FILE_SIZE_MB = 1;
-    if (!file) return;
-
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      alert("⚠️ Profile photo must be less than 1MB.");
-      return;
-    }
-
-    setPhotoFile(file);
-    setTempPhoto(URL.createObjectURL(file));
-  };
-
-  const handleBgPhotoChange = (e) => {
-    const file = e.target.files[0];
-    const MAX_FILE_SIZE_MB = 2;
-    if (!file) return;
-
-    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      alert("⚠️ Background photo must be less than 2MB.");
-      return;
-    }
-
-    setBgPhotoFile(file);
-    setTempBgPhoto(URL.createObjectURL(file));
-  };
-
+ 
   const cancelEditing = () => {
     setName(userdata.name || "");
     setNumber(userdata.number || "");
     setPhotoFile(null);
     setBgPhotoFile(null);
-    setTempPhoto(null);
-    setTempBgPhoto(null);
     setIsEditing(false);
   };
 
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const validate = () => {
+  let tempErrors = {};
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("number", number);
-    if (photoFile) formData.append("photo", photoFile);
-    if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
+ if (!name.trim()) {
+  tempErrors.name = "Name is required";
+} else if (name.trim().length < 3) {
+  tempErrors.name = "Name must be at least 3 characters";
+} else if (name.trim().length > 20) {
+  tempErrors.name = "Name must not exceed 20 characters";
+}
 
-    try {
-      await dispatch(ProfileUpdateApi(formData));
-      dispatch(getProfileDetail());
-      setIsEditing(false);
-      setPhotoFile(null);
-      setBgPhotoFile(null);
-      setTempPhoto(null);
-      setTempBgPhoto(null);
-    } catch (error) {
-      console.error("Update failed:", error);
-      alert("Failed to update profile.");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  if (!number.trim()) {
+    tempErrors.number = "Phone number is required";
+  } else if (!/^\d+$/.test(number)) {
+    tempErrors.number = "Phone number must contain only digits";
+  } else if (number.length < 10 || number.length > 15) {
+    tempErrors.number = "Phone number must be 10–15 digits";
+  }
+
+  setErrors(tempErrors);
+  return Object.keys(tempErrors).length === 0;
+};
+
+
+const handleProfileUpdate = async (e) => {
+  e.preventDefault();
+
+  if (!validate()) return;
+
+  setLoading(true);
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("number", number);
+  if (photoFile) formData.append("photo", photoFile);
+  if (bgPhotoFile) formData.append("bg_photo", bgPhotoFile);
+
+  try {
+    await dispatch(ProfileUpdateApi(formData));
+    dispatch(getProfileDetail());
+    setIsEditing(false);
+    setPhotoFile(null);
+    setBgPhotoFile(null);
+    setErrors({});
+  } catch (error) {
+    console.error("Update failed:", error);
+   
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
@@ -123,7 +115,6 @@ export const UserProfile = () => {
           position: "sticky",
           top: 0,
           zIndex: 3,
-          height: "20vh",
           borderBottom: "1px solid #dee2e6",
         }}
       >
@@ -139,83 +130,6 @@ export const UserProfile = () => {
           </div>
         ) : (
           <div className="card shadow-sm overflow-hidden">
-            <div
-            // style={{
-            //   backgroundImage: `url(${tempBgPhoto || bgPhotoUrl})`,
-            //   backgroundSize: "cover",
-            //   backgroundPosition: "center",
-            //   height: "180px",
-            //   position: "relative",
-            // }}
-            >
-              {/* {isEditing && (
-                <label
-                  htmlFor="bg-photo-upload"
-                  className="btn btn-light rounded-circle"
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    height: "40px",
-                    width: "40px",
-                    cursor: "pointer",
-                  }}
-                  title="Change background photo"
-                >
-                  <FaCamera />
-                  <input
-                    id="bg-photo-upload"
-                    type="file"
-                    onChange={handleBgPhotoChange}
-                    style={{ display: "none" }}
-                    accept="image/*"
-                  />
-                </label>
-              )} */}
-
-              {/* <div style={{ position: "relative", display: "inline-block" }}> */}
-              {/* <img
-                  src={tempPhoto || photoUrl}
-                  alt="Profile"
-                  className="rounded-circle border border-3 border-white shadow"
-                  crossOrigin="anonymous"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    position: "absolute",
-                    top: "100px",
-                    left: "20px",
-                    objectFit: "cover",
-                  }}
-                /> */}
-
-              {/* {isEditing && (
-                <label
-                  htmlFor="profile-photo-upload"
-                  className="btn btn-light rounded-circle"
-                  style={{
-                    position: "absolute",
-                    height: "40px",
-                    width: "40px",
-                    top: "160px",
-                    left: "90px",
-                    cursor: "pointer",
-                  }}
-                  title="Change profile photo"
-                >
-                  <FaCamera />
-                  <input
-                    id="profile-photo-upload"
-                    type="file"
-                    onChange={handlePhotoChange}
-                    style={{ display: "none" }}
-                    accept="image/*"
-                  />
-                </label>
-              )} */}
-              {/* </div> */}
-            </div>
-
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
                 <h4> 👤 Profile Info</h4>
@@ -249,9 +163,26 @@ export const UserProfile = () => {
                       <label className="form-label">Name</label>
                       <input
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="form-control"
+                      onChange={(e) => {
+                      const value = e.target.value;
+
+                      if (value.length > 20) {
+                        setErrors({
+                          ...errors,
+                          name: "Name cannot exceed 20 characters",
+                        });
+                        return;
+                      }
+
+                      setName(value);
+                      setErrors({ ...errors, name: "" });
+                    }}
+
+                        className={`form-control ${errors.name ? "is-invalid" : ""}`}
                       />
+                      {errors.name && (
+                        <div className="invalid-feedback">{errors.name}</div>
+                      )}
                     </>
                   )}
                 </div>
@@ -266,11 +197,20 @@ export const UserProfile = () => {
                   ) : (
                     <>
                       <label className="form-label">Phone Number</label>
-                      <input
-                        value={number}
-                        onChange={(e) => setNumber(e.target.value)}
-                        className="form-control"
-                      />
+                     <input
+                      value={number}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, ""); 
+                        setNumber(value);
+                        setErrors({ ...errors, number: "" });
+                      }}
+                      className={`form-control ${errors.number ? "is-invalid" : ""}`}
+                      maxLength={15}
+                    />
+                    {errors.number && (
+                      <div className="invalid-feedback">{errors.number}</div>
+                    )}
+
                     </>
                   )}
                 </div>

@@ -320,7 +320,7 @@ export const SubleaseTrackerList = () => {
 
   return (
     <>
-      <div className="header-bg d-flex justify-content-between px-3 align-items-center sticky-header">
+      <div className="header-bg d-flex justify-content-between flex-wrap px-3 align-items-center sticky-header">
         <h5 className="mb-0 text-light mx-4">Sublease Tracker List</h5>
         <button
           className="btn btn-secondary d-flex align-items-center gap-2"
@@ -400,7 +400,7 @@ export const SubleaseTrackerList = () => {
                       </div>
                     </td>
 
-                    <td className="text-center">
+                    <td className="text-center table-icons">
                       <button
                         className="btn btn-outline-primary btn-sm rounded-circle me-2"
                         onClick={() => openDetailModal(item.id, false)}

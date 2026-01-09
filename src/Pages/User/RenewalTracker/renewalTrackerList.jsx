@@ -60,6 +60,7 @@ export const RenewalTrackerList = () => {
         lease_expiration_date: data?.data?.lease_expiration_date || "",
         notice_of_renewal_date: data?.data?.notice_of_renewal_date || "",
         renewal_clause: data?.data?.renewal_clause || false,
+        notes: data?.data?.notes || "",
         q1: data?.data?.q1 || {
           check_in: false,
           headcount_confirmation: false,
@@ -168,6 +169,7 @@ export const RenewalTrackerList = () => {
             tenant_current_rent: detail.data.tenant_current_rent,
             most_recent_building_comp: detail.data.most_recent_building_comp,
             tenant_contact_info: detail.data.tenant_contact_info,
+            notes: detail.data.notes,
             q1: detail.data.q1,
             q2: detail.data.q2,
             q3: detail.data.q3,
@@ -414,7 +416,7 @@ export const RenewalTrackerList = () => {
                       </div>
                     </td>
 
-                    <td className="text-center">
+                    <td className="text-center table-icons">
                       <button
                         className="btn btn-outline-primary btn-sm rounded-circle me-2"
                         onClick={() => openDetailModal(item.id, false)}
@@ -797,6 +799,27 @@ export const RenewalTrackerList = () => {
                         ) : (
                           <p className="mb-0">
                             {detail?.data?.tenant_contact_info || "N/A"}
+                          </p>
+                        )}
+                      </div>
+                      <div className="col-12 mt-4">
+                        <h5 className="fw-bold border-bottom pb-2 mb-3">Notes</h5>
+                      </div>
+
+                      <div className="col-12">
+                     
+                        {isEdit ? (
+                          <textarea
+                            className="form-control"
+                            name="notes"
+                            value={detail?.data?.notes || ""}
+                            onChange={handleChange}
+                            rows="4"
+                            placeholder="Enter any notes related to this renewal..."
+                          />
+                        ) : (
+                          <p className="mb-0">
+                            {detail?.data?.notes || "N/A"}
                           </p>
                         )}
                       </div>

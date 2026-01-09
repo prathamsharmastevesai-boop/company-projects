@@ -29,8 +29,10 @@ export const DashboardLayout = () => {
       "/InformationCollaborationPage",
       "/benchmark",
       "/distilledcomptrackerpage",
+      "/SubleaseTrackerlist1",
       "/calculator",
       "/UserBuildingInfolist",
+      "/deals/",
       "/ComparativeUserBuildinglist",
       "/ComparativeBuildingData",
       "/tenentInfoUserBuildinglist",
@@ -44,6 +46,7 @@ export const DashboardLayout = () => {
       "/UserProfile",
       "/history",
       "/SelectUserBuildingCategory",
+      "/deals/new",
       "/UserLease",
       "/CreNews",
       //Admin Routes

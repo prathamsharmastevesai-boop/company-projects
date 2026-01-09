@@ -229,11 +229,10 @@ export const EmailDrafting = () => {
         style={{ maxWidth: 900 }}
       >
         {loading && (
-          <div className="text-center my-3">
+          <div className="text-center loader-items">
             <RAGLoader />
           </div>
-        )}
-
+      )}
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Select Email Template</Form.Label>

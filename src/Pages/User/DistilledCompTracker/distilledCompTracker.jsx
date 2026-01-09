@@ -121,7 +121,7 @@ export const DistilledCompTracker = () => {
   };
 
   return (
-    <div className="container-fluid py-5 px-4">
+    <div className="container-fluid py-5 px-2 px-md-4">
       <div className="row justify-content-center">
         <div className="col-md-12">
           <Card className="p-4">
