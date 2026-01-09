@@ -217,7 +217,7 @@ export const ListBuilding = () => {
           borderBottom: "1px solid #dee2e6",
         }}
       >
-        <h2 className="fw-bold text-dark">Building List</h2>
+        <h4 className="fw-bold text-dark">Building List</h4>
         <p className="text-muted mb-3">
           Here’s a summary of all the submitted buildings.
         </p>

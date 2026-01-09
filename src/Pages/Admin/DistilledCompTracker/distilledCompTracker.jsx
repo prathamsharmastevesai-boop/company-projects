@@ -182,10 +182,12 @@ export const DestilledCompTracker = () => {
   };
 
   return (
-    <div className="container-fluid p-4">
-      <h2 className="mb-4 text-center text-gray-800">
-        Distilled Comp Tracker (DCT) Submission
-      </h2>
+    <div className="container-fluid p-3">
+      <div className="mb-4 text-center text-md-start">
+        <h4 className="fw-bold">
+          Distilled Comp Tracker (DCT) Submission
+        </h4>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="card mb-4 shadow-sm border-0">

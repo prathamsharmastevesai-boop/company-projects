@@ -50,7 +50,7 @@ export const ComparativeUserBuildinglist = () => {
         className="header-bg {
 -bg d-flex justify-content-start px-3 align-items-center sticky-header"
       >
-        <h5 className="mb-0 text-light mx-4">Comparative Building list</h5>
+        <h4 className="mb-0 text-light mx-4">Comparative Building list</h4>
       </div>
       {requestingPermissionId && (
         <div

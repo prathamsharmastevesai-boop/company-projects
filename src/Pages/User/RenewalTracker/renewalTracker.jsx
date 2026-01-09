@@ -255,7 +255,7 @@ export const RenewalTracker = () => {
 
   return (
     <div className="container py-4">
-      <div className="d-flex align-items-center mb-2">
+      <div className="d-flex align-items-center my-4">
         <BackButton />
         <h2 className="fw-bold ms-2">New Renewal Tracker</h2>
       </div>
@@ -400,10 +400,10 @@ export const RenewalTracker = () => {
           {loading ? (
             <>
               <span className="spinner-border spinner-border-sm me-2"></span>
-              Saving...
+              Submitting...
             </>
           ) : (
-            "Save Renewal"
+            "Submit"
           )}
         </button>
       </div>

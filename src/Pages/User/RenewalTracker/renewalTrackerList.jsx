@@ -20,7 +20,6 @@ export const RenewalTrackerList = () => {
 
   const role = sessionStorage.getItem("role");
   const Role = role;
-  console.log(Role, "Role");
 
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -334,7 +333,7 @@ export const RenewalTrackerList = () => {
         </button>
       </div>
       {/* )} */}
-      <div className="container py-4">
+      <div className="container-fuild p-4">
         {/* {Role === "admin" && (
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="fw-bold">Renewal Tracker List</h2>

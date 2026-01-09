@@ -331,7 +331,7 @@ export const SubleaseTrackerList = () => {
         </button>
       </div>
 
-      <div className="container py-4">
+      <div className="container-fuild p-4">
         {loading && (
           <div
             style={{

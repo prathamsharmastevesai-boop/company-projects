@@ -168,7 +168,7 @@ export const LeaseInfomation = () => {
   return (
     <div className="container-fluid p-3">
       {initialBuildings.type === "Lease" && (
-        <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+        <div className="d-flex align-items-start align-items-md-center gap-2 pt-4">
           <BackButton className="flex-shrink-0" />
 
           <div className="flex-grow-1 min-w-0">
