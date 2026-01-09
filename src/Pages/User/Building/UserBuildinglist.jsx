@@ -40,8 +40,9 @@ export const UserBuildinglist = () => {
         );
 
   const handleSubmit = async (building) => {
+    const address = building.address;
     const buildingId = building.id;
-    navigate("/UserLease", { state: { office: { buildingId } } });
+    navigate("/UserLease", { state: { office: { buildingId, address } } });
   };
 
   return (

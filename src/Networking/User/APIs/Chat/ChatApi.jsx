@@ -12,9 +12,15 @@ const getErrorMsg = (error, fallback = "Something went wrong") =>
 
 export const get_Session_List_Specific = createAsyncThunk(
   "auth/get_Session_List_Specific",
-  async (_, { rejectWithValue }) => {
+  async ({ category = null, buildingId = null } = {}, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(Session_List_Specific);
+      const response = await axiosInstance.get(Session_List_Specific, {
+        params: {
+          ...(category ? { category } : {}),
+          ...(buildingId ? { building_id: buildingId } : {}),
+        },
+      });
+
       return response.data;
     } catch (error) {
       return rejectWithValue(getErrorMsg(error));

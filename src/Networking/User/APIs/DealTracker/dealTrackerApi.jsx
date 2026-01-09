@@ -57,8 +57,6 @@ export const updateDealTracker = createAsyncThunk(
 export const DeleteDealTracker = createAsyncThunk(
   "DeleteDealTracker",
   async ({ dealId }, { rejectWithValue }) => {
-    console.log(dealId, "dealId ");
-
     try {
       const response = await axiosInstance.delete(`${deleteDeal}${dealId}`);
       return response.data;

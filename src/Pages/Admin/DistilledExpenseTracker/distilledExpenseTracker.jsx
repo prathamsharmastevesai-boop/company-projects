@@ -120,7 +120,9 @@ export const DistilledExpenseTracker = () => {
     };
 
     try {
-      const resultAction = await dispatch(distilledExpenseTracker(payload));
+      const resultAction = await dispatch(
+        distilledExpenseTracker(payload)
+      ).unwrap();
       toast.success("Expense submitted successfully!");
       setFormData({
         building_sf_band: "",

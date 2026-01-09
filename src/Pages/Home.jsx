@@ -16,7 +16,6 @@ export const Home = () => {
       try {
         const res = await dispatch(getHealth()).unwrap();
         setStatus(res.status);
-        console.log(res, "res");
       } catch (error) {
         console.error("Health API error:", error);
       }

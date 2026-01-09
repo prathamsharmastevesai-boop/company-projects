@@ -86,6 +86,25 @@ export const SelectUserBuildingCategory = () => {
               </Card.Body>
             </Card>
           </Col>
+
+          <Col xs={12} sm={10} md={6} lg={5}>
+            <Card className="shadow-lg border-0 h-100">
+              <Card.Body className="d-flex flex-column justify-content-center align-items-center text-center p-4">
+                <Card.Title className="fs-4 mb-3">Building Info</Card.Title>
+                <Card.Text className="fs-6 mb-4">
+                  documents related to <strong>Building Info</strong>.
+                </Card.Text>
+                <Button
+                  variant="dark"
+                  size="lg"
+                  className="w-100"
+                  onClick={() => handleCategory("building_info")}
+                >
+                  Building Info
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
       </Container>
     </>

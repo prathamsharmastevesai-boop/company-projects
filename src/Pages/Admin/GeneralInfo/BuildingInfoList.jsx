@@ -47,6 +47,12 @@ export const BuildingInfoList = () => {
     }
   }, [BuildingList, searchTerm, loading]);
 
+  const goToChat = (buildingId, category) => {
+    navigate("/BuildingInfo", {
+      state: { buildingId, category },
+    });
+  };
+
   const startEdit = (building) => {
     setEditBuildingId(building.id);
     setEditFieldValue(building.address || "");
@@ -111,11 +117,19 @@ export const BuildingInfoList = () => {
     }
   };
 
-  const handleSubmit = (buildingId) => {
-    navigate("/Select_Building_Category", {
-      state: { office: { buildingId } },
-    });
-  };
+  // const handleSubmit = (category) => {
+  //   navigate("/BuildingInfo", {
+  //     state: {
+  //       buildingId,
+  //       category,
+  //     },
+  //   });
+  // };
+  // const handleSubmit = (buildingId) => {
+  //   navigate("/Select_Building_Category", {
+  //     state: { office: { buildingId } },
+  //   });
+  // };
 
   const filteredBuildings = BuildingList.filter((building) => {
     const name = building.building_name?.toLowerCase() || "";
@@ -135,7 +149,7 @@ export const BuildingInfoList = () => {
         borderRadius: "16px",
       }}
     >
-      <div className="position-absolute top-0 end-0 p-2">
+      <div className="position-absolute top-0 end-0 p-0 mx-4">
         {editBuildingId === building.id ? (
           <>
             <i
@@ -179,21 +193,40 @@ export const BuildingInfoList = () => {
             autoFocus
           />
         ) : (
-          <p
-            className="mb-2 text-secondary"
-            onClick={() => handleSubmit(building.id)}
-            style={{ cursor: "pointer" }}
-          >
+          <>
             <div className="col-md-12 py-2">
-              <div className="d-flex mx-1">
-                <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                <div className="mx-2 check w-75">
-                  {building.address || "N/A"}
+              <div className="d-flex align-items-center justify-content-between mx-1">
+                <div className="d-flex col-md-6">
+                  <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
+                  <div className="mx-2 check w-75 fw-semibold">
+                    {building.address || "N/A"}
+                  </div>
                 </div>
-                {/* <strong>Curated Intelligence:</strong> */}
+                <div className="d-flex col-md-6 justify-content-end gap-2 flex-wrap mt-2">
+                  <button
+                    className="btn btn-dark btn-sm"
+                    onClick={() => goToChat(building.id, "floor_plan")}
+                  >
+                    Floor Plan
+                  </button>
+
+                  <button
+                    className="btn btn-dark btn-sm"
+                    onClick={() => goToChat(building.id, "building_stack")}
+                  >
+                    Building Stack
+                  </button>
+
+                  <button
+                    className="btn btn-dark btn-sm"
+                    onClick={() => goToChat(building.id, "building_info")}
+                  >
+                    Building Info
+                  </button>
+                </div>
               </div>
             </div>
-          </p>
+          </>
         )}
       </div>
     </div>

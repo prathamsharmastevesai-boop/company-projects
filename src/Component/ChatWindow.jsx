@@ -14,12 +14,15 @@ import {
 } from "../Networking/User/APIs/Chat/ChatApi";
 import TypingIndicator from "./TypingIndicator";
 import { AskQuestionAPI } from "../Networking/Admin/APIs/UploadDocApi";
+import { BackButton } from "./backButton";
+import { AskQuestionDCTAPI } from "../Networking/Admin/APIs/distilledCompTrackerApi";
 
 export const ChatWindow = ({
   category: propCategory,
   heading,
   fileId,
   building_id,
+  address,
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -27,8 +30,6 @@ export const ChatWindow = ({
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
-
-  const { fileName, fileUrl } = location.state || {};
 
   const [category, setCategory] = useState(
     location.state?.type || propCategory
@@ -73,6 +74,12 @@ export const ChatWindow = ({
       return;
     }
 
+    if (category === "DCT") {
+      setSessionId("dct-chat");
+      setIsLoadingSession(false);
+      return;
+    }
+
     if (location.state?.sessionId) {
       setSessionId(location.state.sessionId);
       setIsLoadingSession(false);
@@ -82,7 +89,12 @@ export const ChatWindow = ({
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {
-        const res = await dispatch(get_Session_List_Specific()).unwrap();
+        const res = await dispatch(
+          get_Session_List_Specific({
+            category,
+            buildingId: building_id,
+          })
+        ).unwrap();
         const filtered = res.filter((s) => s.category === category);
 
         if (filtered.length > 0) {
@@ -101,6 +113,12 @@ export const ChatWindow = ({
 
   useEffect(() => {
     if (category === "floor_plan" || category === "building_stack") {
+      setMessages([]);
+      setIsLoadingHistory(false);
+      return;
+    }
+
+    if (category === "DCT") {
       setMessages([]);
       setIsLoadingHistory(false);
       return;
@@ -235,6 +253,11 @@ export const ChatWindow = ({
         };
 
         response = await dispatch(AskQuestionReportAPI(payload)).unwrap();
+      } else if (category === "DCT") {
+        const payload = {
+          question: userMessage.message,
+        };
+        response = await dispatch(AskQuestionDCTAPI(payload)).unwrap();
       } else {
         const payload = {
           session_id: sessionId,
@@ -285,21 +308,36 @@ export const ChatWindow = ({
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
-            <div className="d-flex align-items-center position-relative">
-              {category !== "floor_plan" && category !== "building_stack" && (
-                <button
-                  className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-md-0"
-                  onClick={handleNewSession}
-                  disabled={isLoadingSession}
-                >
-                  <i className="bi bi-plus-circle"></i>
-                  <span className="d-none d-md-inline ms-1">New Session</span>
-                </button>
-              )}
+            <div className="d-flex align-items-center position-relative w-100">
+              <div className="d-flex align-items-center">
+                <BackButton />
+              </div>
 
-              <h5 className="chat-title text-muted mb-0 text-center">
+              <h5
+                className="chat-title text-muted mb-0 text-truncate address-title position-absolute start-50 translate-middle-x text-center"
+                title={address}
+              >
                 {heading}
+                {address ? " - " : ""}
+                {address}
               </h5>
+
+              <div className="ms-auto d-flex align-items-center">
+                {category !== "floor_plan" &&
+                  category !== "building_stack" &&
+                  category !== "DCT" && (
+                    <button
+                      className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                      onClick={handleNewSession}
+                      disabled={isLoadingSession}
+                    >
+                      <i className="bi bi-plus-circle"></i>
+                      <span className="d-none d-md-inline ms-1">
+                        New Session
+                      </span>
+                    </button>
+                  )}
+              </div>
             </div>
           </div>
 

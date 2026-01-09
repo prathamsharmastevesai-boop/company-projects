@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
-import { RequestPermissionSubmit } from "../../../Networking/User/APIs/Permission/PermissionApi";
 import RAGLoader from "../../../Component/Loader";
 
 export const Dashboard = () => {
@@ -40,23 +38,9 @@ export const Dashboard = () => {
           building.address?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-  const handleRequestPermission = async (building_id) => {
-    if (requestingPermissionId === building_id) return;
-
-    setRequestingPermissionId(building_id);
-    try {
-      await dispatch(RequestPermissionSubmit({ building_id })).unwrap();
-    } catch (err) {
-      console.error("Permission request failed:", err);
-    } finally {
-      setRequestingPermissionId(null);
-    }
-  };
-
-  const handleSubmit = async (building) => {
-    const buildingId = building.id;
-    navigate("/SelectUserBuildingCategory", {
-      state: { office: { buildingId } },
+  const goToChat = (buildingId, category) => {
+    navigate("/BuildingChat", {
+      state: { buildingId, category },
     });
   };
 
@@ -144,28 +128,41 @@ export const Dashboard = () => {
           </div>
         ) : (
           <div className="row">
-            {[...filteredBuildings].reverse().map((building, index) => (
+            {[...filteredBuildings].reverse().map((building) => (
               <div className="col-12 mb-3" key={building.id}>
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
-                  className="card shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
-                  style={{
-                    backgroundColor: "#fff",
-                    borderWidth: "0.1px",
-                    borderColor: "#cacacaff",
-                    borderRadius: "16px",
-                  }}
+                  className="card border-0 shadow-sm slide-in-top p-3"
+                  style={{ borderRadius: "16px" }}
                 >
-                  <div
-                    className="card-body d-flex flex-column justify-content-center position-relative p-0"
-                    onClick={() => handleSubmit(building)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="d-flex mx-1">
+                  <div className="d-flex align-items-center justify-content-between ">
+                    <div className="d-flex align-items-center">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check w-75">
+                      <div className="fw-semibold">
                         {building.address || "N/A"}
                       </div>
+                    </div>
+                    <div className="d-flex gap-2 flex-wrap">
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "floor_plan")}
+                      >
+                        Floor Plan
+                      </button>
+
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "building_stack")}
+                      >
+                        Building Stack
+                      </button>
+
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "building_info")}
+                      >
+                        Building Info
+                      </button>
                     </div>
                   </div>
                 </div>

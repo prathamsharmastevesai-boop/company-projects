@@ -20,23 +20,13 @@ export const AdminManagement = () => {
   const [inviteLoading, setInviteLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [deletingUser, setDeletingUser] = useState({});
+  const [showConfirm, setShowConfirm] = useState(false);
+const [selectedEmail, setSelectedEmail] = useState(null);
+
 
   useEffect(() => {
     fetchadmin();
   }, []);
-
-  const handleDelete = async (email) => {
-    try {
-      setDeletingUser((prev) => ({ ...prev, [email]: true }));
-
-      await dispatch(DeleteUserSubmit({ email })).unwrap();
-      // refetch users if needed
-    } catch (error) {
-      console.error("Failed to delete user:", error);
-    } finally {
-      setDeletingUser((prev) => ({ ...prev, [email]: false }));
-    }
-  };
 
   const fetchadmin = async () => {
     setLoading(true);
@@ -50,11 +40,45 @@ export const AdminManagement = () => {
     }
   };
 
+  const confirmDelete = async () => {
+  if (!selectedEmail) return;
+
+  try {
+    setDeletingUser((prev) => ({ ...prev, [selectedEmail]: true }));
+
+    const data = await dispatch(DeleteUser(selectedEmail)).unwrap();
+    toast.success(data.message || "User deleted successfully");
+
+    fetchadmin();
+    setShowConfirm(false);
+    setSelectedEmail(null);
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+  } finally {
+    setDeletingUser((prev) => ({ ...prev, [selectedEmail]: false }));
+  }
+};
+
+
   const handleInviteAdmin = async () => {
     const newErrors = {};
 
-    if (!admin_name) newErrors.admin_name = "Admin Name is required";
-    if (!company_name) newErrors.company_name = "Company Name is required";
+    const noLeadingSpace = /^\S.*$/;
+
+if (!admin_name)
+  newErrors.admin_name = "Admin Name is required";
+else if (!noLeadingSpace.test(admin_name))
+  newErrors.admin_name = "Enter a valid Admin Name";
+else if (admin_name.length < 3)
+  newErrors.admin_name = "Admin Name must be at least 3 characters";
+
+if (!company_name)
+  newErrors.company_name = "Company Name is required";
+else if (!noLeadingSpace.test(company_name))
+  newErrors.company_name = "Enter a valid Company Name";
+else if (company_name.length < 3)
+  newErrors.company_name = "Company Name must be at least 3 characters";
+
     if (!email) {
       newErrors.email = "Email is required";
     } else {
@@ -81,7 +105,7 @@ export const AdminManagement = () => {
       fetchadmin();
     } catch (err) {
       console.error("Invite failed:", err);
-      toast.error("Failed to send invite");
+     
     } finally {
       setInviteLoading(false);
     }
@@ -236,7 +260,11 @@ export const AdminManagement = () => {
                           <Button
                             size="sm"
                             variant="outline-danger"
-                            onClick={() => handleDelete(user.email)}
+                           onClick={() => {
+  setSelectedEmail(user.email);
+  setShowConfirm(true);
+}}
+
                             disabled={deletingUser[user.email]}
                           >
                             {deletingUser[user.email]
@@ -259,6 +287,57 @@ export const AdminManagement = () => {
           </div>
         </Card.Body>
       </Card>
+      {showConfirm && (
+  <div
+    className="modal fade show d-block"
+    tabIndex="-1"
+    style={{ background: "rgba(0,0,0,0.5)" }}
+  >
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content shadow">
+        <div className="modal-header">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowConfirm(false)}
+            disabled={deletingUser[selectedEmail]}
+          />
+        </div>
+
+        <div className="modal-body">
+          <p>
+            Are you sure you want to delete user:
+            <strong className="ms-1">{selectedEmail}</strong>?
+          </p>
+        </div>
+
+        <div className="modal-footer">
+          <Button
+            variant="secondary"
+            onClick={() => setShowConfirm(false)}
+            disabled={deletingUser[selectedEmail]}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="danger"
+            onClick={confirmDelete}
+            disabled={deletingUser[selectedEmail]}
+          >
+            {deletingUser[selectedEmail] ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

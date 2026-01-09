@@ -28,6 +28,7 @@ export const DashboardLayout = () => {
       "/LeaseAbstractUpload1",
       "/InformationCollaborationPage",
       "/benchmark",
+      "/distilledcomptrackerpage",
       "/calculator",
       "/UserBuildingInfolist",
       "/ComparativeUserBuildinglist",

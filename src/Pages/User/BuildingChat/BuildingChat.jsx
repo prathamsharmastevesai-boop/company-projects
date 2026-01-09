@@ -7,8 +7,6 @@ export const BuildingChat = () => {
   const buildingId = location?.state?.buildingId;
   const category = location?.state?.category;
 
-  console.log(buildingId, category, "building data");
-
   return (
     <ChatWindow
       category={category}

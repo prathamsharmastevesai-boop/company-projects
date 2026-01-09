@@ -3,23 +3,27 @@ import { useEffect, useRef, useState } from "react";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { ListBuildingSubmit } from "../../../Networking/Admin/APIs/BuildingApi";
 import { useDispatch, useSelector } from "react-redux";
-
 import RAGLoader from "../../../Component/Loader";
 
 export const UserBuildingInfolist = () => {
   const { BuildingList, loading } = useSelector((state) => state.BuildingSlice);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cardsRef = useRef({});
 
-  const [requestingPermissionId, setRequestingPermissionId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const category = "BuildingInfo";
     dispatch(ListBuildingSubmit(category));
   }, [dispatch]);
+
+  const filteredBuildings =
+    searchTerm.trim() === ""
+      ? BuildingList
+      : BuildingList.filter((b) =>
+          b.address?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
   useEffect(() => {
     filteredBuildings.forEach((building, i) => {
@@ -30,55 +34,19 @@ export const UserBuildingInfolist = () => {
         }, i * 150);
       }
     });
-  }, [BuildingList, searchTerm]);
+  }, [filteredBuildings]);
 
-  const filteredBuildings =
-    searchTerm.trim() === ""
-      ? BuildingList
-      : BuildingList.filter((building) =>
-          building.address?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-  const handleSubmit = async (building) => {
-    const buildingId = building.id;
-    navigate("/SelectUserBuildingCategory", {
-      state: { office: { buildingId } },
+  const goToChat = (buildingId, category) => {
+    navigate("/BuildingChat", {
+      state: { buildingId, category },
     });
   };
 
   return (
     <>
-      <div
-        className="header-bg {
--bg d-flex justify-content-start px-3 align-items-center sticky-header"
-      >
+      <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
         <h5 className="mb-0 text-light mx-4">Building Info list</h5>
       </div>
-      {requestingPermissionId && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backdropFilter: "blur(5px)",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 2000,
-          }}
-        >
-          <div
-            className="spinner-border text-warning"
-            style={{ width: "3rem", height: "3rem" }}
-            role="status"
-          >
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      )}
 
       <div className="container mb-3 mt-3">
         <input
@@ -87,8 +55,6 @@ export const UserBuildingInfolist = () => {
           placeholder="Search by address..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label="Search Buildings by Address"
-          autoComplete="off"
         />
       </div>
 
@@ -104,28 +70,41 @@ export const UserBuildingInfolist = () => {
           </div>
         ) : (
           <div className="row">
-            {[...filteredBuildings].reverse().map((building, index) => (
+            {[...filteredBuildings].reverse().map((building) => (
               <div className="col-12 mb-3" key={building.id}>
                 <div
                   ref={(el) => (cardsRef.current[building.id] = el)}
-                  className="card border-0 shadow-sm slide-in-top d-flex flex-row align-items-center p-3"
-                  style={{
-                    backgroundColor: "#fff",
-                    borderWidth: "0.1px",
-                    borderColor: "#cacacaff",
-                    borderRadius: "16px",
-                  }}
+                  className="card border-0 shadow-sm slide-in-top p-3"
+                  style={{ borderRadius: "16px" }}
                 >
-                  <div
-                    className="card-body d-flex flex-column justify-content-center position-relative p-0"
-                    onClick={() => handleSubmit(building)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <div className="d-flex mx-1">
+                  <div className="d-flex align-items-center justify-content-between ">
+                    <div className="d-flex align-items-center">
                       <i className="bi bi-geo-alt-fill me-2 text-primary"></i>
-                      <div className="mx-2 check w-75">
+                      <div className="fw-semibold">
                         {building.address || "N/A"}
                       </div>
+                    </div>
+                    <div className="d-flex gap-2 flex-wrap">
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "floor_plan")}
+                      >
+                        Floor Plan
+                      </button>
+
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "building_stack")}
+                      >
+                        Building Stack
+                      </button>
+
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => goToChat(building.id, "building_info")}
+                      >
+                        Building Info
+                      </button>
                     </div>
                   </div>
                 </div>

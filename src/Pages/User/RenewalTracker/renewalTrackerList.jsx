@@ -17,7 +17,10 @@ export const RenewalTrackerList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, list, error } = useSelector((state) => state.RenewalSlice);
-  const { Role } = useSelector((state) => state.loginSlice);
+
+  const role = sessionStorage.getItem("role");
+  const Role = role;
+  console.log(Role, "Role");
 
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -94,7 +97,11 @@ export const RenewalTrackerList = () => {
   };
 
   const handleNavigate = () => {
-    navigate("/renewalTracker");
+    {
+      Role === "admin"
+        ? navigate("/renewalTracker")
+        : navigate("/userRenewalTracker");
+    }
   };
 
   const handleDelete = async () => {
@@ -315,13 +322,20 @@ export const RenewalTrackerList = () => {
 
   return (
     <>
-      {Role === "user" && (
-        <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-          <h5 className="mb-0 text-light mx-4">Renewal Tracker List</h5>
-        </div>
-      )}
+      {/* {Role === "user" && ( */}
+      <div className="header-bg d-flex justify-content-between px-3 align-items-center sticky-header">
+        <h5 className="mb-0 text-light mx-4">Renewal Tracker List</h5>
+        <button
+          className="btn btn-secondary d-flex align-items-center gap-2"
+          onClick={() => handleNavigate()}
+          style={{ fontWeight: "600", padding: "0.5rem 1rem" }}
+        >
+          <BsPlusLg /> Add Renewal
+        </button>
+      </div>
+      {/* )} */}
       <div className="container py-4">
-        {Role === "admin" && (
+        {/* {Role === "admin" && (
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="fw-bold">Renewal Tracker List</h2>
             <button
@@ -332,7 +346,7 @@ export const RenewalTrackerList = () => {
               <BsPlusLg /> Add Renewal
             </button>
           </div>
-        )}
+        )} */}
 
         {loading && (
           <div

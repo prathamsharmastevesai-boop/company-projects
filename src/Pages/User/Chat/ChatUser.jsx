@@ -10,6 +10,7 @@ import {
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { AskQuestionAPI } from "../../../Networking/Admin/APIs/UploadDocApi";
 import TypingIndicator from "../../../Component/TypingIndicator";
+import { BackButton } from "../../../Component/backButton";
 
 export const UserChat = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,6 @@ export const UserChat = () => {
   } = location.state || {};
 
   const building_id = Building_id;
-  console.log(building_id, "building_id");
 
   const [sessionId, setSessionId] = useState(incomingSessionId || null);
   const session_id = sessionId;
@@ -43,14 +43,15 @@ export const UserChat = () => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {
-        const res = await dispatch(get_Session_List_Specific()).unwrap();
+        const res = await dispatch(
+          get_Session_List_Specific({
+            category: type,
+            buildingId: building_id,
+          })
+        ).unwrap();
 
-        const categorySessions = Array.isArray(res)
-          ? res.filter((s) => s.category === type)
-          : [];
-
-        if (categorySessions.length > 0) {
-          const lastSession = categorySessions[categorySessions.length - 1];
+        if (res.length > 0) {
+          const lastSession = res[res.length - 1];
           setSessionId(lastSession.session_id);
         } else {
           const newId = uuidv4();
@@ -231,20 +232,26 @@ export const UserChat = () => {
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
-            <div className="d-flex align-items-center position-relative">
-              <button
-                className="btn btn-outline-secondary btn-sm position-relative d-flex align-items-center ms-md-0"
-                onClick={handleNewSession}
-                disabled={isLoadingSession}
-              >
-                <i className="bi bi-plus-circle"></i>
-                <span className="d-none d-md-inline ms-1">New Session</span>
-              </button>
+            <div className="d-flex align-items-center position-relative w-100">
+              <div className="d-flex align-items-center">
+                <BackButton />
+              </div>
 
-              <h5 className="chat-title text-muted mb-0 text-center">
+              <h5 className="chat-title text-muted mb-0 position-absolute start-50 translate-middle-x text-center">
                 💬 Chat With{" "}
                 {type === "Lease" ? "Lease Agreement" : "Letter of Intent"}
               </h5>
+
+              <div className="ms-auto d-flex align-items-center">
+                <button
+                  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                  onClick={handleNewSession}
+                  disabled={isLoadingSession}
+                >
+                  <i className="bi bi-plus-circle"></i>
+                  <span className="d-none d-md-inline ms-1">New Session</span>
+                </button>
+              </div>
             </div>
           </div>
 

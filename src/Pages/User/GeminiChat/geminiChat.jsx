@@ -57,17 +57,15 @@ export const GeminiChat = () => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {
-        const res = await dispatch(get_Session_List_Specific()).unwrap();
+        const res = await dispatch(
+          get_Session_List_Specific({
+            category: "Gemini",
+          })
+        ).unwrap();
 
-        const filtered = res.filter(
-          (s) => s.category?.toLowerCase() === "gemini"
-        );
-
-        if (filtered.length > 0) {
-          filtered.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
-          const latestSession = filtered[0];
+        if (res.length > 0) {
+          res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          const latestSession = res[0];
 
           setSessionId(latestSession.session_id);
         } else {

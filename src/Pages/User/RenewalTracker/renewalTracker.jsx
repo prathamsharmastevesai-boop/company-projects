@@ -3,10 +3,15 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { RenewalTrackerSubmit } from "../../../Networking/Admin/APIs/RenewalTrackeApi";
+import { BackButton } from "../../../Component/backButton";
 
 export const RenewalTracker = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const role = sessionStorage.getItem("role");
+  const Role = role;
+  console.log(Role, "Role");
 
   const [form, setForm] = useState({
     tenant_name: "",
@@ -108,7 +113,6 @@ export const RenewalTracker = () => {
   };
 
   const handleSubmit = async () => {
-    // Validate required fields
     if (!form.tenant_name.trim()) {
       toast.error("Tenant name is required");
       return;
@@ -150,7 +154,12 @@ export const RenewalTracker = () => {
       await dispatch(RenewalTrackerSubmit(payload)).unwrap();
       toast.success("Renewal tracker created successfully!");
       resetForm();
-      navigate("/renewalTrackerbuildingList");
+
+      {
+        Role === "admin"
+          ? navigate("/renewalTrackerbuildingList")
+          : navigate("/RenewalTrackerList");
+      }
     } catch (error) {
       console.error("Error creating renewal tracker:", error);
       toast.error(error?.message || "Failed to create renewal tracker");
@@ -246,8 +255,10 @@ export const RenewalTracker = () => {
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-4">New Renewal Tracker</h2>
-
+      <div className="d-flex align-items-center mb-2">
+        <BackButton />
+        <h2 className="fw-bold ms-2">New Renewal Tracker</h2>
+      </div>
       <div className="card p-4 mb-4">
         <h4 className="mb-5 fw-bold">Basic Information</h4>
         <div className="row g-3">
