@@ -100,7 +100,7 @@ export const LeaseFinanceCalculator = () => {
     <>
       <div className="container-fuild p-3">
         <div className="row g-3">
-          <div className="col-md-8">
+          <div className="col-12 col-lg-8 ">
             <div className="card p-3 shadow-sm">
               <h4 className="fw-bold">Deal Parameters (Required Inputs)</h4>
               <hr />
@@ -218,7 +218,7 @@ export const LeaseFinanceCalculator = () => {
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-12 col-lg-4">
             <div className="card shadow-sm p-2">
               <h5 className="fw-bold mb-3">Calculated Results</h5>
 

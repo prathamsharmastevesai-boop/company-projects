@@ -140,9 +140,9 @@ export const Notes = () => {
             {sortedNotes.map((note) => (
               <div
                 key={note.id}
-                className="list-group-item list-group-item-action mb-2"
+                className="list-group-item list-group-item-action"
               >
-                <div className="d-flex w-100 justify-content-between">
+                <div className="d-flex flex-column flex-md-row w-100 justify-content-between">
                   <h6
                     className="mb-1"
                     style={{ cursor: "pointer" }}

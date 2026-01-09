@@ -141,8 +141,8 @@ export const SubleaseTracker = ({ data }) => {
   };
 
   return (
-    <div className="container py-4">
-      <div className="d-flex align-items-center mb-2">
+    <div className="container-fuild p-4">
+      <div className="d-flex align-items-center my-2">
         <BackButton />
         <h2 className="fw-bold ms-2">New Sublease Tracker</h2>
       </div>
@@ -218,7 +218,7 @@ export const SubleaseTracker = ({ data }) => {
         />
       </div>
 
-      <div className="card p-4 mb-5">
+      <div className="card p-4 mb-2">
         <h4 className="mb-3">Lease & Tenant Details</h4>
 
         {quarters.map((q) => (
@@ -254,7 +254,7 @@ export const SubleaseTracker = ({ data }) => {
         ))}
       </div>
 
-      <div className="d-flex flex-wrap justify-content-end gap-2">
+      <div className="d-flex flex-wrap justify-content-center gap-2">
         <button
           onClick={handleSubmit}
           className="btn btn-primary"
@@ -263,7 +263,7 @@ export const SubleaseTracker = ({ data }) => {
           {loading ? (
             <span className="spinner-border spinner-border-sm me-2"></span>
           ) : null}
-          {loading ? "Saving..." : "Save Sublease"}
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </div>
     </div>

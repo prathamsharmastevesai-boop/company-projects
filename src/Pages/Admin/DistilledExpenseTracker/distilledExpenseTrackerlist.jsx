@@ -42,9 +42,11 @@ export const DistilledExpenseTrackerlist = () => {
 
   return (
     <div className="container-fuild p-3">
-      <h2 className="mb-4 text-center">
-        Distilled Expense Tracker Submissions
-      </h2>
+      <div className="mb-4 text-center text-md-center">
+        <h4 className="fw-bold">
+          Distilled Expense Tracker Submissions
+        </h4>
+      </div>
       {data && data.reverse() && data.length > 0 ? (
         <Table striped bordered hover responsive>
           <thead>

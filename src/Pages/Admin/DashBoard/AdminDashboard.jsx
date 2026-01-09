@@ -29,7 +29,7 @@ export const AdminDashboard = () => {
   return (
     <div className="container-fuild p-3">
       <div className="mb-4 text-center text-md-start">
-        <h2 className="fw-bold">Dashboard Overview</h2>
+        <h4 className="fw-bold">Dashboard Overview</h4>
         <p className="text-muted">
           Manage your real estate portfolio data and AI system
         </p>
@@ -152,6 +152,7 @@ export const AdminDashboard = () => {
               <h5 className="fw-semibold mb-3">Quick Actions</h5>
               <div className="row g-3">
                 <div className="col-12 col-sm-6">
+                  
                   <button
                     className="btn btn-outline-dark w-100 py-3"
                     onClick={handleAIAnalytics}

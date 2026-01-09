@@ -17,6 +17,7 @@ import {
 import { Modal } from "react-bootstrap";
 import { ListAbstractLeaseDoc } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
 import { DeleteDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
+import { BackButton } from "../../../Component/backButton";
 
 export const GeminiChat = () => {
   const dispatch = useDispatch();
@@ -482,6 +483,7 @@ export const GeminiChat = () => {
               <div className="col-md-12 d-flex flex-column">
                 <div className="chat-header d-flex justify-content-between align-items-center mb-2">
                   <div className="mt-3 d-flex gap-2">
+                      <BackButton />
                     <button
                       className="btn btn-outline-secondary btn-sm d-flex align-items-center"
                       onClick={handleNewSession}

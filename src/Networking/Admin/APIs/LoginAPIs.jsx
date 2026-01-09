@@ -72,7 +72,7 @@ export const DeleteUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || "User deletion failed";
+      const message = error.response?.data?.message;
       return rejectWithValue(message);
     }
   }

@@ -308,7 +308,7 @@ export const ChatWindow = ({
       <div className="row h-100">
         <div className="col-md-12 d-flex flex-column">
           <div className="chat-header d-flex justify-content-between align-items-center mb-2 position-relative flex-wrap">
-            <div className="d-flex align-items-center position-relative w-100">
+            <div className="d-flex align-items-center position-relative w-100 mt-3 mt-md-0">
               <div className="d-flex align-items-center">
                 <BackButton />
               </div>

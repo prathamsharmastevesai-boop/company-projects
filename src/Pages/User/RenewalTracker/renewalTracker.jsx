@@ -25,6 +25,7 @@ export const RenewalTracker = () => {
     tenant_current_rent: "",
     most_recent_building_comp: "",
     tenant_contact_info: "",
+    notes: "",
     q1: {
       check_in: false,
       headcount_confirmation: false,
@@ -67,6 +68,7 @@ export const RenewalTracker = () => {
       tenant_current_rent: "",
       most_recent_building_comp: "",
       tenant_contact_info: "",
+      notes: "",
       q1: {
         check_in: false,
         headcount_confirmation: false,
@@ -144,6 +146,7 @@ export const RenewalTracker = () => {
       tenant_current_rent: form.tenant_current_rent,
       most_recent_building_comp: form.most_recent_building_comp,
       tenant_contact_info: form.tenant_contact_info,
+       notes: form.notes,
       q1: form.q1,
       q2: form.q2,
       q3: form.q3,
@@ -255,7 +258,7 @@ export const RenewalTracker = () => {
 
   return (
     <div className="container py-4">
-      <div className="d-flex align-items-center mb-2">
+      <div className="d-flex align-items-center my-4">
         <BackButton />
         <h2 className="fw-bold ms-2">New Renewal Tracker</h2>
       </div>
@@ -383,6 +386,22 @@ export const RenewalTracker = () => {
           </div>
         </div>
       </div>
+      <div className="card p-4 mb-4">
+        <h4 className="mb-4 fw-bold">Notes</h4>
+        <div className="row">
+          <div className="col-md-12">
+            
+            <textarea
+              name="notes"
+              value={form.notes}
+              onChange={handleChange}
+              className="form-control border-primary"
+              rows="4"
+              placeholder="Enter any additional notes related to this tenant or renewal..."
+            />
+          </div>
+        </div>
+      </div>
 
       <div className="card p-4 mb-5">
         <h4 className="mb-5 fw-bold">Quarterly Status Updates</h4>
@@ -391,7 +410,7 @@ export const RenewalTracker = () => {
         )}
       </div>
 
-      <div className="d-flex flex-wrap justify-content-end gap-3">
+      <div className="d-flex flex-wrap justify-content-center gap-3">
         <button
           onClick={handleSubmit}
           className="btn btn-primary"
@@ -400,10 +419,10 @@ export const RenewalTracker = () => {
           {loading ? (
             <>
               <span className="spinner-border spinner-border-sm me-2"></span>
-              Saving...
+              Submitting...
             </>
           ) : (
-            "Save Renewal"
+            "Submit"
           )}
         </button>
       </div>

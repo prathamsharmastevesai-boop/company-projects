@@ -168,7 +168,9 @@ export const Aianalytics = () => {
     <div className="container-fluid p-4 p-md-4">
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
         <div className="mb-3 mb-md-0">
-          <h4 className="fw-bold mt-3">AI Analytics</h4>
+          <div className="text-center text-md-start">
+            <h4 className="fw-bold">AI Analytics</h4>
+          </div>
           <p className="text-muted m-0">
             User behavior insights and system utilization analytics
           </p>

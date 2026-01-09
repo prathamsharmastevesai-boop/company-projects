@@ -45,7 +45,7 @@ export const UserBuildingInfolist = () => {
   return (
     <>
       <div className="header-bg d-flex justify-content-start px-3 align-items-center sticky-header">
-        <h5 className="mb-0 text-light mx-4">Building Info list</h5>
+        <h4 className="mb-0 text-light mx-4">Building Info list</h4>
       </div>
 
       <div className="container mb-3 mt-3">

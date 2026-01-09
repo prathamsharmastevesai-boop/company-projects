@@ -166,13 +166,13 @@ export const ComparativeBuildingData = () => {
 
   return (
     <div className="container-fuild p-3">
-      <div className="d-flex align-items-start align-items-md-center gap-2 pt-5">
+      <div className="d-flex align-items-start align-items-md-center gap-2 pt-5 pt-md-3 pb-3">
         <BackButton className="flex-shrink-0" />
 
         <div className="flex-grow-1 min-w-0">
-          <h5 className="fw-bold mb-1">Comparative Building Data</h5>
+          <h5 className="fw-bold mb-0">Comparative Building Data</h5>
 
-          <p className="text-muted mb-0 description">
+          <p className="text-muted mb-0 description small">
             {" "}
             Upload and manage documents for Building Information
           </p>

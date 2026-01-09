@@ -207,14 +207,14 @@ const DealDetailView = () => {
   return (
     <div>
       <div className="header-bg sticky-header px-3 py-2">
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row
+         mx-4">
           <div className="d-flex align-items-center gap-3">
-            <h5 className="text-light">
+            <h5 className="text-light text-center mb-2 mb-md-0">
               {isEditMode ? "Edit Lease Deal" : "View Lease Deal"} – Deal
               Tracker
             </h5>
           </div>
-
           <div className="d-flex gap-2">
             {isEditMode ? (
               <>

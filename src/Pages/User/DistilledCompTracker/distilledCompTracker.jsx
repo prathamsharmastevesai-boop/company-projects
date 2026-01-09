@@ -121,12 +121,12 @@ export const DistilledCompTracker = () => {
   };
 
   return (
-    <div className="container-fluid py-5 px-4">
+    <div className="container-fluid py-5 px-2 px-md-4">
       <div className="row justify-content-center">
         <div className="col-md-12">
           <Card className="p-4">
             <Form onSubmit={handleSubmit}>
-              <div className="row g-3">
+              <div className="row align-items-center g-3">
                 <div className="col-12 col-md-6">
                   <Form.Group>
                     <Form.Label className="fw-semibold">Submarket *</Form.Label>

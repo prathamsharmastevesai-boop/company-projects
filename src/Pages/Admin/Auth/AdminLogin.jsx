@@ -60,7 +60,8 @@ export const AdminLogin = () => {
     setLoading(true);
     try {
       const res = await dispatch(
-        LoginSubmit({ email, password, role: "admin" })
+        LoginSubmit({email: email.trim(),
+      password: password.trim(), role: "admin" })
       ).unwrap();
 
       const { role, access_token } = res;
