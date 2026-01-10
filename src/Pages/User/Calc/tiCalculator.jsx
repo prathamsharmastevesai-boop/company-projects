@@ -4,17 +4,17 @@ import { Form } from "react-bootstrap";
 import { itcalculatorApi } from "../../../Networking/User/APIs/Calculator/calcApi";
 
 const LINE_ITEMS = [
- "Demolition",
-    "New HVAC System",
-    "Painting",
-    "Lighting",
-    "Plumbing",
-    "Carpeting",
-    "Glass Front Offices",
-    "Pantry Remodel",
-    "Bathroom Remodel",
-    "Tile (Stone/Ceramic)",
-    "Hardwood Polishing"
+  "Demolition",
+  "New HVAC System",
+  "Painting",
+  "Lighting",
+  "Plumbing",
+  "Carpeting",
+  "Glass Front Offices",
+  "Pantry Remodel",
+  "Bathroom Remodel",
+  "Tile (Stone/Ceramic)",
+  "Hardwood Polishing",
 ];
 
 export const TICalculator = () => {
@@ -24,19 +24,20 @@ export const TICalculator = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const [errors, setErrors] = useState({});
 
-  const handleItemsChange = (e) => {
-    const values = Array.from(
-      e.target.selectedOptions,
-      (opt) => opt.value
-    );
-    setSelectedItems(values);
+  const handleCheckboxChange = (item) => {
+    setSelectedItems((prev) => {
+      const updated = prev.includes(item)
+        ? prev.filter((i) => i !== item)
+        : [...prev, item];
 
-    if (values.length > 0) {
-      setErrors((prev) => ({ ...prev, items: null }));
-    }
+      if (updated.length > 0) {
+        setErrors((e) => ({ ...e, items: null }));
+      }
+
+      return updated;
+    });
   };
 
   const validate = () => {
@@ -81,12 +82,12 @@ export const TICalculator = () => {
   };
 
   return (
-    <div className="container-fuild m-4" >
+    <div className="container-fluid m-4">
       <div className="card shadow-sm">
         <div className="card-body">
           <h4 className="fw-bold mb-3">TI Calculator</h4>
 
-         
+       
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
               Square Footage (SF)
@@ -95,7 +96,6 @@ export const TICalculator = () => {
               type="number"
               placeholder="e.g. 5000"
               value={sf}
-              min="0"
               isInvalid={!!errors.sf}
               onChange={(e) => {
                 setSf(e.target.value);
@@ -115,27 +115,28 @@ export const TICalculator = () => {
               TI Line Items
             </Form.Label>
 
-            <Form.Select
-             multiple
-              size={6}
-              name="ti_items"
-              value={selectedItems}
-              isInvalid={!!errors.items}
-              onChange={handleItemsChange}
-            >
+            <div className="border rounded p-3">
               {LINE_ITEMS.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
+                <Form.Check
+                  key={item}
+                  type="checkbox"
+                  id={item}
+                  label={item}
+                  checked={selectedItems.includes(item)}
+                  onChange={() => handleCheckboxChange(item)}
+                  className="mb-2"
+                />
               ))}
-            </Form.Select>
+            </div>
 
-            <Form.Control.Feedback type="invalid">
-              {errors.items}
-            </Form.Control.Feedback>
+            {errors.items && (
+              <div className="text-danger mt-1">
+                {errors.items}
+              </div>
+            )}
           </Form.Group>
 
-      
+        
           <button
             className="btn btn-primary w-100"
             onClick={handleCalculate}

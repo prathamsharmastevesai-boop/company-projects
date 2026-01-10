@@ -5,54 +5,69 @@ import { CommissionCalculator } from "./calcComission";
 import { TICalculator } from "./tiCalculator";
 
 export const CalulatorPage = () => {
-  const [activeTab, setActiveTab] = useState("form");
+  const [activeTab, setActiveTab] = useState("finance");
 
-  const headerTitle = "Lease Finance Calculator";
+  const getHeaderTitle = () => {
+    switch (activeTab) {
+      case "finance":
+        return "Lease Finance Calculator";
+      case "commission":
+        return "Commission Calculator";
+      case "ti":
+        return "TI Calculator";
+      default:
+        return "Calculator";
+    }
+  };
 
   return (
     <>
+    
       <div
         className="px-3 py-3 sticky-top"
         style={{ backgroundColor: "#212529", zIndex: 10 }}
       >
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-          <h5 className="text-white m-0 mx-4 mb-2 mb-md-0 text-center text-md-start">{headerTitle}</h5>
+          <h5 className="text-white m-0 mx-4 text-center text-md-start">
+            {getHeaderTitle()}
+          </h5>
 
           <div className="d-flex gap-2 flex-wrap justify-content-center justify-content-md-end mx-4">
             <Button
               size="sm"
-              variant={activeTab === "form" ? "light" : "outline-light"}
-              onClick={() => setActiveTab("form")}
+              variant={activeTab === "finance" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("finance")}
             >
               NET Effective Rent
             </Button>
 
             <Button
               size="sm"
-              variant={activeTab === "list" ? "light" : "outline-light"}
-              onClick={() => setActiveTab("list")}
+              variant={activeTab === "commission" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("commission")}
             >
               Commission Calculator
             </Button>
-             <Button
+
+            <Button
               size="sm"
-              variant={activeTab === "list" ? "light" : "outline-light"}
-              onClick={() => setActiveTab("tiCalculator")}
+              variant={activeTab === "ti" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("ti")}
             >
-             TiCalculator
+              TI Calculator
             </Button>
-            
           </div>
         </div>
       </div>
 
+     
       <Container fluid className="mt-3">
         <Row>
           <Col xs={12}>
             <Card className="no-shadow-hover border-0">
-              {activeTab === "form" && <LeaseFinanceCalculator />}
-              {activeTab === "list" && <CommissionCalculator />}
-              {activeTab === "tiCalculator" && <TICalculator />}
+              {activeTab === "finance" && <LeaseFinanceCalculator />}
+              {activeTab === "commission" && <CommissionCalculator />}
+              {activeTab === "ti" && <TICalculator />}
             </Card>
           </Col>
         </Row>
