@@ -141,6 +141,7 @@ export const distilledBenchmarkEndpoint = "/dct/benchmark";
 
 //Calc
 export const calcEndpoint = "calc/lease-finance";
+export const itcalculatorEndpoint = "/calc/TIcalculator";
 
 //Forum
 export const threadData = "/forum/threads";

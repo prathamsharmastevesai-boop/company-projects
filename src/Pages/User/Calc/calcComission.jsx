@@ -14,15 +14,54 @@ export const CommissionCalculator = () => {
   const [commissionList, setCommissionList] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const err = {};
+
+    if (!grossArea || Number(grossArea) <= 0)
+      err.grossArea = "Gross area must be greater than 0";
+
+    if (!termYears || Number(termYears) < 1 || Number(termYears) > 50)
+      err.termYears = "Term must be between 1 and 50 years";
+
+    if (!faceRentYear1 || Number(faceRentYear1) <= 0)
+      err.faceRentYear1 = "Face rent must be greater than 0";
+
+    if (
+      annualEscalation === "" ||
+      Number(annualEscalation) < 0 ||
+      Number(annualEscalation) > 100
+    )
+      err.annualEscalation = "Escalation must be between 0–100%";
+
+    if (
+      freeRentMonths === "" ||
+      Number(freeRentMonths) < 0 ||
+      Number(freeRentMonths) > 36
+    )
+      err.freeRentMonths = "Free rent must be between 0–36 months";
+
+    if (commissionList.length !== Number(termYears))
+      err.commissionList = "Generate commission rows first";
+
+    const invalidRate = commissionList.some(
+      (c) => c.rate_pct === "" || c.rate_pct < 0 || c.rate_pct > 100
+    );
+    if (invalidRate)
+      err.commissionRates = "All commission rates must be 0–100%";
+
+    setErrors(err);
+    return Object.keys(err).length === 0;
+  };
 
   const generateCommissionYears = () => {
-    const years = Number(termYears);
-    if (!years) return;
+    if (!termYears || termYears < 1) return;
 
-    const rows = [];
-    for (let i = 1; i <= years; i++) {
-      rows.push({ year: i, rate_pct: "" });
-    }
+    const rows = Array.from({ length: Number(termYears) }, (_, i) => ({
+      year: i + 1,
+      rate_pct: "",
+    }));
     setCommissionList(rows);
   };
 
@@ -33,32 +72,7 @@ export const CommissionCalculator = () => {
   };
 
   const handleSubmit = async () => {
-    if (
-      !grossArea ||
-      !termYears ||
-      !faceRentYear1 ||
-      !annualEscalation ||
-      !freeRentMonths
-    ) {
-      alert("Please fill all fields");
-      return;
-    }
-
-    if (commissionList.length !== Number(termYears)) {
-      alert("Generate commission rows first");
-      return;
-    }
-
-    const hasEmptyCommission = commissionList.some(
-      (item) =>
-        item.rate_pct === "" ||
-        item.rate_pct === null ||
-        item.rate_pct === undefined
-    );
-    if (hasEmptyCommission) {
-      alert("Please fill all commission rates");
-      return;
-    }
+    if (!validate()) return;
 
     setLoading(true);
 
@@ -68,26 +82,17 @@ export const CommissionCalculator = () => {
       Base_Rent_PSF: [Number(faceRentYear1)],
       Annual_Escalation_Rate: Number(annualEscalation),
       Free_Rent_Months: Number(freeRentMonths),
-      Commission_Rate_Annual_Pct: commissionList.map((item) => ({
-        year: Number(item.year),
-        rate_pct: Number(item.rate_pct),
+      Commission_Rate_Annual_Pct: commissionList.map((c) => ({
+        year: c.year,
+        rate_pct: Number(c.rate_pct),
       })),
     };
 
     try {
       const response = await dispatch(commissionSimpleApi(payload));
-
       if (response.meta?.requestStatus === "fulfilled") {
         setResult(response.payload);
-      } else {
-        alert(
-          "Calculation failed: " +
-            (response.payload?.message || "Unknown error")
-        );
       }
-    } catch (error) {
-      console.error("API Error:", error);
-      alert("Error occurred: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -102,69 +107,24 @@ export const CommissionCalculator = () => {
             <hr />
 
             <div className="row">
-              <div className="col-md-6 mb-3">
-                <label>Gross Area (SF)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={grossArea}
-                  onChange={(e) => setGrossArea(e.target.value)}
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Total Term (Years)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={termYears}
-                  onChange={(e) => {
-                    setTermYears(e.target.value);
-                    setCommissionList([]);
-                  }}
-                  min="1"
-                  max="50"
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Face Rent PSF – Year 1</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={faceRentYear1}
-                  onChange={(e) => setFaceRentYear1(e.target.value)}
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Annual Escalation Rate (%)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={annualEscalation}
-                  onChange={(e) => setAnnualEscalation(e.target.value)}
-                  min="0"
-                  max="100"
-                  step="0.01"
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <label>Free Rent (Months)</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  value={freeRentMonths}
-                  onChange={(e) => setFreeRentMonths(e.target.value)}
-                  min="0"
-                  max="36"
-                />
-              </div>
+              {[
+                ["Gross Area (SF)", grossArea, setGrossArea, errors.grossArea],
+                ["Total Term (Years)", termYears, setTermYears, errors.termYears],
+                ["Face Rent PSF – Year 1", faceRentYear1, setFaceRentYear1, errors.faceRentYear1],
+                ["Annual Escalation Rate (%)", annualEscalation, setAnnualEscalation, errors.annualEscalation],
+                ["Free Rent (Months)", freeRentMonths, setFreeRentMonths, errors.freeRentMonths],
+              ].map(([label, val, setter, err], i) => (
+                <div className="col-md-6 mb-3" key={i}>
+                  <label className="fw-semibold">{label}</label>
+                  <input
+                    type="number"
+                    className={`form-control ${err ? "is-invalid" : ""}`}
+                    value={val}
+                    onChange={(e) => setter(e.target.value)}
+                  />
+                  {err && <div className="invalid-feedback">{err}</div>}
+                </div>
+              ))}
             </div>
 
             <h5 className="fw-bold mt-3">Commission Rates (Annual)</h5>
@@ -173,46 +133,45 @@ export const CommissionCalculator = () => {
             <button
               className="btn btn-outline-primary w-100 mb-3"
               onClick={generateCommissionYears}
-              disabled={!termYears}
             >
-              Generate Commission Rows ({termYears || 0} years)
+              Generate Commission Rows
             </button>
 
-            {commissionList.map((item, index) => (
-              <div key={index} className="mb-2">
+            {errors.commissionList && (
+              <div className="text-danger mb-2">{errors.commissionList}</div>
+            )}
+
+            {commissionList.map((item, idx) => (
+              <div key={idx} className="mb-2">
                 <label>Year {item.year} – Rate (%)</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className={`form-control ${
+                    errors.commissionRates ? "is-invalid" : ""
+                  }`}
                   value={item.rate_pct}
-                  onChange={(e) => updateCommissionRate(index, e.target.value)}
-                  min="0"
-                  max="100"
-                  step="0.01"
+                  onChange={(e) => updateCommissionRate(idx, e.target.value)}
                 />
               </div>
             ))}
 
+            {errors.commissionRates && (
+              <div className="text-danger">{errors.commissionRates}</div>
+            )}
+
             <button
               className="btn btn-primary w-100 mt-3"
               onClick={handleSubmit}
-              disabled={loading || commissionList.length === 0}
+              disabled={loading}
             >
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2"></span>
-                  Calculating...
-                </>
-              ) : (
-                "Calculate"
-              )}
+              {loading ? "Calculating..." : "Calculate"}
             </button>
           </div>
         </div>
 
         <div className="col-md-4">
           <div className="card p-3 shadow-sm">
-            <h5 className="fw-bold mb-3">Calculated Results</h5>
+            <h5 className="fw-bold">Calculated Results</h5>
             {!result && <p className="text-muted">Submit to see result.</p>}
             {result && (
               <pre className="bg-light p-3 rounded">

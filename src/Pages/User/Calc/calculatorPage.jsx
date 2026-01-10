@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import { LeaseFinanceCalculator } from "./calculator";
 import { CommissionCalculator } from "./calcComission";
+import { TICalculator } from "./tiCalculator";
 
 export const CalulatorPage = () => {
   const [activeTab, setActiveTab] = useState("form");
@@ -33,6 +34,14 @@ export const CalulatorPage = () => {
             >
               Commission Calculator
             </Button>
+             <Button
+              size="sm"
+              variant={activeTab === "list" ? "light" : "outline-light"}
+              onClick={() => setActiveTab("tiCalculator")}
+            >
+             TiCalculator
+            </Button>
+            
           </div>
         </div>
       </div>
@@ -40,9 +49,10 @@ export const CalulatorPage = () => {
       <Container fluid className="mt-3">
         <Row>
           <Col xs={12}>
-            <Card className="shadow-sm border-0">
+            <Card className="no-shadow-hover border-0">
               {activeTab === "form" && <LeaseFinanceCalculator />}
               {activeTab === "list" && <CommissionCalculator />}
+              {activeTab === "tiCalculator" && <TICalculator />}
             </Card>
           </Col>
         </Row>
