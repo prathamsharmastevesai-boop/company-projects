@@ -7,6 +7,7 @@ import {
   get_Chat_History,
 } from "../../../Networking/User/APIs/Chat/ChatApi";
 import { toast } from "react-toastify";
+import { Modal } from "react-bootstrap";
 
 export const SessionList = ({ setShowSessionModal }) => {
   const dispatch = useDispatch();
@@ -20,13 +21,22 @@ export const SessionList = ({ setShowSessionModal }) => {
   const [isDeleting, setIsDeleting] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showDeleteSessionModal, setShowDeleteSessionModal] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState(null);
+  const [uniqueCategories, setUniqueCategories] = useState(["All"]);
 
   const fetchSessions = async () => {
     setIsLoadingSessions(true);
     try {
       const res = await dispatch(get_Session_List_Specific()).unwrap();
       setSessionList(res);
-      setFilteredSessions(res);
+      
+      // Extract unique categories from the response
+      const categories = ["All", ...new Set(res.map((s) => s.category).filter(Boolean))];
+      setUniqueCategories(categories);
+      
+      // Apply initial filtering
+      applyFilters(res, selectedCategory, searchTerm);
     } catch (error) {
       console.error(error);
     } finally {
@@ -34,46 +44,73 @@ export const SessionList = ({ setShowSessionModal }) => {
     }
   };
 
-  useEffect(() => {
-    fetchSessions();
-  }, []);
+  // Helper function to apply filters
+  const applyFilters = (sessions, category, search) => {
+    let filtered = [...sessions];
 
-  useEffect(() => {
-    let filtered = sessionList;
-
-    if (selectedCategory !== "All") {
+    // Apply category filter
+    if (category !== "All") {
       filtered = filtered.filter(
         (session) =>
           session.category &&
-          session.category.toLowerCase() === selectedCategory.toLowerCase()
+          session.category.toLowerCase() === category.toLowerCase()
       );
     }
 
-    if (searchTerm.trim() !== "") {
+    // Apply search filter
+    if (search.trim() !== "") {
       filtered = filtered.filter(
         (session) =>
-          session.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          session.category?.toLowerCase().includes(searchTerm.toLowerCase())
+          session.title?.toLowerCase().includes(search.toLowerCase()) ||
+          session.category?.toLowerCase().includes(search.toLowerCase())
       );
     }
 
     setFilteredSessions(filtered);
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  // Update filtering when search or category changes
+  useEffect(() => {
+    applyFilters(sessionList, selectedCategory, searchTerm);
   }, [searchTerm, selectedCategory, sessionList]);
 
   const handleDeleteSession = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this session?"))
-      return;
-
     try {
       setIsDeleting((prev) => ({ ...prev, [id]: true }));
       await dispatch(Delete_Chat_Session(id)).unwrap();
+
+      // Update session list locally
+      const updatedList = sessionList.filter((s) => s.session_id !== id);
+      setSessionList(updatedList);
+      
+      // Update unique categories
+      const categories = ["All", ...new Set(updatedList.map((s) => s.category).filter(Boolean))];
+      setUniqueCategories(categories);
+      
+      // If the deleted session was the last one in the current category,
+      // reset to "All" category
+      const sessionsInCurrentCategory = updatedList.filter(
+        (session) =>
+          selectedCategory !== "All" &&
+          session.category &&
+          session.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+      
+      if (sessionsInCurrentCategory.length === 0 && selectedCategory !== "All") {
+        setSelectedCategory("All");
+      }
+
       toast.success("Session deleted successfully!");
-      setSessionList((prev) => prev.filter((s) => s.session_id !== id));
     } catch (error) {
       console.error("Failed to delete session:", error);
-      // toast.error("Failed to delete session");
+      toast.error("Failed to delete session");
     } finally {
       setIsDeleting((prev) => ({ ...prev, [id]: false }));
+      setSessionToDelete(null);
     }
   };
 
@@ -128,7 +165,6 @@ export const SessionList = ({ setShowSessionModal }) => {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
-
       case "portfolio":
         navigate("/ChatWithAnyDoc", {
           state: { sessionId: session.session_id, type: session.category },
@@ -153,17 +189,9 @@ export const SessionList = ({ setShowSessionModal }) => {
     return "badge bg-dark text-white";
   };
 
-  const uniqueCategories = [
-    "All",
-    ...new Set(sessionList.map((s) => s.category)),
-  ];
-
   return (
     <>
-      <div
-        className="header-bg {
--bg d-flex justify-content-start px-3 align-items-center sticky-header"
-      >
+      <div className="header-bg -bg d-flex justify-content-start px-3 align-items-center sticky-header">
         <h5 className="mb-0 text-light mx-4">Chat History</h5>
       </div>
       <div
@@ -216,12 +244,12 @@ export const SessionList = ({ setShowSessionModal }) => {
                   <div
                     key={session.session_id}
                     className={`d-flex align-items-center justify-content-between 
-                  flex-wrap border rounded-3 mb-2 shadow-sm
-                  ${
-                    selectedChatId === session.session_id
-                      ? "bg-dark text-white"
-                      : "bg-light text-dark"
-                  }`}
+                    flex-wrap border rounded-3 mb-2 shadow-sm
+                    ${
+                      selectedChatId === session.session_id
+                        ? "bg-dark text-white"
+                        : "bg-light text-dark"
+                    }`}
                     style={{
                       padding: "10px 12px",
                       transition: "all 0.2s ease-in-out",
@@ -263,15 +291,13 @@ export const SessionList = ({ setShowSessionModal }) => {
                         }`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteSession(session.session_id);
+                          setSessionToDelete(session.session_id);
+                          setShowDeleteSessionModal(true);
                         }}
                         disabled={isDeleting[session.session_id]}
                       >
                         {isDeleting[session.session_id] ? (
-                          <span
-                            className="spinner-border spinner-border-sm"
-                            role="status"
-                          ></span>
+                          <span className="spinner-border spinner-border-sm" role="status"></span>
                         ) : (
                           <i className="bi bi-trash"></i>
                         )}
@@ -289,12 +315,68 @@ export const SessionList = ({ setShowSessionModal }) => {
                   className="bi bi-inbox text-secondary mb-3"
                   style={{ fontSize: "3rem" }}
                 ></i>
-                <h6 className="text-muted">No sessions available</h6>
+                <h6 className="text-muted">
+                  {selectedCategory === "All"
+                    ? "No sessions available"
+                    : `No sessions found in "${selectedCategory}" category`}
+                </h6>
+                {selectedCategory !== "All" && (
+                  <button
+                    className="btn btn-sm btn-outline-primary mt-2"
+                    onClick={() => setSelectedCategory("All")}
+                  >
+                    View All Categories
+                  </button>
+                )}
               </div>
             )}
           </>
         )}
       </div>
+      <Modal
+        show={showDeleteSessionModal}
+        onHide={() => {
+          setShowDeleteSessionModal(false);
+          setSessionToDelete(null);
+        }}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          Are you sure you want to delete this chat session?
+        </Modal.Body>
+
+        <Modal.Footer>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setShowDeleteSessionModal(false);
+              setSessionToDelete(null);
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              if (sessionToDelete) {
+                handleDeleteSession(sessionToDelete);
+              }
+              setShowDeleteSessionModal(false);
+            }}
+            disabled={isDeleting[sessionToDelete]}
+          >
+            {isDeleting[sessionToDelete] ? (
+              <span className="spinner-border spinner-border-sm text-light" />
+            ) : (
+              "Delete"
+            )}
+          </button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

@@ -82,7 +82,7 @@ export const TICalculator = () => {
   };
 
   return (
-    <div className="container-fluid m-4">
+    <div className="container-fluid">
       <div className="card shadow-sm">
         <div className="card-body">
           <h4 className="fw-bold mb-3">TI Calculator</h4>

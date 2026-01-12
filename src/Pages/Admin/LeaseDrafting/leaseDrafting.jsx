@@ -294,8 +294,10 @@ export const LeaseDraftingUpload = () => {
       <div className="card shadow-sm mb-4">
         <div className="card-header fw-semibold">Uploaded LOI Documents</div>
         {loader ? (
-          <div className="text-center p-3">
-            <RAGLoader />
+          <div className="text-center p-1">
+             <div className="text-center">
+                <p className="text-muted mt-2">Loading threads...</p>
+              </div>
           </div>
         ) : (
           <ul className="list-group list-group-flush">

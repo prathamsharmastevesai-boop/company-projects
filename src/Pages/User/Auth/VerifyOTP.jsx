@@ -50,7 +50,7 @@ export const VerifyOtp = () => {
           ? toast.success(result.message || "OTP verified successfully!") &&
             navigate("/")
           : toast.success(result.message || "OTP verified successfully!") &&
-            navigate("/ResetPassword", { state: { email: data.email } });
+            navigate("/resetpassword", { state: { email: data.email } });
       }
     } catch (error) {
     } finally {

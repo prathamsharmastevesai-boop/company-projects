@@ -38,7 +38,7 @@ import { MarketChat } from "./Pages/User/Market/Market";
 import { AdminDashboard } from "./Pages/Admin/DashBoard/AdminDashboard";
 import { UserManagement } from "./Pages/Admin/UserManagement/UserManagement";
 import { RagSystem } from "./Pages/Admin/RagSystem/RagSystem";
-import { PortfolioVoice } from "./Pages/Admin/PortfolioVoice/PortfolioVoice";
+import { PortfolioVoice } from "./Pages/Admin/portfoliovoice/portfoliovoice";
 import { Thirdparty } from "./Pages/Admin/GeneralInfo/Thirdparty";
 import { EmployContact } from "./Pages/Admin/GeneralInfo/EmployContact";
 import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
@@ -96,6 +96,7 @@ import { InformationCollaborationPage } from "./Pages/User/UserInformationCollab
 import { DestilledCompTracker } from "./Pages/Admin/DistilledCompTracker/distilledCompTracker";
 import { DistilledCompTrackerPage } from "./Pages/User/DistilledCompTracker/distilledCompTrackerPage";
 import { DCTChat } from "./Pages/User/DistilledCompTracker/distilledCompChat";
+import { Yardi } from "./Pages/User/Yardi/yardi";
 
 function App() {
   useEffect(() => {
@@ -115,12 +116,12 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/VerifyOtp" element={<VerifyOtp />} />
-          <Route path="/Admin" element={<AdminLogin />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/ForgotPassword" element={<ForgotPassword />} />
-          <Route path="/ResetPassword" element={<ResetPassword />} />
+          <Route path="/userlogin" element={<Login />} />
+          <Route path="/verifyotp" element={<VerifyOtp />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
+          {/* <Route path="/SignUp" element={<SignUp />} /> */}
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
           <Route
             element={
               <ProtectedRoute allowedRoles={["superuser"]}>
@@ -128,7 +129,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/AdminManagement" element={<AdminManagement />} />
+            <Route path="/adminmanagement" element={<AdminManagement />} />
           </Route>
           <Route
             element={
@@ -137,12 +138,12 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/AdminDashboard" element={<AdminDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-            <Route path="/UserManagement" element={<UserManagement />} />
-            <Route path="/Aianalytics" element={<Aianalytics />} />
-            <Route path="/RagSystem" element={<RagSystem />} />
-            <Route path="/PortfolioVoice" element={<PortfolioVoice />} />
+            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="/aianalytics" element={<Aianalytics />} />
+            <Route path="/rag-system" element={<RagSystem />} />
+            <Route path="/portfolio-voice" element={<PortfolioVoice />} />
             <Route
               path="/LeaseAbstractUpload"
               element={<LeaseAbstractUpload />}
@@ -278,7 +279,10 @@ function App() {
               path="/InformationCollaborationPage"
               element={<InformationCollaborationPage />}
             />
-
+            <Route
+              path="/yardi"
+              element={<Yardi />}
+            />
             <Route
               path="/LeaseAbstractUpload1"
               element={<LeaseAbstractUpload />}

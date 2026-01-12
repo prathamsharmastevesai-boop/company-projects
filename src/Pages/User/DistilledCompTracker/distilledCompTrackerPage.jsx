@@ -38,14 +38,14 @@ export const DistilledCompTrackerPage = () => {
         </div>
       </div>
 
-      <Row className="justify-content-center px-3">
+      <div className="justify-content-center">
         <Col md={12}>
           <Card className="no-shadow-hover border-0">
             {activeTab === "chart" && <DistilledCompTracker />}
             {activeTab === "list" && <DistilledCompTrackerList />}
           </Card>
         </Col>
-      </Row>
+      </div>
     </Container>
   );
 };

@@ -25,9 +25,9 @@ export const AdminLogin = () => {
     if (!token || !role) return;
 
     if (role === "superuser") {
-      navigate("/AdminManagement");
+      navigate("/adminmanagement");
     } else if (role === "admin") {
-      navigate("/AdminDashboard");
+      navigate("/admin-dashboard");
     } else if (role === "user") {
       navigate("/dashboard");
     }
@@ -50,7 +50,7 @@ export const AdminLogin = () => {
   };
 
   const handleforget = () => {
-    navigate("/ForgotPassword");
+    navigate("/forgotpassword");
   };
 
   const handleLogin = async (e) => {
@@ -77,9 +77,9 @@ export const AdminLogin = () => {
       toast.success(`${role} login successful`);
 
       if (role === "admin") {
-        navigate("/AdminDashboard");
+        navigate("/admin-dashboard");
       } else if (role === "superuser") {
-        navigate("/AdminManagement");
+        navigate("/adminmanagement");
       }
     } catch (err) {
       console.error("Login error:", err);

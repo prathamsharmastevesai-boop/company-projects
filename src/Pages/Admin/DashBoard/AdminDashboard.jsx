@@ -23,7 +23,7 @@ export const AdminDashboard = () => {
     fetchDashboard();
   }, [dispatch]);
 
-  const handleAIAnalytics = () => navigate("/Aianalytics");
+  const handleAIAnalytics = () => navigate("/aianalytics");
   const handleBuilding = () => navigate("/Building_list");
 
   return (

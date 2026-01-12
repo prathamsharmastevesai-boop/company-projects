@@ -106,7 +106,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         </div>
 
         <div
-          className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 " //scroll enabled --> hide-scrollbar
+          className="sidebar-body flex-grow-1 overflow-auto px-3 pt-3 "
           style={{ minHeight: 0, WebkitOverflowScrolling: "touch" }}
         >
           <ul className="nav flex-column">
@@ -122,11 +122,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/AdminManagement") ? "active" : ""
+                    isActive("/adminmanagement") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/AdminManagement")}
+                    onClick={() => handleLinkClick("/adminmanagement")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -149,11 +149,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/AdminDashboard") ? "active" : ""
+                    isActive("/admin-dashboard") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/AdminDashboard")}
+                    onClick={() => handleLinkClick("/admin-dashboard")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -164,11 +164,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/UserManagement") ? "active" : ""
+                    isActive("/user-management") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/UserManagement")}
+                    onClick={() => handleLinkClick("/user-management")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -179,11 +179,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/Aianalytics") ? "active" : ""
+                    isActive("/aianalytics") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/Aianalytics")}
+                    onClick={() => handleLinkClick("/aianalytics")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -194,11 +194,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/RagSystem") ? "active" : ""
+                    isActive("/rag-system") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/RagSystem")}
+                    onClick={() => handleLinkClick("/rag-system")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -209,11 +209,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 <li
                   className={`nav-item ${
-                    isActive("/PortfolioVoice") ? "active" : ""
+                    isActive("/portfolio-voice") ? "active" : ""
                   }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/PortfolioVoice")}
+                    onClick={() => handleLinkClick("/portfolio-voice")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -757,6 +757,22 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     {!collapsed && "Calculator"}
                   </span>
                 </li>
+
+                 <li
+                  className={`nav-item ${
+                    isActive("/yardi") ? "active" : ""
+                  }`}
+                >
+                  <span
+                    onClick={() => handleLinkClick("/yardi")}
+                    className="nav-link text-white"
+                    style={{ cursor: "pointer", fontSize: 12 }}
+                  >
+                    <i className="bi bi-briefcase me-1" />
+                    {!collapsed && "Yardi"}
+                  </span>
+                </li>
+
 
                 {!collapsed && (
                   <li

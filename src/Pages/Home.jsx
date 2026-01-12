@@ -32,7 +32,7 @@ export const Home = () => {
       if (auth.role === "user") {
         navigate("/dashboard");
       } else if (auth.role === "admin") {
-        navigate("/AdminDashboard");
+        navigate("/admin-dashboard");
       }
     }
   }, []);
@@ -68,13 +68,13 @@ export const Home = () => {
         <div className="d-grid gap-3">
           <button
             className="btn btn-outline-dark  btn-lg d-flex align-items-center justify-content-center gap-2"
-            onClick={() => navigate("/Admin")}
+            onClick={() => navigate("/adminlogin")}
           >
             <FaUserShield /> Admin Login
           </button>
           <button
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
-            onClick={() => navigate("/Login")}
+            onClick={() => navigate("/userlogin")}
           >
             <FaUser /> User Login
           </button>

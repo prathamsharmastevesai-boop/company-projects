@@ -149,7 +149,7 @@ const DealList = () => {
             style={{ minHeight: "400px" }}
           >
             <div className="text-center">
-              <div className="spinner-border text-primary" role="status">
+              <div className="spinner-border text-secondary" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
               <p className="mt-3">Loading deals...</p>

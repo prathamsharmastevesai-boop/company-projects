@@ -45,6 +45,8 @@ export const GeminiChat = () => {
   const [showDocsModal, setShowDocsModal] = useState(false);
   const [docs, setDocs] = useState([]);
   const [isDocsLoading, setIsDocsLoading] = useState(false);
+const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [docToDelete, setDocToDelete] = useState(null);
 
   const isLoading = isLoadingSession;
 
@@ -319,26 +321,22 @@ export const GeminiChat = () => {
     if (showDocsModal) fetchDocs();
   }, [showDocsModal]);
 
+
   const handleDeleteDoc = async (docId) => {
-    if (!window.confirm("Delete this document?")) return;
+  try {
+    setDeletingDocId(docId);
+    await dispatch(
+      DeleteDocSubmit({ file_id: docId, category: "Gemini" })
+    ).unwrap();
 
-    try {
-      setDeletingDocId(docId);
-      await dispatch(
-        DeleteDocSubmit({
-          file_id: docId,
-          category: "Gemini",
-        })
-      ).unwrap();
+    fetchDocs();
+  } catch {
 
-      toast.success("Document deleted.");
-      fetchDocs();
-    } catch {
-      toast.error("Failed to delete document.");
-    } finally {
-      setDeletingDocId(null);
-    }
-  };
+  } finally {
+    setDeletingDocId(null);
+  }
+};
+
 
   const LoadingSpinner = () => (
     <div className="d-flex justify-content-center align-items-center py-4">
@@ -375,12 +373,26 @@ export const GeminiChat = () => {
                 </span>
 
                 <label
-                  htmlFor="fileUpload"
-                  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                  style={{ borderRadius: "20px" }}
-                >
-                  <i className="bi bi-upload me-1"></i> Upload
-                </label>
+  htmlFor="fileUpload"
+  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+  style={{ borderRadius: "20px", pointerEvents: isUploading ? "none" : "auto" }}
+>
+  {isUploading ? (
+    <>
+      <span
+        className="spinner-border spinner-border-sm me-1"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Uploading...
+    </>
+  ) : (
+    <>
+      <i className="bi bi-upload me-1"></i> Upload
+    </>
+  )}
+</label>
+
 
                 <input
                   type="file"
@@ -692,17 +704,21 @@ export const GeminiChat = () => {
                   </span>
 
                   <div className="d-flex gap-2">
-                    <button
-                      className="btn btn-outline-danger btn-sm"
-                      onClick={() => handleDeleteDoc(doc.file_id)}
-                      disabled={deletingDocId === doc.file_id}
-                    >
-                      {deletingDocId === doc.file_id ? (
-                        <div className="spinner-border spinner-border-sm text-danger" />
-                      ) : (
-                        <i className="bi bi-trash"></i>
-                      )}
-                    </button>
+                   <button
+  className="btn btn-outline-danger btn-sm"
+  onClick={() => {
+    setDocToDelete(doc.file_id);
+    setShowDeleteModal(true);
+  }}
+  disabled={deletingDocId === doc.file_id}
+>
+  {deletingDocId === doc.file_id ? (
+    <div className="spinner-border spinner-border-sm text-danger" />
+  ) : (
+    <i className="bi bi-trash"></i>
+  )}
+</button>
+
                   </div>
                 </li>
               ))}
@@ -710,6 +726,44 @@ export const GeminiChat = () => {
           )}
         </Modal.Body>
       </Modal>
+
+      <Modal
+  show={showDeleteModal}
+  onHide={() => setShowDeleteModal(false)}
+  centered
+>
+  <Modal.Header closeButton>
+    <Modal.Title>Confirm Delete</Modal.Title>
+  </Modal.Header>
+
+  <Modal.Body>
+    Are you sure you want to delete this document?
+  </Modal.Body>
+
+  <Modal.Footer>
+    <button
+      className="btn btn-secondary"
+      onClick={() => setShowDeleteModal(false)}
+    >
+      Cancel
+    </button>
+    <button
+      className="btn btn-danger"
+      onClick={() => {
+        handleDeleteDoc(docToDelete);
+        setShowDeleteModal(false);
+      }}
+      disabled={deletingDocId === docToDelete}
+    >
+      {deletingDocId === docToDelete ? (
+        <div className="spinner-border spinner-border-sm text-light" />
+      ) : (
+        "Delete"
+      )}
+    </button>
+  </Modal.Footer>
+</Modal>
+
     </div>
   );
 };
