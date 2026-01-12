@@ -38,7 +38,6 @@ import { MarketChat } from "./Pages/User/Market/Market";
 import { AdminDashboard } from "./Pages/Admin/DashBoard/AdminDashboard";
 import { UserManagement } from "./Pages/Admin/UserManagement/UserManagement";
 import { RagSystem } from "./Pages/Admin/RagSystem/RagSystem";
-import { PortfolioVoice } from "./Pages/Admin/portfoliovoice/portfoliovoice";
 import { Thirdparty } from "./Pages/Admin/GeneralInfo/Thirdparty";
 import { EmployContact } from "./Pages/Admin/GeneralInfo/EmployContact";
 import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
@@ -97,6 +96,7 @@ import { DestilledCompTracker } from "./Pages/Admin/DistilledCompTracker/distill
 import { DistilledCompTrackerPage } from "./Pages/User/DistilledCompTracker/distilledCompTrackerPage";
 import { DCTChat } from "./Pages/User/DistilledCompTracker/distilledCompChat";
 import { Yardi } from "./Pages/User/Yardi/yardi";
+import { PortfolioVoice } from "./Pages/Admin/PortfolioVoice/PortfolioVoice";
 
 function App() {
   useEffect(() => {

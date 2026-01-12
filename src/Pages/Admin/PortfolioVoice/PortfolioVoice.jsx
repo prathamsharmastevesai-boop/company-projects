@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-// import {
-//   get_specific_Doclist_Api,
-//   Delete_Doc_Specific,
-// } from "../../../Networking/User/APIs/Chat/ChatApi";
 import RAGLoader from "../../../Component/Loader";
 import {
   DeleteDocSubmit,
@@ -23,7 +19,7 @@ export const PortfolioVoice = () => {
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [showConfirm, setShowConfirm] = useState(false);
-const [selectedFileId, setSelectedFileId] = useState(null);
+  const [selectedFileId, setSelectedFileId] = useState(null);
 
 
   useEffect(() => {
@@ -102,25 +98,25 @@ const [selectedFileId, setSelectedFileId] = useState(null);
   };
 
   const confirmDeleteDoc = async () => {
-  if (!selectedFileId) return;
+    if (!selectedFileId) return;
 
-  try {
-    setIsDeleting((prev) => ({ ...prev, [selectedFileId]: true }));
+    try {
+      setIsDeleting((prev) => ({ ...prev, [selectedFileId]: true }));
 
-    await dispatch(
-      DeleteDocSubmit({ file_id: selectedFileId })
-    ).unwrap();
+      await dispatch(
+        DeleteDocSubmit({ file_id: selectedFileId })
+      ).unwrap();
 
-    await fetchDocuments();
-  } catch (error) {
-    console.error("Failed to delete document:", error);
-    
-  } finally {
-    setIsDeleting((prev) => ({ ...prev, [selectedFileId]: false }));
-    setShowConfirm(false);
-    setSelectedFileId(null);
-  }
-};
+      await fetchDocuments();
+    } catch (error) {
+      console.error("Failed to delete document:", error);
+
+    } finally {
+      setIsDeleting((prev) => ({ ...prev, [selectedFileId]: false }));
+      setShowConfirm(false);
+      setSelectedFileId(null);
+    }
+  };
 
 
 
@@ -251,23 +247,23 @@ const [selectedFileId, setSelectedFileId] = useState(null);
                       <td>
                         {parseFloat(doc.size)
                           ? (doc.size.toLowerCase().includes("kb")
-                              ? parseFloat(doc.size) / 1024
-                              : parseFloat(doc.size)
-                            ).toFixed(2)
+                            ? parseFloat(doc.size) / 1024
+                            : parseFloat(doc.size)
+                          ).toFixed(2)
                           : doc.size}{" "}
                         MB
                       </td>
                       <td>{new Date(doc.uploaded_at).toLocaleDateString()}</td>
                       <td>
                         <button
-  className="btn btn-sm btn-outline-danger"
-  onClick={() => {
-    setSelectedFileId(doc.file_id);
-    setShowConfirm(true);
-  }}
->
-  Delete
-</button>
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => {
+                            setSelectedFileId(doc.file_id);
+                            setShowConfirm(true);
+                          }}
+                        >
+                          Delete
+                        </button>
 
                       </td>
                     </tr>
@@ -283,45 +279,45 @@ const [selectedFileId, setSelectedFileId] = useState(null);
         </div>
       </div>
       {showConfirm && (
-  <div className="modal fade show d-block" tabIndex="-1">
-    <div className="modal-dialog modal-dialog-centered">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">Confirm Delete</h5>
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setShowConfirm(false)}
-          ></button>
-        </div>
+        <div className="modal fade show d-block" tabIndex="-1">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowConfirm(false)}
+                ></button>
+              </div>
 
-        <div className="modal-body">
-          <p className="mb-0">
-            Are you sure you want to delete this document?  
-           
-          </p>
-        </div>
+              <div className="modal-body">
+                <p className="mb-0">
+                  Are you sure you want to delete this document?
 
-        <div className="modal-footer">
-          <button
-            className="btn btn-secondary"
-            onClick={() => setShowConfirm(false)}
-          >
-            Cancel
-          </button>
+                </p>
+              </div>
 
-          <button
-            className="btn btn-danger"
-            onClick={confirmDeleteDoc}
-            disabled={isDeleting[selectedFileId]}
-          >
-            {isDeleting[selectedFileId] ? "Deleting..." : "Delete"}
-          </button>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowConfirm(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="btn btn-danger"
+                  onClick={confirmDeleteDoc}
+                  disabled={isDeleting[selectedFileId]}
+                >
+                  {isDeleting[selectedFileId] ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   );
