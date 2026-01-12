@@ -137,7 +137,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               </>
             )}
 
-            {role === "admin" && (
+            {role === "admin" && ( 
               <>
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
