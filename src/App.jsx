@@ -268,6 +268,10 @@ function App() {
               path="/ComparativeBuildingChat"
               element={<ComparativeBuildingChat />}
             />
+ <Route
+              path="/documents/LOI"
+              element={<Loi />}
+            />
 
             <Route
               path="/InformationCollaborationList"
