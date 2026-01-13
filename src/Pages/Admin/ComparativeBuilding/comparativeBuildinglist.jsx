@@ -188,7 +188,6 @@ export const ComparativeBuildingList = () => {
                 <div className="mx-2 check w-75">
                   {building.address || "N/A"}
                 </div>
-                {/* <strong>Curated Intelligence:</strong> */}
               </div>
             </div>
           </p>

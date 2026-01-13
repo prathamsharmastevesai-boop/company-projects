@@ -75,7 +75,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
     setOpenMenu((prev) => (prev === menu ? null : menu));
   };
 
-  const handleLogout = (navigate, setCollapsed) => {
+  const handleLogout = (navigate) => {
     sessionStorage.clear();
     navigate("/");
   };
@@ -83,9 +83,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   return (
     <>
       <aside
-        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${
-          isMobile && !collapsed ? "sidebar-mobile-open" : ""
-        }`}
+        className={`sidebar-wrapper d-flex flex-column bg-dark text-white border-end ${isMobile && !collapsed ? "sidebar-mobile-open" : ""
+          }`}
       >
         <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
           {!collapsed && <span className="mb-0 fs-5">creportfoliopulse</span>}
@@ -95,11 +94,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               onClick={toggleSidebar}
             >
               <i
-                className={`bi ${
-                  collapsed
+                className={`bi ${collapsed
                     ? "bi-chevron-double-right"
                     : "bi-chevron-double-left"
-                }`}
+                  }`}
               />
             </button>
           )}
@@ -121,9 +119,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 <li className="nav-header text-light small">Main</li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/adminmanagement") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/adminmanagement") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/adminmanagement")}
@@ -137,7 +134,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               </>
             )}
 
-            {role === "admin" && ( 
+            {role === "admin" && (
               <>
                 {!collapsed && (
                   <h6 className="text-uppercase fw-bold small text-secondary px-2">
@@ -148,9 +145,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 <li className="nav-header text-light small">Main</li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/admin-dashboard") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/admin-dashboard") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/admin-dashboard")}
@@ -163,9 +159,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/user-management") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/user-management") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/user-management")}
@@ -178,9 +173,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/aianalytics") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/aianalytics") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/aianalytics")}
@@ -193,9 +187,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/rag-system") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/rag-system") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/rag-system")}
@@ -208,9 +201,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/portfolio-voice") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/portfolio-voice") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/portfolio-voice")}
@@ -223,9 +215,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/admin-portfolio-forum") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/admin-portfolio-forum") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/admin-portfolio-forum")}
@@ -238,9 +229,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/LeaseDraftingUpload") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/LeaseDraftingUpload")}
@@ -253,9 +243,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/adminInformationCollaboration") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/adminInformationCollaboration") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() =>
@@ -270,9 +259,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/destilledcomptracker") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/destilledcomptracker") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/destilledcomptracker")}
@@ -285,9 +273,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/distilledExpenseTrackerPage") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/distilledExpenseTrackerPage") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() =>
@@ -302,9 +289,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/space-inquiry") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/space-inquiry") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/space-inquiry")}
@@ -324,11 +310,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "dataCategories"
+                      className={`bi ms-2 ${openMenu === "dataCategories"
                           ? "bi-chevron-down"
                           : "bi-chevron-right"
-                      }`}
+                        }`}
                     />
                   </li>
                 )}
@@ -336,9 +321,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "dataCategories" && (
                   <>
                     <li
-                      className={`nav-item ${
-                        isActive("/Thirdparty") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/Thirdparty") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/Thirdparty")}
@@ -350,9 +334,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${
-                        isActive("/EmployContact") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/EmployContact") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/EmployContact")}
@@ -365,9 +348,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/Comps") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/Comps") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/Comps")}
@@ -380,9 +362,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/ComparativeBuildingList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/ComparativeBuildingList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() =>
@@ -397,9 +378,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/TenentInfoBuildingList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/TenentInfoBuildingList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() =>
@@ -414,9 +394,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/TenantsMarket") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/TenantsMarket") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/TenantsMarket")}
@@ -430,9 +409,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/BuildingInfoList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/BuildingInfoList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/BuildingInfoList")}
@@ -445,9 +423,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/subleaseTrackerList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/subleaseTrackerList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/subleaseTrackerList")}
@@ -460,9 +437,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/renewalTrackerbuildingList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/renewalTrackerbuildingList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() =>
@@ -477,9 +453,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/toursDetails") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/toursDetails") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/toursDetails")}
@@ -500,11 +475,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Admin Tools</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "adminTools"
+                      className={`bi ms-2 ${openMenu === "adminTools"
                           ? "bi-chevron-down"
                           : "bi-chevron-right"
-                      }`}
+                        }`}
                     />
                   </li>
                 )}
@@ -512,9 +486,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "adminTools" && (
                   <>
                     <li
-                      className={`nav-item ${
-                        isActive("/Building_list") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/Building_list") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/Building_list")}
@@ -544,9 +517,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 <li className="nav-header text-light small">Main</li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/dashboard") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/dashboard") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/dashboard")}
@@ -559,12 +531,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/ChatWithAnyDoc") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/portfolio-chat") ? "active" : ""
+                    }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/ChatWithAnyDoc")}
+                    onClick={() => handleLinkClick("/portfolio-chat")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -586,9 +557,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/EmailDrafting") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/EmailDrafting") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/EmailDrafting")}
@@ -602,9 +572,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 {Gemini == true && (
                   <li
-                    className={`nav-item ${
-                      isActive("/geminichat") ? "active" : ""
-                    }`}
+                    className={`nav-item ${isActive("/geminichat") ? "active" : ""
+                      }`}
                   >
                     <span
                       onClick={() => handleLinkClick("/geminichat")}
@@ -630,41 +599,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                {/* <li
-                  className={`nav-item ${
-                    isActive("/distilledExpenseTracker") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/distilledExpenseTracker")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-graph-up me-1" />
-                    {!collapsed && "Distilled Expense Tracker"}
-                  </span>
-                </li> */}
-
-                {/* <li
-                  className={`nav-item ${
-                    isActive("/SummeryUpload") ? "active" : ""
-                  }`}
-                >
-                  <span
-                    onClick={() => handleLinkClick("/SummeryUpload")}
-                    className="nav-link text-white"
-                    style={{ cursor: "pointer", fontSize: 12 }}
-                  >
-                    <i className="bi bi-graph-up me-1" />
-                    {!collapsed && "Report Summarizer"}
-                  </span>
-                </li> */}
-
                 {Forum == true && (
                   <li
-                    className={`nav-item ${
-                      isActive("/portfolio-forum") ? "active" : ""
-                    }`}
+                    className={`nav-item ${isActive("/portfolio-forum") ? "active" : ""
+                      }`}
                   >
                     <span
                       onClick={() => handleLinkClick("/portfolio-forum")}
@@ -679,9 +617,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 )}
 
                 <li
-                  className={`nav-item ${
-                    isActive("/LeaseAbstractUpload1") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/LeaseAbstractUpload1") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/LeaseAbstractUpload1")}
@@ -694,9 +631,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/InformationCollaborationPage") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/InformationCollaborationPage") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() =>
@@ -711,9 +647,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/benchmark") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/benchmark") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/benchmark")}
@@ -727,9 +662,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/distilledcomptrackerpage") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/distilledcomptrackerpage") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/distilledcomptrackerpage")}
@@ -743,9 +677,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${
-                    isActive("/calculator") ? "active" : ""
-                  }`}
+                  className={`nav-item ${isActive("/calculator") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/calculator")}
@@ -758,10 +691,9 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
 
-                 <li
-                  className={`nav-item ${
-                    isActive("/yardi") ? "active" : ""
-                  }`}
+                <li
+                  className={`nav-item ${isActive("/yardi") ? "active" : ""
+                    }`}
                 >
                   <span
                     onClick={() => handleLinkClick("/yardi")}
@@ -782,11 +714,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Data Categories</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "generalInfo"
+                      className={`bi ms-2 ${openMenu === "generalInfo"
                           ? "bi-chevron-down"
                           : "bi-chevron-right"
-                      }`}
+                        }`}
                     />
                   </li>
                 )}
@@ -794,9 +725,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "generalInfo" && (
                   <ul className="nav flex-column mt-1">
                     <li
-                      className={`nav-item ${
-                        isActive("/ThirdPartychat") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/ThirdPartychat") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/ThirdPartychat")}
@@ -808,9 +738,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${
-                        isActive("/ColleagueChat") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/ColleagueChat") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/ColleagueChat")}
@@ -822,9 +751,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${
-                        isActive("/UserBuildingInfolist") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/UserBuildingInfolist") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/UserBuildingInfolist")}
@@ -837,9 +765,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/ComparativeUserBuildinglist") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/ComparativeUserBuildinglist") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() =>
@@ -854,9 +781,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/tenentInfoUserBuildinglist") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/tenentInfoUserBuildinglist") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() =>
@@ -871,9 +797,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/TenantMarket") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/TenantMarket") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/TenantMarket")}
@@ -886,9 +811,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/CompsChat") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/CompsChat") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/CompsChat")}
@@ -901,9 +825,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/SubleaseTrackerlist1") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/SubleaseTrackerlist1") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/SubleaseTrackerlist1")}
@@ -916,9 +839,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/renewalTrackerList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/renewalTrackerList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/renewalTrackerList")}
@@ -931,9 +853,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/UserBuildinglist") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/UserBuildinglist") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/UserBuildinglist")}
@@ -945,9 +866,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${
-                        isActive("/Tours") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/Tours") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/Tours")}
@@ -960,9 +880,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/dealList") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/dealList") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/dealList")}
@@ -985,11 +904,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   >
                     <span>Settings</span>
                     <i
-                      className={`bi ms-2 ${
-                        openMenu === "Settings"
+                      className={`bi ms-2 ${openMenu === "Settings"
                           ? "bi-chevron-down"
                           : "bi-chevron-right"
-                      }`}
+                        }`}
                     />
                   </li>
                 )}
@@ -997,9 +915,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "Settings" && (
                   <>
                     <li
-                      className={`nav-item ${
-                        isActive("/UserProfile") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/UserProfile") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/UserProfile")}
@@ -1012,9 +929,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${
-                        isActive("/history") ? "active" : ""
-                      }`}
+                      className={`nav-item ${isActive("/history") ? "active" : ""
+                        }`}
                     >
                       <span
                         onClick={() => handleLinkClick("/history")}
@@ -1059,9 +975,8 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
             onClick={toggleSidebar}
           >
             <i
-              className={`bi ${
-                collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
-              }`}
+              className={`bi ${collapsed ? "bi-chevron-double-right" : "bi-chevron-double-left"
+                }`}
             />
           </button>
         )}

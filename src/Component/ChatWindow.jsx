@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
@@ -26,7 +26,7 @@ export const ChatWindow = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-
+  const navigate = useNavigate();
   const chatRef = useRef(null);
   const textareaRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -37,8 +37,7 @@ export const ChatWindow = ({
 
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
- 
-  
+
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
@@ -51,33 +50,33 @@ export const ChatWindow = ({
 
   const isLoading = isLoadingSession || isLoadingHistory;
 
-const getContentType = (text) => {
-  if (!text || typeof text !== 'string') return "text";
-  
-  const trimmedText = text.trim();
-  
+  const getContentType = (text) => {
+    if (!text || typeof text !== 'string') return "text";
 
-  if (trimmedText.startsWith('http://') || 
-      trimmedText.startsWith('https://') || 
+    const trimmedText = text.trim();
+
+
+    if (trimmedText.startsWith('http://') ||
+      trimmedText.startsWith('https://') ||
       trimmedText.startsWith('www.')) {
-    try {
-      const url = new URL(trimmedText.startsWith('www.') ? 'https://' + trimmedText : trimmedText);
-      const path = url.pathname.toLowerCase();
-      
-      if (path.match(/\.(jpg|jpeg|png|webp|gif|bmp)$/)) return "image";
-      if (path.endsWith('.pdf')) return "pdf";
-      return "link";
-    } catch {
-      return "text";
+      try {
+        const url = new URL(trimmedText.startsWith('www.') ? 'https://' + trimmedText : trimmedText);
+        const path = url.pathname.toLowerCase();
+
+        if (path.match(/\.(jpg|jpeg|png|webp|gif|bmp)$/)) return "image";
+        if (path.endsWith('.pdf')) return "pdf";
+        return "link";
+      } catch {
+        return "text";
+      }
     }
-  }
-  
-  
-  return "text";
-};
+
+
+    return "text";
+  };
 
   useEffect(() => {
-    if (category === "floor_plan" || category === "building_stack") {
+    if (category === "floor_plan" || category === "building_stack" || category === "LOI") {
       setSessionId("building-chat");
       setIsLoadingSession(false);
       return;
@@ -121,7 +120,7 @@ const getContentType = (text) => {
   }, [category, dispatch]);
 
   useEffect(() => {
-    if (category === "floor_plan" || category === "building_stack") {
+    if (category === "floor_plan" || category === "building_stack" || category === "LOI") {
       setMessages([]);
       setIsLoadingHistory(false);
       return;
@@ -245,7 +244,7 @@ const getContentType = (text) => {
 
       let response;
 
-      if (category === "floor_plan" || category === "building_stack") {
+      if (category === "floor_plan" || category === "building_stack" || category === "LOI") {
         const payload = {
           question: userMessage.message,
           building_id,
@@ -281,7 +280,7 @@ const getContentType = (text) => {
 
       if (response?.answer) {
 
-      const contentType = getContentType(response.answer);
+        const contentType = getContentType(response.answer);
 
         const adminMessage = {
           message: response.answer,
@@ -312,6 +311,15 @@ const getContentType = (text) => {
     toast.info(`Started a new chat session for "${category}".`);
   };
 
+  const handleNavigation = () => {
+    navigate("/documents/LOI", {
+      state: {
+        buildingId: building_id,
+      },
+    });
+  };
+
+
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
       <div className="row h-100">
@@ -334,6 +342,7 @@ const getContentType = (text) => {
               <div className="ms-auto d-flex align-items-center">
                 {category !== "floor_plan" &&
                   category !== "building_stack" &&
+                  category !== "LOI" &&
                   category !== "DCT" && (
                     <button
                       className="btn btn-outline-secondary btn-sm d-flex align-items-center"
@@ -346,6 +355,23 @@ const getContentType = (text) => {
                       </span>
                     </button>
                   )}
+
+                {category === "LOI" && (
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={()=>handleNavigation()}
+                  >
+                    <i
+                      className="bi bi-upload"
+                      style={{ fontSize: 14 }}
+                    />
+
+                    <span className="d-none d-md-inline ms-1">
+                      Upload Doc
+                    </span>
+                  </button>
+
+                )}
               </div>
             </div>
           </div>
@@ -368,25 +394,22 @@ const getContentType = (text) => {
                     {messages.map((msg, i) => (
                       <div
                         key={i}
-                        className={`mb-2 small ${
-                          msg.sender === "Admin" ? "text-start" : "text-end"
-                        }`}
+                        className={`mb-2 small ${msg.sender === "Admin" ? "text-start" : "text-end"
+                          }`}
                       >
                         <div
-                          className={`d-inline-block px-3 py-2 position-relative responsive-box ${
-                            msg.sender === "Admin"
-                              ? ""
-                              : "bg-secondary text-light"
-                          }`}
+                          className={`d-inline-block px-3 py-2 position-relative responsive-box ${msg.sender === "Admin"
+                            ? ""
+                            : "bg-secondary text-light"
+                            }`}
                         >
                           {msg.sender === "Admin" ? (
                             <>
                               <i
-                                className={`bi ${
-                                  speakingIndex === i
-                                    ? "bi-volume-up-fill"
-                                    : "bi-volume-mute"
-                                } ms-2`}
+                                className={`bi ${speakingIndex === i
+                                  ? "bi-volume-up-fill"
+                                  : "bi-volume-mute"
+                                  } ms-2`}
                                 style={{
                                   cursor: "pointer",
                                   fontSize: "1rem",
@@ -507,16 +530,14 @@ const getContentType = (text) => {
                 </button>
               ) : (
                 <button
-                  className={`btn rounded-circle ${
-                    isRecording ? "btn-danger" : "btn-outline-secondary"
-                  }`}
+                  className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
+                    }`}
                   onClick={startRecording}
                   disabled={isSending || isLoading || !sessionId}
                 >
                   <i
-                    className={`bi ${
-                      isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                    }`}
+                    className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                      }`}
                   ></i>
                 </button>
               )}

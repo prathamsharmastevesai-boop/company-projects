@@ -12,11 +12,8 @@ import {
 import TypingIndicator from "../../../Component/TypingIndicator";
 import {
   AskQuestionGeminiAPI,
-  UploadGeneralDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
-import { Modal } from "react-bootstrap";
-import { ListAbstractLeaseDoc } from "../../../Networking/Admin/APIs/AiAbstractLeaseAPi";
-import { DeleteDocSubmit } from "../../../Networking/Admin/APIs/UploadDocApi";
+
 import { BackButton } from "../../../Component/backButton";
 
 export const GeminiChat = () => {
@@ -29,7 +26,6 @@ export const GeminiChat = () => {
   const recognitionRef = useRef(null);
 
   const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
-  // const [category, setCategory] = useState(location.state?.type);
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -40,13 +36,7 @@ export const GeminiChat = () => {
   const [isReplyLoading, setIsReplyLoading] = useState(false);
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [deletingDocId, setDeletingDocId] = useState(null);
-  const [showDocsModal, setShowDocsModal] = useState(false);
-  const [docs, setDocs] = useState([]);
-  const [isDocsLoading, setIsDocsLoading] = useState(false);
-const [showDeleteModal, setShowDeleteModal] = useState(false);
-const [docToDelete, setDocToDelete] = useState(null);
+
 
   const isLoading = isLoadingSession;
 
@@ -202,50 +192,6 @@ const [docToDelete, setDocToDelete] = useState(null);
     }
   };
 
-  const uploadFile = async (file) => {
-    if (
-      ![
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "text/csv",
-      ].includes(file.type)
-    ) {
-      toast.error("Only PDF, DOCX, XLSX, and CSV files are allowed");
-      return;
-    }
-
-    if (file.size > 30 * 1024 * 1024) {
-      toast.error("File size must be under 30MB");
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-
-      await dispatch(
-        UploadGeneralDocSubmit({
-          file,
-          sessionId,
-          category: "Gemini",
-        })
-      ).unwrap();
-
-      toast.success("File uploaded successfully!");
-    } catch (err) {
-      console.error("Upload failed:", err);
-      // toast.error("Upload failed!");
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) await uploadFile(file);
-    e.target.value = null;
-  };
-
   const handleSendMessage = async () => {
     if (!message.trim()) return toast.warning("Please enter a message.");
 
@@ -302,42 +248,6 @@ const [docToDelete, setDocToDelete] = useState(null);
     setIsChatStarted(false);
   };
 
-  const fetchDocs = async () => {
-    try {
-      setIsDocsLoading(true);
-      const res = await dispatch(
-        ListAbstractLeaseDoc({ category: "Gemini" })
-      ).unwrap();
-
-      setDocs(res || []);
-    } catch {
-      toast.error("Failed to fetch documents.");
-    } finally {
-      setIsDocsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (showDocsModal) fetchDocs();
-  }, [showDocsModal]);
-
-
-  const handleDeleteDoc = async (docId) => {
-  try {
-    setDeletingDocId(docId);
-    await dispatch(
-      DeleteDocSubmit({ file_id: docId, category: "Gemini" })
-    ).unwrap();
-
-    fetchDocs();
-  } catch {
-
-  } finally {
-    setDeletingDocId(null);
-  }
-};
-
-
   const LoadingSpinner = () => (
     <div className="d-flex justify-content-center align-items-center py-4">
       <div className="spinner-border text-secondary" role="status">
@@ -371,36 +281,6 @@ const [docToDelete, setDocToDelete] = useState(null);
                   ></i>
                   Gemini
                 </span>
-
-                <label
-  htmlFor="fileUpload"
-  className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-  style={{ borderRadius: "20px", pointerEvents: isUploading ? "none" : "auto" }}
->
-  {isUploading ? (
-    <>
-      <span
-        className="spinner-border spinner-border-sm me-1"
-        role="status"
-        aria-hidden="true"
-      ></span>
-      Uploading...
-    </>
-  ) : (
-    <>
-      <i className="bi bi-upload me-1"></i> Upload
-    </>
-  )}
-</label>
-
-
-                <input
-                  type="file"
-                  id="fileUpload"
-                  className="d-none"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                  onChange={handleFileChange}
-                />
               </h5>
 
               {isLoading ? (
@@ -448,17 +328,15 @@ const [docToDelete, setDocToDelete] = useState(null);
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${
-                          isRecording ? "btn-danger" : "btn-outline-secondary"
-                        }`}
+                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
+                          }`}
                         onClick={startRecording}
                         disabled={isSending}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${
-                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                          }`}
+                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                            }`}
                         ></i>
                       </button>
                     )}
@@ -471,12 +349,7 @@ const [docToDelete, setDocToDelete] = useState(null);
                     >
                       <i className="bi bi-plus-circle me-1"></i> New Session
                     </button>
-                    <button
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={() => setShowDocsModal(true)}
-                    >
-                      <i className="bi bi-folder2-open me-1"></i> Documents
-                    </button>
+                   
                   </div>
                 </>
               )}
@@ -491,11 +364,12 @@ const [docToDelete, setDocToDelete] = useState(null);
             transition={{ duration: 0.4 }}
             className="h-100"
           >
+            
             <div className="row h-100">
               <div className="col-md-12 d-flex flex-column">
                 <div className="chat-header d-flex justify-content-between align-items-center mb-2">
                   <div className="mt-3 d-flex gap-2">
-                      <BackButton />
+                    <BackButton />
                     <button
                       className="btn btn-outline-secondary btn-sm d-flex align-items-center"
                       onClick={handleNewSession}
@@ -505,13 +379,7 @@ const [docToDelete, setDocToDelete] = useState(null);
                       <span className="d-none d-sm-inline">New Session</span>
                     </button>
 
-                    <button
-                      className="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                      onClick={() => setShowDocsModal(true)}
-                    >
-                      <i className="bi bi-folder2-open me-1"></i>
-                      <span className="d-none d-sm-inline">Documents</span>
-                    </button>
+                   
                   </div>
                   <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
                     Gemini
@@ -531,27 +399,24 @@ const [docToDelete, setDocToDelete] = useState(null);
                           {messages.map((msg, i) => (
                             <div
                               key={i}
-                              className={`mb-2 small ${
-                                msg.sender === "Admin"
-                                  ? "text-start"
-                                  : "text-end"
-                              }`}
+                              className={`mb-2 small ${msg.sender === "Admin"
+                                ? "text-start"
+                                : "text-end"
+                                }`}
                             >
                               <div
-                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${
-                                  msg.sender === "Admin"
-                                    ? ""
-                                    : "bg-secondary text-light"
-                                }`}
+                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${msg.sender === "Admin"
+                                  ? ""
+                                  : "bg-secondary text-light"
+                                  }`}
                               >
                                 {msg.sender === "Admin" ? (
                                   <>
                                     <i
-                                      className={`bi ${
-                                        speakingIndex === i
-                                          ? "bi-volume-up-fill"
-                                          : "bi-volume-mute"
-                                      } ms-2`}
+                                      className={`bi ${speakingIndex === i
+                                        ? "bi-volume-up-fill"
+                                        : "bi-volume-mute"
+                                        } ms-2`}
                                       style={{
                                         cursor: "pointer",
                                         fontSize: "1rem",
@@ -598,32 +463,6 @@ const [docToDelete, setDocToDelete] = useState(null);
 
                 <div className="pt-2 pb-1">
                   <div className="d-flex align-items-end rounded-pill py-2 px-3 bg-white shadow-sm border">
-                    {isUploading ? (
-                      <div className="spinner-border spinner-border-sm text-secondary m-2" />
-                    ) : (
-                      <>
-                        <label
-                          htmlFor="chatFileUpload"
-                          className="btn btn-link p-0 me-2 d-flex align-items-center"
-                          style={{ cursor: "pointer" }}
-                        >
-                          <i
-                            className="bi bi-upload text-secondary"
-                            style={{ fontSize: "1.2rem" }}
-                          ></i>
-                        </label>
-
-                        <input
-                          id="chatFileUpload"
-                          type="file"
-                          className="d-none"
-                          accept=".pdf,.docx,.xlsx,.csv"
-                          onChange={handleFileChange}
-                          disabled={isUploading}
-                        />
-                      </>
-                    )}
-
                     <textarea
                       ref={textareaRef}
                       rows={1}
@@ -655,17 +494,15 @@ const [docToDelete, setDocToDelete] = useState(null);
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${
-                          isRecording ? "btn-danger" : "btn-outline-secondary"
-                        }`}
+                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
+                          }`}
                         onClick={startRecording}
                         disabled={isSending || isReplyLoading}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${
-                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                          }`}
+                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                            }`}
                         ></i>
                       </button>
                     )}
@@ -676,94 +513,6 @@ const [docToDelete, setDocToDelete] = useState(null);
           </motion.div>
         )}
       </AnimatePresence>
-
-      <Modal
-        show={showDocsModal}
-        onHide={() => setShowDocsModal(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Uploaded Documents</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          {isDocsLoading ? (
-            <LoadingSpinner />
-          ) : !docs || !docs.files || docs.files.length === 0 ? (
-            <p className="text-muted text-center">No documents uploaded yet.</p>
-          ) : (
-            <ul className="list-group">
-              {docs.files.map((doc) => (
-                <li
-                  key={doc.file_id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span>
-                    <i className="bi bi-file-earmark-text me-2"></i>
-                    {doc.original_file_name}
-                  </span>
-
-                  <div className="d-flex gap-2">
-                   <button
-  className="btn btn-outline-danger btn-sm"
-  onClick={() => {
-    setDocToDelete(doc.file_id);
-    setShowDeleteModal(true);
-  }}
-  disabled={deletingDocId === doc.file_id}
->
-  {deletingDocId === doc.file_id ? (
-    <div className="spinner-border spinner-border-sm text-danger" />
-  ) : (
-    <i className="bi bi-trash"></i>
-  )}
-</button>
-
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Modal.Body>
-      </Modal>
-
-      <Modal
-  show={showDeleteModal}
-  onHide={() => setShowDeleteModal(false)}
-  centered
->
-  <Modal.Header closeButton>
-    <Modal.Title>Confirm Delete</Modal.Title>
-  </Modal.Header>
-
-  <Modal.Body>
-    Are you sure you want to delete this document?
-  </Modal.Body>
-
-  <Modal.Footer>
-    <button
-      className="btn btn-secondary"
-      onClick={() => setShowDeleteModal(false)}
-    >
-      Cancel
-    </button>
-    <button
-      className="btn btn-danger"
-      onClick={() => {
-        handleDeleteDoc(docToDelete);
-        setShowDeleteModal(false);
-      }}
-      disabled={deletingDocId === docToDelete}
-    >
-      {deletingDocId === docToDelete ? (
-        <div className="spinner-border spinner-border-sm text-light" />
-      ) : (
-        "Delete"
-      )}
-    </button>
-  </Modal.Footer>
-</Modal>
-
     </div>
   );
 };

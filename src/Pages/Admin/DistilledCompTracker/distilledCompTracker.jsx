@@ -85,7 +85,6 @@ export const DestilledCompTracker = () => {
       newErrors.submarket = "Submarket is required";
     }
 
-    // ENUM enforcement
     if (!FLOOR_SEGMENT_OPTIONS.includes(floorSegment)) {
       newErrors.floor_segment = "Invalid floor segment selected";
     }

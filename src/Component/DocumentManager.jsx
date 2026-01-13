@@ -15,7 +15,6 @@ import Pagination from "./pagination";
 
 const DocumentManager = ({ category, title, description, building_Id }) => {
   const dispatch = useDispatch();
-
  
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +35,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
     setListLoading(true);
     try {
       const res = await dispatch(
-        category === "floor_plan" || category === "building_stack"
+        category === "floor_plan" || category === "building_stack" ||category === "LOI"
           ? FloorPlanStackListSubmit({ buildingId: building_Id, category })
           : GeneralInfoSubmit({ buildingId: building_Id, category })
       ).unwrap();
@@ -53,7 +52,6 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
       }
     } catch (err) {
       console.error(`Error fetching ${category} docs:`, err);
-      toast.error("Failed to fetch documents");
     } finally {
       setListLoading(false);
     }
@@ -66,7 +64,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
 
   const uploadFile = async (file) => {
     const isFloorPlanOrStack =
-      category === "floor_plan" || category === "building_stack";
+      category === "floor_plan" || category === "building_stack" || category === "LOI";
 
   
     const allowedTypes = isFloorPlanOrStack
@@ -95,7 +93,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
             file,
             category,
             building_Id,
-            tag: category === "floor_plan" ? tag : undefined,
+            tag: category === "floor_plan" || category === "LOI" ? tag : undefined,
           })
         ).unwrap();
       } else {
@@ -109,7 +107,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
       if (category === "floor_plan") setTag("");
     } catch (err) {
       console.error("Upload failed:", err);
-      toast.error("Upload failed");
+  
     } finally {
       setLoading(false);
     }
@@ -148,7 +146,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
     setDeleteLoading(true);
     try {
       await dispatch(
-        category === "floor_plan" || category === "building_stack"
+        category === "floor_plan" || category === "building_stack" || category === "LOI"
           ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
           : DeleteDocSubmit({ file_id: fileToDelete.file_id, category })
       ).unwrap();
@@ -177,7 +175,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
       </div>
 
     
-      {category === "floor_plan" && (
+      {(category === "floor_plan" || category === "LOI") && (
         <div className="mb-3">
           <label htmlFor="tag" className="form-label">
             Tag

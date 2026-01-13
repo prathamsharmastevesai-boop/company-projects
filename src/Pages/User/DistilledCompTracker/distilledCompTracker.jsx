@@ -189,7 +189,7 @@ export const DistilledCompTracker = () => {
                       onChange={handleChange}
                       isInvalid={!!errors.floor_segment}
                     >
-                      <option value="">Any</option>
+                      <option value="">Select Segment</option>
                       {FLOOR_SEGMENT_OPTIONS.map((opt) => (
                         <option key={opt} value={opt}>
                           {opt}

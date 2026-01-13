@@ -10,12 +10,10 @@ import { CreateBuilding } from "./Pages/Admin/Building/CreateBuilding";
 import { ListBuilding } from "./Pages/Admin/Building/Buildlist";
 import { LeaseInfomation } from "./Pages/Admin/Lease/leasesInfo";
 import { UpdateBuilding } from "./Pages/Admin/Building/EditBuilding";
-import { CreateLease } from "./Pages/Admin/Lease/CreateLease";
 import { LeaseList } from "./Pages/Admin/Lease/Leaselist";
 import { UpdateLease } from "./Pages/Admin/Lease/EditLease";
 import ProtectedRoute from "./Route/ProtectedRoute";
 import { useEffect } from "react";
-import { SignUp } from "../src/Pages/User/Auth/SignUp";
 import { AdminLogin } from "../src/Pages/Admin/Auth/AdminLogin";
 import { VerifyOtp } from "../src/Pages/User/Auth/VerifyOTP";
 import { Dashboard } from "../src/Pages/User/Dashboard/Dashboard";
@@ -24,7 +22,7 @@ import { UserBuildinglist } from "./Pages/User/Building/UserBuildinglist";
 import { UserLeaseList } from "./Pages/User/Lease/UserLeaselist";
 import { UserProfile } from "./Pages/User/Profile/UserProfile";
 import { UserChat } from "./Pages/User/Chat/ChatUser";
-import { ChatWithAnyDoc } from "./Pages/User/Chat/ChatwithAny";
+import { PortfolioChat } from "./Pages/User/PortfolioChat/portfolioChat";
 import BuildingPdfUploader from "./Pages/Admin/Building/BuildingGenInfo";
 import { ForgotPassword } from "./Pages/User/Auth/ForgetPassword";
 import { ResetPassword } from "./Pages/User/Auth/ResetPassword";
@@ -97,6 +95,8 @@ import { DistilledCompTrackerPage } from "./Pages/User/DistilledCompTracker/dist
 import { DCTChat } from "./Pages/User/DistilledCompTracker/distilledCompChat";
 import { Yardi } from "./Pages/User/Yardi/yardi";
 import { PortfolioVoice } from "./Pages/Admin/PortfolioVoice/PortfolioVoice";
+import DocumentManager from "./Component/DocumentManager";
+import { Loi } from "./Pages/User/Chat/loiUpload";
 
 function App() {
   useEffect(() => {
@@ -119,7 +119,6 @@ function App() {
           <Route path="/userlogin" element={<Login />} />
           <Route path="/verifyotp" element={<VerifyOtp />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
-          {/* <Route path="/SignUp" element={<SignUp />} /> */}
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route
@@ -184,7 +183,6 @@ function App() {
 
             <Route path="/UserAccess" element={<UserAccess />} />
 
-            <Route path="/CreateLease" element={<CreateLease />} />
             <Route path="/LeaseList" element={<LeaseList />} />
             <Route path="/UpdateLease" element={<UpdateLease />} />
             <Route path="/LeaseInfo" element={<LeaseInfomation />} />
@@ -262,7 +260,7 @@ function App() {
             <Route path="/CreNews" element={<CreNews />} />
             <Route path="/UserChat" element={<UserChat />} />
 
-            <Route path="/ChatWithAnyDoc" element={<ChatWithAnyDoc />} />
+            <Route path="/portfolio-chat" element={<PortfolioChat />} />
             <Route path="/chatWindow" element={<ChatWindow />} />
 
             <Route path="/UserProfile" element={<UserProfile />} />

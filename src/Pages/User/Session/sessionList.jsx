@@ -166,7 +166,7 @@ export const SessionList = ({ setShowSessionModal }) => {
         });
         break;
       case "portfolio":
-        navigate("/ChatWithAnyDoc", {
+        navigate("/portfolio-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;

@@ -1,5 +1,5 @@
 import { ChatWindow } from "../../../Component/ChatWindow";
 
-export const ChatWithAnyDoc = () => (
+export const PortfolioChat = () => (
   <ChatWindow category="portfolio" heading="💬 Portfolio Voice" />
 );

@@ -10,7 +10,7 @@ export const DashboardLayout = () => {
   useEffect(() => {
     const chatRoutes = [
       "/UserChat",
-      "/ChatWithAnyDoc",
+      "/portfolio-chat",
       "/ThirdParty",
       "/ColleagueChat",
       "/BuildingChat",
