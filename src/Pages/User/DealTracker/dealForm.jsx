@@ -135,7 +135,7 @@ const DealForm = () => {
       if (DealFormApi.fulfilled.match(resultAction)) {
         toast.success("Deal saved successfully!");
 
-        navigate("/dealList/");
+        navigate("/deal-list/");
         setForm({
           tenant_name: "",
           building_address_interest: "",

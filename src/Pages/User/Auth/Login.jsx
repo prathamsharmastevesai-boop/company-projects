@@ -30,7 +30,7 @@ export const Login = () => {
     } else if (role === "admin") {
       navigate("/CreateBuilding");
     } else if (role === "superuser") {
-      navigate("/adminmanagement");
+      navigate("/admin-management");
     }
   }, []);
 
@@ -51,7 +51,7 @@ export const Login = () => {
   };
 
   const handleforget = () => {
-    navigate("/forgotpassword");
+    navigate("/forgot-password");
   };
 
   const handleLogin = async (e) => {

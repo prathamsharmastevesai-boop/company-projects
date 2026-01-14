@@ -160,7 +160,7 @@ export const RenewalTracker = () => {
 
       {
         Role === "admin"
-          ? navigate("/renewalTrackerbuildingList")
+          ? navigate("/admin-renewal-tracker-list")
           : navigate("/RenewalTrackerList");
       }
     } catch (error) {
@@ -257,7 +257,7 @@ export const RenewalTracker = () => {
   );
 
   return (
-    <div className="container py-4">
+    <div className="container-fuild p-3">
       <div className="d-flex align-items-center my-4">
         <BackButton />
         <h2 className="fw-bold ms-2">New Renewal Tracker</h2>

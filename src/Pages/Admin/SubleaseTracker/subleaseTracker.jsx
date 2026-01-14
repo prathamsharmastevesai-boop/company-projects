@@ -128,8 +128,8 @@ export const SubleaseTracker = ({ data }) => {
       toast.success("Sublease saved successfully!");
       {
         Role === "admin"
-          ? navigate("/subleaseTrackerList")
-          : navigate("/SubleaseTrackerlist1");
+          ? navigate("/sublease-tracker-list")
+          : navigate("/user-sublease-tracker-list");
       }
 
       resetForm();

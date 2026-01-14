@@ -6,6 +6,7 @@ import {
   distilledCompTrackerEndpoint,
   distilledCompTrackerlistEndPoint,
 } from "../../NWconfig";
+import { toast } from "react-toastify";
 
 export const distilledCompTracker = createAsyncThunk(
   "distilledCompTracker",
@@ -15,6 +16,7 @@ export const distilledCompTracker = createAsyncThunk(
         distilledCompTrackerEndpoint,
         payload
       );
+      toast.success(response.data.message)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

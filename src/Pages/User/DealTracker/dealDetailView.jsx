@@ -183,18 +183,75 @@ const DealDetailView = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="container mt-4">
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
+if (loading) {
+  return (
+    <div className="container-fluid p-0">
+      
+      <div className="header-bg sticky-header px-3 py-2">
+        <div className="d-flex justify-content-between align-items-center flex-column flex-md-row mx-4">
+          <h5 className="text-light text-center mb-2 mb-md-0">
+            {isEditMode ? "Edit Lease Deal" : "View Lease Deal"} – Deal Tracker
+          </h5>
+
+          <div className="d-flex gap-2 mt-2 mt-md-0">
+            {isEditMode ? (
+              <>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={handleEditToggle}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="btn text-light"
+                  style={{
+                    backgroundColor: "#217ae6",
+                    borderColor: "#217ae6",
+                  }}
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save"
+                  )}
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn text-light"
+                style={{
+                  backgroundColor: "#217ae6",
+                  borderColor: "#217ae6",
+                }}
+                onClick={handleEditToggle}
+              >
+                Edit Deal
+              </button>
+            )}
           </div>
-          <p className="mt-3">Loading deal details...</p>
         </div>
       </div>
-    );
-  }
+
+
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-secondary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3 text-muted">Loading deal details...</p>
+      </div>
+    </div>
+  );
+}
 
   if (!deal) {
     return (
@@ -266,7 +323,7 @@ const DealDetailView = () => {
           </div>
         </div>
       </div>
-      <div className="container mt-4">
+      <div className="container-fuild p-3">
         <div className="card p-4 mb-4">
           <h5 className="fw-bold border-bottom pb-2 mb-4">
             Deal Identification

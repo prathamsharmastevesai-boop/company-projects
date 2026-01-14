@@ -42,7 +42,7 @@ export const TenentInfoUserBuildinglist = () => {
   const handleSubmit = async (building) => {
     const buildingId = building.id;
     const address = building.address;
-    navigate("/TenantInformationChat", {
+    navigate("/tenant-information-chat", {
       state: { office: { buildingId }, address: { address } },
     });
   };
@@ -55,34 +55,9 @@ export const TenentInfoUserBuildinglist = () => {
       >
         <h5 className="mb-0 text-light mx-4">Tenant Information list</h5>
       </div>
-      {requestingPermissionId && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backdropFilter: "blur(5px)",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 2000,
-          }}
-        >
-          <div
-            className="spinner-border text-warning"
-            style={{ width: "3rem", height: "3rem" }}
-            role="status"
-          >
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      )}
 
       <div className="container-fuild p-3">
-        <input
+          <input
           type="search"
           className="form-control"
           placeholder="Search by address..."
@@ -91,9 +66,6 @@ export const TenentInfoUserBuildinglist = () => {
           aria-label="Search Buildings by Address"
           autoComplete="off"
         />
-      </div>
-
-      <div className="container py-2">
         {loading ? (
           <div className="text-center py-5">
             <RAGLoader />

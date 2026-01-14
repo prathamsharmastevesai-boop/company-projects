@@ -41,7 +41,7 @@ export const ComparativeUserBuildinglist = () => {
 
   const handleSubmit = async (building) => {
     const buildingId = building.id;
-    navigate("/ComparativeBuildingChat", { state: { office: { buildingId } } });
+    navigate("/comparative-building-chat", { state: { office: { buildingId } } });
   };
 
   return (

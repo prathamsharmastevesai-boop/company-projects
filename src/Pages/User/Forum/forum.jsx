@@ -24,7 +24,6 @@ export const PortfolioForum = () => {
   const [selectedThread, setSelectedThread] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [threadMessages, setThreadMessages] = useState([]);
-  console.log(threadMessages, "threadMessages");
 
   const [userdetail, setUserdetail] = useState({});
 

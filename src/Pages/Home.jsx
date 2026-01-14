@@ -68,13 +68,13 @@ export const Home = () => {
         <div className="d-grid gap-3">
           <button
             className="btn btn-outline-dark  btn-lg d-flex align-items-center justify-content-center gap-2"
-            onClick={() => navigate("/adminlogin")}
+            onClick={() => navigate("/admin-login")}
           >
             <FaUserShield /> Admin Login
           </button>
           <button
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
-            onClick={() => navigate("/userlogin")}
+            onClick={() => navigate("/user-login")}
           >
             <FaUser /> User Login
           </button>

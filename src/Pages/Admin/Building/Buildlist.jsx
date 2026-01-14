@@ -112,7 +112,7 @@ export const ListBuilding = () => {
   };
 
   const handleSubmit = (buildingId) => {
-    navigate("/LeaseList", { state: { office: { buildingId } } });
+    navigate("/admin-select-lease-loi", { state: { office: { buildingId } } });
   };
 
   const filteredBuildings = BuildingList.filter((building) => {

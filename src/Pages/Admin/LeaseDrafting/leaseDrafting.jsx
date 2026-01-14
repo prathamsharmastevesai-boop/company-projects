@@ -267,11 +267,12 @@ export const LeaseDraftingUpload = () => {
     <div className="container-fuild p-3">
       <div className="text-center text-md-start">
         <h4 className="fw-bold">AI Lease Drafting</h4>
+        <p className="text-muted">
+          Upload an LOI, review extracted terms, and generate a draft lease
+          automatically.
+        </p>
       </div>
-      <p className="text-muted">
-        Upload an LOI, review extracted terms, and generate a draft lease
-        automatically.
-      </p>
+
 
       <div className="border border-2 rounded-3 py-5 text-center mb-4 bg-light">
         <i className="bi bi-upload fs-1 text-primary"></i>
@@ -295,9 +296,9 @@ export const LeaseDraftingUpload = () => {
         <div className="card-header fw-semibold">Uploaded LOI Documents</div>
         {loader ? (
           <div className="text-center p-1">
-             <div className="text-center">
-                <p className="text-muted mt-2">Loading threads...</p>
-              </div>
+            <div className="text-center">
+              <p className="text-muted mt-2">Loading files...</p>
+            </div>
           </div>
         ) : (
           <ul className="list-group list-group-flush">
@@ -477,16 +478,14 @@ export const LeaseDraftingUpload = () => {
               <h6 className="fw-semibold mb-2">Provide Feedback</h6>
               <div className="d-flex gap-3 align-items-center mb-3">
                 <i
-                  className={`bi bi-hand-thumbs-up-fill ${
-                    feedback === "up" ? "text-success" : "text-muted"
-                  }`}
+                  className={`bi bi-hand-thumbs-up-fill ${feedback === "up" ? "text-success" : "text-muted"
+                    }`}
                   style={{ cursor: "pointer", fontSize: "1.5rem" }}
                   onClick={() => setFeedback("up")}
                 />
                 <i
-                  className={`bi bi-hand-thumbs-down-fill ${
-                    feedback === "down" ? "text-danger" : "text-muted"
-                  }`}
+                  className={`bi bi-hand-thumbs-down-fill ${feedback === "down" ? "text-danger" : "text-muted"
+                    }`}
                   style={{ cursor: "pointer", fontSize: "1.5rem" }}
                   onClick={() => setFeedback("down")}
                 />

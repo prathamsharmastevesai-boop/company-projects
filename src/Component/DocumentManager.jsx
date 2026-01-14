@@ -15,7 +15,7 @@ import Pagination from "./pagination";
 
 const DocumentManager = ({ category, title, description, building_Id }) => {
   const dispatch = useDispatch();
- 
+
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(false);
@@ -30,32 +30,35 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
   const indexOfLastDoc = currentPage * itemsPerPage;
   const indexOfFirstDoc = indexOfLastDoc - itemsPerPage;
   const currentDocs = docs.slice(indexOfFirstDoc, indexOfLastDoc);
-  
-  const fetchData = async () => {
-    setListLoading(true);
-    try {
-      const res = await dispatch(
-        category === "floor_plan" || category === "building_stack" ||category === "LOI"
-          ? FloorPlanStackListSubmit({ buildingId: building_Id, category })
-          : GeneralInfoSubmit({ buildingId: building_Id, category })
-      ).unwrap();
 
-      if (Array.isArray(res)) {
-        const filteredDocs = res.filter((f) => f.category === category);
-        setDocs(
-          filteredDocs.map((f) => ({
-            file_id: f.file_id,
-            name: f.original_file_name,
-            tag: f.tag || "",
-          }))
-        );
-      }
-    } catch (err) {
-      console.error(`Error fetching ${category} docs:`, err);
-    } finally {
-      setListLoading(false);
+  const isFloorPlanCategory = ["floor_plan", "building_stack", "LOI"].includes(category);
+ const fetchData = async () => {
+  setListLoading(true);
+
+
+  try {
+    const res = await dispatch(
+      isFloorPlanCategory
+        ? FloorPlanStackListSubmit({ buildingId: building_Id, category })
+        : GeneralInfoSubmit({ buildingId: building_Id, category })
+    ).unwrap();
+
+    if (Array.isArray(res)) {
+      setDocs(
+        res.map((f) => ({
+          file_id: f.file_id,
+          name: f.original_file_name,
+          tag: f.tag || "",
+        }))
+      );
     }
-  };
+  } catch (err) {
+    console.error(`Error fetching ${category} docs:`, err);
+  } finally {
+    setListLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchData();
@@ -66,7 +69,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
     const isFloorPlanOrStack =
       category === "floor_plan" || category === "building_stack" || category === "LOI";
 
-  
+
     const allowedTypes = isFloorPlanOrStack
       ? ["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
       : ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"];
@@ -101,13 +104,13 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
           UploadGeneralDocSubmit({ file, category, building_Id })
         ).unwrap();
       }
-
+      setTag("")
       toast.success("File uploaded successfully");
       await fetchData();
       if (category === "floor_plan") setTag("");
     } catch (err) {
       console.error("Upload failed:", err);
-  
+
     } finally {
       setLoading(false);
     }
@@ -140,32 +143,33 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = async () => {
-    if (!fileToDelete) return;
+const confirmDelete = async () => {
+  if (!fileToDelete) return;
 
-    setDeleteLoading(true);
-    try {
-      await dispatch(
-        category === "floor_plan" || category === "building_stack" || category === "LOI"
-          ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
-          : DeleteDocSubmit({ file_id: fileToDelete.file_id, category })
-      ).unwrap();
+  setDeleteLoading(true);
 
-      await fetchData();
-      toast.success("Document deleted successfully");
-    } catch (err) {
-      console.error("Delete failed:", err);
-      toast.error("Failed to delete document");
-    } finally {
-      setDeleteLoading(false);
-      setShowDeleteModal(false);
-      setFileToDelete(null);
-    }
-  };
+  try {
+    await dispatch(
+      isFloorPlanCategory
+        ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
+        : DeleteDocSubmit({ file_id: fileToDelete.file_id, category })
+    ).unwrap();
+
+    await fetchData();
+  } catch (err) {
+    console.error("Delete failed:", err);
+    toast.error("Failed to delete document");
+  } finally {
+    setDeleteLoading(false);
+    setShowDeleteModal(false);
+    setFileToDelete(null);
+  }
+};
+
 
   return (
     <div className="container-fluid px-2 px-md-4">
-      
+
       <div className="d-flex align-items-start align-items-md-center gap-2 pt-5 pt-md-3 pb-3">
         <BackButton className="flex-shrink-0" />
         <div className="flex-grow-1 min-w-0">
@@ -174,7 +178,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
         </div>
       </div>
 
-    
+
       {(category === "floor_plan" || category === "LOI") && (
         <div className="mb-3">
           <label htmlFor="tag" className="form-label">
@@ -191,11 +195,10 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
         </div>
       )}
 
-  
+
       <div
-        className={`border border-2 rounded-3 p-3 text-center w-100 ${
-          isDragging ? "border-primary bg-light" : "border-dashed bg-light"
-        }`}
+        className={`border border-2 rounded-3 p-3 text-center w-100 ${isDragging ? "border-primary bg-light" : "border-dashed bg-light"
+          }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -231,7 +234,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
         {loading && <RAGLoader />}
       </div>
 
-      
+
       <div className="card shadow-sm mt-4">
         <div className="card-header fw-semibold">Uploaded Documents</div>
 
@@ -275,7 +278,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
           </ul>
         )}
 
-    
+
         {docs.length > 0 && (
           <Pagination
             totalItems={docs.length}

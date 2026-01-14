@@ -137,7 +137,7 @@ const DealList = () => {
         </div>
 
         <div
-          className="container p-4 shadow-sm"
+          className="container-fuild p-4 shadow-sm"
           style={{
             background: "#f5f7fa",
             borderRadius: "8px",
@@ -163,7 +163,7 @@ const DealList = () => {
   if (error) {
     return (
       <div
-        className="container p-4 shadow-sm"
+        className="container-fuild p-4 shadow-sm"
         style={{ background: "#f5f7fa", borderRadius: "8px" }}
       >
         <div className="mb-4">
@@ -252,7 +252,7 @@ const DealList = () => {
         </div>
       </div>
       <div
-        className="container p-4 shadow-sm"
+        className="container-fuild p-4 shadow-sm"
         style={{ background: "#f5f7fa", borderRadius: "8px", height: "100vh" }}
       >
         {filteredDeals.length === 0 ? (

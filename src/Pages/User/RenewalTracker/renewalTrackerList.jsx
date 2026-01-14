@@ -99,8 +99,8 @@ export const RenewalTrackerList = () => {
   const handleNavigate = () => {
     {
       Role === "admin"
-        ? navigate("/renewalTracker")
-        : navigate("/userRenewalTracker");
+        ? navigate("/renewal-tracker-form")
+        : navigate("/user-renewal-tracker-form");
     }
   };
 
@@ -431,7 +431,7 @@ export const RenewalTrackerList = () => {
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
-                      {Role === "admin" && (
+                      {/* {Role === "admin" && ( */}
                         <button
                           className="btn btn-outline-danger btn-sm rounded-circle"
                           onClick={() =>
@@ -441,7 +441,7 @@ export const RenewalTrackerList = () => {
                         >
                           <i className="bi bi-trash3"></i>
                         </button>
-                      )}
+                      {/* )} */}
                     </td>
                   </tr>
                 ))}

@@ -10,7 +10,7 @@ export const UserLeaseList = () => {
   const initialBuildings = location.state?.office;
 
   const handleLease = (initialBuildings, type) => {
-    navigate("/UserChat", { state: { Building_id: initialBuildings, type } });
+    navigate("/user-lease-loi-chat", { state: { Building_id: initialBuildings, type } });
   };
 
   return (

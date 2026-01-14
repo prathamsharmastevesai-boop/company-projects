@@ -102,8 +102,8 @@ export const SubleaseTrackerList = () => {
   const handleNavigate = () => {
     {
       Role === "admin"
-        ? navigate("/subleaseTracker")
-        : navigate("/userSubleaseTracker");
+        ? navigate("/sublease-tracker-form")
+        : navigate("/user-sublease-tracker");
     }
   };
 

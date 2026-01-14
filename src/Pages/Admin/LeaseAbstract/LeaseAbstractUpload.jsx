@@ -24,6 +24,37 @@ export const LeaseAbstractUpload = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState(null);
+
+  const openDeleteConfirm = (fileId) => {
+    setFileToDelete(fileId);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (!fileToDelete) return;
+
+    setItemLoadingState(fileToDelete, true);
+
+    dispatch(DeleteAbstractDoc({ fileId: fileToDelete }))
+      .unwrap()
+      .then(() => {
+        toast.success("Document deleted");
+        fetchDocs();
+      })
+      .catch((err) => {
+        console.error("Delete failed:", err);
+        toast.error("Delete failed");
+      })
+      .finally(() => {
+        setItemLoadingState(fileToDelete, false);
+        setShowConfirmModal(false);
+        setFileToDelete(null);
+      });
+  };
+
+
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -108,24 +139,24 @@ export const LeaseAbstractUpload = () => {
   const setItemLoadingState = (fileId, value) =>
     setItemLoading((prev) => ({ ...prev, [fileId]: value }));
 
-  const handleDelete = (fileId) => {
-    if (!window.confirm("Are you sure you want to delete this document?"))
-      return;
+  // const handleDelete = (fileId) => {
+  //   if (!window.confirm("Are you sure you want to delete this document?"))
+  //     return;
 
-    setItemLoadingState(fileId, true);
-    dispatch(DeleteAbstractDoc({ fileId }))
-      .unwrap()
-      .then(() => {
-        toast.success("Document deleted");
+  //   setItemLoadingState(fileId, true);
+  //   dispatch(DeleteAbstractDoc({ fileId }))
+  //     .unwrap()
+  //     .then(() => {
+  //       toast.success("Document deleted");
 
-        fetchDocs();
-      })
-      .catch((err) => {
-        console.error("Delete failed:", err);
-        toast.error("Delete failed");
-      })
-      .finally(() => setItemLoadingState(fileId, false));
-  };
+  //       fetchDocs();
+  //     })
+  //     .catch((err) => {
+  //       console.error("Delete failed:", err);
+  //       toast.error("Delete failed");
+  //     })
+  //     .finally(() => setItemLoadingState(fileId, false));
+  // };
 
   const handleDownloadDraft = async (file_id) => {
     if (!file_id) {
@@ -149,6 +180,8 @@ export const LeaseAbstractUpload = () => {
       setItemLoadingState(file_id, false);
     }
   };
+
+  const isDeleting = fileToDelete && itemLoading[fileToDelete];
 
   return (
     <>
@@ -233,15 +266,11 @@ export const LeaseAbstractUpload = () => {
                         </button>
 
                         <i
-                          className={`bi bi-trash ${isItemLoading ? "text-muted" : "text-danger"
-                            }`}
-                          style={{
-                            cursor: isItemLoading ? "not-allowed" : "pointer",
-                          }}
-                          onClick={() =>
-                            !isItemLoading && handleDelete(doc.file_id)
-                          }
+                          className={`bi bi-trash ${isItemLoading ? "text-muted" : "text-danger"}`}
+                          style={{ cursor: isItemLoading ? "not-allowed" : "pointer" }}
+                          onClick={() => !isItemLoading && openDeleteConfirm(doc.file_id)}
                         />
+
                       </div>
                     </li>
                   );
@@ -264,6 +293,59 @@ export const LeaseAbstractUpload = () => {
             </>
           )}
         </div>
+        {showConfirmModal && (
+          <div className="modal fade show d-block" tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirm Deletion</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    disabled={isDeleting}
+                    onClick={() => !isDeleting && setShowConfirmModal(false)}
+                  />
+
+                </div>
+
+                <div className="modal-body">
+                  <p className="mb-0">
+                    Are you sure you want to delete this document?
+                    This action cannot be undone.
+                  </p>
+                </div>
+
+             <div className="modal-footer">
+  <button
+    className="btn btn-secondary"
+    onClick={() => setShowConfirmModal(false)}
+    disabled={isDeleting}
+  >
+    Cancel
+  </button>
+
+  <button
+    className="btn btn-danger d-flex align-items-center"
+    onClick={confirmDelete}
+    disabled={isDeleting}
+  >
+    {isDeleting && (
+      <span
+        className="spinner-border spinner-border-sm me-2"
+        role="status"
+      />
+    )}
+    {isDeleting ? "Deleting..." : "Delete"}
+  </button>
+</div>
+
+              </div>
+            </div>
+
+
+          </div>
+        )}
+
       </div>
     </>
   );

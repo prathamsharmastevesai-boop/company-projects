@@ -11,7 +11,7 @@ export const LeaseList = () => {
   const id = initialBuildings?.buildingId;
 
   const handleLease = (Building_id) => {
-    navigate("/LeaseInfo", {
+    navigate("/admin-lease-loi-upload", {
       state: {
         office: { Building_id, type: "Lease" },
       },
@@ -19,7 +19,7 @@ export const LeaseList = () => {
   };
 
   const handleLOI = (Building_id) => {
-    navigate("/LeaseInfo", {
+    navigate("/admin-lease-loi-upload", {
       state: {
         office: { Building_id, type: "LOI" },
       },

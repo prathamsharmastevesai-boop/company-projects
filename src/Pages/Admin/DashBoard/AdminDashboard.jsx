@@ -24,7 +24,7 @@ export const AdminDashboard = () => {
   }, [dispatch]);
 
   const handleAIAnalytics = () => navigate("/aianalytics");
-  const handleBuilding = () => navigate("/Building_list");
+  const handleBuilding = () => navigate("/admin-lease-loi-building-list");
 
   return (
     <div className="container-fuild p-3">

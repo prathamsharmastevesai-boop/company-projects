@@ -119,10 +119,11 @@ export const UserManagement = () => {
     <div className="container-fuild p-3">
       <div className="text-center text-md-start">
         <h4 className="fw-bold">User Management</h4>
-      </div>
-      <p className="text-muted">
+         <p className="text-muted">
         Control user access to Portfolio Pulse documents and features
       </p>
+      </div>
+     
 
       <Card className="mb-4 border-0 shadow-sm">
         <Card.Body>

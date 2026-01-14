@@ -39,7 +39,7 @@ export const Dashboard = () => {
         );
 
   const goToChat = (buildingId, category) => {
-    navigate("/BuildingChat", {
+    navigate("/building-chat", {
       state: { buildingId, category },
     });
   };

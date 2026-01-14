@@ -112,7 +112,7 @@ export const ComparativeBuildingList = () => {
   };
 
   const handleSubmit = (buildingId) => {
-    navigate("/ComparativeBuildingData", { state: { office: { buildingId } } });
+    navigate("/comparative-building-upload", { state: { office: { buildingId } } });
   };
 
   const filteredBuildings = BuildingList.filter((building) => {

@@ -112,7 +112,7 @@ export const TenentInfoBuildingList = () => {
   };
 
   const handleSubmit = (buildingId) => {
-    navigate("/TenantInformation", { state: { office: { buildingId } } });
+    navigate("/tenant-info-upload", { state: { office: { buildingId } } });
   };
 
   const filteredBuildings = BuildingList.filter((building) => {

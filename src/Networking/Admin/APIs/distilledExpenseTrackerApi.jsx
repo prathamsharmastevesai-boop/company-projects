@@ -4,6 +4,7 @@ import {
   distilledExpenseTrackerEndpoint,
   distilledExpenseTrackerlistEndPoint,
 } from "../../NWconfig";
+import { toast } from "react-toastify";
 
 export const distilledExpenseTracker = createAsyncThunk(
   "distilledExpenseTracker",
@@ -13,6 +14,7 @@ export const distilledExpenseTracker = createAsyncThunk(
         distilledExpenseTrackerEndpoint,
         payload
       );
+      toast.success(response.data.message)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

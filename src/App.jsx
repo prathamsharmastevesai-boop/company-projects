@@ -5,13 +5,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { DashboardLayout } from "./Component/Layout";
-import { UserAccess } from "./Pages/Admin/UserAccess";
-import { CreateBuilding } from "./Pages/Admin/Building/CreateBuilding";
 import { ListBuilding } from "./Pages/Admin/Building/Buildlist";
 import { LeaseInfomation } from "./Pages/Admin/Lease/leasesInfo";
-import { UpdateBuilding } from "./Pages/Admin/Building/EditBuilding";
 import { LeaseList } from "./Pages/Admin/Lease/Leaselist";
-import { UpdateLease } from "./Pages/Admin/Lease/EditLease";
 import ProtectedRoute from "./Route/ProtectedRoute";
 import { useEffect } from "react";
 import { AdminLogin } from "../src/Pages/Admin/Auth/AdminLogin";
@@ -23,12 +19,10 @@ import { UserLeaseList } from "./Pages/User/Lease/UserLeaselist";
 import { UserProfile } from "./Pages/User/Profile/UserProfile";
 import { UserChat } from "./Pages/User/Chat/ChatUser";
 import { PortfolioChat } from "./Pages/User/PortfolioChat/portfolioChat";
-import BuildingPdfUploader from "./Pages/Admin/Building/BuildingGenInfo";
 import { ForgotPassword } from "./Pages/User/Auth/ForgetPassword";
 import { ResetPassword } from "./Pages/User/Auth/ResetPassword";
 import { Approved_Denied_list } from "./Pages/Admin/Approved_Denied_list";
 import { Home } from "./Pages/Home";
-import GeneralInfoupload from "./Pages/Admin/GeneralInfo/GeneralInfoUpload";
 import { BrokerChat } from "./Pages/User/Broker/Broker";
 import { ColleagueChat } from "./Pages/User/Colleague/Colleague";
 import { BuildingChat } from "./Pages/User/BuildingChat/BuildingChat";
@@ -38,7 +32,7 @@ import { UserManagement } from "./Pages/Admin/UserManagement/UserManagement";
 import { RagSystem } from "./Pages/Admin/RagSystem/RagSystem";
 import { Thirdparty } from "./Pages/Admin/GeneralInfo/Thirdparty";
 import { EmployContact } from "./Pages/Admin/GeneralInfo/EmployContact";
-import { MarketIntelligence } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
+import { CompsUpload } from "./Pages/Admin/GeneralInfo/MarketIntelligence";
 import { BuildingInfo } from "./Pages/Admin/GeneralInfo/BuildingInfo";
 import { Aianalytics } from "./Pages/Admin/AIanalytics/AiAnaylistics";
 import { SessionList } from "./Pages/User/Session/sessionList";
@@ -46,18 +40,13 @@ import { LeaseAbstractUpload } from "./Pages/Admin/LeaseAbstract/LeaseAbstractUp
 import { AdminManagement } from "./Pages/SuperAdmin/AdminManagement/AdminManagement";
 import { ComparativeBuildingData } from "./Pages/Admin/ComparativeBuilding/comparetiveBuilding";
 import { ComparativeBuildingChat } from "./Pages/User/ComparativeBuilding/comparativeBuilding";
-
 import { TenantMarket } from "./Pages/User/TenantMarket/tenantMarket";
 import { TenantMarketUpload } from "./Pages/Admin/GeneralInfo/TenantMarket";
 import { TenantInformation } from "./Pages/User/TenantInformation/tenantInformationChat";
 import { TenantInformationUpload } from "./Pages/Admin/GeneralInfo/TenantInformation";
 import { LeaseDraftingUpload } from "./Pages/Admin/LeaseDrafting/leaseDrafting";
-import { SummeryUpload } from "./Pages/User/ReportSummery/reportsummarizer";
 import { EmailDrafting } from "./Pages/User/EmailDrafting/emailDrafting";
 import { GeminiChat } from "./Pages/User/GeminiChat/geminiChat";
-import { ChatWindow } from "./Component/ChatWindow";
-import { ReportChat } from "./Pages/User/ReportSummery/ReportChat";
-import { Tours } from "./Pages/User/TourPage/Tours/tours";
 import { ToursDetails } from "./Pages/User/TourPage/ToursDetails/toursDetails";
 import { ToursPage } from "./Pages/User/TourPage/toursPage";
 import { PortfolioForum } from "./Pages/User/Forum/forum";
@@ -66,11 +55,9 @@ import { ComparativeBuildingList } from "./Pages/Admin/ComparativeBuilding/compa
 import { BuildingInfoList } from "./Pages/Admin/GeneralInfo/BuildingInfoList";
 import { ComparativeUserBuildinglist } from "./Pages/User/ComparativeBuilding/comparativeUserBuildinglist";
 import { UserBuildingInfolist } from "./Pages/User/BuildingChat/userBuildingInfoList";
-import { LeaseFinanceCalculator } from "./Pages/User/Calc/calculator";
 import { TenentInfoUserBuildinglist } from "./Pages/User/TenantInformation/tenentInformationList";
 import { TenentInfoBuildingList } from "./Pages/Admin/GeneralInfo/tenentInformationList";
 import { Benchmark } from "./Pages/User/DistilledExpenseTracker/benchmark";
-import { DistilledExpenseTracker } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTracker";
 import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTracker/distilledExpenseTrackerpage";
 import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrackerList";
 import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
@@ -87,7 +74,6 @@ import { CalulatorPage } from "./Pages/User/Calc/calculatorPage";
 import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollaboration/adminInformationCollaboration";
 
 import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
-import { SelectUserBuildingCategory } from "./Pages/User/BuildingChat/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
 import { InformationCollaborationPage } from "./Pages/User/UserInformationCollaboration/informationCollaborationpages";
 import { DestilledCompTracker } from "./Pages/Admin/DistilledCompTracker/distilledCompTracker";
@@ -95,7 +81,6 @@ import { DistilledCompTrackerPage } from "./Pages/User/DistilledCompTracker/dist
 import { DCTChat } from "./Pages/User/DistilledCompTracker/distilledCompChat";
 import { Yardi } from "./Pages/User/Yardi/yardi";
 import { PortfolioVoice } from "./Pages/Admin/PortfolioVoice/PortfolioVoice";
-import DocumentManager from "./Component/DocumentManager";
 import { Loi } from "./Pages/User/Chat/loiUpload";
 
 function App() {
@@ -116,11 +101,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/userlogin" element={<Login />} />
-          <Route path="/verifyotp" element={<VerifyOtp />} />
-          <Route path="/adminlogin" element={<AdminLogin />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="/user-login" element={<Login />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             element={
               <ProtectedRoute allowedRoles={["superuser"]}>
@@ -128,7 +113,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/adminmanagement" element={<AdminManagement />} />
+            <Route path="/admin-management" element={<AdminManagement />} />
           </Route>
           <Route
             element={
@@ -143,97 +128,81 @@ function App() {
             <Route path="/aianalytics" element={<Aianalytics />} />
             <Route path="/rag-system" element={<RagSystem />} />
             <Route path="/portfolio-voice" element={<PortfolioVoice />} />
-            <Route
-              path="/LeaseAbstractUpload"
-              element={<LeaseAbstractUpload />}
-            />
 
             <Route
-              path="/LeaseDraftingUpload"
+              path="/lease-drafting-upload"
               element={<LeaseDraftingUpload />}
             />
 
-            <Route path="/Thirdparty" element={<Thirdparty />} />
-            <Route path="/EmployContact" element={<EmployContact />} />
-            <Route path="/Comps" element={<MarketIntelligence />} />
-            <Route path="/TenantsMarket" element={<TenantMarketUpload />} />
-            <Route path="/BuildingInfo" element={<BuildingInfo />} />
-            <Route path="/BuildingInfoList" element={<BuildingInfoList />} />
+            <Route path="/third-party-upload" element={<Thirdparty />} />
+            <Route path="/employee-contact-upload" element={<EmployContact />} />
+            <Route path="/comps-upload" element={<CompsUpload />} />
+            <Route path="/tenants-market-upload" element={<TenantMarketUpload />} />
+            <Route path="/building-info-upload" element={<BuildingInfo />} />
+            <Route path="/building-info-list" element={<BuildingInfoList />} />
             <Route
-              path="/TenantInformation"
+              path="/tenant-info-upload"
               element={<TenantInformationUpload />}
             />
             <Route
-              path="/TenentInfoBuildingList"
+              path="/tenent-info-building-list"
               element={<TenentInfoBuildingList />}
             />
-            <Route path="/toursDetails" element={<ToursDetails />} />
-            <Route path="/CreateBuilding" element={<CreateBuilding />} />
-            <Route path="/Building_list" element={<ListBuilding />} />
+            <Route path="/admin-tours" element={<ToursDetails />} />
+            <Route path="/admin-lease-loi-building-list" element={<ListBuilding />} />
             <Route
               path="/Select_Building_Category"
               element={<SelectBuildingCategory />}
             />
-
-            <Route path="/UpdateBuilding" element={<UpdateBuilding />} />
-            <Route
-              path="/BuildingPdfUploader"
-              element={<BuildingPdfUploader />}
-            />
-
-            <Route path="/UserAccess" element={<UserAccess />} />
-
-            <Route path="/LeaseList" element={<LeaseList />} />
-            <Route path="/UpdateLease" element={<UpdateLease />} />
-            <Route path="/LeaseInfo" element={<LeaseInfomation />} />
+            
+           
+      
+            <Route path="/admin-select-lease-loi" element={<LeaseList />} />
+            
+            <Route path="/admin-lease-loi-upload" element={<LeaseInfomation />} />
 
             <Route
               path="/Approved_Denied_list"
               element={<Approved_Denied_list />}
-            />
+              />
 
             <Route
-              path="/ComparativeBuildingData"
+              path="/comparative-building-upload"
               element={<ComparativeBuildingData />}
-            />
+              />
 
             <Route
-              path="/ComparativeBuildingList"
+              path="/comparative-building-list"
               element={<ComparativeBuildingList />}
-            />
+              />
 
-            <Route path="/GeneralInfoupload" element={<GeneralInfoupload />} />
+            
 
             <Route
-              path="/adminInformationCollaboration"
+              path="/admin-information-collaboration"
               element={<AdminInformationCollaboration />}
-            />
+              />
 
             <Route
-              path="/distilledExpenseTracker"
-              element={<DistilledExpenseTracker />}
-            />
-
-            <Route
-              path="/distilledExpenseTrackerPage"
+              path="/distilled-expense-tracker"
               element={<DistilledExpenseTrackerPage />}
-            />
+              />
             <Route
-              path="/destilledcomptracker"
+              path="/admin-distilled-comp-tracker"
               element={<DestilledCompTracker />}
-            />
+              />
 
-            <Route path="/subleaseTracker" element={<SubleaseTracker />} />
+            <Route path="/sublease-tracker-form" element={<SubleaseTracker />} />
             <Route
-              path="/subleaseTrackerList"
+              path="/sublease-tracker-list"
               element={<SubleaseTrackerList />}
-            />
-            <Route path="/renewalTracker" element={<RenewalTracker />} />
+              />
+            <Route path="/renewal-tracker-form" element={<RenewalTracker />} />
 
             <Route
-              path="/renewalTrackerbuildingList"
+              path="/admin-renewal-tracker-list"
               element={<RenewalTrackerList />}
-            />
+              />
 
             <Route path="/admin-portfolio-forum" element={<PortfolioForum />} />
             <Route path="/create-forum" element={<CreateThread />} />
@@ -247,119 +216,104 @@ function App() {
                 <DashboardLayout />
               </ProtectedRoute>
             }
-          >
+            >
             <Route path="/dashboard" element={<Dashboard />} />
 
-            <Route path="/UserBuildinglist" element={<UserBuildinglist />} />
+            <Route path="/user-lease-loi-building-list" element={<UserBuildinglist />} />
             <Route
-              path="/ComparativeUserBuildinglist"
+              path="/comparative-user-building-list"
               element={<ComparativeUserBuildinglist />}
-            />
+              />
 
-            <Route path="/UserLease" element={<UserLeaseList />} />
-            <Route path="/CreNews" element={<CreNews />} />
-            <Route path="/UserChat" element={<UserChat />} />
+            <Route path="/user-select-lease-loi" element={<UserLeaseList />} />
+            <Route path="/cre-news" element={<CreNews />} />
+            <Route path="/user-lease-loi-chat" element={<UserChat />} />
 
             <Route path="/portfolio-chat" element={<PortfolioChat />} />
-            <Route path="/chatWindow" element={<ChatWindow />} />
 
-            <Route path="/UserProfile" element={<UserProfile />} />
+            <Route path="/user-profile" element={<UserProfile />} />
             <Route
-              path="/ComparativeBuildingChat"
+              path="/comparative-building-chat"
               element={<ComparativeBuildingChat />}
-            />
+              />
  <Route
               path="/documents/LOI"
               element={<Loi />}
-            />
+              />
 
+           
             <Route
-              path="/InformationCollaborationList"
-              element={<AdminInformationCollaboration />}
-            />
-            <Route
-              path="/InformationCollaborationPage"
+              path="/information-collaboration"
               element={<InformationCollaborationPage />}
-            />
+              />
             <Route
               path="/yardi"
               element={<Yardi />}
-            />
+              />
             <Route
-              path="/LeaseAbstractUpload1"
+              path="/ai-lease-abstract-upload"
               element={<LeaseAbstractUpload />}
-            />
-            <Route path="/SummeryUpload" element={<SummeryUpload />} />
+              />
 
-            <Route path="/ReportChat" element={<ReportChat />} />
+            <Route path="/email-drafting" element={<EmailDrafting />} />
 
-            <Route path="/EmailDrafting" element={<EmailDrafting />} />
-
-            <Route path="/ThirdPartychat" element={<BrokerChat />} />
-            <Route path="/ColleagueChat" element={<ColleagueChat />} />
-            <Route path="/BuildingChat" element={<BuildingChat />} />
+            <Route path="/third-party-chat" element={<BrokerChat />} />
+            <Route path="/employee-info-chat" element={<ColleagueChat />} />
+            <Route path="/building-chat" element={<BuildingChat />} />
+          
             <Route
-              path="/SelectUserBuildingCategory"
-              element={<SelectUserBuildingCategory />}
-            />
-            <Route
-              path="/UserBuildingInfolist"
+              path="/user-building-info-list"
               element={<UserBuildingInfolist />}
-            />
+              />
 
-            <Route path="/CompsChat" element={<MarketChat />} />
-            <Route path="/TenantMarket" element={<TenantMarket />} />
+            <Route path="/comps-chat" element={<MarketChat />} />
+            <Route path="/tenant-market" element={<TenantMarket />} />
             <Route
-              path="/TenantInformationChat"
+              path="/tenant-information-chat"
               element={<TenantInformation />}
-            />
+              />
             <Route
-              path="/tenentInfoUserBuildinglist"
+              path="/tenent-info-user-building-list"
               element={<TenentInfoUserBuildinglist />}
-            />
-            <Route path="/userSubleaseTracker" element={<SubleaseTracker />} />
-            <Route
+              />
+            <Route path="/user-sublease-tracker" element={<SubleaseTracker />} />
+            {/* <Route
               path="/SubleaseTrackerChat"
               element={<SubleaseTrackerChat />}
-            />
+              /> */}
             <Route
-              path="/SubleaseTrackerlist1"
+              path="/user-sublease-tracker-list"
               element={<SubleaseTrackerList />}
-            />
-            <Route path="/userRenewalTracker" element={<RenewalTracker />} />
-            <Route
+              />
+            <Route path="/user-renewal-tracker-form" element={<RenewalTracker />} />
+            {/* <Route
               path="/RenewalTrackerList"
               element={<RenewalTrackerList />}
-            />
-
-            <Route path="/renewalTracker" element={<RenewalTracker />} />
-
-            <Route
-              path="/renewalTrackerList"
-              element={<RenewalTrackerList />}
-            />
-
-            {/* <Route
-              path="/SubleaseTrackerBuildinglist"
-              element={<SubleaseTrackerUserBuildinglist />}
             /> */}
 
-            <Route path="/geminichat" element={<GeminiChat />} />
+            {/* <Route path="/renewalTracker" element={<RenewalTracker />} /> */}
+
+            <Route
+              path="/user-renewal-tracker-list"
+              element={<RenewalTrackerList />}
+              />
+
+            <Route path="/gemini-chat" element={<GeminiChat />} />
 
             <Route path="/notes" element={<Notes />} />
 
             <Route path="/benchmark" element={<Benchmark />} />
-            <Route path="/dctchat" element={<DCTChat />} />
+            <Route path="/dct-chat" element={<DCTChat />} />
 
             <Route
-              path="/distilledcomptrackerpage"
+              path="/distilled-comp-tracker"
               element={<DistilledCompTrackerPage />}
-            />
+              />
 
             <Route path="/tours" element={<ToursPage />} />
 
-            <Route path="/toursform" element={<Tours />} />
-            <Route path="/toursDetails" element={<ToursDetails />} />
+            {/* <Route path="/toursform" element={<Tours />} /> */}
+            {/* <Route path="/toursDetails" element={<ToursDetails />} /> */}
 
             <Route path="/create-forum" element={<CreateThread />} />
 
@@ -369,11 +323,12 @@ function App() {
 
             <Route path="/calculator" element={<CalulatorPage />} />
 
-            <Route path="/dealList" element={<DealList />} />
+            <Route path="/deal-list" element={<DealList />} />
 
             <Route path="/deals/:dealId" element={<DealDetailView />} />
 
             <Route path="/deals/new" element={<DealForm />} />
+              
           </Route>
         </Routes>
         <ToastContainer />

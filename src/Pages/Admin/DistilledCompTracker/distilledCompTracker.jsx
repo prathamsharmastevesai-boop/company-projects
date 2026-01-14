@@ -544,25 +544,7 @@ export const DestilledCompTracker = () => {
         </div>
 
         <div className="d-flex flex-column align-items-center justify-content-center">
-          {submitStatus === "success" && (
-            <div
-              className="alert alert-success mb-3 w-100 text-center"
-              role="alert"
-            >
-              <strong>Submission successful!</strong> Form will reset shortly.
-            </div>
-          )}
-
-          {submitStatus === "error" && (
-            <div
-              className="alert alert-danger mb-3 w-100 text-center"
-              role="alert"
-            >
-              <strong>Submission failed.</strong> Please check your inputs and
-              try again.
-            </div>
-          )}
-
+          
           <button
             type="submit"
             disabled={isSubmitting}

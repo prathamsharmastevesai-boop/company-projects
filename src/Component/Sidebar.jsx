@@ -119,11 +119,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 <li className="nav-header text-light small">Main</li>
 
                 <li
-                  className={`nav-item ${isActive("/adminmanagement") ? "active" : ""
+                  className={`nav-item ${isActive("/admin-management") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/adminmanagement")}
+                    onClick={() => handleLinkClick("/admin-management")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -229,11 +229,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/LeaseDraftingUpload") ? "active" : ""
+                  className={`nav-item ${isActive("/lease-drafting-upload") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/LeaseDraftingUpload")}
+                    onClick={() => handleLinkClick("/lease-drafting-upload")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -243,12 +243,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/adminInformationCollaboration") ? "active" : ""
+                  className={`nav-item ${isActive("/admin-information-collaboration") ? "active" : ""
                     }`}
                 >
                   <span
                     onClick={() =>
-                      handleLinkClick("/adminInformationCollaboration")
+                      handleLinkClick("/admin-information-collaboration")
                     }
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
@@ -259,11 +259,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/destilledcomptracker") ? "active" : ""
+                  className={`nav-item ${isActive("/admin-distilled-comp-tracker") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/destilledcomptracker")}
+                    onClick={() => handleLinkClick("/admin-distilled-comp-tracker")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -273,12 +273,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/distilledExpenseTrackerPage") ? "active" : ""
+                  className={`nav-item ${isActive("/distilled-expense-tracker") ? "active" : ""
                     }`}
                 >
                   <span
                     onClick={() =>
-                      handleLinkClick("/distilledExpenseTrackerPage")
+                      handleLinkClick("/distilled-expense-tracker")
                     }
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
@@ -321,11 +321,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "dataCategories" && (
                   <>
                     <li
-                      className={`nav-item ${isActive("/Thirdparty") ? "active" : ""
+                      className={`nav-item ${isActive("/third-party-upload") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/Thirdparty")}
+                        onClick={() => handleLinkClick("/third-party-upload")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -334,11 +334,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${isActive("/EmployContact") ? "active" : ""
+                      className={`nav-item ${isActive("/employee-contact-upload") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/EmployContact")}
+                        onClick={() => handleLinkClick("/employee-contact-upload")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -348,11 +348,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/Comps") ? "active" : ""
+                      className={`nav-item ${isActive("/comps-upload") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/Comps")}
+                        onClick={() => handleLinkClick("/comps-upload")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -362,12 +362,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/ComparativeBuildingList") ? "active" : ""
+                      className={`nav-item ${isActive("/comparative-building-list") ? "active" : ""
                         }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/ComparativeBuildingList")
+                          handleLinkClick("/comparative-building-list")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
@@ -378,12 +378,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/TenentInfoBuildingList") ? "active" : ""
+                      className={`nav-item ${isActive("/tenent-info-building-list") ? "active" : ""
                         }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/TenentInfoBuildingList")
+                          handleLinkClick("/tenent-info-building-list")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
@@ -394,11 +394,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/TenantsMarket") ? "active" : ""
+                      className={`nav-item ${isActive("/tenants-market-upload") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/TenantsMarket")}
+                        onClick={() => handleLinkClick("/tenants-market-upload")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -409,11 +409,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/BuildingInfoList") ? "active" : ""
+                      className={`nav-item ${isActive("/building-info-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/BuildingInfoList")}
+                        onClick={() => handleLinkClick("/building-info-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -423,11 +423,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/subleaseTrackerList") ? "active" : ""
+                      className={`nav-item ${isActive("/sublease-tracker-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/subleaseTrackerList")}
+                        onClick={() => handleLinkClick("/sublease-tracker-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -437,12 +437,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/renewalTrackerbuildingList") ? "active" : ""
+                      className={`nav-item ${isActive("/admin-renewal-tracker-list") ? "active" : ""
                         }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/renewalTrackerbuildingList")
+                          handleLinkClick("/admin-renewal-tracker-list")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
@@ -453,11 +453,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/toursDetails") ? "active" : ""
+                      className={`nav-item ${isActive("/admin-tours") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/toursDetails")}
+                        onClick={() => handleLinkClick("/admin-tours")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -486,11 +486,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "adminTools" && (
                   <>
                     <li
-                      className={`nav-item ${isActive("/Building_list") ? "active" : ""
+                      className={`nav-item ${isActive("/admin-lease-loi-building-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/Building_list")}
+                        onClick={() => handleLinkClick("/admin-lease-loi-building-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -544,10 +544,10 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                   </span>
                 </li>
                 <li
-                  className={`nav-item ${isActive("/CreNews") ? "active" : ""}`}
+                  className={`nav-item ${isActive("/cre-news") ? "active" : ""}`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/CreNews")}
+                    onClick={() => handleLinkClick("/cre-news")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -557,11 +557,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/EmailDrafting") ? "active" : ""
+                  className={`nav-item ${isActive("/email-drafting") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/EmailDrafting")}
+                    onClick={() => handleLinkClick("/email-drafting")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -572,11 +572,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
                 {Gemini == true && (
                   <li
-                    className={`nav-item ${isActive("/geminichat") ? "active" : ""
+                    className={`nav-item ${isActive("/gemini-chat") ? "active" : ""
                       }`}
                   >
                     <span
-                      onClick={() => handleLinkClick("/geminichat")}
+                      onClick={() => handleLinkClick("/gemini-chat")}
                       className="nav-link text-white"
                       style={{ cursor: "pointer", fontSize: 12 }}
                     >
@@ -617,11 +617,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 )}
 
                 <li
-                  className={`nav-item ${isActive("/LeaseAbstractUpload1") ? "active" : ""
+                  className={`nav-item ${isActive("/ai-lease-abstract-upload") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/LeaseAbstractUpload1")}
+                    onClick={() => handleLinkClick("/ai-lease-abstract-upload")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -631,12 +631,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/InformationCollaborationPage") ? "active" : ""
+                  className={`nav-item ${isActive("/information-collaboration") ? "active" : ""
                     }`}
                 >
                   <span
                     onClick={() =>
-                      handleLinkClick("/InformationCollaborationPage")
+                      handleLinkClick("/information-collaboration")
                     }
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
@@ -662,11 +662,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 </li>
 
                 <li
-                  className={`nav-item ${isActive("/distilledcomptrackerpage") ? "active" : ""
+                  className={`nav-item ${isActive("/distilled-comp-tracker") ? "active" : ""
                     }`}
                 >
                   <span
-                    onClick={() => handleLinkClick("/distilledcomptrackerpage")}
+                    onClick={() => handleLinkClick("/distilled-comp-tracker")}
                     className="nav-link text-white"
                     style={{ cursor: "pointer", fontSize: 12 }}
                   >
@@ -725,11 +725,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "generalInfo" && (
                   <ul className="nav flex-column mt-1">
                     <li
-                      className={`nav-item ${isActive("/ThirdPartychat") ? "active" : ""
+                      className={`nav-item ${isActive("/third-party-chat") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/ThirdPartychat")}
+                        onClick={() => handleLinkClick("/third-party-chat")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -738,11 +738,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${isActive("/ColleagueChat") ? "active" : ""
+                      className={`nav-item ${isActive("/employee-info-chat") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/ColleagueChat")}
+                        onClick={() => handleLinkClick("/employee-info-chat")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -751,11 +751,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${isActive("/UserBuildingInfolist") ? "active" : ""
+                      className={`nav-item ${isActive("/user-building-info-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/UserBuildingInfolist")}
+                        onClick={() => handleLinkClick("/user-building-info-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -765,12 +765,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/ComparativeUserBuildinglist") ? "active" : ""
+                      className={`nav-item ${isActive("/comparative-user-building-list") ? "active" : ""
                         }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/ComparativeUserBuildinglist")
+                          handleLinkClick("/comparative-user-building-list")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
@@ -781,12 +781,12 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/tenentInfoUserBuildinglist") ? "active" : ""
+                      className={`nav-item ${isActive("/tenent-info-user-building-list") ? "active" : ""
                         }`}
                     >
                       <span
                         onClick={() =>
-                          handleLinkClick("/tenentInfoUserBuildinglist")
+                          handleLinkClick("/tenent-info-user-building-list")
                         }
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
@@ -797,11 +797,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/TenantMarket") ? "active" : ""
+                      className={`nav-item ${isActive("/tenant-market") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/TenantMarket")}
+                        onClick={() => handleLinkClick("/tenant-market")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -811,11 +811,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/CompsChat") ? "active" : ""
+                      className={`nav-item ${isActive("/comps-chat") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/CompsChat")}
+                        onClick={() => handleLinkClick("/comps-chat")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -825,11 +825,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/SubleaseTrackerlist1") ? "active" : ""
+                      className={`nav-item ${isActive("/user-sublease-tracker-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/SubleaseTrackerlist1")}
+                        onClick={() => handleLinkClick("/user-sublease-tracker-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -839,11 +839,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/renewalTrackerList") ? "active" : ""
+                      className={`nav-item ${isActive("/user-renewal-tracker-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/renewalTrackerList")}
+                        onClick={() => handleLinkClick("/user-renewal-tracker-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -853,11 +853,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/UserBuildinglist") ? "active" : ""
+                      className={`nav-item ${isActive("/user-lease-loi-building-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/UserBuildinglist")}
+                        onClick={() => handleLinkClick("/user-lease-loi-building-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -866,11 +866,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                       </span>
                     </li>
                     <li
-                      className={`nav-item ${isActive("/Tours") ? "active" : ""
+                      className={`nav-item ${isActive("/tours") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/Tours")}
+                        onClick={() => handleLinkClick("/tours")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -880,11 +880,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                     </li>
 
                     <li
-                      className={`nav-item ${isActive("/dealList") ? "active" : ""
+                      className={`nav-item ${isActive("/deal-list") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/dealList")}
+                        onClick={() => handleLinkClick("/deal-list")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >
@@ -915,11 +915,11 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
                 {openMenu === "Settings" && (
                   <>
                     <li
-                      className={`nav-item ${isActive("/UserProfile") ? "active" : ""
+                      className={`nav-item ${isActive("/user-profile") ? "active" : ""
                         }`}
                     >
                       <span
-                        onClick={() => handleLinkClick("/UserProfile")}
+                        onClick={() => handleLinkClick("/user-profile")}
                         className="nav-link text-white"
                         style={{ cursor: "pointer", fontSize: 12 }}
                       >

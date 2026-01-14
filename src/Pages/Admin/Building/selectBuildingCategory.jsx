@@ -10,7 +10,7 @@ export const SelectBuildingCategory = () => {
   const buildingId = location?.state?.office?.buildingId;
 
   const handleCategory = (category) => {
-    navigate("/BuildingInfo", {
+    navigate("/building-info-upload", {
       state: {
         buildingId,
         category,

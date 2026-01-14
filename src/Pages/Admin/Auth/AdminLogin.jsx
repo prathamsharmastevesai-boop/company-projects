@@ -25,7 +25,7 @@ export const AdminLogin = () => {
     if (!token || !role) return;
 
     if (role === "superuser") {
-      navigate("/adminmanagement");
+      navigate("/admin-management");
     } else if (role === "admin") {
       navigate("/admin-dashboard");
     } else if (role === "user") {
@@ -50,7 +50,7 @@ export const AdminLogin = () => {
   };
 
   const handleforget = () => {
-    navigate("/forgotpassword");
+    navigate("/forgot-password");
   };
 
   const handleLogin = async (e) => {
@@ -79,7 +79,7 @@ export const AdminLogin = () => {
       if (role === "admin") {
         navigate("/admin-dashboard");
       } else if (role === "superuser") {
-        navigate("/adminmanagement");
+        navigate("/admin-management");
       }
     } catch (err) {
       console.error("Login error:", err);

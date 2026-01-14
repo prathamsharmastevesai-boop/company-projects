@@ -13,7 +13,7 @@ export const CreateBuildingSubmit = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(CreateBuilding, payload);
-
+      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
@@ -48,7 +48,7 @@ export const UpdateBuildingSubmit = createAsyncThunk(
         UpdateBuildingEndpoint,
         payload
       );
-
+      toast.success(response.data.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);

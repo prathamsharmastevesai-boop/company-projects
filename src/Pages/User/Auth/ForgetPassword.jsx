@@ -31,7 +31,7 @@ export const ForgotPassword = () => {
         return;
       }
 
-      navigate("/verifyotp", { state: { email } });
+      navigate("/verify-otp", { state: { email } });
       toast.success(
         response.data.message || "Password reset link sent to your email."
       );

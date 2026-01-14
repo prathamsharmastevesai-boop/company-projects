@@ -51,7 +51,7 @@ export const DistilledCompTrackerList = () => {
   };
 
   const handlechat = () => {
-    navigate("/dctchat", {
+    navigate("/dct-chat", {
       state: { category: "DCT" },
     });
   };

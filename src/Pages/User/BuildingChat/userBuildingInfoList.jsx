@@ -37,7 +37,7 @@ export const UserBuildingInfolist = () => {
   }, [filteredBuildings]);
 
   const goToChat = (buildingId, category) => {
-    navigate("/BuildingChat", {
+    navigate("/building-chat", {
       state: { buildingId, category },
     });
   };
@@ -48,17 +48,16 @@ export const UserBuildingInfolist = () => {
         <h4 className="mb-0 text-light mx-4">Building Info list</h4>
       </div>
 
-      <div className="container mb-3 mt-3">
-        <input
+      
+
+      <div className="container-fuild p-3">
+          <input
           type="search"
           className="form-control"
           placeholder="Search by address..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
-
-      <div className="container py-2">
         {loading ? (
           <div className="text-center py-5">
             <RAGLoader />

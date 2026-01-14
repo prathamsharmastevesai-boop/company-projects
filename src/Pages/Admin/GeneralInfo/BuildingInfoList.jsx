@@ -48,7 +48,7 @@ export const BuildingInfoList = () => {
   }, [BuildingList, searchTerm, loading]);
 
   const goToChat = (buildingId, category) => {
-    navigate("/BuildingInfo", {
+    navigate("/building-info-upload", {
       state: { buildingId, category },
     });
   };

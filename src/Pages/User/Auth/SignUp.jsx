@@ -57,7 +57,7 @@ export const SignUp = () => {
     try {
       const res = await dispatch(SignUpSubmit(payload)).unwrap();
       if (res?.message) {
-        navigate("/verifyotp", { state: { email: form.email, screen: "SignUp" } });
+        navigate("/verify-otp", { state: { email: form.email, screen: "SignUp" } });
       }
     } catch (err) {
       const msg = err?.response?.data?.msg || err?.message || "Signup failed.";

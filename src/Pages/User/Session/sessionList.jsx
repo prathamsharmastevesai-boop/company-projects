@@ -121,42 +121,42 @@ export const SessionList = ({ setShowSessionModal }) => {
 
     switch (session.category) {
       case "ThirdParty":
-        navigate("/ThirdPartychat", {
+        navigate("/third-party-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "Colleague":
-        navigate("/ColleagueChat", {
+        navigate("/employee-info-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "ComparativeBuilding":
-        navigate("/ComparativeBuildingChat", {
+        navigate("/comparative-building-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "TenantInformation":
-        navigate("/TenantInformationChat", {
+        navigate("/tenant-information-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "TenantMarket":
-        navigate("/TenantMarket", {
+        navigate("/tenant-market", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "Comps":
-        navigate("/CompsChat", {
+        navigate("/comps-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "Gemini":
-        navigate("/geminichat", {
+        navigate("/gemini-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
       case "Building":
-        navigate("/BuildingChat", {
+        navigate("/building-chat", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
@@ -172,7 +172,7 @@ export const SessionList = ({ setShowSessionModal }) => {
         break;
       case "Lease":
       case "LOI":
-        navigate("/UserChat", {
+        navigate("/user-lease-loi-chat", {
           state: {
             sessionId: session.session_id,
             type: session.category,

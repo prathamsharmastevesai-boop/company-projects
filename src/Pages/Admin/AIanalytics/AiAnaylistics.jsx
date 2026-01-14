@@ -170,10 +170,11 @@ export const Aianalytics = () => {
         <div className="mb-3 mb-md-0">
           <div className="text-center text-md-start">
             <h4 className="fw-bold">AI Analytics</h4>
+            <p className="text-muted m-0">
+              User behavior insights and system utilization analytics
+            </p>
           </div>
-          <p className="text-muted m-0">
-            User behavior insights and system utilization analytics
-          </p>
+
         </div>
         <div className="d-flex flex-wrap align-items-center gap-2">
           <select
@@ -234,9 +235,8 @@ export const Aianalytics = () => {
           (tab) => (
             <li className="nav-item flex-fill mx-1 mx-md-2" key={tab}>
               <button
-                className={`nav-link w-100 text-center ${
-                  activeTab === tab ? "active" : ""
-                }`}
+                className={`nav-link w-100 text-center ${activeTab === tab ? "active" : ""
+                  }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -259,9 +259,9 @@ export const Aianalytics = () => {
                         {typeof insight === "string"
                           ? insight.replace(/"/g, "")
                           : JSON.stringify(insight.insight, null, 2).replace(
-                              /"/g,
-                              ""
-                            )}
+                            /"/g,
+                            ""
+                          )}
                       </ReactMarkdown>
                     </div>
                   ))}

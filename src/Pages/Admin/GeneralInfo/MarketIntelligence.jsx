@@ -1,7 +1,7 @@
 import React from "react";
 import DocumentManager from "../../../Component/DocumentManager";
 
-export const MarketIntelligence = () => (
+export const CompsUpload = () => (
   <DocumentManager
     category="Comps"
     title="Comps"
