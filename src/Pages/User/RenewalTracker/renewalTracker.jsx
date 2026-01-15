@@ -161,7 +161,7 @@ export const RenewalTracker = () => {
       {
         Role === "admin"
           ? navigate("/admin-renewal-tracker-list")
-          : navigate("/RenewalTrackerList");
+          : navigate("/user-renewal-tracker-list");
       }
     } catch (error) {
       console.error("Error creating renewal tracker:", error);
