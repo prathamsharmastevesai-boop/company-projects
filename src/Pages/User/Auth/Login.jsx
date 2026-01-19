@@ -53,16 +53,18 @@ export const Login = () => {
       const res = await dispatch(
         googleLoginService(idToken)
       ).unwrap();
+      console.log(res.role, "res.role");
 
-      sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
+      if (res.role !== "user") {
+        toast.error("Invalid credentials");
+        return;
+      }
 
-      toast.success("Google login successful");
 
       if (res.role === "user") navigate("/dashboard");
-      else if (res.role === "admin") navigate("/admin-dashboard");
-      else navigate("/admin-management");
-
+      sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+      toast.success("Google login successful");
     } catch (err) {
 
     } finally {
@@ -88,6 +90,7 @@ export const Login = () => {
       ).unwrap();
 
       const { role, access_token } = res;
+      console.log(res, "res");
 
       if (role !== "user") {
         toast.error("Invalid credentials");
