@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
+import { googleLoginService, LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import RAGLoader from "../../../Component/Loader";
 import headerimage from "../../../assets/side_photo.jpg";
 import side_photo from "../../../assets/side_photo.jpg";
 import { Eye, EyeOff } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
+
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -25,35 +27,48 @@ export const Login = () => {
 
     if (!token || !role) return;
 
-    if (role === "user") {
-      navigate("/dashboard");
-    } else if (role === "admin") {
-      navigate("/CreateBuilding");
-    } else if (role === "superuser") {
-      navigate("/admin-management");
-    }
+    if (role === "user") navigate("/dashboard");
+    else if (role === "admin") navigate("/admin-dashboard");
+    else if (role === "superuser") navigate("/admin-management");
   }, []);
 
+
   const validateForm = () => {
-    const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-
-    if (password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const errs = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      errs.email = "Invalid email address";
+    if (password.length < 8)
+      errs.password = "Password must be at least 8 characters";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
-  const handleforget = () => {
-    navigate("/forgot-password");
-  };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+
+      const idToken = credentialResponse.credential;
+
+      const res = await dispatch(
+        googleLoginService(idToken)
+      ).unwrap();
+
+      sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+
+      toast.success("Google login successful");
+
+      if (res.role === "user") navigate("/dashboard");
+      else if (res.role === "admin") navigate("/admin-dashboard");
+      else navigate("/admin-management");
+
+    } catch (err) {
+
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -61,8 +76,10 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await dispatch(
-        LoginSubmit({email: email.trim(),
-      password: password.trim()})
+        LoginSubmit({
+          email: email.trim(),
+          password: password.trim()
+        })
       ).unwrap();
 
       const { role, access_token } = res;
@@ -72,7 +89,7 @@ export const Login = () => {
         return;
       }
 
-     
+
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("access_token", access_token);
 
@@ -140,9 +157,8 @@ export const Login = () => {
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className={`form-control ${
-                    errors.password ? "is-invalid" : ""
-                  }`}
+                  className={`form-control ${errors.password ? "is-invalid" : ""
+                    }`}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -169,6 +185,16 @@ export const Login = () => {
             >
               Sign in
             </button>
+            <div className="mb-3">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error("Google Login Failed")}
+                width="100%"
+              />
+            </div>
+
+
+
             <div
               className="text-end"
               style={{ cursor: "pointer" }}

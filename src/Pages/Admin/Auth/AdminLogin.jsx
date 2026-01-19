@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
+import { googleLoginService, LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { useDispatch } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 import side_photo from "../../../assets/side_photo.jpg";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
+import { GoogleLogin } from "@react-oauth/google";
 
 export const AdminLogin = () => {
   const navigate = useNavigate();
@@ -52,6 +53,40 @@ export const AdminLogin = () => {
   const handleforget = () => {
     navigate("/forgot-password");
   };
+
+  const handleGoogleAdminLogin = async (credentialResponse) => {
+  try {
+    setLoading(true);
+
+    const idToken = credentialResponse.credential; 
+
+    const res = await dispatch(
+      googleLoginService(idToken)
+    ).unwrap();
+
+    const { role, access_token } = res;
+
+    
+    if (!["admin", "superuser"].includes(role)) {
+      toast.error("You are not authorized to access admin panel");
+      return;
+    }
+
+    sessionStorage.setItem("access_token", access_token);
+    sessionStorage.setItem("role", role);
+
+    toast.success("Admin Google login successful");
+
+    if (role === "admin") navigate("/admin-dashboard");
+    else navigate("/admin-management");
+
+  } catch (err) {
+    toast.error(err || "Google login failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -172,6 +207,14 @@ export const AdminLogin = () => {
             >
               Log in
             </button>
+            <div className="mb-3">
+  <GoogleLogin
+    onSuccess={handleGoogleAdminLogin}
+    onError={() => toast.error("Google Login Failed")}
+    width="100%"
+  />
+</div>
+
             <div
               className="text-end"
               style={{ cursor: "pointer" }}

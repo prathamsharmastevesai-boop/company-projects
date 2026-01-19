@@ -24,18 +24,21 @@ export const Home = () => {
     fetchHealth();
   }, [dispatch]);
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const auth = JSON.parse(sessionStorage.getItem("auth"));
 
-    if (token && auth?.isAuthenticated) {
-      if (auth.role === "user") {
-        navigate("/dashboard");
-      } else if (auth.role === "admin") {
-        navigate("/admin-dashboard");
-      }
+  useEffect(() => {
+    const token = sessionStorage.getItem("access_token");
+    const role = sessionStorage.getItem("role");
+
+    if (!token || !role) return;
+
+    if (role === "user") {
+      navigate("/dashboard", { replace: true });
+    } else if (role === "admin") {
+      navigate("/admin-dashboard", { replace: true });
+    } else if (role === "superuser") {
+      navigate("/admin-management");
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div

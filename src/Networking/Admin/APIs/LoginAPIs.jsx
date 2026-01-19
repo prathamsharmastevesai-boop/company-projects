@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { login, Sigup, UserDelete } from "../../NWconfig";
+import { baseURL, login, Sigup, UserDelete } from "../../NWconfig";
 import axiosInstance from "./AxiosInstance";
 
 export const LoginSubmit = createAsyncThunk(
@@ -74,6 +74,25 @@ export const DeleteUser = createAsyncThunk(
     } catch (error) {
       const message = error.response?.data?.message;
       return rejectWithValue(message);
+    }
+  }
+);
+
+export const googleLoginService = createAsyncThunk(
+  "auth/googleLoginService",
+  async (idToken, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        "/auth/auth/google", { token: idToken }
+      );
+
+      return response.data;
+    } catch (error) {
+      const errMsg =
+        error.response?.data?.detail ||
+        "Google login failed. Please try again.";
+
+      return rejectWithValue(errMsg);
     }
   }
 );
