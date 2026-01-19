@@ -69,6 +69,11 @@ export const Login = () => {
       setLoading(false);
     }
   };
+
+  const handleforget = () => {
+    navigate("/forgot-password");
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
