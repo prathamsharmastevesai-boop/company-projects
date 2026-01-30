@@ -8,7 +8,7 @@ export const USER_ROUTE_FEATURE_MAP = {
   "/user-lease-loi-building-list": [FEATURE_KEYS.USER_BUILDING_LIST],
   "/comparative-user-building-list": [FEATURE_KEYS.COMPARATIVE_BUILDING],
   "/user-select-lease-loi": [FEATURE_KEYS.USER_BUILDING_LIST],
-  "/documents/LOI": [FEATURE_KEYS.LOI_DOCUMENTS],
+  "/documents/LOI": [FEATURE_KEYS.USER_BUILDING_LIST],
   "/cre-news": [FEATURE_KEYS.CRE_NEWS],
   "/user-lease-loi-chat": [FEATURE_KEYS.USER_BUILDING_LIST],
   "/portfolio-chat": [FEATURE_KEYS.PORTFOLIO_CHAT],

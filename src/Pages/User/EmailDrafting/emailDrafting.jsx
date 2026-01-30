@@ -28,6 +28,7 @@ export const EmailDrafting = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -61,7 +62,7 @@ export const EmailDrafting = () => {
     }
   }, [detail, isEditable]);
 
-  useEffect(() => {}, [selectedTemplateId]);
+  useEffect(() => { }, [selectedTemplateId]);
 
   const openIn = (service) => {
     if (!detail.trim()) {
@@ -232,60 +233,58 @@ export const EmailDrafting = () => {
           <div className="text-center loader-items">
             <RAGLoader />
           </div>
-      )}
+        )}
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Select Email Template</Form.Label>
             <Row className="g-2 align-items-center">
               <Col sm={10}>
-                <Dropdown className="w-100">
+                <Dropdown
+                  className="w-100"
+                  show={showDropdown}
+                  onToggle={(isOpen) => setShowDropdown(isOpen)}
+                >
                   <Dropdown.Toggle
                     className="w-100 text-start text-truncate"
                     variant="light"
                   >
                     {selectedTemplateId
-                      ? templates.find((t) => t.id === selectedTemplateId)
-                          ?.title || "-- Select Template --"
+                      ? templates.find((t) => t.id === selectedTemplateId)?.title ||
+                      "-- Select Template --"
                       : "-- Select Email Template --"}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="w-100 mt-1 p-0">
                     {templates.length === 0 ? (
-                      <div className="px-3 py-2 text-muted">
-                        No templates found
-                      </div>
+                      <div className="px-3 py-2 text-muted">No templates found</div>
                     ) : (
                       templates.map((template) => (
                         <div
                           key={template.id}
                           className="d-flex justify-content-between align-items-center px-3 py-2 dropdown-item"
-                          onClick={() => setSelectedTemplateId(template.id)}
                           style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setSelectedTemplateId(template.id);
+                            setShowDropdown(false); // 👈 CLOSE DROPDOWN
+                          }}
                         >
-                          <span
-                            className="text-truncate"
-                            style={{ maxWidth: "65%" }}
-                          >
+                          <span className="text-truncate" style={{ maxWidth: "65%" }}>
                             {template.title}
                           </span>
 
                           <div className="d-flex gap-2">
                             <i
                               className="bi bi-pencil-square text-primary"
-                              style={{ cursor: "pointer" }}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 openEditModal(template.id);
                               }}
                             />
                             <i
-                              className={`bi bi-trash text-danger ${
-                                deleteLoading ? "opacity-50" : ""
-                              }`}
+                              className={`bi bi-trash text-danger ${deleteLoading ? "opacity-50" : ""
+                                }`}
                               style={{
-                                cursor: deleteLoading
-                                  ? "not-allowed"
-                                  : "pointer",
+                                cursor: deleteLoading ? "not-allowed" : "pointer",
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
