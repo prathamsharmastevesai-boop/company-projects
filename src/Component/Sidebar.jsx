@@ -19,7 +19,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   const [profileData, setProfileData] = useState({
     gemini_chat_enabled: false,
     forum_enabled: false,
-    // dashboard_enabled: false,
     portfolio_insights_enabled: false,
     email_drafting_enabled: false,
     notes_enabled: false,
@@ -69,7 +68,6 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         setProfileData({
           gemini_chat_enabled: userdata?.gemini_chat_enabled || false,
           forum_enabled: userdata?.forum_enabled || false,
-          // dashboard_enabled: userdata?.dashboard_enabled || false,
           portfolio_insights_enabled: userdata?.portfolio_insights_enabled || false,
           email_drafting_enabled: userdata?.email_drafting_enabled || false,
           notes_enabled: userdata?.notes_enabled || false,
@@ -501,13 +499,13 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           isActivePath={isActive("/yardi")}
           enabled={profileData.yardi_enabled}
         />
-        {/* <NavItem
+        <NavItem
           path="/messages"
           icon="bi-journal-text"
           label="Messages"
           isActivePath={isActive("/messages")}
           enabled={true} 
-        /> */}
+        />
 
         {!collapsed && dataCategoriesEnabled && (
           <AccordionHeader menuKey="generalInfo" label="Data Categories" />

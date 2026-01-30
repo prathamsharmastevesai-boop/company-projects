@@ -308,9 +308,7 @@ const DealForm = () => {
                 </div>
                 <div className="col-md-3 col-lg-3 col-12">
                   <strong>{item.stage_name}</strong>
-                  {/* <div className="text-muted small">
-                    Order: {item.order_index}
-                  </div> */}
+             
                 </div>
                 <div className="col-md-2 col-lg-2 col-12">
                   <input

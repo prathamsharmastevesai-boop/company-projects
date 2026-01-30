@@ -42,12 +42,6 @@ export const SignUpSubmit = createAsyncThunk(
       }
 
       if (role) {
-        //   sessionStorage.setItem("token", "dgfhdsjh");
-        //   sessionStorage.setItem(
-        //     "auth",
-        //     JSON.stringify({ isAuthenticated: true, role })
-        //   );
-
         return { role };
       }
 

@@ -10,10 +10,10 @@ const initialState = {
   messages: [],
   activeConversation: null,
 
-  // user_id -> { online, last_seen }
+
   userStatus: {},
 
-  // conversation_id -> { user_id: boolean }
+
   typingUsers: {},
 
   loading: false,
@@ -42,19 +42,16 @@ const chatSystemSlice = createSlice({
             msg.temp_id === newMessage.temp_id)
       );
 
-      // Mark file message
       if (newMessage.file_id) {
         newMessage.is_file = true;
       }
 
       if (index === -1) {
-        // New message
         state.messages.push({
           ...newMessage,
           is_temp: false,
         });
       } else {
-        // Replace temp message with real one
         state.messages[index] = {
           ...state.messages[index],
           ...newMessage,
@@ -65,7 +62,6 @@ const chatSystemSlice = createSlice({
       }
     },
 
-    /* ---------------- API MESSAGE ---------------- */
     addMessage: (state, action) => {
       const newMessage = action.payload;
 
@@ -81,7 +77,6 @@ const chatSystemSlice = createSlice({
       }
     },
 
-    /* ---------------- USER ONLINE / OFFLINE ---------------- */
     setUserStatus: (state, action) => {
       const { user_id, online, last_seen } = action.payload;
       if (!user_id) return;
@@ -92,7 +87,6 @@ const chatSystemSlice = createSlice({
       };
     },
 
-    /* ---------------- TYPING INDICATOR ---------------- */
     setTypingStatus: (state, action) => {
       const { conversation_id, sender_id, is_typing } = action.payload;
 
@@ -106,7 +100,6 @@ const chatSystemSlice = createSlice({
         is_typing === true;
     },
 
-    /* ---------------- CLEAR ---------------- */
     clearMessages: (state) => {
       state.messages = [];
     },
@@ -121,7 +114,6 @@ const chatSystemSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      /* ---------------- CONVERSATIONS ---------------- */
       .addCase(fetchConversations.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -135,7 +127,6 @@ const chatSystemSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ---------------- MESSAGES ---------------- */
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -149,7 +140,6 @@ const chatSystemSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ---------------- DELETE MESSAGE ---------------- */
       .addCase(deleteMessage.fulfilled, (state, action) => {
         state.messages = state.messages.filter(
           (msg) => msg.id !== action.payload

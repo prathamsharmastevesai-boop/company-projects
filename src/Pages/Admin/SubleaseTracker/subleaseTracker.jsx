@@ -1,5 +1,3 @@
-// import React from "react";
-// import DocumentManager from "../../../Component/DocumentManager";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SubleaseTrackerSubmit } from "../../../Networking/Admin/APIs/subleaseTrackerApi";
@@ -270,8 +268,3 @@ export const SubleaseTracker = ({ data }) => {
   );
 };
 
-//  <DocumentManager
-//     category="SubleaseTracker"
-//     title="Sublease Tracker"
-//     description="Upload and manage documents for Sublease Tracker"
-//   />

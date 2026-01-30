@@ -55,10 +55,6 @@ export const Login = () => {
       ).unwrap();
       console.log(res.role, "res.role");
 
-      // if (res.role !== "user") {
-      //   toast.error("Invalid credentials");
-      //   return;
-      // }
 
 
       if (res.role === "user") {
@@ -106,11 +102,7 @@ export const Login = () => {
       const { role, access_token } = res;
       console.log(res, "res");
 
-      // if (role !== "user") {
-      //   toast.error("Invalid credentials");
-      //   return;
-      // }
-
+  
 
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("access_token", access_token);
@@ -132,7 +124,7 @@ export const Login = () => {
       toast.success("login successful");
 
     } catch (err) {
-      // toast.error("Login failed");
+    
     } finally {
       setLoading(false);
     }

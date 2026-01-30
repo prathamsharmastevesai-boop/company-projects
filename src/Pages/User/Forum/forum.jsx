@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 export const PortfolioForum = () => {
   const dispatch = useDispatch();
   const { ThreadList } = useSelector((state) => state.ForumSlice);
-  // const { Role } = useSelector((state) => state.loginSlice);
+
   const { userdata } = useSelector((state) => state.ProfileSlice);
 
   const messagesEndRef = React.useRef(null);
@@ -91,7 +91,7 @@ export const PortfolioForum = () => {
     }
       toast.success("Thread deleted successfully");
     } catch (err) {
-      // toast.error("Failed to delete thread");
+  
     } finally {
       setDeletingId(null);
       setShowDeleteModal(false);
@@ -107,7 +107,7 @@ export const PortfolioForum = () => {
       const data = await dispatch(getThreadhistory(thread.id)).unwrap();
       setThreadMessages(data.thoughts || []);
     } catch (error) {
-      // toast.error("Failed to fetch thread history");
+ 
     } finally {
       setLoadingHistory(false);
     }
@@ -179,9 +179,7 @@ export const PortfolioForum = () => {
       setThreadMessages(data.thoughts || []);
     } catch (error) {
       console.error(error);
-      // toast.error(
-      //   editingThoughtId ? "Failed to update thought" : "Failed to add thought"
-      // );
+
     } finally {
       setSending(false);
     }

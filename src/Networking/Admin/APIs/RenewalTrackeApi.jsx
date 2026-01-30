@@ -18,7 +18,6 @@ export const RenewalTrackerSubmit = createAsyncThunk(
 export const UpdateRenewalById = createAsyncThunk(
   "UpdateRenewalById",
   async ({ tracker_id, data }, { rejectWithValue }) => {
-    // console.log(tracker_id, data, "id, data");
 
     try {
       const response = await axiosInstance.put("/renewal/" + tracker_id, data);

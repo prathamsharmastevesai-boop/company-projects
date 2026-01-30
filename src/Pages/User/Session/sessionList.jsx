@@ -31,11 +31,11 @@ export const SessionList = ({ setShowSessionModal }) => {
       const res = await dispatch(get_Session_List_Specific()).unwrap();
       setSessionList(res);
       
-      // Extract unique categories from the response
+
       const categories = ["All", ...new Set(res.map((s) => s.category).filter(Boolean))];
       setUniqueCategories(categories);
       
-      // Apply initial filtering
+
       applyFilters(res, selectedCategory, searchTerm);
     } catch (error) {
       console.error(error);
@@ -44,11 +44,10 @@ export const SessionList = ({ setShowSessionModal }) => {
     }
   };
 
-  // Helper function to apply filters
   const applyFilters = (sessions, category, search) => {
     let filtered = [...sessions];
 
-    // Apply category filter
+  
     if (category !== "All") {
       filtered = filtered.filter(
         (session) =>
@@ -57,7 +56,6 @@ export const SessionList = ({ setShowSessionModal }) => {
       );
     }
 
-    // Apply search filter
     if (search.trim() !== "") {
       filtered = filtered.filter(
         (session) =>
@@ -73,7 +71,6 @@ export const SessionList = ({ setShowSessionModal }) => {
     fetchSessions();
   }, []);
 
-  // Update filtering when search or category changes
   useEffect(() => {
     applyFilters(sessionList, selectedCategory, searchTerm);
   }, [searchTerm, selectedCategory, sessionList]);
@@ -83,16 +80,12 @@ export const SessionList = ({ setShowSessionModal }) => {
       setIsDeleting((prev) => ({ ...prev, [id]: true }));
       await dispatch(Delete_Chat_Session(id)).unwrap();
 
-      // Update session list locally
       const updatedList = sessionList.filter((s) => s.session_id !== id);
       setSessionList(updatedList);
       
-      // Update unique categories
       const categories = ["All", ...new Set(updatedList.map((s) => s.category).filter(Boolean))];
       setUniqueCategories(categories);
       
-      // If the deleted session was the last one in the current category,
-      // reset to "All" category
       const sessionsInCurrentCategory = updatedList.filter(
         (session) =>
           selectedCategory !== "All" &&

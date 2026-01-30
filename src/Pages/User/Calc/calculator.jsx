@@ -111,7 +111,7 @@ export const LeaseFinanceCalculator = () => {
   <div className="container-fluid p-3">
     <div className="row g-3">
 
-      {/* LEFT: DEAL PARAMETERS */}
+     
       <div className="col-12 col-lg-8">
         <div className="card p-3 shadow-sm h-100">
           <h4 className="fw-bold">Deal Parameters</h4>
@@ -154,7 +154,7 @@ export const LeaseFinanceCalculator = () => {
         </div>
       </div>
 
-      {/* RIGHT: CALCULATOR */}
+   
       <div className="col-12 col-lg-4">
         <div className="card p-3 shadow-sm h-100">
           <h5 className="fw-bold mb-3 text-center">Calculator</h5>

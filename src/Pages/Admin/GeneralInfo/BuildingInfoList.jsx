@@ -117,20 +117,6 @@ export const BuildingInfoList = () => {
     }
   };
 
-  // const handleSubmit = (category) => {
-  //   navigate("/BuildingInfo", {
-  //     state: {
-  //       buildingId,
-  //       category,
-  //     },
-  //   });
-  // };
-  // const handleSubmit = (buildingId) => {
-  //   navigate("/Select_Building_Category", {
-  //     state: { office: { buildingId } },
-  //   });
-  // };
-
   const filteredBuildings = BuildingList.filter((building) => {
     const name = building.building_name?.toLowerCase() || "";
     const addr = building.address?.toLowerCase() || "";

@@ -92,7 +92,7 @@ export const Dashboard = () => {
         <div className="row align-items-center my-4">
           <div className="col-md-8">
             <div className="d-flex align-items-center mb-2">
-              {/* <h2 className="mb-0 me-2">🏢</h2> */}
+         
               <h2 className="text-start mb-0 fw-bold">Building Info</h2>
             </div>
           </div>

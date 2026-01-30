@@ -417,7 +417,7 @@ export const RenewalTrackerList = () => {
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
-                      {/* {Role === "admin" && ( */}
+                 
                         <button
                           className="btn btn-outline-danger btn-sm rounded-circle"
                           onClick={() =>
@@ -427,7 +427,7 @@ export const RenewalTrackerList = () => {
                         >
                           <i className="bi bi-trash3"></i>
                         </button>
-                      {/* )} */}
+              
                     </td>
                   </tr>
                 ))}

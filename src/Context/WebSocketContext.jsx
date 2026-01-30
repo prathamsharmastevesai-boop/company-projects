@@ -61,15 +61,15 @@ export const WebSocketProvider = ({ children }) => {
     socketRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log("📩 WebSocket message received:", data);
+        // console.log(" WebSocket message received:", data);
 
         switch (data.type) {
           case "MY_PRESENCE":
-            // console.log("✅ My presence:", data);
+            // console.log(" My presence:", data);
             break;
 
           case "USER_STATUS":
-            // console.log("👤 User status update:", data);
+            // console.log(" User status update:", data);
             dispatch(setUserStatus({
               user_id: data.user_id,
               online: data.online,
@@ -78,7 +78,7 @@ export const WebSocketProvider = ({ children }) => {
             break;
 
           case "TYPING":
-            // console.log("⌨️ Typing indicator received:", data);
+            // console.log("Typing indicator received:", data);
 
             if (data.sender_id && data.sender_id !== myUserId) {
 

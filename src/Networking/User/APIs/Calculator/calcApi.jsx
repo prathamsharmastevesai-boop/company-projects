@@ -17,8 +17,6 @@ export const calcSubmitApi = createAsyncThunk(
         error.response?.data?.detail ||
         "Failed to calculate";
 
-      // toast.error(backendError);
-
       return rejectWithValue(backendError);
     }
   }

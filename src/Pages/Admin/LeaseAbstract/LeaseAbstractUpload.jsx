@@ -74,7 +74,6 @@ export const LeaseAbstractUpload = () => {
       })
       .catch((err) => {
         console.error("Failed to fetch lease docs:", err);
-        // toast.error("Failed to fetch documents");
       })
       .finally(() => setLoader(false));
   };
@@ -124,7 +123,7 @@ export const LeaseAbstractUpload = () => {
       })
       .catch((err) => {
         console.error("Upload failed:", err);
-        // toast.error("Upload failed");
+
       })
       .finally(() => setLoader(false));
   };
@@ -139,24 +138,7 @@ export const LeaseAbstractUpload = () => {
   const setItemLoadingState = (fileId, value) =>
     setItemLoading((prev) => ({ ...prev, [fileId]: value }));
 
-  // const handleDelete = (fileId) => {
-  //   if (!window.confirm("Are you sure you want to delete this document?"))
-  //     return;
-
-  //   setItemLoadingState(fileId, true);
-  //   dispatch(DeleteAbstractDoc({ fileId }))
-  //     .unwrap()
-  //     .then(() => {
-  //       toast.success("Document deleted");
-
-  //       fetchDocs();
-  //     })
-  //     .catch((err) => {
-  //       console.error("Delete failed:", err);
-  //       toast.error("Delete failed");
-  //     })
-  //     .finally(() => setItemLoadingState(fileId, false));
-  // };
+ 
 
   const handleDownloadDraft = async (file_id) => {
     if (!file_id) {

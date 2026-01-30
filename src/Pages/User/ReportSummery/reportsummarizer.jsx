@@ -224,16 +224,7 @@ export const SummeryUpload = () => {
                         💬 Chat
                       </button>
 
-                      {/* <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePreview(doc);
-                      }}
-                      className="btn btn-sm btn-outline-primary"
-                      title="Preview"
-                    >
-                      Preview
-                    </button> */}
+                
 
                       <i
                         className="bi bi-trash text-danger"

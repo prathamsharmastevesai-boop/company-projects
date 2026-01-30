@@ -10,7 +10,7 @@ export const UserListScreen = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Optional: reuse chat online status later
+
   const { userStatus } = useSelector(
     (state) => state.chatSystemSlice || {}
   );
@@ -43,12 +43,10 @@ export const UserListScreen = () => {
   return (
     <div className="border-end bg-white h-100 d-flex flex-column">
 
-      {/* HEADER */}
       <div className="p-3 border-bottom fw-bold fs-5">
         Select contact
       </div>
 
-      {/* LIST */}
       <div
         className="list-group list-group-flush overflow-auto"
         style={{ maxHeight: "calc(100vh - 70px)" }}
@@ -71,14 +69,12 @@ export const UserListScreen = () => {
             </div>
           ))}
 
-        {/* 🔹 EMPTY STATE */}
         {!loading && users.length === 0 && (
           <div className="text-center text-muted py-4">
             No users found
           </div>
         )}
 
-        {/* 🔹 USER LIST */}
         {!loading &&
           users.map((user) => {
             const isOnline = userStatus?.[user.id]?.online === true;
@@ -89,7 +85,7 @@ export const UserListScreen = () => {
                 onClick={() => handleUserClick(user)}
                 className="list-group-item list-group-item-action d-flex align-items-center gap-3"
               >
-                {/* AVATAR */}
+
                 <div className="position-relative">
                   <div
                     className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-semibold"
@@ -98,7 +94,7 @@ export const UserListScreen = () => {
                     {user.name?.[0]?.toUpperCase() || "U"}
                   </div>
 
-                  {/* ONLINE DOT */}
+           
                   <span
                     className={`position-absolute bottom-0 end-0 rounded-circle border border-white ${isOnline ? "bg-success" : "bg-secondary"
                       }`}
@@ -106,7 +102,7 @@ export const UserListScreen = () => {
                   ></span>
                 </div>
 
-                {/* CONTENT */}
+       
                 <div className="flex-grow-1 text-start overflow-hidden">
                   <div className="fw-semibold text-truncate">
                     {user.name}

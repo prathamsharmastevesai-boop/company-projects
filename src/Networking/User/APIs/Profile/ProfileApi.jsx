@@ -14,7 +14,6 @@ export const getProfileDetail = createAsyncThunk(
       return response.data;
     } catch (error) {
       const msg = getErrorMsg(error);
-      // toast.error(msg);
       return rejectWithValue(msg);
     }
   }

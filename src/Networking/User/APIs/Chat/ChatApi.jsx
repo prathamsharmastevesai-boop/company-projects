@@ -106,7 +106,6 @@ console.log(sessionId,"sessionId");
         return rejectWithValue("Session expired");
       }
 
-      // toast.error(message);
       return rejectWithValue(message);
     }
   }

@@ -90,7 +90,7 @@ export const GeminiChat = () => {
 
   useEffect(() => {
     if (!sessionReady || !sessionId) {
-      // If no session ready or no sessionId, set initial load complete
+ 
       if (sessionReady) {
         setInitialLoadComplete(true);
         setIsLoadingHistory(false);
@@ -118,7 +118,7 @@ export const GeminiChat = () => {
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
-        setInitialLoadComplete(true); // MARK: initial load complete
+        setInitialLoadComplete(true); 
       }
     };
 
@@ -153,7 +153,7 @@ export const GeminiChat = () => {
   }, [isLoadingHistory, messages.length]);
 
   const startRecording = async () => {
-    // Don't allow recording while initial load is not complete
+    
     if (!initialLoadComplete) {
       toast.info("Please wait while chat loads...");
       return;
@@ -263,7 +263,6 @@ export const GeminiChat = () => {
   };
 
   const handleSendMessage = async () => {
-    // Prevent sending if initial load is not complete
     if (!initialLoadComplete) {
       toast.info("Please wait while chat loads...");
       return;
@@ -314,7 +313,6 @@ export const GeminiChat = () => {
   };
 
   const handleNewSession = () => {
-    // Don't allow new session while initial load is not complete
     if (!initialLoadComplete) {
       toast.info("Please wait while chat loads...");
       return;
@@ -324,7 +322,7 @@ export const GeminiChat = () => {
     setSessionId(newId);
     setMessages([]);
     setIsChatStarted(false);
-    setInitialLoadComplete(true); // Allow interactions after new session
+    setInitialLoadComplete(true);
   };
 
   const fetchDocs = async () => {
@@ -373,7 +371,6 @@ export const GeminiChat = () => {
     </div>
   );
 
-  // Helper to check if actions are disabled
   const isActionDisabled = isLoadingHistory || !initialLoadComplete;
 
   return (

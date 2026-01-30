@@ -122,12 +122,12 @@ export const CommissionCalculator = () => {
     }
   };
 
-  /* ---------------- UI ---------------- */
+
   return (
     <div className="container-fluid p-3">
       <div className="row g-3">
 
-        {/* LEFT */}
+  
         <div className="col-md-8">
           <div className="card p-3 shadow-sm">
             <h4 className="fw-bold">Deal Parameters</h4>
@@ -160,7 +160,7 @@ export const CommissionCalculator = () => {
               Generate Year Rows
             </button>
 
-            {/* BASE RENT */}
+           
             <h5 className="fw-bold mt-3">Base Rent PSF (Per Year)</h5>
             <hr />
             {baseRentList.map((item, idx) => (
@@ -175,7 +175,7 @@ export const CommissionCalculator = () => {
               </div>
             ))}
 
-            {/* COMMISSION */}
+           
             <h5 className="fw-bold mt-4">Commission Rates (%)</h5>
             <hr />
             {commissionList.map((item, idx) => (
@@ -202,7 +202,7 @@ export const CommissionCalculator = () => {
           </div>
         </div>
 
-        {/* RIGHT */}
+  
         <div className="col-md-4">
           <div className="card p-3 shadow-sm">
             <h5 className="fw-bold">Calculated Results</h5>
