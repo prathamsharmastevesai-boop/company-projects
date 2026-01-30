@@ -43,18 +43,13 @@ export const UploadfloorStack = createAsyncThunk(
 
 export const UploadGeneralDocSubmit = createAsyncThunk(
   "general/UploadGeneralDocSubmit",
-  async ({ file, category, building_Id }, { rejectWithValue }) => {
+  async ({ file, session_id  }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append("files", file);
+      formData.append("session_id",session_id);
 
-      let url = `/admin_user_chat/upload?category=${encodeURIComponent(
-        category
-      )}`;
-
-      if (building_Id) {
-        url += `&building_id=${encodeURIComponent(building_Id)}`;
-      }
+      let url = "/gemini/upload"
 
       const response = await axiosInstance.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -66,6 +61,35 @@ export const UploadGeneralDocSubmit = createAsyncThunk(
     }
   }
 );
+
+export const ListGeminiDoc = createAsyncThunk(
+  "general/ListGeminiDoc",
+  async ({ session_id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/gemini/files/${session_id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch list"
+      );
+    }
+  }
+);
+
+export const DeleteGeneralDocSubmit = createAsyncThunk(
+  "general/DeleteGeneralDocSubmit",
+  async ({ file_id }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/gemini/files/${file_id}`);
+      return response.data; 
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete document"
+      );
+    }
+  }
+);
+
 
 export const UpdateGeneralDocSubmit = createAsyncThunk(
   "general/UpdateGeneralDocSubmit",

@@ -61,10 +61,15 @@ export const Delete_Chat_Session = createAsyncThunk(
 
 export const get_Chat_History = createAsyncThunk(
   "auth/get_Chat_History",
-  async ({ session_id, building_id }, { rejectWithValue }) => {
+  async ({ sessionId, building_id }, { rejectWithValue }) => {
+console.log(sessionId,"sessionId");
+
+    const session_id=sessionId
+    console.log(session_id,"session_id");
     const token = sessionStorage.getItem("token");
 
     try {
+      
       const params = new URLSearchParams();
 
       params.append("session_id", session_id);

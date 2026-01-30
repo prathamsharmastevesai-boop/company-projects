@@ -323,7 +323,6 @@ export const RenewalTrackerList = () => {
 
   return (
     <>
-      {/* {Role === "user" && ( */}
       <div className="header-bg d-flex justify-content-between px-3 align-items-center sticky-header">
         <h5 className="mb-0 text-light mx-4">Renewal Tracker List</h5>
         <button
@@ -334,20 +333,7 @@ export const RenewalTrackerList = () => {
           <BsPlusLg /> Add Renewal
         </button>
       </div>
-      {/* )} */}
       <div className="container-fuild p-4">
-        {/* {Role === "admin" && (
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="fw-bold">Renewal Tracker List</h2>
-            <button
-              className="btn btn-secondary d-flex align-items-center gap-2"
-              onClick={handleNavigate}
-              style={{ fontWeight: "600", padding: "0.5rem 1rem" }}
-            >
-              <BsPlusLg /> Add Renewal
-            </button>
-          </div>
-        )} */}
 
         {loading && (
           <div

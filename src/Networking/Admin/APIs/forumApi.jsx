@@ -135,3 +135,20 @@ export const toggleForumApi = createAsyncThunk(
     }
   }
 );
+
+export const toggleUserFeaturesApi = createAsyncThunk(
+  "toggleUserFeaturesApi",
+  async ({ email, features }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/feature_toggle/${email}`,
+        features
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update user features"
+      );
+    }
+  }
+);

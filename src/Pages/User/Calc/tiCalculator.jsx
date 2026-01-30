@@ -55,6 +55,13 @@ export const TICalculator = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const formatCurrency = (value, decimals = 0) =>
+    Number(value).toLocaleString("en-US", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+
+
   const handleCalculate = async () => {
     if (!validate()) return;
 
@@ -87,7 +94,7 @@ export const TICalculator = () => {
         <div className="card-body">
           <h4 className="fw-bold mb-3">TI Calculator</h4>
 
-       
+
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
               Square Footage (SF)
@@ -109,7 +116,7 @@ export const TICalculator = () => {
             </Form.Control.Feedback>
           </Form.Group>
 
-       
+
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
               TI Line Items
@@ -136,7 +143,7 @@ export const TICalculator = () => {
             )}
           </Form.Group>
 
-        
+
           <button
             className="btn btn-primary w-100"
             onClick={handleCalculate}
@@ -154,14 +161,24 @@ export const TICalculator = () => {
         </div>
       </div>
 
-    
+
       {result && (
         <div className="card shadow-sm mt-4">
           <div className="card-body">
-            <h5 className="fw-bold text-success">
-              Estimated Total: $
-              {result.finalTotal?.toLocaleString()}
-            </h5>
+            <div className="mb-2">
+              <div className="fw-semibold">Estimated Total</div>
+              <div className="fs-5 text-success">
+                ${formatCurrency(result.estimated_total)}
+              </div>
+            </div>
+
+            <div className="mb-2">
+              <div className="fw-semibold">Cost Per Square Foot</div>
+              <div className="fs-5 text-success">
+                ${formatCurrency(result.cost_per_sf, 2)}
+              </div>
+            </div>
+
 
             <hr />
 
@@ -171,17 +188,25 @@ export const TICalculator = () => {
                 ([key, value]) => (
                   <li
                     key={key}
-                    className="list-group-item d-flex justify-content-between"
+                    className="list-group-item"
                   >
-                    <span>{key}</span>
-                    <span>${value.toLocaleString()}</span>
+                    <div className="d-flex justify-content-between">
+                      <span className="fw-semibold">{key}</span>
+                      <span>${formatCurrency(value.cost)}</span>
+                    </div>
+                    <small className="text-muted">{value.formula}</small>
+
+                    <small className="text-muted">
+                      {value.formula}
+                    </small>
                   </li>
                 )
               )}
+
             </ul>
 
-            <p className="fw-bold">
-              10% Contingency: $
+            <p className="fw-bold text-end">
+              Contingency: $
               {result.contingency?.toLocaleString()}
             </p>
           </div>

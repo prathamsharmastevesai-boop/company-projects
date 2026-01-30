@@ -133,7 +133,6 @@ const DealForm = () => {
       const resultAction = await dispatch(DealFormApi(payload));
 
       if (DealFormApi.fulfilled.match(resultAction)) {
-        toast.success("Deal saved successfully!");
 
         navigate("/deal-list/");
         setForm({

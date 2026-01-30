@@ -7,6 +7,7 @@ import {
   getNotesApi,
   updateNoteApi,
   deleteNoteApi,
+  deleteNoteFileApi,
 } from "../../../Networking/User/APIs/Notes/notesApi";
 
 export const Notes = () => {
@@ -27,6 +28,7 @@ export const Notes = () => {
     id: null,
     title: "",
     content: "",
+    file: null,
   });
 
   const [saving, setSaving] = useState(false);
@@ -43,11 +45,20 @@ export const Notes = () => {
     return bTime - aTime;
   });
 
+  console.log(sortedNotes, "sortedNotes");
+
+
   const openNewNote = () => {
     setIsEditing(false);
-    setCurrentNote({ id: null, title: "", content: "" });
+    setCurrentNote({
+      id: null,
+      title: "",
+      content: "",
+      file: null,
+    });
     setShowModal(true);
   };
+
 
   const openEditNote = async (note) => {
     setIsEditing(true);
@@ -70,28 +81,35 @@ export const Notes = () => {
     e.preventDefault();
     setSaving(true);
 
-    const payload = {
-      title: currentNote.title?.trim() || "Untitled",
-      content: currentNote.content?.trim() || "",
-    };
-
     try {
+      const formData = new FormData();
+      formData.append("title", currentNote.title?.trim() || "Untitled");
+      formData.append("content", currentNote.content?.trim() || "");
+
+        if (currentNote.file) {
+        formData.append("file", currentNote.file);
+      }
+
       if (isEditing && currentNote.id) {
         await dispatch(
-          updateNoteApi({ noteId: currentNote.id, data: payload })
+          updateNoteApi({
+            noteId: currentNote.id,
+            data: formData,
+          })
         ).unwrap();
-      } else {
-        await dispatch(createNoteApi(payload)).unwrap();
+      }
+      else {
+        await dispatch(createNoteApi(formData)).unwrap();
       }
 
       closeModal();
     } catch (err) {
       setError("Save failed. Try again.");
-      console.error(err);
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
   };
+
 
   const handleDelete = async (noteId) => {
     try {
@@ -106,7 +124,7 @@ export const Notes = () => {
 
   function formatDate(date) {
     if (!date) return "";
-    return new Date(date).toLocaleString();
+    return new Date(date).toLocaleString();     
   }
 
   return (
@@ -138,19 +156,14 @@ export const Notes = () => {
         ) : (
           <div className="list-group">
             {sortedNotes.map((note) => (
-              <div
-                key={note.id}
-                className="list-group-item list-group-item-action"
-              >
+              <div key={note.id} className="list-group-item list-group-item-action">
                 <div className="d-flex flex-column flex-md-row w-100 justify-content-between">
                   <h6
                     className="mb-1"
                     style={{ cursor: "pointer" }}
                     onClick={() => openEditNote(note)}
                   >
-                    {note.title?.length > 28
-                      ? note.title.slice(0, 28) + "..."
-                      : note.title}
+                    {note.title?.length > 28 ? note.title.slice(0, 28) + "..." : note.title}
                   </h6>
 
                   <small className="text-muted">
@@ -158,12 +171,40 @@ export const Notes = () => {
                   </small>
                 </div>
 
-                <p
-                  className="mb-1 text-truncate"
-                  onClick={() => openEditNote(note)}
-                >
+                <p className="mb-1 text-truncate" onClick={() => openEditNote(note)}>
                   {note.content}
                 </p>
+
+
+                {note.files && note.files.length > 0 && (
+                  <div className="mt-2">
+                    {note.files.map((file) => (
+                      <div
+                        key={file.id}
+                        className="d-flex justify-content-between align-items-center mb-1 p-2 border rounded"
+                      >
+                        <div className="text-truncate" style={{ maxWidth: "80%" }}>
+                          <i className="bi bi-file-earmark-text me-2"></i>
+                          {file.filename}
+                        </div>
+                        <div className="d-flex gap-2">
+
+                          <a
+                            href={file.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-sm btn-outline-primary"
+                          >
+                            <i className="bi bi-download"></i>
+                          </a>
+
+
+                          
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 <div className="d-flex gap-2 justify-content-end align-items-center mt-2">
                   <button
@@ -181,15 +222,14 @@ export const Notes = () => {
                       <i
                         className="bi bi-trash text-danger"
                         style={{ cursor: "pointer", fontSize: 18 }}
-                        onClick={() =>
-                          setConfirmDelete({ show: true, noteId: note.id })
-                        }
+                        onClick={() => setConfirmDelete({ show: true, noteId: note.id })}
                       ></i>
                     )}
                   </div>
                 </div>
               </div>
             ))}
+
           </div>
         )}
 
@@ -221,6 +261,30 @@ export const Notes = () => {
                   }
                 />
               </FloatingLabel>
+              {!isEditing && (
+                <>
+                  <Form.Label>Attach document</Form.Label>
+
+                  <Form.Control
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) =>
+                      setCurrentNote((p) => ({
+                        ...p,
+                        file: e.target.files[0],
+                      }))
+                    }
+                  />
+                </>
+              )}
+
+              {currentNote.file && (
+                <small className="text-muted d-block mt-1">
+                  Selected file: {currentNote.file.name}
+                </small>
+              )}
+
+            
 
               <div className="mt-2 text-muted small">
                 Tip: Only you can see your notes.

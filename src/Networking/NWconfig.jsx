@@ -110,6 +110,7 @@ export const updatetextdata = "/gen_lease/files/text";
 export const feedbacksubmit = "/feedback/submit";
 export const getfeedback = "/feedback/my-feedback";
 export const getadminfeedback = "/feedback/company-feedback";
+export const getuserfeedback = "/feedback/my-feedback";
 export const updatefeedback = "/feedback/update/";
 
 //Email Drafting

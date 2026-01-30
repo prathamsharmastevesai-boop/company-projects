@@ -46,9 +46,11 @@ export const DashboardLayout = () => {
       "/deal-list",
       "/user-profile",
       "/history",
+      "/chat/",
       "/deals/new",
       "/user-select-lease-loi",
       "/cre-news",
+      "/messages",
       "/yardi",
       //Admin Routes
       "/admin-dashboard",

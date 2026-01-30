@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getadminfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
+import { getadminfeedbacksubmit, getuserfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import RAGLoader from "../../../Component/Loader";
 import Pagination from "../../../Component/pagination";
@@ -24,15 +24,22 @@ export const AdminInformationCollaboration = () => {
   const [viewModal, setViewModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
 
- 
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const data = await dispatch(getadminfeedbacksubmit()).unwrap();
-        setFeedbacks(data.reverse());
+          const role = sessionStorage.getItem("role");
+          if(role === "admin"){
+            const data = await dispatch(getadminfeedbacksubmit()).unwrap();
+            setFeedbacks(data.reverse());
+          } else if(role === "user") {
+             const data = await dispatch(getuserfeedbacksubmit()).unwrap();
+            setFeedbacks(data.reverse());
+          }
+        
       } catch (error) {
         console.error("Error fetching feedback:", error);
       } finally {
@@ -45,7 +52,7 @@ export const AdminInformationCollaboration = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFeedbacks = feedbacks.slice(indexOfFirstItem, indexOfLastItem);
+  const currentFeedbacks = feedbacks.slice(indexOfFirstItem, indexOfLastItem).reverse();
 
   const openEditModal = (feedback) => {
     setEditId(feedback.id);
@@ -92,9 +99,25 @@ export const AdminInformationCollaboration = () => {
     }
   };
 
+  const handleDownload = (fileUrl, fileName) => {
+    if (!fileUrl) {
+      toast.error("No file available for download");
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = fileName || "file";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "50vh" }}>
+      <div className="d-flex p-1 justify-content-center align-items-center" style={{ height: "50vh" }}>
         <RAGLoader />
       </div>
     );
@@ -105,7 +128,7 @@ export const AdminInformationCollaboration = () => {
       <Container
         fluid
         className="p-4 shadow-sm"
-        style={{ background: "#f5f7fa", borderRadius: "8px", minHeight: "100vh" }}
+        style={{ background: "#f5f7fa", borderRadius: "8px" }}
       >
         {feedbacks.length === 0 ? (
           <div className="text-center py-5">
@@ -114,7 +137,7 @@ export const AdminInformationCollaboration = () => {
           </div>
         ) : (
           <>
-            <div className="table-responsive mt-3" style={{height:"400px"}}>
+            <div className="table-responsive mt-3" style={{ height: "400px" }}>
               <Table className="align-middle">
                 <thead className="table-light">
                   <tr>
@@ -162,17 +185,28 @@ export const AdminInformationCollaboration = () => {
                         </button>
 
                         <button
-                          className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
-                          style={{ padding: "4px 12px" }}
+                          className="btn btn-sm btn-outline-secondary me-2 d-flex align-items-center justify-content-center"
+                          style={{ backgroundColor: "#e62721", borderColor: "#e62721", padding: "4px 12px" }}
                           onClick={() => openDeleteModal(fb.id)}
                           disabled={deleteLoading && deleteId === fb.id}
                         >
                           {deleteLoading && deleteId === fb.id ? (
                             <span className="spinner-border spinner-border-sm"></span>
                           ) : (
-                            <i className="bi bi-trash"></i>
+                            <i className="bi bi-trash text-light"></i>
                           )}
                         </button>
+
+                        <button
+                          className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                          style={{ padding: "4px 12px" }}
+                          title={fb.file_url ? "Download file" : "No file available"}
+                          onClick={() => handleDownload(fb.file_url, fb.file_name)}
+                          disabled={!fb.file_url}
+                        >
+                          <i className="bi bi-download"></i>
+                        </button>
+
                       </td>
                     </tr>
                   ))}
@@ -180,7 +214,7 @@ export const AdminInformationCollaboration = () => {
               </Table>
             </div>
 
-        
+
             <Pagination
               totalItems={feedbacks.length}
               itemsPerPage={itemsPerPage}
@@ -195,7 +229,7 @@ export const AdminInformationCollaboration = () => {
         )}
       </Container>
 
-      
+
       <Modal show={editModal} onHide={() => !editLoading && setEditModal(false)} centered>
         <Modal.Header closeButton={!editLoading}>
           <Modal.Title>Edit Collaboration</Modal.Title>
@@ -213,7 +247,7 @@ export const AdminInformationCollaboration = () => {
         </Modal.Footer>
       </Modal>
 
-      
+
       <Modal show={viewModal} onHide={() => setViewModal(false)} centered size="md">
         <Modal.Header closeButton>
           <Modal.Title className="fw-semibold">Collaboration Details</Modal.Title>
@@ -235,7 +269,7 @@ export const AdminInformationCollaboration = () => {
         </Modal.Footer>
       </Modal>
 
-    
+
       <Modal show={!!deleteId} centered onHide={() => !deleteLoading && setDeleteId(null)}>
         <Modal.Header closeButton={!deleteLoading}>
           <Modal.Title>Delete Collaboration?</Modal.Title>

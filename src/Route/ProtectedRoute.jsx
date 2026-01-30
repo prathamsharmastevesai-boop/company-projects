@@ -1,51 +1,118 @@
-import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfileDetail } from "../Networking/User/APIs/Profile/ProfileApi";
+import { USER_ROUTE_FEATURE_MAP } from "./userRouteFeatureMap";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const LAST_ALLOWED_ROUTE = "last_allowed_route";
+const IDLE_TIMEOUT = 3 * 60 * 1000;
+const matchRoute = (pathname, routeMap) => {
+  return Object.keys(routeMap).find((route) => {
+    if (route.includes(":")) {
+      const base = route.split("/:")[0];
+      return pathname.startsWith(base);
+    }
+    return route === pathname;
+  });
+};
+
+const ProtectedRoute = ({ children }) => {
   const token = sessionStorage.getItem("access_token");
   const role = sessionStorage.getItem("role");
 
+  const location = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toastShownRef = useRef(false);
+  const idleTimerRef = useRef(null);
+
+  const { userdata } = useSelector((state) => state.ProfileSlice);
 
   useEffect(() => {
-    if (!token || !role) return;
+    if (token && role === "user" && !userdata) {
+      dispatch(getProfileDetail());
+    }
+  }, [dispatch, token, role, userdata]);
+
+
+  useEffect(() => {
+    if (!token) return;
 
     const logoutUser = () => {
-      toast.warning("You have been logged out due to inactivity.");
-      sessionStorage.removeItem("access_token");
-      sessionStorage.removeItem("role");
-      navigate("/");
+      sessionStorage.clear();
+      toast.info("You were logged out due to inactivity.");
+      navigate("/", { replace: true });
     };
 
-    let timer;
-    const resetTimer = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(logoutUser, 180000);
+    const resetIdleTimer = () => {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = setTimeout(logoutUser, IDLE_TIMEOUT);
     };
 
-    const events = ["mousemove", "keydown", "scroll", "touchstart"];
-    events.forEach((event) => window.addEventListener(event, resetTimer));
+    const events = [
+      "mousemove",
+      "mousedown",
+      "keypress",
+      "scroll",
+      "touchstart",
+    ];
 
-    resetTimer();
+    events.forEach((event) =>
+      window.addEventListener(event, resetIdleTimer)
+    );
+
+    resetIdleTimer();
 
     return () => {
-      clearTimeout(timer);
-      events.forEach((event) => window.removeEventListener(event, resetTimer));
+      clearTimeout(idleTimerRef.current);
+      events.forEach((event) =>
+        window.removeEventListener(event, resetIdleTimer)
+      );
     };
-  }, [token, role, navigate]);
+  }, [token, navigate]);
 
-
-
+ 
   if (!token || !role) {
     return <Navigate to="/" replace />;
   }
 
+  let hasAccess = true;
 
-  if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to="/" replace />;
+  if (role === "user" && userdata) {
+    const matchedRoute = matchRoute(
+      location.pathname,
+      USER_ROUTE_FEATURE_MAP
+    );
+
+    const requiredFeatures = matchedRoute
+      ? USER_ROUTE_FEATURE_MAP[matchedRoute]
+      : [];
+
+    if (requiredFeatures.length > 0) {
+      hasAccess = requiredFeatures.every(
+        (feature) => userdata[feature] === true
+      );
+    }
   }
 
+  useEffect(() => {
+    if (!hasAccess && !toastShownRef.current) {
+      toast.error("You don’t have permission to access this feature.");
+      toastShownRef.current = true;
+    }
+  }, [hasAccess]);
+
+  useEffect(() => {
+    if (hasAccess) {
+      sessionStorage.setItem(LAST_ALLOWED_ROUTE, location.pathname);
+    }
+  }, [hasAccess, location.pathname]);
+
+  if (!hasAccess) {
+    navigate("/no-access", { replace: true });
+    return null;
+  }
 
   return children;
 };

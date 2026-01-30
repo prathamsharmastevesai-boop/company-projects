@@ -24,13 +24,14 @@ export const AdminLogin = () => {
     const role = sessionStorage.getItem("role");
 
     if (!token || !role) return;
+console.log(role,"role");
 
     if (role === "superuser") {
       navigate("/admin-management");
     } else if (role === "admin") {
       navigate("/admin-dashboard");
     } else if (role === "user") {
-      navigate("/dashboard");
+      navigate("/cre-news");
     }
   }, []);
 

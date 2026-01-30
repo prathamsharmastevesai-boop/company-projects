@@ -32,32 +32,39 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
   const currentDocs = docs.slice(indexOfFirstDoc, indexOfLastDoc);
 
   const isFloorPlanCategory = ["floor_plan", "building_stack", "LOI"].includes(category);
- const fetchData = async () => {
-  setListLoading(true);
+  const fetchData = async () => {
+    setListLoading(true);
 
+    let placeholder = "";
 
-  try {
-    const res = await dispatch(
-      isFloorPlanCategory
-        ? FloorPlanStackListSubmit({ buildingId: building_Id, category })
-        : GeneralInfoSubmit({ buildingId: building_Id, category })
-    ).unwrap();
-
-    if (Array.isArray(res)) {
-      setDocs(
-        res.map((f) => ({
-          file_id: f.file_id,
-          name: f.original_file_name,
-          tag: f.tag || "",
-        }))
-      );
+    if (category === "floor_plan") {
+      placeholder = "Enter tag for Floor Plan";
+    } else if (category === "LOI") {
+      placeholder = "Enter tag by Suite Number";
     }
-  } catch (err) {
-    console.error(`Error fetching ${category} docs:`, err);
-  } finally {
-    setListLoading(false);
-  }
-};
+
+    try {
+      const res = await dispatch(
+        isFloorPlanCategory
+          ? FloorPlanStackListSubmit({ buildingId: building_Id, category })
+          : GeneralInfoSubmit({ buildingId: building_Id, category })
+      ).unwrap();
+
+      if (Array.isArray(res)) {
+        setDocs(
+          res.map((f) => ({
+            file_id: f.file_id,
+            name: f.original_file_name,
+            tag: f.tag || "",
+          }))
+        );
+      }
+    } catch (err) {
+      console.error(`Error fetching ${category} docs:`, err);
+    } finally {
+      setListLoading(false);
+    }
+  };
 
 
   useEffect(() => {
@@ -143,28 +150,28 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = async () => {
-  if (!fileToDelete) return;
+  const confirmDelete = async () => {
+    if (!fileToDelete) return;
 
-  setDeleteLoading(true);
+    setDeleteLoading(true);
 
-  try {
-    await dispatch(
-      isFloorPlanCategory
-        ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
-        : DeleteDocSubmit({ file_id: fileToDelete.file_id, category })
-    ).unwrap();
+    try {
+      await dispatch(
+        isFloorPlanCategory
+          ? FloorPlanStackDeleteSubmit({ file_id: fileToDelete.file_id })
+          : DeleteDocSubmit({ file_id: fileToDelete.file_id, category })
+      ).unwrap();
 
-    await fetchData();
-  } catch (err) {
-    console.error("Delete failed:", err);
-    toast.error("Failed to delete document");
-  } finally {
-    setDeleteLoading(false);
-    setShowDeleteModal(false);
-    setFileToDelete(null);
-  }
-};
+      await fetchData();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      toast.error("Failed to delete document");
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
+      setFileToDelete(null);
+    }
+  };
 
 
   return (
@@ -179,21 +186,27 @@ const confirmDelete = async () => {
       </div>
 
 
-      {(category === "floor_plan" || category === "LOI") && (
-        <div className="mb-3">
-          <label htmlFor="tag" className="form-label">
-            Tag
-          </label>
-          <input
-            type="text"
-            id="tag"
-            className="form-control"
-            placeholder="Enter tag for Floor Plan"
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-          />
-        </div>
-      )}
+      {
+        (category === "floor_plan" || category === "LOI") && (
+          <div className="mb-3">
+            <label htmlFor="tag" className="form-label">
+              Tag
+            </label>
+
+            <input
+              type="text"
+              id="tag"
+              className="form-control"
+              placeholder={
+                category === "floor_plan" ? "Enter tag for Floor Plan" : "Enter tag by Suite Number"
+              }
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+            />
+          </div>
+        )
+      }
+
 
 
       <div

@@ -32,7 +32,7 @@ export const Home = () => {
     if (!token || !role) return;
 
     if (role === "user") {
-      navigate("/dashboard", { replace: true });
+      navigate("/user-profile", { replace: true });
     } else if (role === "admin") {
       navigate("/admin-dashboard", { replace: true });
     } else if (role === "superuser") {
@@ -67,19 +67,19 @@ export const Home = () => {
         <h2 className="mb-4 text-dark fw-bold">
           Welcome to CRE Portfolio Pulse
         </h2>
-        <p className="text-muted mb-4">Select your login type to continue</p>
+        {/* <p className="text-muted mb-4">Select your login type to continue</p> */}
         <div className="d-grid gap-3">
-          <button
+          {/* <button
             className="btn btn-outline-dark  btn-lg d-flex align-items-center justify-content-center gap-2"
             onClick={() => navigate("/admin-login")}
           >
             <FaUserShield /> Admin Login
-          </button>
+          </button> */}
           <button
             className="btn btn-outline-dark btn-lg d-flex align-items-center justify-content-center gap-2"
-            onClick={() => navigate("/user-login")}
+            onClick={() => navigate("/login")}
           >
-            <FaUser /> User Login
+            <FaUser /> Login
           </button>
         </div>
       </div>

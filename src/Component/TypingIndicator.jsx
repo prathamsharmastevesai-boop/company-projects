@@ -10,7 +10,7 @@ const TypingIndicator = () => {
             <span className="dot"></span>
             <span className="dot"></span>
           </div>
-          <span className="text-muted">Assistant is typing...</span>
+          <span className="text-muted">Portfolio Pulse is Working...</span>
         </div>
       </div>
     </div>

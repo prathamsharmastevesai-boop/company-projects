@@ -8,6 +8,7 @@ import ForumReducer from "../Slice/forumSlice";
 import notesReducer from "../../User/Slice/notesSlice";
 import subleaseReducer from "../Slice/subleaseTrackerSlice";
 import RenewalReducer from "../Slice/RenewalTrackerSlice";
+import chatSystemReducer from "../../User/Slice/chatSystemSlice";
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     notesSlice: notesReducer,
     subleaseSlice: subleaseReducer,
     RenewalSlice: RenewalReducer,
+    chatSystemSlice: chatSystemReducer,
   },
 });
 

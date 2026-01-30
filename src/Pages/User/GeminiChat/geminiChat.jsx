@@ -12,9 +12,11 @@ import {
 import TypingIndicator from "../../../Component/TypingIndicator";
 import {
   AskQuestionGeminiAPI,
+  DeleteGeneralDocSubmit,
+  ListGeminiDoc,
+  UploadGeneralDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
-
-import { BackButton } from "../../../Component/backButton";
+import { Modal } from "react-bootstrap";
 
 export const GeminiChat = () => {
   const dispatch = useDispatch();
@@ -26,6 +28,8 @@ export const GeminiChat = () => {
   const recognitionRef = useRef(null);
 
   const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
+  
+  const [category, setCategory] = useState(location.state?.type);
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -36,7 +40,12 @@ export const GeminiChat = () => {
   const [isReplyLoading, setIsReplyLoading] = useState(false);
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
-
+  const [isUploading, setIsUploading] = useState(false);
+  const [deletingDocId, setDeletingDocId] = useState(null);
+  const [showDocsModal, setShowDocsModal] = useState(false);
+  const [docs, setDocs] = useState([]);
+  const [isDocsLoading, setIsDocsLoading] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false); 
 
   const isLoading = isLoadingSession;
 
@@ -50,15 +59,17 @@ export const GeminiChat = () => {
     const fetchLastSession = async () => {
       setIsLoadingSession(true);
       try {
-        const res = await dispatch(
-          get_Session_List_Specific({
-            category: "Gemini",
-          })
-        ).unwrap();
+        const res = await dispatch(get_Session_List_Specific()).unwrap();
 
-        if (res.length > 0) {
-          res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          const latestSession = res[0];
+        const filtered = res.filter(
+          (s) => s.category === "Gemini"
+        );
+
+        if (filtered.length > 0) {
+          filtered.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          const latestSession = filtered[0];
 
           setSessionId(latestSession.session_id);
         } else {
@@ -78,14 +89,21 @@ export const GeminiChat = () => {
   }, [dispatch, location.state]);
 
   useEffect(() => {
-    if (!sessionReady || !sessionId) return;
+    if (!sessionReady || !sessionId) {
+      // If no session ready or no sessionId, set initial load complete
+      if (sessionReady) {
+        setInitialLoadComplete(true);
+        setIsLoadingHistory(false);
+      }
+      return;
+    }
 
     const fetchChatHistory = async () => {
       setIsLoadingHistory(true);
       try {
-        const res = await dispatch(
-          get_Chat_History({ session_id: sessionId })
-        ).unwrap();
+        console.log(sessionId,"sessionId");
+        
+        const res = await dispatch(get_Chat_History({ sessionId })).unwrap();
         if (Array.isArray(res) && res.length > 0) {
           const formatted = res.flatMap((item) => [
             { sender: "User", message: item.question },
@@ -100,6 +118,7 @@ export const GeminiChat = () => {
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
+        setInitialLoadComplete(true); // MARK: initial load complete
       }
     };
 
@@ -134,6 +153,12 @@ export const GeminiChat = () => {
   }, [isLoadingHistory, messages.length]);
 
   const startRecording = async () => {
+    // Don't allow recording while initial load is not complete
+    if (!initialLoadComplete) {
+      toast.info("Please wait while chat loads...");
+      return;
+    }
+
     if (
       !("webkitSpeechRecognition" in window || "SpeechRecognition" in window)
     ) {
@@ -192,16 +217,62 @@ export const GeminiChat = () => {
     }
   };
 
+  const uploadFile = async (file) => {
+    
+    if (!initialLoadComplete) {
+      toast.info("Please wait while chat loads...");
+      return;
+    }
+
+    if (
+      ![
+        "application/pdf"
+      ].includes(file.type)
+    ) {
+      toast.error("Only PDF files are allowed");
+      return;
+    }
+
+    if (file.size > 30 * 1024 * 1024) {
+      toast.error("File size must be under 30MB");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const data = {
+        file,
+        session_id: sessionId
+      };
+      await dispatch(
+        UploadGeneralDocSubmit(data)
+      ).unwrap();
+
+      toast.success("File uploaded successfully!");
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) await uploadFile(file);
+    e.target.value = null;
+  };
+
   const handleSendMessage = async () => {
+    // Prevent sending if initial load is not complete
+    if (!initialLoadComplete) {
+      toast.info("Please wait while chat loads...");
+      return;
+    }
+
     if (!message.trim()) return toast.warning("Please enter a message.");
 
     if (!sessionId) {
       toast.info("Please start a new chat session first.");
-      return;
-    }
-
-    if (isLoadingHistory) {
-      toast.info("Please wait until chat history is loaded.");
       return;
     }
 
@@ -218,6 +289,7 @@ export const GeminiChat = () => {
         question: userMessage.message,
         category: "Gemini",
       };
+      console.log(payload, "payload");
 
       const response = await dispatch(AskQuestionGeminiAPI(payload)).unwrap();
 
@@ -242,10 +314,54 @@ export const GeminiChat = () => {
   };
 
   const handleNewSession = () => {
+    // Don't allow new session while initial load is not complete
+    if (!initialLoadComplete) {
+      toast.info("Please wait while chat loads...");
+      return;
+    }
+
     const newId = uuidv4();
     setSessionId(newId);
     setMessages([]);
     setIsChatStarted(false);
+    setInitialLoadComplete(true); // Allow interactions after new session
+  };
+
+  const fetchDocs = async () => {
+    if (!sessionId) return;
+
+    try {
+      setIsDocsLoading(true);
+      const res = await dispatch(ListGeminiDoc({ session_id: sessionId })).unwrap();
+      setDocs(res || []);
+    } catch {
+      toast.error("Failed to fetch documents.");
+    } finally {
+      setIsDocsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showDocsModal) fetchDocs();
+  }, [showDocsModal]);
+
+  const handleDeleteDoc = async (docId) => {
+    if (!window.confirm("Delete this document?")) return;
+
+    try {
+      setDeletingDocId(docId);
+
+      await dispatch(
+        DeleteGeneralDocSubmit({ file_id: docId })
+      ).unwrap();
+
+      toast.success("Document deleted.");
+      fetchDocs();
+    } catch {
+      toast.error("Failed to delete document.");
+    } finally {
+      setDeletingDocId(null);
+    }
   };
 
   const LoadingSpinner = () => (
@@ -256,6 +372,9 @@ export const GeminiChat = () => {
       <span className="ms-2 text-muted">Loading...</span>
     </div>
   );
+
+  // Helper to check if actions are disabled
+  const isActionDisabled = isLoadingHistory || !initialLoadComplete;
 
   return (
     <div className="container-fluid py-3" style={{ height: "100vh" }}>
@@ -281,9 +400,26 @@ export const GeminiChat = () => {
                   ></i>
                   Gemini
                 </span>
+
+                <label
+                  htmlFor="fileUpload"
+                  className={`btn btn-outline-secondary btn-sm d-flex align-items-center ${isActionDisabled ? 'disabled' : ''}`}
+                  style={{ borderRadius: "20px" }}
+                >
+                  <i className="bi bi-upload me-1"></i> Upload
+                </label>
+
+                <input
+                  type="file"
+                  id="fileUpload"
+                  className="d-none"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  disabled={isActionDisabled}
+                />
               </h5>
 
-              {isLoading ? (
+              {isLoading || !initialLoadComplete ? (
                 <LoadingSpinner />
               ) : (
                 <>
@@ -310,14 +446,14 @@ export const GeminiChat = () => {
                           handleSendMessage();
                         }
                       }}
-                      disabled={isSending}
+                      disabled={isSending || isActionDisabled}
                     />
 
                     {message.length > 0 ? (
                       <button
                         className="btn btn-secondary rounded-circle"
                         onClick={handleSendMessage}
-                        disabled={isSending}
+                        disabled={isSending || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         {isSending ? (
@@ -328,28 +464,36 @@ export const GeminiChat = () => {
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
-                          }`}
+                        className={`btn rounded-circle ${
+                          isRecording ? "btn-danger" : "btn-outline-secondary"
+                        } ${isActionDisabled ? 'disabled' : ''}`}
                         onClick={startRecording}
-                        disabled={isSending}
+                        disabled={isSending || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                            }`}
+                          className={`bi ${
+                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                          }`}
                         ></i>
                       </button>
                     )}
                   </div>
                   <div className="mt-3 d-flex gap-2">
                     <button
-                      className="btn btn-outline-secondary btn-sm"
+                      className={`btn btn-outline-secondary btn-sm ${isActionDisabled ? 'disabled' : ''}`}
                       onClick={handleNewSession}
-                      disabled={isLoading}
+                      disabled={isLoading || isActionDisabled}
                     >
                       <i className="bi bi-plus-circle me-1"></i> New Session
                     </button>
-                   
+                    <button
+                      className={`btn btn-outline-secondary btn-sm ${isActionDisabled ? 'disabled' : ''}`}
+                      onClick={() => setShowDocsModal(true)}
+                      disabled={isActionDisabled}
+                    >
+                      <i className="bi bi-folder2-open me-1"></i> Documents
+                    </button>
                   </div>
                 </>
               )}
@@ -364,33 +508,39 @@ export const GeminiChat = () => {
             transition={{ duration: 0.4 }}
             className="h-100"
           >
-            
             <div className="row h-100">
               <div className="col-md-12 d-flex flex-column">
                 <div className="chat-header d-flex justify-content-between align-items-center mb-2">
+                  <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
+                    Gemini
+                  </h5>
+
                   <div className="mt-3 d-flex gap-2">
-                    <BackButton />
                     <button
-                      className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                      className={`btn btn-outline-secondary btn-sm d-flex align-items-center ${isActionDisabled ? 'disabled' : ''}`}
                       onClick={handleNewSession}
-                      disabled={isLoading}
+                      disabled={isLoading || isActionDisabled}
                     >
                       <i className="bi bi-plus-circle me-1"></i>
                       <span className="d-none d-sm-inline">New Session</span>
                     </button>
 
-                   
+                    <button
+                      className={`btn btn-outline-secondary btn-sm d-flex align-items-center ${isActionDisabled ? 'disabled' : ''}`}
+                      onClick={() => setShowDocsModal(true)}
+                      disabled={isActionDisabled}
+                    >
+                      <i className="bi bi-folder2-open me-1"></i>
+                      <span className="d-none d-sm-inline">Documents</span>
+                    </button>
                   </div>
-                  <h5 className="chat-title text-muted mb-0 d-flex align-items-center">
-                    Gemini
-                  </h5>
                 </div>
 
                 <div
                   ref={chatRef}
                   className="flex-grow-1 overflow-auto p-3 bg-light rounded mb-2 hide-scrollbar"
                 >
-                  {isLoadingHistory ? (
+                  {isLoadingHistory || !initialLoadComplete ? (
                     <LoadingSpinner />
                   ) : (
                     <div className="message-container1 hide-scrollbar">
@@ -399,24 +549,27 @@ export const GeminiChat = () => {
                           {messages.map((msg, i) => (
                             <div
                               key={i}
-                              className={`mb-2 small ${msg.sender === "Admin"
-                                ? "text-start"
-                                : "text-end"
-                                }`}
+                              className={`mb-2 small ${
+                                msg.sender === "Admin"
+                                  ? "text-start"
+                                  : "text-end"
+                              }`}
                             >
                               <div
-                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${msg.sender === "Admin"
-                                  ? ""
-                                  : "bg-secondary text-light"
-                                  }`}
+                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${
+                                  msg.sender === "Admin"
+                                    ? ""
+                                    : "bg-secondary text-light"
+                                }`}
                               >
                                 {msg.sender === "Admin" ? (
                                   <>
                                     <i
-                                      className={`bi ${speakingIndex === i
-                                        ? "bi-volume-up-fill"
-                                        : "bi-volume-mute"
-                                        } ms-2`}
+                                      className={`bi ${
+                                        speakingIndex === i
+                                          ? "bi-volume-up-fill"
+                                          : "bi-volume-mute"
+                                      } ms-2`}
                                       style={{
                                         cursor: "pointer",
                                         fontSize: "1rem",
@@ -463,27 +616,55 @@ export const GeminiChat = () => {
 
                 <div className="pt-2 pb-1">
                   <div className="d-flex align-items-end rounded-pill py-2 px-3 bg-white shadow-sm border">
+                    {isUploading ? (
+                      <div className="spinner-border spinner-border-sm text-secondary m-2" />
+                    ) : (
+                      <>
+                        <label
+                          htmlFor="chatFileUpload"
+                          className={`btn btn-link p-0 me-2 d-flex align-items-center ${isActionDisabled ? 'disabled' : ''}`}
+                          style={{ cursor: isActionDisabled ? 'not-allowed' : 'pointer' }}
+                        >
+                          <i
+                            className="bi bi-upload text-secondary"
+                            style={{ fontSize: "1.2rem", opacity: isActionDisabled ? 0.5 : 1 }}
+                          ></i>
+                        </label>
+
+                        <input
+                          id="chatFileUpload"
+                          type="file"
+                          className="d-none"
+                          accept=".pdf"
+                          onChange={handleFileChange}
+                          disabled={isUploading || isActionDisabled}
+                        />
+                      </>
+                    )}
+
                     <textarea
                       ref={textareaRef}
                       rows={1}
                       className="form-control flex-grow-1 border-0 shadow-none bg-transparent me-2"
-                      placeholder="Ask Now, Let's Work..."
+                      placeholder={isActionDisabled ? "Loading chat..." : "Ask Now, Let's Work..."}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
-                          handleSendMessage();
+                          if (!isActionDisabled) {
+                            handleSendMessage();
+                          }
                         }
                       }}
-                      disabled={isSending || isReplyLoading}
+                      disabled={isSending || isReplyLoading || isActionDisabled}
                     />
 
                     {message.length > 0 ? (
                       <button
                         className="btn btn-secondary rounded-circle"
                         onClick={handleSendMessage}
-                        disabled={isSending || isReplyLoading}
+                        disabled={isSending || isReplyLoading || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         {isSending ? (
@@ -494,15 +675,17 @@ export const GeminiChat = () => {
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
-                          }`}
+                        className={`btn rounded-circle ${
+                          isRecording ? "btn-danger" : "btn-outline-secondary"
+                        } ${isActionDisabled ? 'disabled' : ''}`}
                         onClick={startRecording}
-                        disabled={isSending || isReplyLoading}
+                        disabled={isSending || isReplyLoading || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                            }`}
+                          className={`bi ${
+                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                          }`}
                         ></i>
                       </button>
                     )}
@@ -513,6 +696,52 @@ export const GeminiChat = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Modal
+        show={showDocsModal}
+        onHide={() => setShowDocsModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Uploaded Documents</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          {isDocsLoading ? (
+            <LoadingSpinner />
+          ) : !docs || docs.length === 0 ? (
+            <p className="text-muted text-center">No documents uploaded yet.</p>
+          ) : (
+            <ul className="list-group">
+              {docs.map((doc) => (
+                <li
+                  key={doc.id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span>
+                    <i className="bi bi-file-earmark-text me-2"></i>
+                    {doc.file_name}
+                  </span>
+
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleDeleteDoc(doc.id)}
+                      disabled={deletingDocId === doc.id}
+                    >
+                      {deletingDocId === doc.id ? (
+                        <div className="spinner-border spinner-border-sm text-danger" />
+                      ) : (
+                        <i className="bi bi-trash"></i>
+                      )}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

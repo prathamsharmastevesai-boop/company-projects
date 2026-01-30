@@ -8,61 +8,84 @@ export const CommissionCalculator = () => {
   const [grossArea, setGrossArea] = useState("");
   const [termYears, setTermYears] = useState("");
   const [freeRentMonths, setFreeRentMonths] = useState("");
-  const [faceRentYear1, setFaceRentYear1] = useState("");
   const [annualEscalation, setAnnualEscalation] = useState("");
 
+  const [baseRentList, setBaseRentList] = useState([]);
   const [commissionList, setCommissionList] = useState([]);
+
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
+
+  /* ---------------- VALIDATION ---------------- */
   const validate = () => {
     const err = {};
 
-    if (!grossArea || Number(grossArea) <= 0)
+    if (!grossArea || grossArea <= 0)
       err.grossArea = "Gross area must be greater than 0";
 
-    if (!termYears || Number(termYears) < 1 || Number(termYears) > 50)
+    if (!termYears || termYears < 1 || termYears > 50)
       err.termYears = "Term must be between 1 and 50 years";
 
-    if (!faceRentYear1 || Number(faceRentYear1) <= 0)
-      err.faceRentYear1 = "Face rent must be greater than 0";
+    if (annualEscalation < 0 || annualEscalation > 100)
+      err.annualEscalation = "Escalation must be 0–100%";
 
-    if (
-      annualEscalation === "" ||
-      Number(annualEscalation) < 0 ||
-      Number(annualEscalation) > 100
-    )
-      err.annualEscalation = "Escalation must be between 0–100%";
+    if (freeRentMonths < 0 || freeRentMonths > 36)
+      err.freeRentMonths = "Free rent must be 0–36 months";
 
-    if (
-      freeRentMonths === "" ||
-      Number(freeRentMonths) < 0 ||
-      Number(freeRentMonths) > 36
-    )
-      err.freeRentMonths = "Free rent must be between 0–36 months";
+    if (baseRentList.length !== Number(termYears))
+      err.baseRent = "Generate base rent rows";
 
     if (commissionList.length !== Number(termYears))
-      err.commissionList = "Generate commission rows first";
+      err.commission = "Generate commission rows";
+
+    const invalidBaseRent = baseRentList.some(
+      (b) => b.rent === "" || b.rent <= 0
+    );
+    if (invalidBaseRent)
+      err.baseRentValues = "All base rents must be greater than 0";
 
     const invalidRate = commissionList.some(
       (c) => c.rate_pct === "" || c.rate_pct < 0 || c.rate_pct > 100
     );
     if (invalidRate)
-      err.commissionRates = "All commission rates must be 0–100%";
+      err.commissionRates = "Commission rates must be 0–100%";
 
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  const generateCommissionYears = () => {
-    if (!termYears || termYears < 1) return;
+  /* ---------------- GENERATE YEARS ---------------- */
+  const generateYearRows = () => {
+    const years = Number(termYears);
+    if (!years || years < 1) return;
 
-    const rows = Array.from({ length: Number(termYears) }, (_, i) => ({
-      year: i + 1,
-      rate_pct: "",
-    }));
-    setCommissionList(rows);
+    setBaseRentList(
+      Array.from({ length: years }, (_, i) => ({
+        year: i + 1,
+        rent: "",
+      }))
+    );
+
+    setCommissionList(
+      Array.from({ length: years }, (_, i) => ({
+        year: i + 1,
+        rate_pct: "",
+      }))
+    );
+  };
+
+  /* ---------------- UPDATE HANDLERS ---------------- */
+  const updateBaseRent = (index, value) => {
+    const arr = [...baseRentList];
+    arr[index].rent = value;
+    setBaseRentList(arr);
   };
 
   const updateCommissionRate = (index, value) => {
@@ -71,6 +94,7 @@ export const CommissionCalculator = () => {
     setCommissionList(arr);
   };
 
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -79,9 +103,9 @@ export const CommissionCalculator = () => {
     const payload = {
       Square_Footage: Number(grossArea),
       Total_Term_Years: Number(termYears),
-      Base_Rent_PSF: [Number(faceRentYear1)],
       Annual_Escalation_Rate: Number(annualEscalation),
       Free_Rent_Months: Number(freeRentMonths),
+      Base_Rent_PSF: baseRentList.map((b) => Number(b.rent)),
       Commission_Rate_Annual_Pct: commissionList.map((c) => ({
         year: c.year,
         rate_pct: Number(c.rate_pct),
@@ -89,18 +113,21 @@ export const CommissionCalculator = () => {
     };
 
     try {
-      const response = await dispatch(commissionSimpleApi(payload));
-      if (response.meta?.requestStatus === "fulfilled") {
-        setResult(response.payload);
+      const res = await dispatch(commissionSimpleApi(payload));
+      if (res.meta.requestStatus === "fulfilled") {
+        setResult(res.payload);
       }
     } finally {
       setLoading(false);
     }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="container-fluid p-3">
       <div className="row g-3">
+
+        {/* LEFT */}
         <div className="col-md-8">
           <div className="card p-3 shadow-sm">
             <h4 className="fw-bold">Deal Parameters</h4>
@@ -110,8 +137,7 @@ export const CommissionCalculator = () => {
               {[
                 ["Gross Area (SF)", grossArea, setGrossArea, errors.grossArea],
                 ["Total Term (Years)", termYears, setTermYears, errors.termYears],
-                ["Face Rent PSF – Year 1", faceRentYear1, setFaceRentYear1, errors.faceRentYear1],
-                ["Annual Escalation Rate (%)", annualEscalation, setAnnualEscalation, errors.annualEscalation],
+                ["Annual Escalation (%)", annualEscalation, setAnnualEscalation, errors.annualEscalation],
                 ["Free Rent (Months)", freeRentMonths, setFreeRentMonths, errors.freeRentMonths],
               ].map(([label, val, setter, err], i) => (
                 <div className="col-md-6 mb-3" key={i}>
@@ -127,40 +153,47 @@ export const CommissionCalculator = () => {
               ))}
             </div>
 
-            <h5 className="fw-bold mt-3">Commission Rates (Annual)</h5>
-            <hr />
-
             <button
-              className="btn btn-outline-primary w-100 mb-3"
-              onClick={generateCommissionYears}
+              className="btn btn-outline-primary w-100 my-3"
+              onClick={generateYearRows}
             >
-              Generate Commission Rows
+              Generate Year Rows
             </button>
 
-            {errors.commissionList && (
-              <div className="text-danger mb-2">{errors.commissionList}</div>
-            )}
-
-            {commissionList.map((item, idx) => (
-              <div key={idx} className="mb-2">
-                <label>Year {item.year} – Rate (%)</label>
+            {/* BASE RENT */}
+            <h5 className="fw-bold mt-3">Base Rent PSF (Per Year)</h5>
+            <hr />
+            {baseRentList.map((item, idx) => (
+              <div className="mb-2" key={idx}>
+                <label>Year {item.year}</label>
                 <input
                   type="number"
-                  className={`form-control ${
-                    errors.commissionRates ? "is-invalid" : ""
-                  }`}
-                  value={item.rate_pct}
-                  onChange={(e) => updateCommissionRate(idx, e.target.value)}
+                  className="form-control"
+                  value={item.rent}
+                  onChange={(e) => updateBaseRent(idx, e.target.value)}
                 />
               </div>
             ))}
 
-            {errors.commissionRates && (
-              <div className="text-danger">{errors.commissionRates}</div>
-            )}
+            {/* COMMISSION */}
+            <h5 className="fw-bold mt-4">Commission Rates (%)</h5>
+            <hr />
+            {commissionList.map((item, idx) => (
+              <div className="mb-2" key={idx}>
+                <label>Year {item.year}</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={item.rate_pct}
+                  onChange={(e) =>
+                    updateCommissionRate(idx, e.target.value)
+                  }
+                />
+              </div>
+            ))}
 
             <button
-              className="btn btn-primary w-100 mt-3"
+              className="btn btn-primary w-100 mt-4"
               onClick={handleSubmit}
               disabled={loading}
             >
@@ -169,17 +202,26 @@ export const CommissionCalculator = () => {
           </div>
         </div>
 
+        {/* RIGHT */}
         <div className="col-md-4">
           <div className="card p-3 shadow-sm">
             <h5 className="fw-bold">Calculated Results</h5>
-            {!result && <p className="text-muted">Submit to see result.</p>}
+
+            {!result && (
+              <p className="text-muted">Submit to see result</p>
+            )}
+
             {result && (
-              <pre className="bg-light p-3 rounded">
-                {JSON.stringify(result.Total_Commission_Due, null, 2)}
-              </pre>
+              <div className="p-2 bg-light rounded">
+                <strong>Total Commission Due</strong>
+                <div className="fs-5">
+                  {formatCurrency(result.Total_Commission_Due)}
+                </div>
+              </div>
             )}
           </div>
         </div>
+
       </div>
     </div>
   );

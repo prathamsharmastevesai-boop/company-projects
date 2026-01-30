@@ -27,7 +27,7 @@ export const Login = () => {
 
     if (!token || !role) return;
 
-    if (role === "user") navigate("/dashboard");
+    if (role === "user") navigate("/user-profile");
     else if (role === "admin") navigate("/admin-dashboard");
     else if (role === "superuser") navigate("/admin-management");
   }, []);
@@ -55,16 +55,30 @@ export const Login = () => {
       ).unwrap();
       console.log(res.role, "res.role");
 
-      if (res.role !== "user") {
-        toast.error("Invalid credentials");
-        return;
-      }
+      // if (res.role !== "user") {
+      //   toast.error("Invalid credentials");
+      //   return;
+      // }
 
 
-      if (res.role === "user") navigate("/dashboard");
-      sessionStorage.setItem("access_token", res.access_token);
+      if (res.role === "user") {
+        navigate("/user-profile");
+           sessionStorage.setItem("access_token", res.access_token);
       sessionStorage.setItem("role", res.role);
-      toast.success("Google login successful");
+      }
+      else if (res.role === "admin") {
+        navigate("/admin-dashboard");
+               sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+      } else
+        if (res.role === "superuser") {
+          navigate("/admin-management");
+                 sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+        }
+   
+      toast.success("login successfull");
+
     } catch (err) {
 
     } finally {
@@ -92,17 +106,31 @@ export const Login = () => {
       const { role, access_token } = res;
       console.log(res, "res");
 
-      if (role !== "user") {
-        toast.error("Invalid credentials");
-        return;
-      }
+      // if (role !== "user") {
+      //   toast.error("Invalid credentials");
+      //   return;
+      // }
 
 
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("access_token", access_token);
+ if (res.role === "user") {
+           navigate("/user-profile", { state: { email } });
+           sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+      }
+      else if (res.role === "admin") {
+        navigate("/admin-dashboard");
+               sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+      } else
+        if (res.role === "superuser") {
+          navigate("/admin-management");
+                 sessionStorage.setItem("access_token", res.access_token);
+      sessionStorage.setItem("role", res.role);
+        }
+      toast.success("login successful");
 
-      toast.success("User login successful");
-      navigate("/dashboard", { state: { email } });
     } catch (err) {
       // toast.error("Login failed");
     } finally {
@@ -137,7 +165,7 @@ export const Login = () => {
               alt="Logo"
               style={{ height: 80, width: 100 }}
             />
-            <h4 className="fw-bold mt-3">USER LOGIN</h4>
+            <h4 className="fw-bold mt-3">LOGIN</h4>
             <p className="text-muted small">Please enter your details</p>
           </div>
 

@@ -298,14 +298,14 @@ export const PortfolioForum = () => {
               threads.map((t) => (
                 <Card
                   key={t.id}
-                  className={`p-3 mb-2 shadow-sm border ${
+                  className={`p-3 mb-2 shadow-sm thread_card border ${
                     selectedThread?.id === t.id ? "border-primary" : ""
                   }`}
                   style={{ cursor: "pointer" }}
                   onClick={() => handlethreadhistory(t)}
                 >
                   <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-2">
-                    <div className="flex-grow-1">
+                    <div className="flex-grow-1 thread_title">
                       <h6
                         className="fw-bold mb-1 text-truncate"
                         style={{ maxWidth: "100%" }}
@@ -316,7 +316,7 @@ export const PortfolioForum = () => {
                       </h6>
                     </div>
 
-                    <div className="d-flex flex-row flex-md-column align-items-center text-end gap-2">
+                    <div className="thread_btn d-flex flex-row flex-md-column align-items-center text-end gap-2">
                       <button
                         className="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
                         style={{ width: 32, height: 30, padding: 0 }}
@@ -400,7 +400,7 @@ export const PortfolioForum = () => {
                     className="d-flex justify-content-center align-items-center"
                     style={{ height: "100%", width: "100%" }}
                   >
-                    <p className="text-muted m-0">No thoughts yet...</p>
+                    <p className="text-muted m-0">No thoughts yet</p>
                   </div>
                 ) : (
                   <div className="d-flex flex-column w-100 ">

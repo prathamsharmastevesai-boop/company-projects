@@ -3,21 +3,23 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../Admin/APIs/AxiosInstance";
 import { feedbacksubmit, getfeedback, updatefeedback } from "../../../NWconfig";
 
-const getErrorMsg = (error, fallback = "Something went wrong") =>
-  error?.response?.data?.message || error?.response?.data?.detail || fallback;
-
 export const FeedbackSubmit = createAsyncThunk(
   "auth/FeedbackSubmit",
-  async (data, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(feedbacksubmit, data);
+      const response = await axiosInstance.post(feedbacksubmit, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(getErrorMsg(error));
+      return rejectWithValue(error);
     }
   }
 );
+
 
 export const GetFeedbackList = createAsyncThunk(
   "auth/GetFeedbackList",
@@ -26,12 +28,11 @@ export const GetFeedbackList = createAsyncThunk(
       const response = await axiosInstance.get(getfeedback);
       return response.data;
     } catch (error) {
-      toast.error(getErrorMsg(error));
-      return rejectWithValue(getErrorMsg(error));
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );
-
+ 
 export const UpdateFeedback = createAsyncThunk(
   "UpdateFeedback",
   async ({ feedback_id, feedback }, { rejectWithValue }) => {
@@ -45,7 +46,7 @@ export const UpdateFeedback = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(getErrorMsg(error));
+      return rejectWithValue(error.response?.data?.message);
     }
   }
 );

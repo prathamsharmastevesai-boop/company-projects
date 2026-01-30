@@ -20,6 +20,31 @@ export const getProfileDetail = createAsyncThunk(
   }
 );
 
+export const getProfileByEmailApi = createAsyncThunk(
+  "admin/getProfileByEmail",
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get(
+        "/auth/user/profile",
+        {
+          params: { email },
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (err) {
+      console.error("PROFILE API FAILED 👉", err.response);
+      return rejectWithValue(
+        err.response?.data?.message || "Profile fetch failed"
+      );
+    }
+  }
+);
+
+
 export const ProfileUpdateApi = createAsyncThunk(
   "auth/ProfileUpdateApi",
   async (formData, { rejectWithValue }) => {

@@ -1,14 +1,76 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button, Form, Spinner, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import {
-  inviteUserApi,
-  toggleGeminiApi,
-} from "../../../Networking/Admin/APIs/UserManagement";
-import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
 import { toast } from "react-toastify";
-import { toggleForumApi } from "../../../Networking/Admin/APIs/forumApi";
+
+import { inviteUserApi } from "../../../Networking/Admin/APIs/UserManagement";
+import { DeleteUser } from "../../../Networking/Admin/APIs/LoginAPIs";
+import { toggleUserFeaturesApi } from "../../../Networking/Admin/APIs/forumApi";
 import { getAdminlistApi } from "../../../Networking/SuperAdmin/AdminSuperApi";
+import { getProfileByEmailApi } from "../../../Networking/User/APIs/Profile/ProfileApi";
+
+
+export const FEATURE_CONFIG = {
+  MAIN: {
+    title: "Main",
+    features: {
+      portfolio_insights_enabled: { label: "Portfolio Voice", backendKey: "portfolio_insights_enabled" },
+      email_drafting_enabled: { label: "Email Drafting", backendKey: "email_drafting_enabled" },
+      gemini_chat_enabled: { label: "Gemini Chat", backendKey: "gemini_chat_enabled" },
+      notes_enabled: { label: "Notes", backendKey: "notes_enabled" },
+      forum_enabled: { label: "Portfolio Forum", backendKey: "forum_enabled" },
+      ai_lease_abstract_enabled: { label: "AI Lease Abstract", backendKey: "ai_lease_abstract_enabled" },
+      information_collaboration_enabled: { label: "Information Collaboration", backendKey: "information_collaboration_enabled" },
+      det_enabled: { label: "DET", backendKey: "det_enabled" },
+      dct_enabled: { label: "DCT", backendKey: "dct_enabled" },
+      calculator_enabled: { label: "Calculator", backendKey: "calculator_enabled" },
+      yardi_enabled: { label: "Yardi", backendKey: "yardi_enabled" },
+    },
+  },
+
+  DATA_CATEGORY: {
+    title: "Data Category",
+    features: {
+      third_party_enabled: { label: "Third Party", backendKey: "third_party_enabled" },
+      employee_contact_enabled: { label: "Employee Contact", backendKey: "employee_contact_enabled" },
+      building_info_enabled: { label: "Building Info", backendKey: "building_info_enabled" },
+      comparative_building_data_enabled: { label: "Comparative Building Data", backendKey: "comparative_building_data_enabled" },
+      tenant_information_enabled: { label: "Tenant Information", backendKey: "tenant_information_enabled" },
+      tenants_in_the_market_enabled: { label: "Tenants In The Market", backendKey: "tenants_in_the_market_enabled" },
+      comps_enabled: { label: "Comps", backendKey: "comps_enabled" },
+      sublease_tracker_enabled: { label: "Sublease Tracker", backendKey: "sublease_tracker_enabled" },
+      renewal_tracker_enabled: { label: "Renewal Tracker", backendKey: "renewal_tracker_enabled" },
+      leases_agreement_data_enabled: { label: "Leases Agreement Data", backendKey: "leases_agreement_data_enabled" },
+      deal_tracker_enabled: { label: "Deal Tracker", backendKey: "deal_tracker_enabled" },
+      tour_enabled: { label: "Tour", backendKey: "tour_enabled" },
+    },
+  },
+};
+
+
+const buildDefaultFeatures = () => {
+  const defaults = {};
+  Object.values(FEATURE_CONFIG).forEach((section) => {
+    Object.keys(section.features).forEach((featureKey) => {
+      defaults[featureKey] = false;
+    });
+  });
+  return defaults;
+};
+
+const DEFAULT_FEATURES = buildDefaultFeatures();
+
+
+const mapUserToFeatures = (user) => {
+  const mapped = {};
+  Object.values(FEATURE_CONFIG).forEach((section) => {
+    Object.entries(section.features).forEach(([featureKey, config]) => {
+      mapped[featureKey] = Boolean(user?.[config.backendKey]);
+    });
+  });
+  return mapped;
+};
+
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
@@ -17,33 +79,62 @@ export const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inviteLoading, setInviteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(null);
-  const [geminiLoading, setGeminiLoading] = useState(null);
-  const [forumLoading, setForumLoading] = useState(null);
-
   const [deleteLoading, setDeleteLoading] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const [emailError, setEmailError] = useState("");
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [featureLoading, setFeatureLoading] = useState(false);
+  const [features, setFeatures] = useState(DEFAULT_FEATURES);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  const handleDelete = async (email) => {
-    if (!email) return toast.error("Email is required");
-
-    setDeleteLoading(email);
-
+  const fetchUsers = async () => {
+    setLoading(true);
     try {
-      await dispatch(DeleteUser(email)).unwrap();
-      toast.success("User deleted successfully");
+      const res = await dispatch(getAdminlistApi()).unwrap();
+      setUsers(res || []);
+    } catch {
+      toast.error("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleInviteUser = async () => {
+    if (!emailRegex.test(email)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+
+    setInviteLoading(true);
+    try {
+      await dispatch(inviteUserApi({ email })).unwrap();
+      toast.success("Invitation sent");
+      setEmail("");
       fetchUsers();
-    } catch (error) {
-      toast.error(error || "Failed to delete user");
+    } catch {
+      toast.error("Invite failed");
+    } finally {
+      setInviteLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleteLoading(selectedEmail);
+    try {
+      await dispatch(DeleteUser(selectedEmail)).unwrap();
+      toast.success("User deleted");
+      fetchUsers();
+    } catch {
+      toast.error("Delete failed");
     } finally {
       setDeleteLoading(null);
       setShowConfirm(false);
@@ -51,323 +142,178 @@ export const UserManagement = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    setLoading(true);
+  const openFeatureModal = async (user) => {
     try {
-      const res = await dispatch(getAdminlistApi()).unwrap();
-      setUsers(res || []);
-    } catch (err) {
-      console.error("Failed to fetch users:", err);
+      setFeatureLoading(true);
+      setSelectedUser(user);
+
+      const res = await dispatch(getProfileByEmailApi({ email: user.email })).unwrap();
+      setFeatures(mapUserToFeatures(res));
+      setShowFeatureModal(true);
+    } catch {
+      toast.error("Failed to load features");
     } finally {
-      setLoading(false);
+      setFeatureLoading(false);
     }
   };
 
-  const handleToggleGemini = async (email, enable) => {
-    setGeminiLoading(email);
+  const handleSaveFeatures = async () => {
     try {
-      await dispatch(toggleGeminiApi({ email, enable })).unwrap();
-      toast.success(`Gemini ${enable ? "enabled" : "disabled"} for ${email}`);
+      setFeatureLoading(true);
+      await dispatch(toggleUserFeaturesApi({ email: selectedUser.email, features })).unwrap();
+      toast.success("Features updated");
+      setShowFeatureModal(false);
       fetchUsers();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      toast.error("Update failed");
     } finally {
-      setGeminiLoading(null);
+      setFeatureLoading(false);
     }
   };
 
-  const handleToggleForum = async (email, enable) => {
-    setForumLoading(email);
-    try {
-      await dispatch(toggleForumApi({ email, enable })).unwrap();
-      toast.success(`Forum ${enable ? "enabled" : "disabled"} for ${email}`);
-      fetchUsers();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setForumLoading(null);
-    }
-  };
-
-  const handleInviteUser = async () => {
-    if (!email) {
-      setEmailError("Email is required");
-      return;
-    }
-
-    if (!emailRegex.test(email)) {
-      setEmailError("Please enter a valid email address");
-      return;
-    }
-
-    setInviteLoading(true);
-    try {
-      await dispatch(inviteUserApi({ email })).unwrap();
-      
-      setEmail("");
-      setEmailError("");
-      fetchUsers();
-    } catch (err) {
-      console.error("Invite failed:", err);
-      toast.error("Failed to invite user");
-    } finally {
-      setInviteLoading(false);
-    }
-  };
+  const allFeatureKeys = Object.keys(features);
+  const totalFeatures = allFeatureKeys.length;
+  const enabledCount = allFeatureKeys.filter((key) => features[key]).length;
 
   return (
-    <div className="container-fuild p-3">
-      <div className="text-center text-md-start">
-        <h4 className="fw-bold">User Management</h4>
-         <p className="text-muted">
-        Control user access to Portfolio Pulse documents and features
-      </p>
-      </div>
-     
+    <div className="container-fluid p-3">
+      <h4 className="fw-bold">User Management</h4>
+      <p className="text-muted">Manage user access and features</p>
 
-      <Card className="mb-4 border-0 shadow-sm">
+  
+      <Card className="mb-4">
         <Card.Body>
-          <p className="mb-0">
-            <strong>🔒 Security Model:</strong> Only administrators can create
-            user accounts. Users receive secure credentials via email and must
-            change passwords on first login.
-          </p>
+          <Row className="g-2">
+            <Col md={8}>
+              <Form.Control
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Col>
+            <Col md={4}>
+              <Button className="w-100" onClick={handleInviteUser} disabled={inviteLoading}>
+                {inviteLoading ? <Spinner size="sm" /> : "Invite User"}
+              </Button>
+            </Col>
+          </Row>
         </Card.Body>
       </Card>
 
-      <Card className="mb-4 border-0 shadow-sm">
+
+      <Card>
         <Card.Body>
-          <h5 className="mb-3">
-            <i className="bi bi-person-plus me-2"></i> Add New User
-          </h5>
-          <Form>
-            <Row className="g-2">
-              <Col xs={12} md={8}>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter user email address..."
-                  value={email}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setEmail(value);
-
-                    if (!value) {
-                      setEmailError("Email is required");
-                    } else if (!emailRegex.test(value)) {
-                      setEmailError("Please enter a valid email address");
-                    } else {
-                      setEmailError("");
-                    }
-                  }}
-                  onBlur={() => {
-                    if (!email) {
-                      setEmailError("Email is required");
-                    } else if (!emailRegex.test(email)) {
-                      setEmailError("Please enter a valid email address");
-                    } else {
-                      setEmailError("");
-                    }
-                  }}
-                  disabled={inviteLoading}
-                  isInvalid={!!emailError}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {emailError}
-                </Form.Control.Feedback>
-              </Col>
-
-              <Col xs={12} md={4}>
-                <Button
-                  variant="primary"
-                  onClick={handleInviteUser}
-                  disabled={inviteLoading || !!emailError || !email}
-                  className="w-100"
-                >
-                  {inviteLoading ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />{" "}
-                      Sending...
-                    </>
-                  ) : (
-                    "Invite User"
-                  )}
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </Card.Body>
-      </Card>
-
-      <Card className="border-0 shadow-sm">
-        <Card.Body>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="mb-0">Active Users</h5>
-            <span className="badge bg-dark">{users.length} Total Users</span>
-          </div>
-
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0">
-              <thead>
+          <table className="table align-middle">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Features</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Display Name</th>
-                  <th>Created</th>
-                  <th>Actions</th>
-                  <th>Gemini</th>
-                  <th>Forum</th>
+                  <td colSpan={5} className="text-center">Loading...</td>
                 </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan={6} className="text-center text-muted">
-                      Loading...
+              ) : users.length ? (
+                users.map((user) => (
+                  <tr key={user.email}>
+                    <td>{user.email}</td>
+                    <td>{user.status}</td>
+                    <td>{new Date(user.created).toLocaleDateString()}</td>
+                    <td>
+                      <Button size="sm" variant="outline-primary" onClick={() => openFeatureModal(user)} disabled={featureLoading}>
+                        Manage
+                      </Button>
+                    </td>
+                    <td>
+                      <Button size="sm" variant="outline-danger" onClick={() => { setSelectedEmail(user.email); setShowConfirm(true); }}>
+                        Delete
+                      </Button>
                     </td>
                   </tr>
-                ) : users.length > 0 ? (
-                  users.map((user, index) => (
-                    <tr key={index}>
-                      <td>{user.email}</td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            user.status === "Verified"
-                              ? "bg-success"
-                              : "bg-secondary"
-                          }`}
-                        >
-                          {user.status}
-                        </span>
-                      </td>
-                      <td>{user.display || user.name}</td>
-                      <td>{new Date(user.created).toLocaleDateString()}</td>
-                      <td>
-                        {user.actions?.includes("delete") && (
-                          <Button
-                            size="sm"
-                            variant="outline-danger"
-                            onClick={() => {
-                              setSelectedEmail(user.email);
-                              setShowConfirm(true);
-                            }}
-                          >
-                            Delete
-                          </Button>
-                        )}
-                      </td>
-                      <td>
-                        {geminiLoading === user.email ? (
-                          <Spinner animation="border" size="sm" />
-                        ) : (
-                          <Form.Check
-                            type="switch"
-                            id={`gemini-switch-${user.email}`}
-                            checked={user.gemini_status}
-                            disabled={
-                              geminiLoading !== null || forumLoading !== null
-                            }
-                            onChange={(e) =>
-                              handleToggleGemini(user.email, e.target.checked)
-                            }
-                            className={
-                              user.gemini_status
-                                ? "text-success"
-                                : "text-secondary"
-                            }
-                          />
-                        )}
-                      </td>
-                      <td>
-                        {forumLoading === user.email ? (
-                          <Spinner animation="border" size="sm" />
-                        ) : (
-                          <Form.Check
-                            type="switch"
-                            id={`forum-switch-${user.email}`}
-                            checked={user.forum_status}
-                            disabled={
-                              geminiLoading !== null || forumLoading !== null
-                            }
-                            onChange={(e) =>
-                              handleToggleForum(user.email, e.target.checked)
-                            }
-                            className={
-                              user.forum_status
-                                ? "text-success"
-                                : "text-secondary"
-                            }
-                          />
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6} className="text-center text-muted">
-                      No users found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="text-center">No users found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </Card.Body>
       </Card>
 
-      <div
-        className={`modal fade ${showConfirm ? "show d-block" : ""}`}
-        tabIndex="-1"
-        style={{ background: "rgba(0,0,0,0.5)" }}
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content shadow">
-            <div className="modal-header">
-              <h5 className="modal-title">Confirm Delete</h5>
-              <button
-                type="button"
-                className="btn-close"
-                onClick={() => setShowConfirm(false)}
-              ></button>
-            </div>
 
-            <div className="modal-body">
-              <p>
-                Are you sure you want to delete user:{" "}
-                <strong>{selectedEmail}</strong>?
-              </p>
-            </div>
+      {showFeatureModal && (
+        <div className="modal fade show d-block" style={{ background: "#00000080" }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Feature Access – {selectedUser.email}</h5>
+                <button className="btn-close" onClick={() => setShowFeatureModal(false)} />
+              </div>
 
-            <div className="modal-footer">
-              <Button
-                variant="secondary"
-                onClick={() => setShowConfirm(false)}
-                disabled={deleteLoading !== null}
-              >
-                Cancel
-              </Button>
+              <div className="modal-body">
+                <p>Total: {totalFeatures} | Enabled: {enabledCount} | Disabled: {totalFeatures - enabledCount}</p>
 
-              <Button
-                variant="danger"
-                onClick={() => handleDelete(selectedEmail)}
-                disabled={deleteLoading !== null}
-              >
-                {deleteLoading === selectedEmail ? (
-                  <Spinner animation="border" size="sm" />
-                ) : (
-                  "Delete"
-                )}
-              </Button>
+                {Object.entries(FEATURE_CONFIG).map(([sectionKey, section]) => (
+                  <div key={sectionKey} className="mb-4">
+                    <h6 className="fw-bold border-bottom pb-2 mb-3">{section.title}</h6>
+                    <Row>
+                      {Object.entries(section.features).map(([featureKey, feature]) => (
+                        <Col md={6} key={featureKey} className="mb-3">
+                          <div className="d-flex justify-content-between align-items-center border rounded p-2">
+                            <span>{feature.label}</span>
+                            <Form.Check
+                              type="switch"
+                              checked={features[featureKey]}
+                              onChange={(e) =>
+                                setFeatures((prev) => ({ ...prev, [featureKey]: e.target.checked }))
+                              }
+                            />
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                ))}
+              </div>
+
+              <div className="modal-footer">
+                <Button variant="secondary" onClick={() => setShowFeatureModal(false)}>Cancel</Button>
+                <Button variant="primary" onClick={handleSaveFeatures} disabled={featureLoading}>
+                  {featureLoading ? <Spinner size="sm" /> : "Save"}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {showConfirm && (
+        <div className="modal fade show d-block" style={{ background: "#00000080" }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button className="btn-close" onClick={() => setShowConfirm(false)} />
+              </div>
+              <div className="modal-body">
+                Delete user <strong>{selectedEmail}</strong>?
+              </div>
+              <div className="modal-footer">
+                <Button variant="secondary" onClick={() => setShowConfirm(false)}>Cancel</Button>
+                <Button variant="danger" onClick={handleDelete} disabled={deleteLoading}>
+                  {deleteLoading ? <Spinner size="sm" /> : "Delete"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,16 +6,20 @@ export const notes = "/notes/";
 
 export const createNoteApi = createAsyncThunk(
   "notes/create",
-  async (data, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post(notes, data);
-      toast.success(response.data?.message || "Note created!");
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message);
+      const res = await axiosInstance.post("/notes/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
     }
   }
 );
+
 
 export const getNotesApi = createAsyncThunk(
   "notes/getAll",
@@ -45,14 +49,37 @@ export const updateNoteApi = createAsyncThunk(
   "notes/update",
   async ({ noteId, data }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`${notes}${noteId}`, data);
-      toast.success("Note updated!");
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.message);
+      const res = await axiosInstance.put(
+        `/notes/${noteId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
     }
   }
 );
+
+
+export const deleteNoteFileApi = createAsyncThunk(
+  "notes/deleteFile",
+  async ({ fileId }, { rejectWithValue }) => {
+    console.log(fileId,"fileId");
+    
+    try {
+      const res = await axiosInstance.delete(`/notes/files/${fileId}`);
+      return { fileId }; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+
 
 export const deleteNoteApi = createAsyncThunk(
   "notes/delete",
