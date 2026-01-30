@@ -499,13 +499,13 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           isActivePath={isActive("/yardi")}
           enabled={profileData.yardi_enabled}
         />
-        <NavItem
+        {/* <NavItem
           path="/messages"
           icon="bi-journal-text"
           label="Messages"
           isActivePath={isActive("/messages")}
           enabled={true} 
-        />
+        /> */}
 
         {!collapsed && dataCategoriesEnabled && (
           <AccordionHeader menuKey="generalInfo" label="Data Categories" />

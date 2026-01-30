@@ -106,7 +106,7 @@ function App() {
   return (
     <Provider store={store}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <WebSocketProvider>
+        {/* <WebSocketProvider> */}
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -310,7 +310,7 @@ function App() {
             </Routes>
             <ToastContainer />
           </Router>
-        </WebSocketProvider>
+        {/* </WebSocketProvider> */}
       </GoogleOAuthProvider>
     </Provider>
 
