@@ -56,11 +56,10 @@ export const TICalculator = () => {
   };
 
   const formatCurrency = (value, decimals = 0) =>
-    Number(value).toLocaleString("en-US", {
+    Number(value || 0).toLocaleString("en-US", {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
     });
-
 
   const handleCalculate = async () => {
     if (!validate()) return;
@@ -90,18 +89,19 @@ export const TICalculator = () => {
 
   return (
     <div className="container-fluid">
+      {/* INPUT CARD */}
       <div className="card shadow-sm">
         <div className="card-body">
           <h4 className="fw-bold mb-3">TI Calculator</h4>
 
-
+          {/* SF INPUT */}
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
               Square Footage (SF)
             </Form.Label>
             <Form.Control
               type="number"
-              placeholder="e.g. 5000"
+              placeholder="e.g. 10000"
               value={sf}
               isInvalid={!!errors.sf}
               onChange={(e) => {
@@ -116,7 +116,7 @@ export const TICalculator = () => {
             </Form.Control.Feedback>
           </Form.Group>
 
-
+          {/* LINE ITEMS */}
           <Form.Group className="mb-3">
             <Form.Label className="fw-semibold">
               TI Line Items
@@ -143,7 +143,6 @@ export const TICalculator = () => {
             )}
           </Form.Group>
 
-
           <button
             className="btn btn-primary w-100"
             onClick={handleCalculate}
@@ -161,57 +160,55 @@ export const TICalculator = () => {
         </div>
       </div>
 
+      {/* RESULT CARD */}
+   {result && (
+  <div className="card shadow-sm mt-4">
+    <div className="card-body">
+      <h6 className="fw-bold mb-3">Breakdown</h6>
 
-      {result && (
-        <div className="card shadow-sm mt-4">
-          <div className="card-body">
-            <div className="mb-2">
-              <div className="fw-semibold">Estimated Total</div>
-              <div className="fs-5 text-success">
-                ${formatCurrency(result.estimated_total)}
+      {/* LINE ITEMS */}
+      <ul className="list-group mb-3">
+        {Object.entries(result.breakdown || {}).map(
+          ([key, value]) => (
+            <li key={key} className="list-group-item">
+              <div className="d-flex justify-content-between">
+                <span className="fw-semibold">{key}</span>
+                <span>${formatCurrency(value.cost)}</span>
               </div>
-            </div>
 
-            <div className="mb-2">
-              <div className="fw-semibold">Cost Per Square Foot</div>
-              <div className="fs-5 text-success">
-                ${formatCurrency(result.cost_per_sf, 2)}
-              </div>
-            </div>
-
-
-            <hr />
-
-            <h6 className="fw-bold">Breakdown</h6>
-            <ul className="list-group mb-3">
-              {Object.entries(result.breakdown || {}).map(
-                ([key, value]) => (
-                  <li
-                    key={key}
-                    className="list-group-item"
-                  >
-                    <div className="d-flex justify-content-between">
-                      <span className="fw-semibold">{key}</span>
-                      <span>${formatCurrency(value.cost)}</span>
-                    </div>
-                    <small className="text-muted">{value.formula}</small>
-
-                    <small className="text-muted">
-                      {value.formula}
-                    </small>
-                  </li>
-                )
+              {value.formula && (
+                <small className="text-muted d-block ms-2">
+                  {value.formula}
+                </small>
               )}
+            </li>
+          )
+        )}
+      </ul>
 
-            </ul>
+    
+      <div className="d-flex justify-content-between">
+        <span className="fw-semibold">Contingency</span>
+        <span>${formatCurrency(result.contingency)}</span>
+      </div>
 
-            <p className="fw-bold text-end">
-              Contingency: $
-              {result.contingency?.toLocaleString()}
-            </p>
-          </div>
-        </div>
-      )}
+      <hr />
+
+      <div className="d-flex justify-content-between fs-5 fw-bold text-success">
+        <span>Estimated Total</span>
+        <span>
+          ${formatCurrency(result.estimated_total)}
+        </span>
+      </div>
+
+      <div className="text-end text-muted mt-1 fs-5 fw-bold">
+        Cost per SF: $
+        {formatCurrency(result.cost_per_sf, 2)}
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
