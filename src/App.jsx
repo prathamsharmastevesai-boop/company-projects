@@ -89,7 +89,7 @@ import { UserListScreen } from "./Component/ChatSystem/userListScreen";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { NoAccess } from "./Component/notAccess";
 // import { WorkLetter } from "./Pages/User/ProjectManagement/workLetter";
-import { ProjectList } from "./Pages/User/ProjectManagement/projectList";
+// import { ProjectList } from "./Pages/User/ProjectManagement/projectList";
 import { FireSafetyandBuildingMechanicals } from "./Pages/Admin/GeneralInfo/FireSafetyandBuildingMechanicals";
 import { FireSafetyandBuildingMechanicalsChat } from "./Pages/User/FireSafetyandBuildingMechanicals/firesafetybuildingmechanicalschat";
 
@@ -275,7 +275,7 @@ function App() {
                   element={<ChatList />}
                 />
                 <Route path="/project-management" element={<ListBuilding />} />
-                <Route path="/projects" element={<ProjectList />} />
+                {/* <Route path="/projects" element={<ProjectList />} /> */}
                 
                 {/* <Route
                   path="/work-letter"
