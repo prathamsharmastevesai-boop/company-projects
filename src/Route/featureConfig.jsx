@@ -18,6 +18,7 @@ export const FEATURE_KEYS = {
   MARKET_CHAT: "comps_enabled",
   TENANT_CHAT: "tenant_information_enabled",
   TENANT_MARKET :"tenants_in_the_market_enabled",
+  FIRESAFETY :"fire_safety_enabled",
 
   DCT_CHAT: "dct_enabled",
 

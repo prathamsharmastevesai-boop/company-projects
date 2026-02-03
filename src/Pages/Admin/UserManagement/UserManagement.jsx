@@ -38,6 +38,7 @@ export const FEATURE_CONFIG = {
       tenant_information_enabled: { label: "Tenant Information", backendKey: "tenant_information_enabled" },
       tenants_in_the_market_enabled: { label: "Tenants In The Market", backendKey: "tenants_in_the_market_enabled" },
       comps_enabled: { label: "Comps", backendKey: "comps_enabled" },
+      fire_safety_enabled:{label:"fire safety & Building Mechanicals", backendKey:"fire_safety_enabled"},
       sublease_tracker_enabled: { label: "Sublease Tracker", backendKey: "sublease_tracker_enabled" },
       renewal_tracker_enabled: { label: "Renewal Tracker", backendKey: "renewal_tracker_enabled" },
       leases_agreement_data_enabled: { label: "Leases Agreement Data", backendKey: "leases_agreement_data_enabled" },

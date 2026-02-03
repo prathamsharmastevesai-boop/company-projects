@@ -21,6 +21,7 @@ export const USER_ROUTE_FEATURE_MAP = {
   "/employee-info-chat": [FEATURE_KEYS.COLLEAGUE_CHAT],
   "/building-chat": [FEATURE_KEYS.USER_BUILDING_LIST],
   "/comps-chat": [FEATURE_KEYS.MARKET_CHAT],
+  "/user-fire-safety-building-mechanicals":[FEATURE_KEYS.FIRESAFETY],
   "/tenent-info-user-building-list": [FEATURE_KEYS.TENANT_CHAT],
   "/tenant-information-chat":[FEATURE_KEYS.TENANT_CHAT],
   "/dct-chat": [FEATURE_KEYS.DCT_CHAT],

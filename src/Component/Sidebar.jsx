@@ -84,6 +84,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           comparative_building_data_enabled: userdata?.comparative_building_data_enabled || false,
           tenant_information_enabled: userdata?.tenant_information_enabled || false,
           tenants_in_the_market_enabled: userdata?.tenants_in_the_market_enabled || false,
+          fire_safety_enabled:userdata?.fire_safety_enabled || false,
           comps_enabled: userdata?.comps_enabled || false,
           sublease_tracker_enabled: userdata?.sublease_tracker_enabled || false,
           renewal_tracker_enabled: userdata?.renewal_tracker_enabled || false,
@@ -585,7 +586,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               icon="bi-shield-check"
               label="Fire Safety & Building Mechanicals"
               isActivePath={isActive("/user-fire-safety-building-mechanicals")}
-              enabled={profileData.comps_enabled}
+              enabled={profileData.fire_safety_enabled}
             />
 
             <NavItem
