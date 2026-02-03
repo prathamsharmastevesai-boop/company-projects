@@ -19,6 +19,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
   const [profileData, setProfileData] = useState({
     gemini_chat_enabled: false,
     forum_enabled: false,
+    // dashboard_enabled: false,
     portfolio_insights_enabled: false,
     email_drafting_enabled: false,
     notes_enabled: false,
@@ -68,6 +69,7 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
         setProfileData({
           gemini_chat_enabled: userdata?.gemini_chat_enabled || false,
           forum_enabled: userdata?.forum_enabled || false,
+          // dashboard_enabled: userdata?.dashboard_enabled || false,
           portfolio_insights_enabled: userdata?.portfolio_insights_enabled || false,
           email_drafting_enabled: userdata?.email_drafting_enabled || false,
           notes_enabled: userdata?.notes_enabled || false,
@@ -300,6 +302,13 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
 
               />
               <NavItem
+                path="/fire-safety-building-mechanicals"
+                icon="bi-shield-check"
+                label="Fire Safety & Building Mechanicals"
+                isActivePath={isActive("/fire-safety-building-mechanicals")}
+              />
+
+              <NavItem
                 path="/comparative-building-list"
                 icon="bi-bar-chart-line"
                 label="Comparative Buildings Data"
@@ -504,8 +513,17 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
           icon="bi-journal-text"
           label="Messages"
           isActivePath={isActive("/messages")}
-          enabled={true} 
+          enabled={true}
         /> */}
+{/* 
+        <NavItem
+          path="/project-management"
+          icon="bi-journal-text"
+          label="Project Management"
+          isActivePath={isActive("/project-management")}
+          enabled={true}
+        /> */}
+
 
         {!collapsed && dataCategoriesEnabled && (
           <AccordionHeader menuKey="generalInfo" label="Data Categories" />
@@ -562,6 +580,14 @@ export const Sidebar = ({ collapsed, setCollapsed }) => {
               isActivePath={isActive("/comps-chat")}
               enabled={profileData.comps_enabled}
             />
+            <NavItem
+              path="/user-fire-safety-building-mechanicals"
+              icon="bi-shield-check"
+              label="Fire Safety & Building Mechanicals"
+              isActivePath={isActive("/user-fire-safety-building-mechanicals")}
+              enabled={profileData.comps_enabled}
+            />
+
             <NavItem
               path="/user-sublease-tracker-list"
               icon="bi-journal-text"

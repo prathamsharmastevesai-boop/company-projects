@@ -36,6 +36,8 @@ export const ChatWindow = ({
   );
 
   const [sessionId, setSessionId] = useState(null);
+  console.log(sessionId,"sessionId");
+  
   const [messages, setMessages] = useState([]);
 
   const [isSending, setIsSending] = useState(false);
@@ -94,27 +96,35 @@ export const ChatWindow = ({
       return;
     }
 
-    const fetchLastSession = async () => {
-      setIsLoadingSession(true);
-      try {
-        const res = await dispatch(
-          get_Session_List_Specific({
-            category,
-            buildingId: building_id,
-          })
-        ).unwrap();
-        const filtered = res.filter((s) => s.category === category);
+   const fetchLastSession = async () => {
+  setIsLoadingSession(true);
+  try {
+    const res = await dispatch(
+      get_Session_List_Specific({
+        category,
+        buildingId: building_id,
+      })
+    ).unwrap();
 
-        if (filtered.length > 0) {
-          setSessionId(filtered[filtered.length - 1].session_id);
-        } else {
-          setSessionId(uuidv4());
-          setMessages([]);
-        }
-      } finally {
-        setIsLoadingSession(false);
-      }
-    };
+    const filtered = res.filter((s) => s.category === category);
+
+    if (filtered.length > 0) {
+      const latestSession = filtered.reduce((latest, current) => {
+        return new Date(current.created_at) > new Date(latest.created_at)
+          ? current
+          : latest;
+      });
+
+      setSessionId(latestSession.session_id);
+    } else {
+      setSessionId(uuidv4());
+      setMessages([]);
+    }
+  } finally {
+    setIsLoadingSession(false);
+  }
+};
+
 
     fetchLastSession();
   }, [category, dispatch]);

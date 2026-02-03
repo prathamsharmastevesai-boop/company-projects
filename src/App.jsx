@@ -88,6 +88,10 @@ import { ChatList } from "./Component/ChatSystem/chatSystemList";
 import { UserListScreen } from "./Component/ChatSystem/userListScreen";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { NoAccess } from "./Component/notAccess";
+import { WorkLetter } from "./Pages/User/ProjectManagement/workLetter";
+import { ProjectList } from "./Pages/User/ProjectManagement/projectList";
+import { FireSafetyandBuildingMechanicals } from "./Pages/Admin/GeneralInfo/FireSafetyandBuildingMechanicals";
+import { FireSafetyandBuildingMechanicalsChat } from "./Pages/User/FireSafetyandBuildingMechanicals/firesafetybuildingmechanicalschat";
 
 function App() {
 
@@ -149,6 +153,8 @@ function App() {
                 <Route path="/tenants-market-upload" element={<TenantMarketUpload />} />
                 <Route path="/building-info-upload" element={<BuildingInfo />} />
                 <Route path="/building-info-list" element={<BuildingInfoList />} />
+                <Route path="/fire-safety-building-mechanicals" element={<FireSafetyandBuildingMechanicals />} />
+                
                 <Route
                   path="/tenant-info-upload"
                   element={<TenantInformationUpload />}
@@ -241,7 +247,7 @@ function App() {
                 <Route path="/chat/:conversationId" element={<ChatLayout />} />
                 <Route path="/chat/users" element={<UserListScreen />} />
 
-                <Route path="/chat/new" element={<ChatLayout />} />
+                <Route path="/chat/new/:receiverId/:name" element={<ChatLayout />} />
 
                 <Route path="/email-drafting" element={<EmailDrafting />} />
 
@@ -268,6 +274,13 @@ function App() {
                   path="/messages"
                   element={<ChatList />}
                 />
+                <Route path="/project-management" element={<ListBuilding />} />
+                <Route path="/projects" element={<ProjectList />} />
+                
+                <Route
+                  path="/work-letter"
+                  element={<WorkLetter />}
+                />
 
                 <Route path="/third-party-chat" element={<BrokerChat />} />
 
@@ -285,6 +298,8 @@ function App() {
                 <Route path="/tenant-market" element={<TenantMarket />} />
 
                 <Route path="/comps-chat" element={<MarketChat />} />
+
+                <Route path="/user-fire-safety-building-mechanicals" element={<FireSafetyandBuildingMechanicalsChat />} />
 
                 <Route path="/user-sublease-tracker-list" element={<SubleaseTrackerList />} />
                 <Route path="/user-sublease-tracker" element={<SubleaseTracker />} />

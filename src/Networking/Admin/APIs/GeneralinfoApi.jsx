@@ -43,11 +43,39 @@ export const UploadfloorStack = createAsyncThunk(
 
 export const UploadGeneralDocSubmit = createAsyncThunk(
   "general/UploadGeneralDocSubmit",
+  async ({ file, category, building_Id }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("files", file);
+
+      let url = `/admin_user_chat/upload?category=${encodeURIComponent(
+        category
+      )}`;
+
+      if (building_Id) {
+        url += `&building_id=${encodeURIComponent(building_Id)}`;
+      }
+
+      const response = await axiosInstance.post(url, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message);
+    }
+  }
+);
+
+export const UploadgeminiDocSubmit = createAsyncThunk(
+  "UploadgeminiDocSubmit",
   async ({ file, session_id  }, { rejectWithValue }) => {
     try {
       const formData = new FormData();
       formData.append("files", file);
+      if(session_id){
       formData.append("session_id",session_id);
+      }
 
       let url = "/gemini/upload"
 

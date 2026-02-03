@@ -14,7 +14,7 @@ import {
   AskQuestionGeminiAPI,
   DeleteGeneralDocSubmit,
   ListGeminiDoc,
-  UploadGeneralDocSubmit,
+  UploadgeminiDocSubmit,
 } from "../../../Networking/Admin/APIs/GeneralinfoApi";
 import { Modal } from "react-bootstrap";
 
@@ -28,7 +28,7 @@ export const GeminiChat = () => {
   const recognitionRef = useRef(null);
 
   const [sessionId, setSessionId] = useState(location.state?.sessionId || null);
-  
+
   const [category, setCategory] = useState(location.state?.type);
   const [messages, setMessages] = useState([]);
   const [isSending, setIsSending] = useState(false);
@@ -45,7 +45,7 @@ export const GeminiChat = () => {
   const [showDocsModal, setShowDocsModal] = useState(false);
   const [docs, setDocs] = useState([]);
   const [isDocsLoading, setIsDocsLoading] = useState(false);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false); 
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const isLoading = isLoadingSession;
 
@@ -90,7 +90,7 @@ export const GeminiChat = () => {
 
   useEffect(() => {
     if (!sessionReady || !sessionId) {
- 
+
       if (sessionReady) {
         setInitialLoadComplete(true);
         setIsLoadingHistory(false);
@@ -101,8 +101,8 @@ export const GeminiChat = () => {
     const fetchChatHistory = async () => {
       setIsLoadingHistory(true);
       try {
-        console.log(sessionId,"sessionId");
-        
+        console.log(sessionId, "sessionId");
+
         const res = await dispatch(get_Chat_History({ sessionId })).unwrap();
         if (Array.isArray(res) && res.length > 0) {
           const formatted = res.flatMap((item) => [
@@ -118,7 +118,7 @@ export const GeminiChat = () => {
         setMessages([]);
       } finally {
         setIsLoadingHistory(false);
-        setInitialLoadComplete(true); 
+        setInitialLoadComplete(true);
       }
     };
 
@@ -153,7 +153,6 @@ export const GeminiChat = () => {
   }, [isLoadingHistory, messages.length]);
 
   const startRecording = async () => {
-    
     if (!initialLoadComplete) {
       toast.info("Please wait while chat loads...");
       return;
@@ -218,7 +217,7 @@ export const GeminiChat = () => {
   };
 
   const uploadFile = async (file) => {
-    
+
     if (!initialLoadComplete) {
       toast.info("Please wait while chat loads...");
       return;
@@ -245,7 +244,7 @@ export const GeminiChat = () => {
         session_id: sessionId
       };
       await dispatch(
-        UploadGeneralDocSubmit(data)
+        UploadgeminiDocSubmit(data)
       ).unwrap();
 
       toast.success("File uploaded successfully!");
@@ -256,11 +255,14 @@ export const GeminiChat = () => {
     }
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) await uploadFile(file);
-    e.target.value = null;
-  };
+ const handleFileChange = async (e) => {
+  const file = e.target.files[0];
+  e.target.value = null; 
+
+  if (!file || isUploading) return;
+  await uploadFile(file);
+};
+
 
   const handleSendMessage = async () => {
     if (!initialLoadComplete) {
@@ -400,10 +402,25 @@ export const GeminiChat = () => {
 
                 <label
                   htmlFor="fileUpload"
-                  className={`btn btn-outline-secondary btn-sm d-flex align-items-center ${isActionDisabled ? 'disabled' : ''}`}
-                  style={{ borderRadius: "20px" }}
+                  className={`btn btn-outline-secondary btn-sm d-flex align-items-center ${isActionDisabled || isUploading ? "disabled" : ""
+                    }`}
+                  style={{ borderRadius: "20px", gap: "6px" }}
                 >
-                  <i className="bi bi-upload me-1"></i> Upload
+                  {isUploading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      Uploading…
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-upload"></i>
+                      Upload
+                    </>
+                  )}
                 </label>
 
                 <input
@@ -412,7 +429,7 @@ export const GeminiChat = () => {
                   className="d-none"
                   accept=".pdf"
                   onChange={handleFileChange}
-                  disabled={isActionDisabled}
+                  disabled={isActionDisabled || isUploading}
                 />
               </h5>
 
@@ -461,17 +478,15 @@ export const GeminiChat = () => {
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${
-                          isRecording ? "btn-danger" : "btn-outline-secondary"
-                        } ${isActionDisabled ? 'disabled' : ''}`}
+                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
+                          } ${isActionDisabled ? 'disabled' : ''}`}
                         onClick={startRecording}
                         disabled={isSending || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${
-                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                          }`}
+                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                            }`}
                         ></i>
                       </button>
                     )}
@@ -546,27 +561,24 @@ export const GeminiChat = () => {
                           {messages.map((msg, i) => (
                             <div
                               key={i}
-                              className={`mb-2 small ${
-                                msg.sender === "Admin"
+                              className={`mb-2 small ${msg.sender === "Admin"
                                   ? "text-start"
                                   : "text-end"
-                              }`}
+                                }`}
                             >
                               <div
-                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${
-                                  msg.sender === "Admin"
+                                className={`d-inline-block px-3 py-2 position-relative responsive-box ${msg.sender === "Admin"
                                     ? ""
                                     : "bg-secondary text-light"
-                                }`}
+                                  }`}
                               >
                                 {msg.sender === "Admin" ? (
                                   <>
                                     <i
-                                      className={`bi ${
-                                        speakingIndex === i
+                                      className={`bi ${speakingIndex === i
                                           ? "bi-volume-up-fill"
                                           : "bi-volume-mute"
-                                      } ms-2`}
+                                        } ms-2`}
                                       style={{
                                         cursor: "pointer",
                                         fontSize: "1rem",
@@ -672,17 +684,15 @@ export const GeminiChat = () => {
                       </button>
                     ) : (
                       <button
-                        className={`btn rounded-circle ${
-                          isRecording ? "btn-danger" : "btn-outline-secondary"
-                        } ${isActionDisabled ? 'disabled' : ''}`}
+                        className={`btn rounded-circle ${isRecording ? "btn-danger" : "btn-outline-secondary"
+                          } ${isActionDisabled ? 'disabled' : ''}`}
                         onClick={startRecording}
                         disabled={isSending || isReplyLoading || isActionDisabled}
                         style={{ width: "38px", height: "38px" }}
                       >
                         <i
-                          className={`bi ${
-                            isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
-                          }`}
+                          className={`bi ${isRecording ? "bi-mic-mute-fill" : "bi-mic-fill"
+                            }`}
                         ></i>
                       </button>
                     )}

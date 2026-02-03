@@ -41,6 +41,11 @@ export const LeaseFinanceCalculator = () => {
     }
   };
 
+  const formatCurrency = (value, decimals = 0) =>
+  Number(value).toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
 
 
   const validate = () => {
@@ -156,7 +161,39 @@ export const LeaseFinanceCalculator = () => {
 
    
       <div className="col-12 col-lg-4">
-        <div className="card p-3 shadow-sm h-100">
+           <div className="card shadow-sm p-2">
+            <h5 className="fw-bold mb-3">Calculated Results</h5>
+            {!result && <p className="text-muted">Submit to see result.</p>}
+            {result && (
+              <>
+                <div className="p-2 bg-light rounded mb-2">
+                  <strong>Net Effective Rent (PSF Annual):</strong>
+                  <h4>
+                    ${Number(result.NER_PSF_Annual).toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </h4>
+                </div>
+
+                <div className="p-2 bg-light rounded mb-2">
+                  <div className="fw-semibold">Total Cash Outflow (Concessions)</div>
+                  <div className="fs-5">
+                    ${formatCurrency(result.Total_Cash_Outflow_Concessions, 2)}
+                  </div>
+                </div>
+
+                <div className="p-2 bg-light rounded mb-2">
+                  <div className="fw-semibold">NPV Rent</div>
+                  <div className="fs-5">
+                    ${formatCurrency(result.NPV_Rent, 2)}
+                  </div>
+                </div>
+
+              </>
+            )}
+          </div>
+        <div className="card p-3 shadow-sm ">
           <h5 className="fw-bold mb-3 text-center">Calculator</h5>
 
           <input

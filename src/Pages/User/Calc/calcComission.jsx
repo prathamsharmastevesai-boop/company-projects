@@ -23,7 +23,7 @@ export const CommissionCalculator = () => {
       currency: "USD",
     }).format(value);
 
-  /* ---------------- VALIDATION ---------------- */
+
   const validate = () => {
     const err = {};
 
@@ -61,7 +61,6 @@ export const CommissionCalculator = () => {
     return Object.keys(err).length === 0;
   };
 
-  /* ---------------- GENERATE YEARS ---------------- */
   const generateYearRows = () => {
     const years = Number(termYears);
     if (!years || years < 1) return;
@@ -81,7 +80,7 @@ export const CommissionCalculator = () => {
     );
   };
 
-  /* ---------------- UPDATE HANDLERS ---------------- */
+
   const updateBaseRent = (index, value) => {
     const arr = [...baseRentList];
     arr[index].rent = value;
@@ -94,7 +93,6 @@ export const CommissionCalculator = () => {
     setCommissionList(arr);
   };
 
-  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async () => {
     if (!validate()) return;
 

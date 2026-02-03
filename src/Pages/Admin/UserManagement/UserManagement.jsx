@@ -117,11 +117,11 @@ export const UserManagement = () => {
     setInviteLoading(true);
     try {
       await dispatch(inviteUserApi({ email })).unwrap();
-      toast.success("Invitation sent");
+   
       setEmail("");
       fetchUsers();
     } catch {
-      toast.error("Invite failed");
+ 
     } finally {
       setInviteLoading(false);
     }

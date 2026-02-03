@@ -1018,6 +1018,39 @@
   }
 }
 
+
+/* skeleton laoder for card */
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  display: inline-block;
+  width: 100%;
+  height: 1em;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-card {
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #f0f0f0;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  height: 200px; /* approximate card height */
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+
 .sidebar-wrapper .bg-secondary {
   animation: shimmer 1.4s infinite ease-in-out;
 }
@@ -1053,3 +1086,52 @@
 }
 
 
+.work-letter {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.green {
+  color: #16a34a;
+}
+
+.blue {
+  color: #2563eb;
+}
+
+.tab-active {
+  font-weight: 600;
+  border-bottom: 3px solid #2563eb;
+}
+
+.status-pill {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.role-landlord {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.role-tenant {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.role-shared {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.cursor {
+  cursor: pointer;
+}
