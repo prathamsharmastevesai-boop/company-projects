@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getadminfeedbacksubmit, getuserfeedbacksubmit } from "../../../Networking/Admin/APIs/feedbackApi";
+import {
+  getadminfeedbacksubmit,
+  getuserfeedbacksubmit,
+} from "../../../Networking/Admin/APIs/feedbackApi";
 import { Container, Modal, Button, Table } from "react-bootstrap";
 import RAGLoader from "../../../Component/Loader";
 import Pagination from "../../../Component/pagination";
-import { DeleteFeedbackSubmit, UpdateFeedback } from "../../../Networking/User/APIs/Feedback/feedbackApi";
+import {
+  DeleteFeedbackSubmit,
+  UpdateFeedback,
+} from "../../../Networking/User/APIs/Feedback/feedbackApi";
 import { toast } from "react-toastify";
 
 export const AdminInformationCollaboration = () => {
@@ -24,22 +30,20 @@ export const AdminInformationCollaboration = () => {
   const [viewModal, setViewModal] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
 
-
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-          const role = sessionStorage.getItem("role");
-          if(role === "admin"){
-            const data = await dispatch(getadminfeedbacksubmit()).unwrap();
-            setFeedbacks(data.reverse());
-          } else if(role === "user") {
-             const data = await dispatch(getuserfeedbacksubmit()).unwrap();
-            setFeedbacks(data.reverse());
-          }
-        
+        const role = sessionStorage.getItem("role");
+        if (role === "admin") {
+          const data = await dispatch(getadminfeedbacksubmit()).unwrap();
+          setFeedbacks(data.reverse());
+        } else if (role === "user") {
+          const data = await dispatch(getuserfeedbacksubmit()).unwrap();
+          setFeedbacks(data.reverse());
+        }
       } catch (error) {
         console.error("Error fetching feedback:", error);
       } finally {
@@ -49,10 +53,11 @@ export const AdminInformationCollaboration = () => {
     fetchFeedback();
   }, [dispatch]);
 
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFeedbacks = feedbacks.slice(indexOfFirstItem, indexOfLastItem).reverse();
+  const currentFeedbacks = feedbacks
+    .slice(indexOfFirstItem, indexOfLastItem)
+    .reverse();
 
   const openEditModal = (feedback) => {
     setEditId(feedback.id);
@@ -68,8 +73,14 @@ export const AdminInformationCollaboration = () => {
 
     setEditLoading(true);
     try {
-      await dispatch(UpdateFeedback({ feedback_id: editId, feedback: editText })).unwrap();
-      setFeedbacks((prev) => prev.map((item) => (item.id === editId ? { ...item, feedback: editText } : item)));
+      await dispatch(
+        UpdateFeedback({ feedback_id: editId, feedback: editText }),
+      ).unwrap();
+      setFeedbacks((prev) =>
+        prev.map((item) =>
+          item.id === editId ? { ...item, feedback: editText } : item,
+        ),
+      );
       toast.success("Updated successfully!");
       setEditModal(false);
     } catch (err) {
@@ -114,10 +125,12 @@ export const AdminInformationCollaboration = () => {
     document.body.removeChild(link);
   };
 
-
   if (loading) {
     return (
-      <div className="d-flex p-1 justify-content-center align-items-center" style={{ height: "50vh" }}>
+      <div
+        className="d-flex p-1 justify-content-center align-items-center"
+        style={{ height: "50vh" }}
+      >
         <RAGLoader />
       </div>
     );
@@ -133,7 +146,9 @@ export const AdminInformationCollaboration = () => {
         {feedbacks.length === 0 ? (
           <div className="text-center py-5">
             <h5>Not found</h5>
-            <p className="text-muted">Users have not submitted any Collaboration yet.</p>
+            <p className="text-muted">
+              Users have not submitted any Collaboration yet.
+            </p>
           </div>
         ) : (
           <>
@@ -158,7 +173,9 @@ export const AdminInformationCollaboration = () => {
                       <td>{fb.user_email || "N/A"}</td>
                       <td>{fb.category || "N/A"}</td>
                       <td>
-                        {fb.feedback.length > 15 ? fb.feedback.substring(0, 15) + "..." : fb.feedback}
+                        {fb.feedback.length > 15
+                          ? fb.feedback.substring(0, 15) + "..."
+                          : fb.feedback}
                       </td>
                       <td>
                         {new Date(fb.created_at).toLocaleDateString("en-US", {
@@ -167,53 +184,77 @@ export const AdminInformationCollaboration = () => {
                           year: "2-digit",
                         })}
                       </td>
-                      <td className="d-flex">
-                        <button
-                          className="btn btn-sm text-white me-2 d-flex align-items-center gap-1"
-                          style={{ backgroundColor: "#217ae6", borderColor: "#217ae6", padding: "4px 12px" }}
-                          onClick={() => openViewModal(fb)}
-                        >
-                          <i className="bi bi-eye"></i>
-                        </button>
+                      <td>
+                        <div className="d-flex flex-nowrap gap-2 overflow-auto">
+                          <button
+                            className="btn btn-sm text-white d-flex align-items-center justify-content-center"
+                            style={{
+                              backgroundColor: "#217ae6",
+                              borderColor: "#217ae6",
+                              padding: "4px 12px",
+                              whiteSpace: "nowrap",
+                            }}
+                            onClick={() => openViewModal(fb)}
+                          >
+                            <i className="bi bi-eye"></i>
+                          </button>
 
-                        <button
-                          className="btn btn-sm btn-warning text-white me-2 d-flex align-items-center gap-1"
-                          style={{ padding: "4px 12px" }}
-                          onClick={() => openEditModal(fb)}
-                        >
-                          <i className="bi bi-pencil-square"></i>
-                        </button>
+                          <button
+                            className="btn btn-sm btn-warning text-white d-flex align-items-center justify-content-center"
+                            style={{
+                              padding: "4px 12px",
+                              whiteSpace: "nowrap",
+                            }}
+                            onClick={() => openEditModal(fb)}
+                          >
+                            <i className="bi bi-pencil-square"></i>
+                          </button>
 
-                        <button
-                          className="btn btn-sm btn-outline-secondary me-2 d-flex align-items-center justify-content-center"
-                          style={{ backgroundColor: "#e62721", borderColor: "#e62721", padding: "4px 12px" }}
-                          onClick={() => openDeleteModal(fb.id)}
-                          disabled={deleteLoading && deleteId === fb.id}
-                        >
-                          {deleteLoading && deleteId === fb.id ? (
-                            <span className="spinner-border spinner-border-sm"></span>
-                          ) : (
-                            <i className="bi bi-trash text-light"></i>
-                          )}
-                        </button>
+                          <button
+                            className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                            style={{
+                              backgroundColor: "#e62721",
+                              borderColor: "#e62721",
+                              padding: "4px 12px",
+                              whiteSpace: "nowrap",
+                            }}
+                            onClick={() => openDeleteModal(fb.id)}
+                            disabled={deleteLoading && deleteId === fb.id}
+                          >
+                            {deleteLoading && deleteId === fb.id ? (
+                              <span className="spinner-border spinner-border-sm"></span>
+                            ) : (
+                              <i className="bi bi-trash text-light"></i>
+                            )}
+                          </button>
 
-                        <button
-                          className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
-                          style={{ padding: "4px 12px" }}
-                          title={fb.file_url ? "Download file" : "No file available"}
-                          onClick={() => handleDownload(fb.file_url, fb.file_name)}
-                          disabled={!fb.file_url}
-                        >
-                          <i className="bi bi-download"></i>
-                        </button>
-
+                          {fb.file_url ? (
+                            <button
+                              className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                              style={{
+                                padding: "4px 12px",
+                                whiteSpace: "nowrap",
+                              }}
+                              title={
+                                fb.file_url
+                                  ? "Download file"
+                                  : "No file available"
+                              }
+                              onClick={() =>
+                                handleDownload(fb.file_url, fb.file_name)
+                              }
+                              disabled={!fb.file_url}
+                            >
+                              <i className="bi bi-download"></i>
+                            </button>
+                          ) : null}
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </Table>
             </div>
-
 
             <Pagination
               totalItems={feedbacks.length}
@@ -229,16 +270,28 @@ export const AdminInformationCollaboration = () => {
         )}
       </Container>
 
-
-      <Modal show={editModal} onHide={() => !editLoading && setEditModal(false)} centered>
+      <Modal
+        show={editModal}
+        onHide={() => !editLoading && setEditModal(false)}
+        centered
+      >
         <Modal.Header closeButton={!editLoading}>
           <Modal.Title>Edit Collaboration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <textarea className="form-control" rows="5" value={editText} onChange={(e) => setEditText(e.target.value)} />
+          <textarea
+            className="form-control"
+            rows="5"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+          />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" disabled={editLoading} onClick={() => setEditModal(false)}>
+          <Button
+            variant="secondary"
+            disabled={editLoading}
+            onClick={() => setEditModal(false)}
+          >
             Cancel
           </Button>
           <Button variant="primary" disabled={editLoading} onClick={handleEdit}>
@@ -247,10 +300,16 @@ export const AdminInformationCollaboration = () => {
         </Modal.Footer>
       </Modal>
 
-
-      <Modal show={viewModal} onHide={() => setViewModal(false)} centered size="md">
+      <Modal
+        show={viewModal}
+        onHide={() => setViewModal(false)}
+        centered
+        size="md"
+      >
         <Modal.Header closeButton>
-          <Modal.Title className="fw-semibold">Collaboration Details</Modal.Title>
+          <Modal.Title className="fw-semibold">
+            Collaboration Details
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedFeedback && (
@@ -269,8 +328,11 @@ export const AdminInformationCollaboration = () => {
         </Modal.Footer>
       </Modal>
 
-
-      <Modal show={!!deleteId} centered onHide={() => !deleteLoading && setDeleteId(null)}>
+      <Modal
+        show={!!deleteId}
+        centered
+        onHide={() => !deleteLoading && setDeleteId(null)}
+      >
         <Modal.Header closeButton={!deleteLoading}>
           <Modal.Title>Delete Collaboration?</Modal.Title>
         </Modal.Header>
@@ -285,10 +347,18 @@ export const AdminInformationCollaboration = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setDeleteId(null)} disabled={deleteLoading}>
+          <Button
+            variant="secondary"
+            onClick={() => setDeleteId(null)}
+            disabled={deleteLoading}
+          >
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete} disabled={deleteLoading}>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            disabled={deleteLoading}
+          >
             {deleteLoading ? "Deleting..." : "Yes, Delete"}
           </Button>
         </Modal.Footer>

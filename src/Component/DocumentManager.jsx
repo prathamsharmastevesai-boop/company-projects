@@ -227,7 +227,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
           <input
             type="file"
             accept={
-              category === "floor_plan" || category === "building_stack"
+              category === "floor_plan" || category === "building_stack" || category === "LOI"
                 ? ".pdf,.jpg,.jpeg,.png,.gif,.webp"
                 : ".pdf,.csv,.docx,.xlsx"
             }
@@ -238,7 +238,7 @@ const DocumentManager = ({ category, title, description, building_Id }) => {
 
         <p className="small text-muted mt-2 text-wrap">
           Supports{" "}
-          {category === "floor_plan" || category === "building_stack"
+          {category === "floor_plan" || category === "building_stack" || category === "LOI"
             ? "PDF and image files (JPG, PNG, GIF, WEBP)"
             : "PDF, DOCX, CSV, XLSX"}{" "}
           up to 30MB

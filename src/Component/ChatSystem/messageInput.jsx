@@ -1,142 +1,58 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useWebSocket } from "../../Context/WebSocketContext";
 
-export const ChatInput = ({
-  text,
-  setText,
-  onSend,
-  conversationId,
-  myUserId,
-  receiverId,
-  sendTypingIndicator,
-  onAttachmentClick,
-  uploading,
-  onFileUpload, // callback to handle file upload
-}) => {
+export const ChatInput = ({ text, setText, onSend, conversationId, myUserId }) => {
+  const { sendMessage } = useWebSocket();
   const typingTimeout = useRef(null);
 
   const handleTyping = (value) => {
     setText(value);
 
-    if (receiverId && sendTypingIndicator && !uploading) {
-      sendTypingIndicator(receiverId, true);
+    sendMessage({
+      type: "TYPING",
+      conversation_id: conversationId,
+    });
 
-      clearTimeout(typingTimeout.current);
-      typingTimeout.current = setTimeout(() => {
-        sendTypingIndicator(receiverId, false);
-      }, 3000);
-    }
+    clearTimeout(typingTimeout.current);
+    typingTimeout.current = setTimeout(() => {
+      sendMessage({
+        type: "TYPING",
+        conversation_id: conversationId,
+      });
+    }, 1500);
   };
 
   const handleSendMessage = () => {
-    if (!text.trim() || uploading) return;
-
-    if (receiverId && sendTypingIndicator) {
-      sendTypingIndicator(receiverId, false);
-    }
-
-    clearTimeout(typingTimeout.current);
+    if (!text.trim()) return;
 
     onSend();
-    setText("");
-  };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey && !uploading) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file || uploading) return;
-
-    if (onFileUpload) {
-      onFileUpload(file);
-    }
-    e.target.value = ""; // reset input
+    sendMessage({
+      type: "TYPING",
+      conversation_id: conversationId,
+      sender_id: myUserId,
+      is_typing: false,
+    });
   };
 
   return (
-    <div
-      className="chat-input-wrapper"
-      style={{
-        display: "flex",
-        padding: "10px",
-        borderTop: "1px solid #ddd",
-        background: "#fff",
-        alignItems: "center",
-        gap: "10px",
-        opacity: uploading ? 0.6 : 1,
-      }}
-    >
-      {/* Attachment */}
-      <button
-        className="icon-btn attachment"
-        onClick={() => document.getElementById("fileInput")?.click()}
-        disabled={uploading}
-        style={{
-          background: "none",
-          border: "none",
-          fontSize: "20px",
-          cursor: uploading ? "not-allowed" : "pointer",
-          color: uploading ? "#999" : "#666",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "40px",
-          height: "40px",
-          borderRadius: "50%",
-        }}
-      >
+    <div className="chat-input-wrapper">
+      <button className="icon-btn left">
         <i className="ri-attachment-2" />
       </button>
 
       <input
-        type="file"
-        id="fileInput"
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-
-      {/* Text input */}
-      <input
         className="chat-input"
         value={text}
         onChange={(e) => handleTyping(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={uploading ? "Uploading file..." : "Type a message..."}
-        disabled={uploading}
-        style={{
-          flex: 1,
-          padding: "10px 15px",
-          border: "1px solid #ddd",
-          borderRadius: "20px",
-          outline: "none",
-          fontSize: "14px",
-          background: uploading ? "#f9f9f9" : "#fff",
-          cursor: uploading ? "not-allowed" : "text",
-        }}
+        onKeyDown={(e) =>
+          e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleSendMessage())
+        }
+        placeholder="Type a message…"
       />
 
-      {/* Send button */}
-      <button
-        className="icon-btn send"
-        onClick={handleSendMessage}
-        disabled={!text.trim() || uploading}
-        style={{
-          background: !text.trim() || uploading ? "#ccc" : "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "40px",
-          height: "40px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: !text.trim() || uploading ? "not-allowed" : "pointer",
-        }}
-      >
+      <button className="icon-btn send" onClick={handleSendMessage}>
         <i className="ri-send-plane-2-fill" />
       </button>
     </div>

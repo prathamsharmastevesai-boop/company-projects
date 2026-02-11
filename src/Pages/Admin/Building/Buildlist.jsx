@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import {
   DeleteBuilding,
@@ -10,11 +10,26 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import RAGLoader from "../../../Component/Loader";
 
+const getCategoryFromPath = (pathname) => {
+  if (pathname.startsWith("/project-management")) {
+    return "workletter";
+  }
+
+  if (pathname.startsWith("/admin-lease-loi-building-list")) {
+    return "Lease&Loi";
+  }
+
+  return "";
+};
+
 export const ListBuilding = () => {
   const { BuildingList } = useSelector((state) => state.BuildingSlice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cardsRef = useRef([]);
+  const location = useLocation();
+
+  const category = getCategoryFromPath(location.pathname);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
@@ -27,12 +42,12 @@ export const ListBuilding = () => {
   useEffect(() => {
     const fetchBuildings = async () => {
       setLoading(true);
-      const category = "Lease&Loi";
       await dispatch(ListBuildingSubmit(category));
       setLoading(false);
     };
-    fetchBuildings();
-  }, [dispatch]);
+
+    if (category) fetchBuildings();
+  }, [dispatch, category]);
 
   useEffect(() => {
     if (!loading) {
@@ -64,7 +79,7 @@ export const ListBuilding = () => {
 
       await dispatch(UpdateBuildingSubmit(payload)).unwrap();
 
-      await dispatch(ListBuildingSubmit("Lease&Loi"));
+      await dispatch(ListBuildingSubmit(category));
 
       setEditBuildingId(null);
     } catch (error) {
@@ -78,7 +93,7 @@ export const ListBuilding = () => {
     try {
       setDeleteLoading(true);
       await dispatch(DeleteBuilding(buildingId));
-      await dispatch(ListBuildingSubmit("Lease&Loi"));
+      await dispatch(ListBuildingSubmit(category));
     } catch (error) {
       console.error("Delete failed:", error);
     } finally {
@@ -94,14 +109,14 @@ export const ListBuilding = () => {
     try {
       const payload = [
         {
-          category: "Lease&Loi",
+          category: category,
           address: address,
         },
       ];
 
       await dispatch(CreateBuildingSubmit(payload)).unwrap();
 
-      await dispatch(ListBuildingSubmit("Lease&Loi"));
+      await dispatch(ListBuildingSubmit(category));
 
       setAddress("");
     } catch (error) {
@@ -111,8 +126,19 @@ export const ListBuilding = () => {
     }
   };
 
-  const handleSubmit = (buildingId) => {
-    navigate("/admin-select-lease-loi", { state: { office: { buildingId } } });
+  const handleSubmit = (building) => {
+    const buildingId = building.id;
+    const address = building.address;
+    console.log(building, "buildingId");
+
+    if (category === "Lease&Loi") {
+      navigate("/admin-select-lease-loi", {
+        state: { office: { buildingId } },
+      });
+    } else if (category === "workletter") {
+      console.log("Navigating with address:", address);
+      navigate("/projects", { state: { office: { buildingId, address } } });
+    }
   };
 
   const filteredBuildings = BuildingList.filter((building) => {
@@ -179,7 +205,7 @@ export const ListBuilding = () => {
         ) : (
           <p
             className="mb-2 text-secondary"
-            onClick={() => handleSubmit(building.id)}
+            onClick={() => handleSubmit(building)}
             style={{ cursor: "pointer" }}
           >
             <div className="col-md-12 py-2">
@@ -188,7 +214,6 @@ export const ListBuilding = () => {
                 <div className="mx-2 check w-75">
                   {building.address || "N/A"}
                 </div>
-               
               </div>
             </div>
           </p>

@@ -16,6 +16,9 @@ export const DashboardLayout = () => {
       "/building-chat",
       "/comps-chat",
       "/user-fire-safety-building-mechanicals",
+      "/user-fire-safety-building-mechanicals-list",
+      "/upload-fire-safety-building-mechanicals",
+      "/admin-fire-safety-building-mechanicals-list",
       "/comparative-building-chat",
       "/tenant-information-chat",
       "/tenant-info-upload",
@@ -53,6 +56,9 @@ export const DashboardLayout = () => {
       "/cre-news",
       "/messages",
       "/yardi",
+      "/project-management",
+      "/projects",
+      "/work-letter",
       //Admin Routes
       "/admin-dashboard",
       "/user-management",
@@ -84,7 +90,7 @@ export const DashboardLayout = () => {
     ];
 
     const isChat = chatRoutes.some((path) =>
-      location.pathname.startsWith(path)
+      location.pathname.startsWith(path),
     );
     setIsChatPage(isChat);
   }, [location]);

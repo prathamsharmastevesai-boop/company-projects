@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   fetchConversations,
   fetchMessages,
@@ -10,11 +10,10 @@ import { setActiveConversation } from "../../Networking/User/Slice/chatSystemSli
 export const ChatList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { conversationId } = useParams();
 
-  const { conversations, loading, userStatus } = useSelector(
-    (state) => state.chatSystemSlice
-  );
+  const { conversations } = useSelector((state) => state.chatSystemSlice);
+
+  const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
     dispatch(fetchConversations());
@@ -27,126 +26,93 @@ export const ChatList = () => {
     navigate(`/chat/${conversation.id}`, {
       state: {
         receiver_id: conversation.receiver_id,
-        name: conversation.receiver_name,
+        name: conversation.name,
+        is_group: conversation.is_group,
+        participants: conversation.participants,
       },
     });
   };
 
   return (
-    <div className="border-end bg-white h-100 d-flex flex-column">
-
-      {/* HEADER */}
-      <div className="p-3 border-bottom d-flex justify-content-between align-items-center">
+    <div className="border-end bg-white h-100">
+      <div className="p-3 border-bottom d-flex justify-content-between align-items-center position-relative">
         <span className="fw-bold fs-5">Chats</span>
-        <button
-          className="btn btn-sm btn-success rounded-circle"
-          onClick={() => navigate("/chat/users")}
-        >
-          <i className="ri-chat-new-line"></i>
-        </button>
+
+        <div>
+          <button
+            className="btn btn-sm btn-light"
+            onClick={() => setShowMenu(!showMenu)}
+          >
+            ⋮
+          </button>
+
+          {showMenu && (
+            <div
+              className="position-absolute end-0 mt-2 bg-white border rounded shadow-sm"
+              style={{ zIndex: 10 }}
+            >
+              <button
+                className="dropdown-item"
+                onClick={() => {
+                  navigate("/chat/create-group");
+                  setShowMenu(false);
+                }}
+              >
+                Create Group
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* LIST */}
       <div
         className="list-group list-group-flush overflow-auto"
         style={{ maxHeight: "calc(100vh - 70px)" }}
       >
-        {/* 🔹 SKELETON LOADER */}
-        {loading &&
-          Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="list-group-item d-flex gap-3 placeholder-glow"
-            >
-              <div
-                className="placeholder rounded-circle"
-                style={{ width: 48, height: 48 }}
-              ></div>
-
-              <div className="flex-grow-1">
-                <span className="placeholder col-6"></span>
-                <span className="placeholder col-9 mt-2"></span>
-              </div>
-            </div>
-          ))}
-
-        {/* 🔹 EMPTY STATE */}
-        {!loading && conversations?.length === 0 && (
+        {conversations?.length === 0 && (
           <div className="text-center text-muted py-4">
             No conversations found
           </div>
         )}
 
-        {/* 🔹 CHAT ITEMS */}
-        {!loading &&
-          conversations?.map((conversation) => {
-            const isActive =
-              Number(conversationId) === conversation.id;
+        {conversations?.map((conversation) => (
+          <button
+            key={conversation.id}
+            onClick={() => handleChatClick(conversation)}
+            className="list-group-item list-group-item-action d-flex align-items-center gap-3"
+          >
+            <div
+              className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+              style={{ width: 45, height: 45 }}
+            >
+              {conversation.is_group
+                ? "👥"
+                : conversation?.receiver_name?.[0]?.toUpperCase() || "U"}
+            </div>
 
-            const status =
-              userStatus?.[conversation.receiver_id];
-            const isOnline = status?.online === true;
+            <div className="flex-grow-1 text-start">
+              <div className="fw-semibold d-flex justify-content-between">
+                <span>
+                  {conversation.is_group
+                    ? conversation.receiver_name
+                    : conversation.receiver_name}
+                </span>
 
-            return (
-              <button
-                key={conversation.id}
-                onClick={() => handleChatClick(conversation)}
-                className={`list-group-item list-group-item-action d-flex align-items-center gap-3 ${
-                  isActive ? "bg-light" : ""
-                }`}
-              >
-                {/* AVATAR */}
-                <div className="position-relative">
-                  <div
-                    className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-semibold"
-                    style={{ width: 48, height: 48 }}
-                  >
-                    {conversation?.receiver_name?.[0]?.toUpperCase() ||
-                      "U"}
-                  </div>
+                <small className="text-muted">
+                  {conversation.created_at &&
+                    new Date(conversation.created_at).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                </small>
+              </div>
 
-                  <span
-                    className={`position-absolute bottom-0 end-0 rounded-circle border border-white ${
-                      isOnline ? "bg-success" : "bg-secondary"
-                    }`}
-                    style={{ width: 12, height: 12 }}
-                  ></span>
-                </div>
-
-                {/* CONTENT */}
-                <div className="flex-grow-1 overflow-hidden text-start">
-                  <div className="d-flex justify-content-between">
-                    <span className="fw-semibold text-truncate">
-                      {conversation.receiver_name}
-                    </span>
-
-                    <small className="text-muted">
-                      {conversation.lastMessage?.created_at &&
-                        new Date(
-                          conversation.lastMessage.created_at
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                    </small>
-                  </div>
-
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted text-truncate">
-                      {conversation.lastMessage?.content ||
-                        "No messages yet"}
-                    </span>
-
-                    {conversation.unread_count > 0 && (
-                      <span className="badge bg-success rounded-pill ms-2">
-                        {conversation.unread_count}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+              <div className="text-muted text-truncate">
+                {conversation.lastMessage?.content || "No messages yet"}
+              </div>
+            </div>
+          </button>
+        ))}
       </div>
     </div>
   );

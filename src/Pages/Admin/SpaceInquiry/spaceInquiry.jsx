@@ -170,10 +170,10 @@ export const SpaceInquiry = () => {
         imap_username: form.imap_username,
         imap_password: form.imap_password,
         building_addresses_list: (form.building_addresses_list || []).filter(
-          (x) => x.trim() !== ""
+          (x) => x.trim() !== "",
         ),
         trusted_sender_domains: (form.trusted_sender_domains || []).filter(
-          (x) => x.trim() !== ""
+          (x) => x.trim() !== "",
         ),
         is_active: Boolean(form.is_active),
       };
@@ -275,7 +275,7 @@ export const SpaceInquiry = () => {
           editData.building_addresses_list || []
         ).filter((x) => x?.toString().trim() !== ""),
         trusted_sender_domains: (editData.trusted_sender_domains || []).filter(
-          (x) => x?.toString().trim() !== ""
+          (x) => x?.toString().trim() !== "",
         ),
         is_active: Boolean(editData.is_active),
       };
@@ -467,51 +467,6 @@ export const SpaceInquiry = () => {
 
             <hr />
 
-            {/* <h5 className="mb-3">SMTP Settings</h5> */}
-
-            {/* <div className="row">
-              <div className="col-md-6 mb-3">
-                <Form.Label>SMTP Host</Form.Label>
-                <Form.Control
-                  name="smtp_host"
-                  value={form.smtp_host}
-                  onChange={handleChange}
-                  placeholder="smtp.gmail.com"
-                />
-              </div>
-
-              <div className="col-md-3 mb-3">
-                <Form.Label>SMTP Port</Form.Label>
-                <Form.Control
-                  name="smtp_port"
-                  type="number"
-                  value={form.smtp_port}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Form.Label>SMTP Username</Form.Label>
-                <Form.Control
-                  name="smtp_username"
-                  value={form.smtp_username}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6 mb-3">
-                <Form.Label>SMTP Password</Form.Label>
-                <Form.Control
-                  name="smtp_password"
-                  type="password"
-                  value={form.smtp_password}
-                  onChange={handleChange}
-                />
-              </div>
-            </div> */}
-
-            {/* <hr /> */}
-
             <h5>Building Addresses</h5>
             {form.building_addresses_list.map((item, index) => (
               <div className="d-flex mb-2" key={index}>
@@ -522,7 +477,7 @@ export const SpaceInquiry = () => {
                     handleArrayChange(
                       index,
                       e.target.value,
-                      "building_addresses_list"
+                      "building_addresses_list",
                     )
                   }
                 />
@@ -558,7 +513,7 @@ export const SpaceInquiry = () => {
                     handleArrayChange(
                       index,
                       e.target.value,
-                      "trusted_sender_domains"
+                      "trusted_sender_domains",
                     )
                   }
                 />
@@ -724,66 +679,6 @@ export const SpaceInquiry = () => {
 
                     <hr />
 
-                    {/* <h5 className="fw-bold mb-3"> Update SMTP Settings</h5> */}
-
-                    {/* <div className="row">
-                      <div className="col-md-6 mb-3">
-                        <Form.Label>SMTP Host</Form.Label>
-                        <Form.Control
-                          value={editData.smtp_host}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              smtp_host: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-
-                      <div className="col-md-3 mb-3">
-                        <Form.Label>SMTP Port</Form.Label>
-                        <Form.Control
-                          type="number"
-                          value={editData.smtp_port}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              smtp_port: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-
-                      <div className="col-md-6 mb-3">
-                        <Form.Label>SMTP Username</Form.Label>
-                        <Form.Control
-                          value={editData.smtp_username}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              smtp_username: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-
-                      <div className="col-md-6 mb-3">
-                        <Form.Label>SMTP Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          value={editData.smtp_password}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              smtp_password: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
-                    </div> */}
-
-                    <hr />
-
                     <h5 className="fw-bold mb-3">Building Addresses</h5>
                     {(editData.building_addresses_list || []).map(
                       (addr, index) => (
@@ -794,7 +689,7 @@ export const SpaceInquiry = () => {
                               editArrayChange(
                                 "building_addresses_list",
                                 index,
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />
@@ -804,14 +699,14 @@ export const SpaceInquiry = () => {
                             onClick={() =>
                               removeEditArrayField(
                                 "building_addresses_list",
-                                index
+                                index,
                               )
                             }
                           >
                             X
                           </Button>
                         </div>
-                      )
+                      ),
                     )}
 
                     <Button
@@ -835,7 +730,7 @@ export const SpaceInquiry = () => {
                             editArrayChange(
                               "trusted_sender_domains",
                               index,
-                              e.target.value
+                              e.target.value,
                             )
                           }
                         />
@@ -845,7 +740,7 @@ export const SpaceInquiry = () => {
                           onClick={() =>
                             removeEditArrayField(
                               "trusted_sender_domains",
-                              index
+                              index,
                             )
                           }
                         >
@@ -909,34 +804,6 @@ export const SpaceInquiry = () => {
                     </div>
                   </div>
 
-                  {/* <div className="mb-4">
-                    <h5 className="fw-bold mb-3">SMTP Configuration</h5>
-                    <div className="card shadow-sm border-0">
-                      <div className="card-body">
-                        <table className="table table-borderless mb-0">
-                          <tbody>
-                            <tr>
-                              <th>SMTP Host:</th>
-                              <td>{configDetails.smtp_host}</td>
-                            </tr>
-                            <tr>
-                              <th>SMTP Port:</th>
-                              <td>{configDetails.smtp_port}</td>
-                            </tr>
-                            <tr>
-                              <th>SMTP Username:</th>
-                              <td>{configDetails.smtp_username}</td>
-                            </tr>
-                            <tr>
-                              <th>SMTP Password:</th>
-                              <td>******</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div> */}
-
                   <div className="mb-4">
                     <h5 className="fw-bold mb-3"> Status</h5>
                     <span
@@ -956,7 +823,7 @@ export const SpaceInquiry = () => {
                           <li className="list-group-item" key={i}>
                             {a}
                           </li>
-                        )
+                        ),
                       )}
                     </ul>
                   </div>
@@ -968,7 +835,7 @@ export const SpaceInquiry = () => {
                         <span className="badge bg-primary p-2 me-2" key={i}>
                           {d}
                         </span>
-                      )
+                      ),
                     )}
                   </div>
                 </div>
@@ -1093,7 +960,7 @@ export const SpaceInquiry = () => {
                             <td>
                               {selectedInquiry.email_date
                                 ? new Date(
-                                    selectedInquiry.email_date
+                                    selectedInquiry.email_date,
                                   ).toLocaleString("en-US")
                                 : "N/A"}
                             </td>
@@ -1106,8 +973,8 @@ export const SpaceInquiry = () => {
                                   selectedInquiry.status === "processed"
                                     ? "success"
                                     : selectedInquiry.status === "pending"
-                                    ? "warning"
-                                    : "info"
+                                      ? "warning"
+                                      : "info"
                                 }
                               >
                                 {selectedInquiry.status || "new"}
@@ -1119,7 +986,7 @@ export const SpaceInquiry = () => {
                             <td>
                               {selectedInquiry.created_at
                                 ? new Date(
-                                    selectedInquiry.created_at
+                                    selectedInquiry.created_at,
                                   ).toLocaleString("en-US")
                                 : "N/A"}
                             </td>

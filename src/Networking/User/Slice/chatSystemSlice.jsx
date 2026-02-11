@@ -10,9 +10,7 @@ const initialState = {
   messages: [],
   activeConversation: null,
 
-
   userStatus: {},
-
 
   typingUsers: {},
 
@@ -25,12 +23,10 @@ const chatSystemSlice = createSlice({
   initialState,
 
   reducers: {
-    /* ---------------- ACTIVE CONVERSATION ---------------- */
     setActiveConversation: (state, action) => {
       state.activeConversation = action.payload;
     },
 
-    /* ---------------- SOCKET MESSAGE ---------------- */
     addMessageSocket: (state, action) => {
       const newMessage = action.payload;
 
@@ -39,7 +35,7 @@ const chatSystemSlice = createSlice({
           msg.id === newMessage.id ||
           (msg.is_temp &&
             newMessage.temp_id &&
-            msg.temp_id === newMessage.temp_id)
+            msg.temp_id === newMessage.temp_id),
       );
 
       if (newMessage.file_id) {
@@ -56,8 +52,7 @@ const chatSystemSlice = createSlice({
           ...state.messages[index],
           ...newMessage,
           is_temp: false,
-          is_file:
-            newMessage.file_id ?? state.messages[index].is_file,
+          is_file: newMessage.file_id ?? state.messages[index].is_file,
         };
       }
     },
@@ -65,9 +60,7 @@ const chatSystemSlice = createSlice({
     addMessage: (state, action) => {
       const newMessage = action.payload;
 
-      const exists = state.messages.some(
-        (msg) => msg.id === newMessage.id
-      );
+      const exists = state.messages.some((msg) => msg.id === newMessage.id);
 
       if (!exists) {
         state.messages.push({
@@ -81,10 +74,10 @@ const chatSystemSlice = createSlice({
       const { user_id, online, last_seen } = action.payload;
       if (!user_id) return;
 
-      state.userStatus[user_id] = {
-        online,
-        last_seen,
-      };
+      (online,
+        (state.userStatus[user_id] = {
+          last_seen,
+        }));
     },
 
     setTypingStatus: (state, action) => {
@@ -96,8 +89,7 @@ const chatSystemSlice = createSlice({
         state.typingUsers[conversation_id] = {};
       }
 
-      state.typingUsers[conversation_id][sender_id] =
-        is_typing === true;
+      state.typingUsers[conversation_id][sender_id] = is_typing === true;
     },
 
     clearMessages: (state) => {
@@ -114,6 +106,7 @@ const chatSystemSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+
       .addCase(fetchConversations.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -142,7 +135,7 @@ const chatSystemSlice = createSlice({
 
       .addCase(deleteMessage.fulfilled, (state, action) => {
         state.messages = state.messages.filter(
-          (msg) => msg.id !== action.payload
+          (msg) => msg.id !== action.payload,
         );
       });
   },

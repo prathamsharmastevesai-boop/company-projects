@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 import store from "./Networking/Admin/Store/Store";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { DashboardLayout } from "./Component/Layout";
 import { ListBuilding } from "./Pages/Admin/Building/Buildlist";
 import { LeaseInfomation } from "./Pages/Admin/Lease/leasesInfo";
@@ -62,8 +61,6 @@ import { DistilledExpenseTrackerPage } from "./Pages/Admin/DistilledExpenseTrack
 import { SubleaseTrackerList } from "./Pages/Admin/SubleaseTracker/subleaseTrackerList";
 import { SubleaseTracker } from "./Pages/Admin/SubleaseTracker/subleaseTracker";
 import { Notes } from "./Pages/User/Notes/notes";
-// import { SubleaseTrackerChat } from "./Pages/User/SubleaseTracker/subleaseTrackerChat";
-
 import { SpaceInquiry } from "./Pages/Admin/SpaceInquiry/spaceInquiry";
 import DealList from "./Pages/User/DealTracker/dealList";
 import DealDetailView from "./Pages/User/DealTracker/dealDetailView";
@@ -72,7 +69,6 @@ import { RenewalTrackerList } from "./Pages/User/RenewalTracker/renewalTrackerLi
 import { RenewalTracker } from "./Pages/User/RenewalTracker/renewalTracker";
 import { CalulatorPage } from "./Pages/User/Calc/calculatorPage";
 import { AdminInformationCollaboration } from "./Pages/Admin/InformationCollaboration/adminInformationCollaboration";
-
 import { SelectBuildingCategory } from "./Pages/Admin/Building/selectBuildingCategory";
 import { CreNews } from "./Pages/User/CreNews/creNews";
 import { InformationCollaborationPage } from "./Pages/User/UserInformationCollaboration/informationCollaborationpages";
@@ -88,13 +84,17 @@ import { ChatList } from "./Component/ChatSystem/chatSystemList";
 import { UserListScreen } from "./Component/ChatSystem/userListScreen";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { NoAccess } from "./Component/notAccess";
-// import { WorkLetter } from "./Pages/User/ProjectManagement/workLetter";
-// import { ProjectList } from "./Pages/User/ProjectManagement/projectList";
+import { WorkLetter } from "./Pages/User/ProjectManagement/workLetter";
+import { ProjectList } from "./Pages/User/ProjectManagement/projectList";
 import { FireSafetyandBuildingMechanicals } from "./Pages/Admin/GeneralInfo/FireSafetyandBuildingMechanicals";
 import { FireSafetyandBuildingMechanicalsChat } from "./Pages/User/FireSafetyandBuildingMechanicals/firesafetybuildingmechanicalschat";
+import { AdminDetails } from "./Pages/SuperAdmin/adminDetails";
+import { FireSafetyandBuildingList } from "./Pages/User/FireSafetyandBuildingMechanicals/fireSafetyBuildingList";
+import { FireSafetyBuildingList } from "./Pages/Admin/FireSafetyandBuildingMechenical/fireSafety&BuildingMechenicalList";
+import { WebSocketProvider } from "./Context/WebSocketContext";
+import { CreateGroupScreen } from "./Component/ChatSystem/GroupChat/CreateGroupScreen";
 
 function App() {
-
   useEffect(() => {
     const expiry = sessionStorage.getItem("tokenExpiry");
 
@@ -110,7 +110,7 @@ function App() {
   return (
     <Provider store={store}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        {/* <WebSocketProvider> */}
+        <WebSocketProvider>
           <Router>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -127,6 +127,10 @@ function App() {
                 }
               >
                 <Route path="/admin-management" element={<AdminManagement />} />
+                <Route
+                  path="/super-admin/admin-details"
+                  element={<AdminDetails />}
+                />
               </Route>
               <Route
                 element={
@@ -148,13 +152,32 @@ function App() {
                 />
 
                 <Route path="/third-party-upload" element={<Thirdparty />} />
-                <Route path="/employee-contact-upload" element={<EmployContact />} />
+                <Route
+                  path="/employee-contact-upload"
+                  element={<EmployContact />}
+                />
                 <Route path="/comps-upload" element={<CompsUpload />} />
-                <Route path="/tenants-market-upload" element={<TenantMarketUpload />} />
-                <Route path="/building-info-upload" element={<BuildingInfo />} />
-                <Route path="/building-info-list" element={<BuildingInfoList />} />
-                <Route path="/fire-safety-building-mechanicals" element={<FireSafetyandBuildingMechanicals />} />
-                
+                <Route
+                  path="/tenants-market-upload"
+                  element={<TenantMarketUpload />}
+                />
+                <Route
+                  path="/building-info-upload"
+                  element={<BuildingInfo />}
+                />
+                <Route
+                  path="/building-info-list"
+                  element={<BuildingInfoList />}
+                />
+                <Route
+                  path="/admin-fire-safety-building-mechanicals-list"
+                  element={<FireSafetyBuildingList />}
+                />
+                <Route
+                  path="/upload-fire-safety-building-mechanicals"
+                  element={<FireSafetyandBuildingMechanicals />}
+                />
+
                 <Route
                   path="/tenant-info-upload"
                   element={<TenantInformationUpload />}
@@ -164,7 +187,10 @@ function App() {
                   element={<TenentInfoBuildingList />}
                 />
                 <Route path="/admin-tours" element={<ToursDetails />} />
-                <Route path="/admin-lease-loi-building-list" element={<ListBuilding />} />
+                <Route
+                  path="/admin-lease-loi-building-list"
+                  element={<ListBuilding />}
+                />
                 <Route
                   path="/Select_Building_Category"
                   element={<SelectBuildingCategory />}
@@ -172,7 +198,10 @@ function App() {
 
                 <Route path="/admin-select-lease-loi" element={<LeaseList />} />
 
-                <Route path="/admin-lease-loi-upload" element={<LeaseInfomation />} />
+                <Route
+                  path="/admin-lease-loi-upload"
+                  element={<LeaseInfomation />}
+                />
 
                 <Route
                   path="/Approved_Denied_list"
@@ -203,21 +232,28 @@ function App() {
                   element={<DestilledCompTracker />}
                 />
 
-                
-
-                <Route path="/sublease-tracker-form" element={<SubleaseTracker />} />
+                <Route
+                  path="/sublease-tracker-form"
+                  element={<SubleaseTracker />}
+                />
                 <Route
                   path="/sublease-tracker-list"
                   element={<SubleaseTrackerList />}
                 />
-                <Route path="/renewal-tracker-form" element={<RenewalTracker />} />
+                <Route
+                  path="/renewal-tracker-form"
+                  element={<RenewalTracker />}
+                />
 
                 <Route
                   path="/admin-renewal-tracker-list"
                   element={<RenewalTrackerList />}
                 />
 
-                <Route path="/admin-portfolio-forum" element={<PortfolioForum />} />
+                <Route
+                  path="/admin-portfolio-forum"
+                  element={<PortfolioForum />}
+                />
                 <Route path="/create-forum" element={<CreateThread />} />
 
                 <Route path="/space-inquiry" element={<SpaceInquiry />} />
@@ -230,7 +266,6 @@ function App() {
                   </ProtectedRoute>
                 }
               >
-
                 <Route path="/no-access" element={<NoAccess />} />
 
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -239,15 +274,18 @@ function App() {
 
                 <Route path="/cre-news" element={<CreNews />} />
 
-                <Route
-                  path="/documents/LOI"
-                  element={<Loi />}
-                />
+                <Route path="/documents/LOI" element={<Loi />} />
 
                 <Route path="/chat/:conversationId" element={<ChatLayout />} />
                 <Route path="/chat/users" element={<UserListScreen />} />
-
-                <Route path="/chat/new/:receiverId/:name" element={<ChatLayout />} />
+                <Route
+                  path="/chat/new/:receiverId/:name"
+                  element={<ChatLayout />}
+                />
+                <Route
+                  path="/chat/create-group"
+                  element={<CreateGroupScreen />}
+                />
 
                 <Route path="/email-drafting" element={<EmailDrafting />} />
 
@@ -257,58 +295,104 @@ function App() {
 
                 <Route path="/portfolio-forum" element={<PortfolioForum />} />
 
-                <Route path="/ai-lease-abstract-upload" element={<LeaseAbstractUpload />} />
+                <Route
+                  path="/ai-lease-abstract-upload"
+                  element={<LeaseAbstractUpload />}
+                />
 
-                <Route path="/information-collaboration" element={<InformationCollaborationPage />} />
+                <Route
+                  path="/information-collaboration"
+                  element={<InformationCollaborationPage />}
+                />
 
                 <Route path="/benchmark" element={<Benchmark />} />
 
-                <Route path="/distilled-comp-tracker" element={<DistilledCompTrackerPage />} />
+                <Route
+                  path="/distilled-comp-tracker"
+                  element={<DistilledCompTrackerPage />}
+                />
                 <Route path="/dct-chat" element={<DCTChat />} />
 
                 <Route path="/calculator" element={<CalulatorPage />} />
 
                 <Route path="/yardi" element={<Yardi />} />
 
-                <Route
-                  path="/messages"
-                  element={<ChatList />}
-                />
+                <Route path="/messages" element={<ChatList />} />
                 <Route path="/project-management" element={<ListBuilding />} />
-                {/* <Route path="/projects" element={<ProjectList />} /> */}
-                
-                {/* <Route
-                  path="/work-letter"
-                  element={<WorkLetter />}
-                /> */}
+                <Route path="/projects" element={<ProjectList />} />
+                <Route path="/work-letter" element={<WorkLetter />} />
 
                 <Route path="/third-party-chat" element={<BrokerChat />} />
 
                 <Route path="/employee-info-chat" element={<ColleagueChat />} />
 
-                <Route path="/user-building-info-list" element={<UserBuildingInfolist />} />
+                <Route
+                  path="/user-building-info-list"
+                  element={<UserBuildingInfolist />}
+                />
                 <Route path="/building-chat" element={<BuildingChat />} />
 
-                <Route path="/comparative-user-building-list" element={<ComparativeUserBuildinglist />} />
-                <Route path="/comparative-building-chat" element={<ComparativeBuildingChat />} />
+                <Route
+                  path="/comparative-user-building-list"
+                  element={<ComparativeUserBuildinglist />}
+                />
+                <Route
+                  path="/comparative-building-chat"
+                  element={<ComparativeBuildingChat />}
+                />
 
-                <Route path="/tenent-info-user-building-list" element={<TenentInfoUserBuildinglist />} />
-                <Route path="/tenant-information-chat" element={<TenantInformation />} />
+                <Route
+                  path="/tenent-info-user-building-list"
+                  element={<TenentInfoUserBuildinglist />}
+                />
+                <Route
+                  path="/tenant-information-chat"
+                  element={<TenantInformation />}
+                />
 
                 <Route path="/tenant-market" element={<TenantMarket />} />
 
                 <Route path="/comps-chat" element={<MarketChat />} />
 
-                <Route path="/user-fire-safety-building-mechanicals" element={<FireSafetyandBuildingMechanicalsChat />} />
+                <Route
+                  path="/user-fire-safety-building-mechanicals"
+                  element={<FireSafetyandBuildingMechanicalsChat />}
+                />
+                <Route
+                  path="/user-fire-safety-building-mechanicals-list"
+                  element={<FireSafetyandBuildingList />}
+                />
+                <Route
+                  path="/user-fire-safety-building-mechanicals"
+                  element={<FireSafetyandBuildingMechanicalsChat />}
+                />
 
-                <Route path="/user-sublease-tracker-list" element={<SubleaseTrackerList />} />
-                <Route path="/user-sublease-tracker" element={<SubleaseTracker />} />
+                <Route
+                  path="/user-sublease-tracker-list"
+                  element={<SubleaseTrackerList />}
+                />
+                <Route
+                  path="/user-sublease-tracker"
+                  element={<SubleaseTracker />}
+                />
 
-                <Route path="/user-renewal-tracker-list" element={<RenewalTrackerList />} />
-                <Route path="/user-renewal-tracker-form" element={<RenewalTracker />} />
+                <Route
+                  path="/user-renewal-tracker-list"
+                  element={<RenewalTrackerList />}
+                />
+                <Route
+                  path="/user-renewal-tracker-form"
+                  element={<RenewalTracker />}
+                />
 
-                <Route path="/user-lease-loi-building-list" element={<UserBuildinglist />} />
-                <Route path="/user-select-lease-loi" element={<UserLeaseList />} />
+                <Route
+                  path="/user-lease-loi-building-list"
+                  element={<UserBuildinglist />}
+                />
+                <Route
+                  path="/user-select-lease-loi"
+                  element={<UserLeaseList />}
+                />
                 <Route path="/user-lease-loi-chat" element={<UserChat />} />
 
                 <Route path="/tours" element={<ToursPage />} />
@@ -320,15 +404,13 @@ function App() {
                 <Route path="/user-profile" element={<UserProfile />} />
 
                 <Route path="/history" element={<SessionList />} />
-
               </Route>
             </Routes>
             <ToastContainer />
           </Router>
-        {/* </WebSocketProvider> */}
+        </WebSocketProvider>
       </GoogleOAuthProvider>
     </Provider>
-
   );
 }
 

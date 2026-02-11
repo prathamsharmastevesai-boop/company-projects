@@ -30,11 +30,12 @@ export const SessionList = ({ setShowSessionModal }) => {
     try {
       const res = await dispatch(get_Session_List_Specific()).unwrap();
       setSessionList(res);
-      
 
-      const categories = ["All", ...new Set(res.map((s) => s.category).filter(Boolean))];
+      const categories = [
+        "All",
+        ...new Set(res.map((s) => s.category).filter(Boolean)),
+      ];
       setUniqueCategories(categories);
-      
 
       applyFilters(res, selectedCategory, searchTerm);
     } catch (error) {
@@ -47,12 +48,11 @@ export const SessionList = ({ setShowSessionModal }) => {
   const applyFilters = (sessions, category, search) => {
     let filtered = [...sessions];
 
-  
     if (category !== "All") {
       filtered = filtered.filter(
         (session) =>
           session.category &&
-          session.category.toLowerCase() === category.toLowerCase()
+          session.category.toLowerCase() === category.toLowerCase(),
       );
     }
 
@@ -60,7 +60,7 @@ export const SessionList = ({ setShowSessionModal }) => {
       filtered = filtered.filter(
         (session) =>
           session.title?.toLowerCase().includes(search.toLowerCase()) ||
-          session.category?.toLowerCase().includes(search.toLowerCase())
+          session.category?.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
@@ -82,18 +82,24 @@ export const SessionList = ({ setShowSessionModal }) => {
 
       const updatedList = sessionList.filter((s) => s.session_id !== id);
       setSessionList(updatedList);
-      
-      const categories = ["All", ...new Set(updatedList.map((s) => s.category).filter(Boolean))];
+
+      const categories = [
+        "All",
+        ...new Set(updatedList.map((s) => s.category).filter(Boolean)),
+      ];
       setUniqueCategories(categories);
-      
+
       const sessionsInCurrentCategory = updatedList.filter(
         (session) =>
           selectedCategory !== "All" &&
           session.category &&
-          session.category.toLowerCase() === selectedCategory.toLowerCase()
+          session.category.toLowerCase() === selectedCategory.toLowerCase(),
       );
-      
-      if (sessionsInCurrentCategory.length === 0 && selectedCategory !== "All") {
+
+      if (
+        sessionsInCurrentCategory.length === 0 &&
+        selectedCategory !== "All"
+      ) {
         setSelectedCategory("All");
       }
 
@@ -145,6 +151,11 @@ export const SessionList = ({ setShowSessionModal }) => {
         break;
       case "Gemini":
         navigate("/gemini-chat", {
+          state: { sessionId: session.session_id, type: session.category },
+        });
+        break;
+      case "FireSafety":
+        navigate("/user-fire-safety-building-mechanicals", {
           state: { sessionId: session.session_id, type: session.category },
         });
         break;
@@ -290,7 +301,10 @@ export const SessionList = ({ setShowSessionModal }) => {
                         disabled={isDeleting[session.session_id]}
                       >
                         {isDeleting[session.session_id] ? (
-                          <span className="spinner-border spinner-border-sm" role="status"></span>
+                          <span
+                            className="spinner-border spinner-border-sm"
+                            role="status"
+                          ></span>
                         ) : (
                           <i className="bi bi-trash"></i>
                         )}

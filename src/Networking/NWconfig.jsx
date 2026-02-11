@@ -38,6 +38,7 @@ export const AskQuestion = "/chatbot/ask_question/";
 // export const AskQuestionEndpoint = "/user/ask_simple/";
 export const ASkQuestionbuildingEndpoint = "/building/files/query";
 export const Chat_history = "/chat/history/";
+export const Gemini_Chat_History = "/gemini/gemini/history/";
 export const Del_Chat_Session = "/chat/delete/";
 
 // ASK QUESTION REPORT

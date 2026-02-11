@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-import { googleLoginService, LoginSubmit } from "../../../Networking/Admin/APIs/LoginAPIs";
+import {
+  googleLoginService,
+  LoginSubmit,
+} from "../../../Networking/Admin/APIs/LoginAPIs";
 import RAGLoader from "../../../Component/Loader";
 import headerimage from "../../../assets/side_photo.jpg";
 import side_photo from "../../../assets/side_photo.jpg";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleLogin } from "@react-oauth/google";
-
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -27,11 +29,10 @@ export const Login = () => {
 
     if (!token || !role) return;
 
-    if (role === "user") navigate("/user-profile");
+    if (role === "user") navigate("/dashboard");
     else if (role === "admin") navigate("/admin-dashboard");
     else if (role === "superuser") navigate("/admin-management");
   }, []);
-
 
   const validateForm = () => {
     const errs = {};
@@ -43,40 +44,31 @@ export const Login = () => {
     return Object.keys(errs).length === 0;
   };
 
-
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
 
       const idToken = credentialResponse.credential;
 
-      const res = await dispatch(
-        googleLoginService(idToken)
-      ).unwrap();
+      const res = await dispatch(googleLoginService(idToken)).unwrap();
       console.log(res.role, "res.role");
 
-
-
       if (res.role === "user") {
-        navigate("/user-profile");
-           sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-      }
-      else if (res.role === "admin") {
+        navigate("/dashboard");
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      } else if (res.role === "admin") {
         navigate("/admin-dashboard");
-               sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-      } else
-        if (res.role === "superuser") {
-          navigate("/admin-management");
-                 sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-        }
-   
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      } else if (res.role === "superuser") {
+        navigate("/admin-management");
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      }
+
       toast.success("login successfull");
-
     } catch (err) {
-
     } finally {
       setLoading(false);
     }
@@ -95,36 +87,30 @@ export const Login = () => {
       const res = await dispatch(
         LoginSubmit({
           email: email.trim(),
-          password: password.trim()
-        })
+          password: password.trim(),
+        }),
       ).unwrap();
 
       const { role, access_token } = res;
       console.log(res, "res");
 
-  
-
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("access_token", access_token);
- if (res.role === "user") {
-           navigate("/user-profile", { state: { email } });
-           sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-      }
-      else if (res.role === "admin") {
+      if (res.role === "user") {
+        navigate("/dashboard", { state: { email } });
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      } else if (res.role === "admin") {
         navigate("/admin-dashboard");
-               sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-      } else
-        if (res.role === "superuser") {
-          navigate("/admin-management");
-                 sessionStorage.setItem("access_token", res.access_token);
-      sessionStorage.setItem("role", res.role);
-        }
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      } else if (res.role === "superuser") {
+        navigate("/admin-management");
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("role", res.role);
+      }
       toast.success("login successful");
-
     } catch (err) {
-    
     } finally {
       setLoading(false);
     }
@@ -185,8 +171,9 @@ export const Login = () => {
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className={`form-control ${errors.password ? "is-invalid" : ""
-                    }`}
+                  className={`form-control ${
+                    errors.password ? "is-invalid" : ""
+                  }`}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -220,8 +207,6 @@ export const Login = () => {
                 width="100%"
               />
             </div>
-
-
 
             <div
               className="text-end"

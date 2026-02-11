@@ -10,7 +10,7 @@ export const fetchConversations = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const fetchMessages = createAsyncThunk(
@@ -18,13 +18,13 @@ export const fetchMessages = createAsyncThunk(
   async (conversationId, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.get(
-        `/messenger/conversations/messages/${conversationId}`
+        `/messenger/conversations/messages/${conversationId}`,
       );
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const uploadfileChatSystemAPi = createAsyncThunk(
@@ -48,7 +48,7 @@ export const uploadfileChatSystemAPi = createAsyncThunk(
         },
         onUploadProgress: (progressEvent) => {
           const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
+            (progressEvent.loaded * 100) / progressEvent.total,
           );
 
           dispatch(setUploadProgress(progress));
@@ -68,7 +68,7 @@ export const uploadfileChatSystemAPi = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const fetchFileUrl = createAsyncThunk(
@@ -81,11 +81,13 @@ export const fetchFileUrl = createAsyncThunk(
       });
       return { fileId, url: res.data.url };
     } catch (err) {
-      return rejectWithValue({ fileId, error: err.response?.data || err.message });
+      return rejectWithValue({
+        fileId,
+        error: err.response?.data || err.message,
+      });
     }
-  }
+  },
 );
-
 
 export const downloadFileApi = createAsyncThunk(
   "chat/downloadFile",
@@ -106,9 +108,12 @@ export const downloadFileApi = createAsyncThunk(
 
       return { fileId, success: true };
     } catch (err) {
-      return rejectWithValue({ fileId, error: err.response?.data || err.message });
+      return rejectWithValue({
+        fileId,
+        error: err.response?.data || err.message,
+      });
     }
-  }
+  },
 );
 
 export const sendMessageAPi = createAsyncThunk(
@@ -120,9 +125,8 @@ export const sendMessageAPi = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
-
 
 export const deleteMessage = createAsyncThunk(
   "chat/deleteMessage",
@@ -133,9 +137,8 @@ export const deleteMessage = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
 );
-
 
 export const markMessageRead = createAsyncThunk(
   "chat/markMessageRead",
@@ -146,5 +149,30 @@ export const markMessageRead = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
-  }
+  },
+);
+
+export const createGroupApi = createAsyncThunk(
+  "chat/createGroup",
+  async ({ name, member_ids }, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post(
+        "/messenger/conversations/group",
+        {
+          name,
+          member_ids,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+        },
+      );
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  },
 );
